@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 // Import your modal store to handle the swap
-import { useModalStore } from "../store/modal.store";
+import { useModalStore } from "@store/useModalStore";
 
 export function JobTicketModal({ job }: { job: JobTicket }) {
   const [elapsed, setElapsed] = useState(0);

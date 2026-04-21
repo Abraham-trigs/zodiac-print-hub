@@ -1,0 +1,405 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma" // Required in v7
+}
+
+datasource db {
+  provider = "postgresql"
+  // Note: No 'url' here anymore
+}
+
+//
+// ─────────────────────────────────────────────
+// 1. ORGANISATION (MULTI-TENANT ROOT)
+// ─────────────────────────────────────────────
+//
+
+model Organisation {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  logoUrl      String?
+  contactEmail String?
+  contactPhone String?
+  address      String?
+  createdAt    DateTime @default(now())
+
+  users      User[]
+  staff      Staff[]
+  clients    Client[]
+  jobs       Job[]
+  stockItems StockItem[]
+  prices     PriceItem[]
+  deliveries Delivery[]
+  b2bPushes  B2BPush[]
+  auditLogs  AuditLog[]
+}
+
+//
+// ─────────────────────────────────────────────
+// 2. AUTH / USERS / RBAC
+// ─────────────────────────────────────────────
+//
+
+model OutboxEvent {
+  id        String   @id @default(cuid())
+  type      String
+  payload   Json
+  orgId     String
+  status    String   @default("PENDING") // PENDING | SENT | FAILED
+  createdAt DateTime @default(now())
+}
+
+enum UserRole {
+  ADMIN
+  OPERATOR
+  CASHIER
+  GUEST
+  GRAPHIC_DESIGNER
+}
+
+model User {
+  id           String       @id @default(cuid())
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  name      String
+  email     String   @unique
+  role      UserRole
+  avatarUrl String?
+  createdAt DateTime @default(now())
+
+  staffProfile Staff?
+}
+
+//
+// ─────────────────────────────────────────────
+// 3. STAFF
+// ─────────────────────────────────────────────
+//
+
+model Staff {
+  id           String       @id @default(cuid())
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  name           String
+  role           UserRole
+  phone          String?
+  avatarUrl      String?
+  specialisation String?
+  isActive       Boolean  @default(true)
+
+  assignedJobs Job[] @relation("StaffJobs")
+
+  createdAt DateTime @default(now())
+}
+
+//
+// ─────────────────────────────────────────────
+// 4. CLIENTS
+// ─────────────────────────────────────────────
+//
+
+enum ClientType {
+  PRIVATE
+  COMPANY
+}
+
+model Client {
+  id           String       @id @default(cuid())
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  type              ClientType
+  name              String
+  companyName       String?
+  email             String?
+  phone             String
+  location          String?
+  profilePictureUrl String?
+  isNew             Boolean    @default(true)
+  recentStaffId     String?
+  notes             String?
+
+  jobs Job[]
+
+  createdAt DateTime @default(now())
+}
+
+//
+// ─────────────────────────────────────────────
+// 5. PRICE LIST
+// ─────────────────────────────────────────────
+//
+
+enum ServiceUnit {
+  sqft
+  sqm
+  sqcm
+  inch
+  ft
+  yd
+  mm
+  cm
+  m
+  meter
+  pack
+  piece
+  roll
+  box
+  ream
+  bottle
+  liter
+  hour
+  PER_PAGE
+  PER_100
+  PER_SQ_METER
+  PER_SET
+  PER_YARD
+}
+
+model PriceItem {
+  id           String       @id @default(cuid())
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  name       String
+  category   String
+  unit       ServiceUnit
+  priceGHS   Float
+  stockRefId String?
+
+  isActive  Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+//
+// ─────────────────────────────────────────────
+// 6. STOCK
+// ─────────────────────────────────────────────
+//
+
+model StockItem {
+  id           String       @id @default(cuid())
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  name              String
+  unit              String
+  totalRemaining    Float
+  lowStockThreshold Float
+  lastUnitCost      Float
+  lastRestockedAt   DateTime?
+
+  createdAt DateTime @default(now())
+}
+
+model RestockRecord {
+  id          String   @id @default(cuid())
+  stockItemId String
+  quantity    Float
+  unitCost    Float
+  totalCost   Float
+  recordedBy  String
+  date        DateTime @default(now())
+}
+
+//
+// ─────────────────────────────────────────────
+// 7. JOB ENGINE
+// ─────────────────────────────────────────────
+//
+
+enum JobStatus {
+  PENDING
+  IN_PROGRESS
+  QUALITY_CHECK
+  READY_FOR_PICKUP
+  COMPLETED
+  CANCELLED
+  PAUSED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+model Job {
+  id           String       @id @default(cuid())
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
+
+  serviceId   String
+  serviceName String
+
+  quantity Float
+  width    Float?
+  height   Float?
+  unit     String?
+
+  totalPrice   Float
+  costPrice    Float?
+  profitMargin Float?
+
+  materialUsed    Float?
+  materialWastage Float?
+
+  status        JobStatus     @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  isPaid        Boolean       @default(false)
+
+  paymentRef String?
+
+  assignedStaffId String?
+  assignedStaff   Staff?  @relation("StaffJobs", fields: [assignedStaffId], references: [id])
+
+  deliveryId String?
+
+  notes String?
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  completedAt DateTime?
+  deliveries  Delivery[]
+}
+
+//
+// ─────────────────────────────────────────────
+// 8. DELIVERY
+// ─────────────────────────────────────────────
+//
+
+enum DeliveryType {
+  PHYSICAL_PICKUP
+  PRINTER_DELIVERY
+  CLIENT_COURIER
+}
+
+enum DeliveryStatus {
+  PENDING
+  SCHEDULED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  PAUSED
+  FAILED
+}
+
+model Delivery {
+  id           String       @id @default(cuid())
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  clientId String
+
+  type   DeliveryType
+  status DeliveryStatus @default(PENDING)
+
+  scheduledDate DateTime?
+  deliveredAt   DateTime?
+
+  handledBy String?
+  address   String?
+  notes     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//
+// ─────────────────────────────────────────────
+// 9. PAYMENTS
+// ─────────────────────────────────────────────
+//
+
+enum PaymentMethod {
+  CASH
+  MOMO
+  BANK_TRANSFER
+  CARD
+  OTHER
+}
+
+model Payment {
+  id    String @id @default(cuid())
+  orgId String
+  jobId String
+
+  amount    Float
+  method    PaymentMethod
+  reference String?
+
+  screenshotUrl String?
+
+  confirmedBy String?
+  confirmedAt DateTime @default(now())
+}
+
+//
+// ─────────────────────────────────────────────
+// 10. B2B LAYER
+// ─────────────────────────────────────────────
+//
+
+enum B2BStatus {
+  PENDING
+  ACCEPTED
+  NEGOTIATING
+  REJECTED
+  COMPLETED
+}
+
+model B2BPush {
+  id    String @id @default(cuid())
+  orgId String
+
+  originalJobId String
+
+  clientName  String
+  serviceName String
+  specs       String
+  deadline    DateTime
+
+  suggestedPrice Float?
+
+  status B2BStatus @default(PENDING)
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  organisationId String?
+}
+
+//
+// ─────────────────────────────────────────────
+// 11. AUDIT LOG
+// ─────────────────────────────────────────────
+//
+
+model AuditLog {
+  id    String @id @default(cuid())
+  orgId String
+
+  action     String
+  entityId   String
+  entityType String
+
+  performedBy String
+
+  meta Json?
+
+  timestamp      DateTime      @default(now())
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  organisationId String?
+}

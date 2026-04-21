@@ -8,7 +8,7 @@ import {
   usePrices,
   useSelectedService,
   useLiveEstimate,
-} from "@zodiac/store/selectors/data.selectors";
+} from "@store/selectors/data.selectors";
 
 export function JobDisplayModal() {
   const draft = useDraft();

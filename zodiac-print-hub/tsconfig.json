@@ -20,7 +20,7 @@
       "@/*": ["./app/zodiac/*"],
       "@root/*": ["./app/*"],
 
-      "@api/*": ["./app/zodiac/api/*"],
+      "@api/*": ["app/api/*"],
       "@components/*": ["./app/zodiac/components/*"],
       "@core/*": ["./app/zodiac/core/*"],
       "@hooks/*": ["./app/zodiac/hooks/*"],
