@@ -1,35 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react"; // Switched to useMemo
+import { shallow } from "zustand/shallow";
+
 import { useZodiac } from "../store/zodiac.store";
-import { useDataStore } from "../store/core/useDataStore";
 import { useModalStore } from "../store/useModalStore";
 import { ZodiacScreen } from "../types/screen.types";
+import { useDataStore } from "../store/core/useDataStore";
+
 import { JobCreationModal } from "./modals/JobCreationModal";
-import { JobDetailsModal } from "./modals/JobDetailsModal"; // ✅ Import the details modal
+import { JobDetailsModal } from "./modals/JobDetailsModal";
 import { JobCardSkeleton } from "../components/common/skeleton/JobCardSkeleton";
 import { RefreshButton } from "../components/common/RefreshButton";
+
+import {
+  selectPricesMap,
+  selectAllJobs, // Use the base array selector
+} from "../store/selectors/data.selectors";
 
 export const JobCartScreen: ZodiacScreen = {
   id: "JOB_CART",
   layoutMode: "DETAIL",
+
   TopComponent: () => {
     const { setScreen } = useZodiac();
-    const { jobs, prices, isLoading, initData } = useDataStore();
     const { openModal, closeModal } = useModalStore();
+    const { isLoading, initData } = useDataStore();
+
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredJobs = jobs.filter(
-      (job) =>
-        job.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.clientName.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+    /* =========================================================
+       STABLE STATE ACCESS
+    ========================================================= */
+
+    // 1. Get the raw arrays/maps with shallow comparison.
+    // These selectors are now safe because they return existing state references.
+    const allJobs = useDataStore(selectAllJobs, shallow);
+    const prices = useDataStore(selectPricesMap, shallow);
+
+    /* =========================================================
+       LOCAL COMPUTATION (Infinite Loop Proof)
+    ========================================================= */
+
+    // 2. Perform filtering LOCALLY.
+    // This is "cached" by useMemo and does not touch the store's subscription.
+    const filteredJobs = useMemo(() => {
+      const q = searchQuery.toLowerCase().trim();
+      if (!q) return allJobs;
+
+      return allJobs.filter(
+        (job) =>
+          job.id.toLowerCase().includes(q) ||
+          job.clientName?.toLowerCase().includes(q),
+      );
+    }, [allJobs, searchQuery]);
 
     const handleOpenCreation = () => {
       openModal("GLOBAL", () => <JobCreationModal onClose={closeModal} />);
     };
 
-    // ✅ New handler to open job details
     const handleOpenDetails = (jobId: string) => {
       openModal("GLOBAL", () => (
         <JobDetailsModal jobId={jobId} onClose={closeModal} />
@@ -38,13 +67,13 @@ export const JobCartScreen: ZodiacScreen = {
 
     return (
       <div className="flex flex-col h-full gap-6">
-        {/* 1. Header with Refresh & Add */}
+        {/* HEADER */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div>
               <h2 className="text-2xl font-bold">Job Manager</h2>
               <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-black">
-                {isLoading ? "Syncing..." : `${jobs.length} Active Records`}
+                {isLoading ? "Syncing..." : `${allJobs.length} Active Records`}
               </p>
             </div>
             <RefreshButton onRefresh={initData} isLoading={isLoading} />
@@ -58,7 +87,7 @@ export const JobCartScreen: ZodiacScreen = {
           </button>
         </div>
 
-        {/* 2. Search Bar */}
+        {/* SEARCH */}
         <div className="relative">
           <input
             type="text"
@@ -72,17 +101,16 @@ export const JobCartScreen: ZodiacScreen = {
           </span>
         </div>
 
-        {/* 3. List Logic */}
+        {/* LIST */}
         <div className="flex-1 flex flex-col gap-3 overflow-y-auto pr-1 custom-scrollbar">
           {isLoading ? (
             Array.from({ length: 5 }).map((_, i) => <JobCardSkeleton key={i} />)
           ) : filteredJobs.length > 0 ? (
             filteredJobs.map((job) => {
-              const service = prices.find((p) => p.id === job.serviceId);
+              const service = prices[job.serviceId];
               return (
                 <div
                   key={job.id}
-                  // ✅ Added click handler here
                   onClick={() => handleOpenDetails(job.id)}
                   className="glass-card p-4 flex items-center justify-between border border-white/5 hover:border-cyan-400/30 transition-all cursor-pointer group active:scale-[0.98]"
                 >
@@ -127,7 +155,7 @@ export const JobCartScreen: ZodiacScreen = {
           )}
         </div>
 
-        {/* 4. Footer */}
+        {/* FOOTER */}
         <div className="mt-auto pb-4">
           <button
             onClick={() => setScreen("WELCOME")}

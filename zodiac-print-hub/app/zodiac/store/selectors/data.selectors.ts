@@ -2,48 +2,100 @@ import { useDataStore } from "@store/core/useDataStore";
 import type { State } from "@store/core/useDataStore";
 
 /* =========================================================
-   BASE ACCESSORS
+   STABLE FALLBACKS (Prevents Infinite Loops)
 ========================================================= */
-
-export const selectJobsMap = (s: State) => s.jobs.jobs;
-export const selectStaffMap = (s: State) => s.staff.staff;
-export const selectClientsMap = (s: State) => s.client.clients;
-export const selectPricesMap = (s: State) => s.prices.prices;
-export const selectInventoryMap = (s: State) => s.inventory.inventory;
-export const selectDeliveriesMap = (s: State) => s.delivery.deliveries;
-export const selectPaymentsMap = (s: State) => s.payment.payments;
+const EMPTY_MAP = Object.freeze({});
+const EMPTY_ARRAY = Object.freeze([]);
 
 /* =========================================================
-   LIST VIEWS
+   MEMOIZATION CACHE (Internal)
+========================================================= */
+const cache = {
+  jobs: { map: null as any, array: EMPTY_ARRAY as any[] },
+  staff: { map: null as any, array: EMPTY_ARRAY as any[] },
+  clients: { map: null as any, array: EMPTY_ARRAY as any[] },
+  prices: { map: null as any, array: EMPTY_ARRAY as any[] },
+  inventory: { map: null as any, array: EMPTY_ARRAY as any[] },
+  delivery: { map: null as any, array: EMPTY_ARRAY as any[] },
+  payment: { map: null as any, array: EMPTY_ARRAY as any[] },
+};
+
+/* =========================================================
+   SAFE BASE ACCESSORS (HYDRATION-PROOF)
 ========================================================= */
 
-export const selectAllJobs = (s: State) => Object.values(s.jobs.jobs);
-export const selectAllStaff = (s: State) => Object.values(s.staff.staff);
-export const selectAllClients = (s: State) => Object.values(s.client.clients);
-export const selectAllPrices = (s: State) => Object.values(s.prices.prices);
-export const selectAllInventory = (s: State) =>
-  Object.values(s.inventory.inventory);
-export const selectAllDeliveries = (s: State) =>
-  Object.values(s.delivery.deliveries);
+export const selectJobsMap = (s: State) => s.jobs?.jobs ?? EMPTY_MAP;
+export const selectStaffMap = (s: State) => s.staff?.staff ?? EMPTY_MAP;
+export const selectClientsMap = (s: State) => s.client?.clients ?? EMPTY_MAP;
+export const selectPricesMap = (s: State) => s.prices?.prices ?? EMPTY_MAP;
+export const selectInventoryMap = (s: State) =>
+  s.inventory?.inventory ?? EMPTY_MAP;
+export const selectDeliveriesMap = (s: State) =>
+  s.delivery?.deliveries ?? EMPTY_MAP;
+export const selectPaymentsMap = (s: State) => s.payment?.payments ?? EMPTY_MAP;
+
+/* =========================================================
+   ARRAY / LIST VIEWS (MEMOIZED)
+========================================================= */
+
+/**
+ * Helper to ensure Object.values doesn't trigger infinite loops
+ * by returning the exact same array reference if the map hasn't changed.
+ */
+const getMemoizedArray = (currentMap: any, cacheKey: keyof typeof cache) => {
+  if (currentMap === cache[cacheKey].map) return cache[cacheKey].array;
+  cache[cacheKey].map = currentMap;
+  cache[cacheKey].array = Object.values(currentMap);
+  return cache[cacheKey].array;
+};
+
+export const selectJobsArray = (s: State) =>
+  getMemoizedArray(selectJobsMap(s), "jobs");
+export const selectStaffArray = (s: State) =>
+  getMemoizedArray(selectStaffMap(s), "staff");
+export const selectClientsArray = (s: State) =>
+  getMemoizedArray(selectClientsMap(s), "clients");
+export const selectPricesArray = (s: State) =>
+  getMemoizedArray(selectPricesMap(s), "prices");
+export const selectInventoryArray = (s: State) =>
+  getMemoizedArray(selectInventoryMap(s), "inventory");
+export const selectDeliveriesArray = (s: State) =>
+  getMemoizedArray(selectDeliveriesMap(s), "delivery");
+export const selectPaymentsArray = (s: State) =>
+  getMemoizedArray(selectPaymentsMap(s), "payment");
+
+/* =========================================================
+   🔁 BACKWARD COMPATIBILITY ALIASES
+========================================================= */
+
+export const selectAllJobs = selectJobsArray;
+export const selectAllStaff = selectStaffArray;
+export const selectAllClients = selectClientsArray;
+export const selectAllPrices = selectPricesArray;
+export const selectAllInventory = selectInventoryArray;
+export const selectAllDeliveries = selectDeliveriesArray;
+export const selectAllPayments = selectPaymentsArray;
 
 /* =========================================================
    JOB DOMAIN COMPOSITES
 ========================================================= */
 
-export const selectJobById = (id: string) => (s: State) => s.jobs.jobs[id];
+export const selectJobById = (id: string) => (s: State) => selectJobsMap(s)[id];
 
 export const selectJobWithRelations = (id: string) => (s: State) => {
-  const job = s.jobs.jobs[id];
+  const job = selectJobsMap(s)[id];
   if (!job) return undefined;
 
   return {
     ...job,
-    client: s.client.clients[job.clientId],
-    staff: job.assignedStaffId ? s.staff.staff[job.assignedStaffId] : undefined,
-    delivery: job.deliveryId
-      ? s.delivery.deliveries[job.deliveryId]
+    client: selectClientsMap(s)[job.clientId],
+    staff: job.assignedStaffId
+      ? selectStaffMap(s)[job.assignedStaffId]
       : undefined,
-    payments: s.payment.payments[job.id] || [],
+    delivery: job.deliveryId
+      ? selectDeliveriesMap(s)[job.deliveryId]
+      : undefined,
+    payments: selectPaymentsMap(s)[job.id] ?? EMPTY_ARRAY,
   };
 };
 
@@ -52,12 +104,14 @@ export const selectJobWithRelations = (id: string) => (s: State) => {
 ========================================================= */
 
 export const selectTotalPaid = (jobId: string) => (s: State) =>
-  (s.payment.payments[jobId] || []).reduce((sum, p) => sum + p.amount, 0);
+  (selectPaymentsMap(s)[jobId] ?? EMPTY_ARRAY).reduce(
+    (sum, p) => sum + p.amount,
+    0,
+  );
 
 export const selectPaymentStatus =
   (jobId: string, totalDue: number) => (s: State) => {
     const totalPaid = selectTotalPaid(jobId)(s);
-
     if (totalPaid <= 0) return "UNPAID";
     if (totalPaid < totalDue) return "PARTIAL";
     return "PAID";
@@ -66,8 +120,6 @@ export const selectPaymentStatus =
 /* =========================================================
    STAFF ANALYTICS
 ========================================================= */
-
-export const selectStaffArray = (s: State) => Object.values(s.staff.staff);
 
 export const selectStaffByJob = (jobId: string) => (s: State) =>
   selectStaffArray(s).find((st) => st.currentJobId === jobId);
@@ -82,27 +134,20 @@ export const selectBusyStaff = (s: State) =>
    INVENTORY / JOB IMPACT
 ========================================================= */
 
-export const selectInventoryArray = (s: State) =>
-  Object.values(s.inventory.inventory);
-
 export const selectLowStockItems =
   (threshold = 10) =>
   (s: State) =>
     selectInventoryArray(s).filter((item) => item.totalRemaining <= threshold);
 
 export const selectStockForJob = (jobId: string) => (s: State) => {
-  const job = s.jobs.jobs[jobId];
-  if (!job) return [];
-
+  const job = selectJobsMap(s)[jobId];
+  if (!job) return EMPTY_ARRAY;
   return selectInventoryArray(s).filter((item) => item.id === job.serviceId);
 };
 
 /* =========================================================
    DELIVERY PIPELINE
 ========================================================= */
-
-export const selectDeliveriesArray = (s: State) =>
-  Object.values(s.delivery.deliveries);
 
 export const selectPendingDeliveries = (s: State) =>
   selectDeliveriesArray(s).filter((d) => d.status === "PENDING");
@@ -118,15 +163,13 @@ export const selectActiveDeliveries = (s: State) =>
 
 export const selectLiveEstimate = (s: State) => {
   const draft = s.draft.draft;
-  const price = s.prices.prices[draft.serviceId];
+  const price = selectPricesMap(s)[draft.serviceId];
 
   if (!price) return 0;
 
   const base = price.priceGHS;
   const qty = draft.quantity || 1;
-
   const isArea = price.unit === "sqft" || price.unit === "sqm";
-
   const area = isArea ? (draft.width || 1) * (draft.height || 1) : 1;
 
   return base * qty * area;
@@ -136,20 +179,18 @@ export const selectLiveEstimate = (s: State) => {
    SEARCH HELPERS
 ========================================================= */
 
-export const selectJobsArray = (s: State) => Object.values(s.jobs.jobs);
-
-export const selectClientsArray = (s: State) => Object.values(s.client.clients);
-
 export const selectSearchJobs = (query: string) => (s: State) => {
-  const q = query.toLowerCase();
-
-  return selectJobsArray(s).filter((j) => j.id.toLowerCase().includes(q));
+  const all = selectJobsArray(s);
+  const q = query.toLowerCase().trim();
+  if (!q) return all;
+  return all.filter((j) => j.id.toLowerCase().includes(q));
 };
 
 export const selectSearchClients = (query: string) => (s: State) => {
-  const q = query.toLowerCase();
-
-  return selectClientsArray(s).filter((c) => c.name.toLowerCase().includes(q));
+  const all = selectClientsArray(s);
+  const q = query.toLowerCase().trim();
+  if (!q) return all;
+  return all.filter((c) => c.name.toLowerCase().includes(q));
 };
 
 /* =========================================================
@@ -157,14 +198,11 @@ export const selectSearchClients = (query: string) => (s: State) => {
 ========================================================= */
 
 export const useDraft = () => useDataStore((s: State) => s.draft.draft);
-
 export const usePrices = () => useDataStore((s: State) => s.prices.prices);
-
 export const useSelectedService = () =>
   useDataStore((s: State) => {
     const draft = s.draft.draft;
     return s.prices.prices[draft.serviceId];
   });
-
 export const useLiveEstimate = () =>
   useDataStore((s: State) => selectLiveEstimate(s));
