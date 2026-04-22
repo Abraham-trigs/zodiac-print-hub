@@ -8,14 +8,21 @@ type CachedScreen = {
 const screenCache = new Map<ScreenID, CachedScreen>();
 
 export function getCachedScreen(screenId: ScreenID): CachedScreen {
+  // 1. Return from cache if exists
   if (screenCache.has(screenId)) {
     return screenCache.get(screenId)!;
   }
 
-  const screen = SCREEN_MAP[screenId];
+  // 2. Resolve from Registry
+  let screen = SCREEN_MAP[screenId];
 
+  // 3. SAFE FALLBACK: If screen is missing, don't crash.
+  // Redirect to WELCOME (or your main dashboard)
   if (!screen) {
-    throw new Error(`Screen not found: ${screenId}`);
+    console.error(
+      `🚨 Screen ID "${screenId}" not found in SCREEN_MAP. Falling back to WELCOME.`,
+    );
+    screen = SCREEN_MAP["WELCOME"];
   }
 
   const cached: CachedScreen = {
@@ -23,6 +30,7 @@ export function getCachedScreen(screenId: ScreenID): CachedScreen {
     Down: screen.DownComponent,
   };
 
+  // 4. Cache it for next time
   screenCache.set(screenId, cached);
 
   return cached;

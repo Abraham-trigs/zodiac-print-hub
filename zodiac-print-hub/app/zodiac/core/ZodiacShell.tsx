@@ -11,6 +11,7 @@ import { getCachedScreen } from "../view/screen.cache";
 import { useAccessStore } from "../store/useAccessStore";
 import { useAppBootStore } from "../store/useAppBootStore";
 import { useDataStore } from "../store/core/useDataStore";
+import { pathToScreen } from "@/view/screen.router";
 
 export function ZodiacShell() {
   const { activeScreenId, viewMode, sharedAction, setSharedAction, setScreen } =
@@ -84,12 +85,44 @@ export function ZodiacShell() {
   // =====================================================
   // URL sync
   // =====================================================
+  // =====================================================
+  // URL sync (Fixed to handle /zodiac base path)
+  // =====================================================
+  // useEffect(() => {
+  //   const syncFromUrl = () => {
+  //     // 1. Get the last part of the path
+  //     const pathParts = window.location.pathname.split("/").filter(Boolean);
+  //     const lastPart = pathParts[pathParts.length - 1]?.toUpperCase();
+
+  //     // 2. Map "ZODIAC" (the base folder) or empty paths to "WELCOME"
+  //     if (!lastPart || lastPart === "ZODIAC") {
+  //       setScreen("WELCOME");
+  //     } else {
+  //       // 3. Only set the screen if it actually exists in your registry
+  //       setScreen(lastPart as ScreenID);
+  //     }
+  //   };
+
+  //   // Run once on mount to handle the initial load
+  //   syncFromUrl();
+
+  //   window.addEventListener("popstate", syncFromUrl);
+  //   return () => window.removeEventListener("popstate", syncFromUrl);
+  // }, [setScreen]);
+
+  // =====================================================
+  // URL sync (Safe & Centralised)
+  // =====================================================
   useEffect(() => {
     const syncFromUrl = () => {
-      const path = window.location.pathname.replace("/", "").toUpperCase();
-
-      if (path) setScreen(path as ScreenID);
+      // We delegate the logic to our helper function
+      // It handles the /zodiac prefix and fallbacks automatically
+      const targetScreen = pathToScreen(window.location.pathname);
+      setScreen(targetScreen);
     };
+
+    // Sync immediately to handle initial load/refresh
+    syncFromUrl();
 
     window.addEventListener("popstate", syncFromUrl);
     return () => window.removeEventListener("popstate", syncFromUrl);

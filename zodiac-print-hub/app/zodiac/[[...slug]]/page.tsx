@@ -1,4 +1,4 @@
-import { ZodiacShell } from "./core/ZodiacShell";
+import { ZodiacShell } from "@core/ZodiacShell";
 export default function Page() {
   return <ZodiacShell />;
 }
