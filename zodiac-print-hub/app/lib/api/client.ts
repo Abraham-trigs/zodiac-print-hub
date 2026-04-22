@@ -4,17 +4,18 @@ type ApiOptions = RequestInit & {
   query?: Record<string, string | number | undefined>;
 };
 
+// Your Seeded Data for Mocking
+const MOCK_ORG_ID = "cmoa30ire0000o0dwz69fjgah";
+const MOCK_USER_ID = "cmoa30is40001o0dwpfkom18r";
+
 const buildQuery = (query?: ApiOptions["query"]) => {
   if (!query) return "";
-
   const params = new URLSearchParams();
-
   Object.entries(query).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       params.append(key, String(value));
     }
   });
-
   return `?${params.toString()}`;
 };
 
@@ -27,24 +28,20 @@ export const apiClient = async <T = any>(
   url: string,
   options: ApiOptions = {},
 ): Promise<T> => {
-  const token = getClientStorage("token");
-
-  /**
-   * ORG CONTEXT:
-   * Try to get the orgId from storage first.
-   * Fallback to your seeded ID so development doesn't break.
-   */
-  const orgId = getClientStorage("orgId") || "cmo94sps10000dkdwpcls7psc";
+  // 1. Check local storage, but fallback to your Seeded UserId for development
+  const token = getClientStorage("token") || MOCK_USER_ID;
 
   const queryString = buildQuery(options.query);
 
   const res = await fetch(`${url}${queryString}`, {
     ...options,
     headers: {
-      ...(options.headers || {}),
       "Content-Type": "application/json",
-      "x-org-id": orgId, // ✅ This satisfies your Backend's requirement
+      // 2. Inject the mandatory Org ID header required by your server wrapper
+      "x-org-id": MOCK_ORG_ID,
+      // 3. Inject the Authorization token (acting as your UserId)
       ...(token && { Authorization: `Bearer ${token}` }),
+      ...(options.headers || {}),
     },
   });
 

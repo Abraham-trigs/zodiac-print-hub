@@ -1,8 +1,8 @@
-import { JobRepository } from "@/app/zodiac/lib/repositories/job.repository";
-import { StockRepository } from "@/app/zodiac/lib/repositories/stock.repository";
-import { PriceItem } from "@zodiac/types/zodiac.types";
-import { UnitOfWork } from "@/lib/db/unitOfWork";
-import { Outbox } from "@/lib/db/outbox";
+import { JobRepository } from "@lib/repositories/job.repository";
+import { StockRepository } from "@lib/repositories/stock.repository";
+import { PriceItem } from "@types/zodiac.types";
+import { UnitOfWork } from "@lib/db/unitOfWork";
+import { Outbox } from "@lib/db/outbox";
 
 export class JobService {
   static async createJob(params: {
@@ -52,9 +52,6 @@ export class JobService {
         tx,
       );
 
-      // ─────────────────────────────
-      // CLIENT PROJECTION (JOB OWNERSHIP ONLY)
-      // ─────────────────────────────
       await tx.client.update({
         where: { id: clientId },
         data: {
@@ -65,19 +62,16 @@ export class JobService {
             increment: 1,
           },
 
-          // ✅ ADD THESE (important UX + analytics consistency)
           lastStaffId: assignedStaffId ?? undefined,
           mostPrintedServiceId: service.id,
         },
       });
 
-      if (service.stock_ref) {
-        await StockRepository.deduct(
-          orgId,
-          service.stock_ref,
-          units * quantity,
-          tx,
-        );
+      // ✅ FIXED NAME
+      const stockRefId = service.stockRefId;
+
+      if (stockRefId) {
+        await StockRepository.deduct(orgId, stockRefId, units * quantity, tx);
       }
 
       await Outbox.add(tx, {
@@ -120,13 +114,7 @@ export class JobService {
 
   static async confirmPayment(orgId: string, jobId: string, ref: string) {
     return UnitOfWork.run(async (tx) => {
-      const now = new Date().toISOString();
-
       const job = await JobRepository.confirmPayment(orgId, jobId, ref, tx);
-
-      // ─────────────────────────────
-      // REMOVED: client.totalSpend update (handled by PaymentService only)
-      // ─────────────────────────────
 
       await Outbox.add(tx, {
         type: "job.paid",

@@ -173,7 +173,7 @@ export interface PriceItem {
   category: string; // e.g. "Large Format", "Business Cards", "Banners"
   unit: string; // e.g. "sqft", "pcs", "sheets"
   priceGHS: number;
-  stock_ref?: string; // → StockItem.id (optional: not all services consume stock)
+  stockRefId?: string;
   isActive: boolean;
   updatedAt: string;
   notes?: string;

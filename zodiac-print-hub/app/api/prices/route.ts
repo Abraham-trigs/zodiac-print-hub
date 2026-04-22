@@ -3,8 +3,8 @@ import { apiHandler } from "@lib/server/api/apiHandler";
 import { priceService } from "@lib/services/price.service";
 
 const updatePriceSchema = z.object({
-  serviceId: z.string().min(1),
-  price: z.number().positive(),
+  priceListId: z.string().min(1),
+  priceGHS: z.number().positive(),
 });
 
 // GET
@@ -16,7 +16,7 @@ export const GET = apiHandler(async ({ orgId }) => {
 // PATCH
 export const PATCH = apiHandler(
   async ({ orgId, body }) => {
-    return priceService.updatePrice(body.serviceId, body.price, orgId);
+    return priceService.updatePrice(body.priceListId, body.priceGHS, orgId);
   },
   {
     requireOrg: true,

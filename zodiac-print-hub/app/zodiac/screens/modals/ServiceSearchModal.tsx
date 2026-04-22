@@ -1,19 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { shallow } from "zustand/shallow";
 import { useDataStore } from "../../store/core/useDataStore";
 import { useModalStore } from "../../store/useModalStore";
+import { selectPricesArray } from "../../store/selectors/data.selectors";
 
 export function ServiceSearchModal() {
-  const { prices, setDraft } = useDataStore();
+  /* =========================================================
+     STABLE SELECTOR SUBSCRIPTIONS
+  ========================================================= */
+
+  // Use the memoized array selector to ensure a stable reference
+  const prices = useDataStore(selectPricesArray, shallow);
+  const setDraft = useDataStore((s) => s.setDraft);
+
   const { closeModal } = useModalStore();
   const [query, setQuery] = useState("");
 
-  const filtered = prices.filter(
-    (p) =>
-      p.service.toLowerCase().includes(query.toLowerCase()) ||
-      p.category.toLowerCase().includes(query.toLowerCase()),
-  );
+  /* =========================================================
+     MEMOIZED FILTERING (Performance & Stability)
+  ========================================================= */
+
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase().trim();
+    if (!q) return prices;
+
+    return prices.filter(
+      (p) =>
+        p.service.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q),
+    );
+  }, [prices, query]);
 
   const handleSelect = (id: string) => {
     setDraft({ serviceId: id });
@@ -29,6 +47,7 @@ export function ServiceSearchModal() {
             autoFocus
             placeholder="Search Job, Paper or Material..."
             className="w-full py-5 px-8 rounded-full bg-white/10 border border-white/20 text-white text-lg outline-none focus:border-cyan-500 focus:bg-white/15 transition-all shadow-2xl"
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           <span className="absolute right-6 top-1/2 -translate-y-1/2 text-cyan-400 font-black text-xs tracking-widest opacity-40 group-focus-within:opacity-100 transition-opacity">
@@ -52,7 +71,7 @@ export function ServiceSearchModal() {
             className="w-full p-8 bg-cyan-500 text-black font-black uppercase text-xl text-left rounded-[2.5rem] active:scale-95 transition-all flex justify-between items-center shadow-lg shadow-cyan-500/10 group"
           >
             <div className="flex flex-col">
-              <span>{p.service}</span>
+              <span className="truncate max-w-[200px]">{p.service}</span>
               <span className="text-[10px] opacity-40 tracking-widest mt-1">
                 {p.category}
               </span>
