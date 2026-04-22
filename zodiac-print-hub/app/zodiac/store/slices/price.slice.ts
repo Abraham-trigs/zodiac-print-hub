@@ -1,6 +1,6 @@
 import { StateCreator } from "zustand";
 import { PriceItem } from "@types/zodiac.types";
-import { apiClient } from "@lib/api/client";
+import { apiClient } from "@root/lib/api/client";
 export interface PriceSlice {
   prices: PriceItem[];
 

@@ -1,133 +1,60 @@
+@import "tailwindcss";
+
 :root {
-  --zodiac-deep: #00157a;
-  --zodiac-primary: #001ca2;
-  --zodiac-cyan: #00ffff;
-  --zodiac-orange: #ff7f00;
-  --zodiac-bg: #e1dfeb;
-  --zodiac-white: #ffffff;
+  /* 3-AMS-CELMS brand colors — unchanged */
+  --color-background: #f2f2f2; /* Light background */
+  --color-primary: #014987;
+  --color-primary-hover: #236aa9;
+  --color-secondary: #990a58;
+  --color-secondary-hover: #660033;
+  --color-text-primary: #1f2937; /* Tailwind gray-900 */
+  --color-text-secondary: #4b5563; /* Tailwind gray-700 */
 
-  --zodiac-dark-bg: radial-gradient(
-    circle at top right,
-    #1a0033,
-    #00157a,
-    #000000
-  );
-
-  --glass-bg: rgba(255, 255, 255, 0.15);
-  --glass-border: rgba(255, 255, 255, 0.2);
-
-  --topbar-h: 60px;
-  --bottombar-h: 70px; /* Space for the navigation controls */
+  /* Font stack for corporate/business site */
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Fira Code", monospace;
 }
 
-html,
+/* Optional theme mapping (inline theme support) */
+@theme inline {
+  --background: var(--color-background);
+  --foreground: var(--color-text-primary);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+/* Dark mode support — colors unchanged except text for readability */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #f2f2f2;
+    --color-primary: #236aa9;
+    --color-primary-hover: #014987;
+    --color-secondary: #660033;
+    --color-secondary-hover: #990a58;
+    --color-text-primary: #ededed;
+    /* --color-text-secondary: #d1d5db; */
+  }
+}
+
+@keyframes blink {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s step-start infinite;
+}
+
 body {
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  background: #000; /* Prevent white flash */
-}
-
-/* =========================
-   SHELL (The Main Container)
-========================= */
-.zodiac-shell {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--zodiac-dark-bg);
-  color: white;
-}
-
-/* =========================
-   TOPBAR
-========================= */
-.zodiac-topbar {
-  height: var(--topbar-h);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  z-index: 10;
-}
-
-/* =========================
-   MODAL ZONES (The Middle)
-========================= */
-
-/* Shared properties for both zones */
-.zodiac-top,
-.zodiac-down {
-  /* Sync the speed perfectly */
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  contain: size layout;
-  /* This prevents the "snapping" or "jumping" */
-  flex-shrink: 0;
-  width: 100%;
-}
-
-.zodiac-top {
-  padding: 10px 16px;
-}
-
-.zodiac-down {
-  /* REMOVE flex: 1; it causes the snap. 
-     Instead, we let the 'height' from page.tsx control it. */
-  padding: 10px 16px;
-}
-
-/* =========================
-   BOTTOM BAR
-========================= */
-.zodiac-bottombar {
-  height: var(--bottombar-h);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding-bottom: 20px; /* Account for mobile safe areas */
-}
-
-/* =========================
-   MODAL STYLING (The Boxes)
-========================= */
-.modal-box {
-  background: var(--zodiac-primary);
-  border-radius: 20px;
-  height: 100%;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  /* Force hardware acceleration and hide overflows */
-  overflow: hidden;
-  backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
-}
-
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(15px);
-  border-radius: 24px;
-  padding: 20px;
-  border: 1px solid var(--glass-border);
-}
-
-/* Badge Styling */
-.badge {
-  position: absolute;
-  top: -5px;
-  right: -8px;
-  background: var(--zodiac-orange);
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
 }

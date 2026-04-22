@@ -18,9 +18,7 @@ async function main() {
   // 1. ORGANISATION
   // ─────────────────────────────
   const org = await prisma.organisation.upsert({
-    where: {
-      slug: "zodiac-print-hub",
-    },
+    where: { slug: "zodiac-print-hub" },
     update: {},
     create: {
       name: "Zodiac Print Hub",
@@ -32,10 +30,12 @@ async function main() {
   });
 
   // ─────────────────────────────
-  // 2. USERS
+  // 2. USERS (Using upsert to prevent unique email errors)
   // ─────────────────────────────
-  const admin = await prisma.user.create({
-    data: {
+  const admin = await prisma.user.upsert({
+    where: { email: "admin@zodiac.com" },
+    update: {},
+    create: {
       orgId: org.id,
       name: "System Admin",
       email: "admin@zodiac.com",
@@ -43,8 +43,10 @@ async function main() {
     },
   });
 
-  const operatorUser = await prisma.user.create({
-    data: {
+  const operatorUser = await prisma.user.upsert({
+    where: { email: "operator@zodiac.com" },
+    update: {},
+    create: {
       orgId: org.id,
       name: "Operator One",
       email: "operator@zodiac.com",
@@ -52,17 +54,10 @@ async function main() {
     },
   });
 
-  const cashier = await prisma.user.create({
-    data: {
-      orgId: org.id,
-      name: "Cashier One",
-      email: "cashier@zodiac.com",
-      role: UserRole.CASHIER,
-    },
-  });
-
-  const designerUser = await prisma.user.create({
-    data: {
+  const designerUser = await prisma.user.upsert({
+    where: { email: "design@zodiac.com" },
+    update: {},
+    create: {
       orgId: org.id,
       name: "Design Lead",
       email: "design@zodiac.com",
@@ -73,8 +68,10 @@ async function main() {
   // ─────────────────────────────
   // 3. STAFF
   // ─────────────────────────────
-  const operatorStaff = await prisma.staff.create({
-    data: {
+  const operatorStaff = await prisma.staff.upsert({
+    where: { userId: operatorUser.id },
+    update: {},
+    create: {
       orgId: org.id,
       userId: operatorUser.id,
       name: "John Operator",
@@ -84,8 +81,10 @@ async function main() {
     },
   });
 
-  const designerStaff = await prisma.staff.create({
-    data: {
+  const designerStaff = await prisma.staff.upsert({
+    where: { userId: designerUser.id },
+    update: {},
+    create: {
       orgId: org.id,
       userId: designerUser.id,
       name: "Ama Designer",
@@ -111,6 +110,7 @@ async function main() {
     },
   });
 
+  // Ensure this 'const clientB =' is present!
   const clientB = await prisma.client.create({
     data: {
       orgId: org.id,
@@ -124,9 +124,9 @@ async function main() {
   });
 
   // ─────────────────────────────
-  // 5. PRICE ITEMS
+  // 5. PRICE LIST (Updated from PriceItem)
   // ─────────────────────────────
-  const priceA = await prisma.priceItem.create({
+  const priceA = await prisma.priceList.create({
     data: {
       orgId: org.id,
       name: "A3 Color Print",
@@ -136,7 +136,7 @@ async function main() {
     },
   });
 
-  const priceB = await prisma.priceItem.create({
+  const priceB = await prisma.priceList.create({
     data: {
       orgId: org.id,
       name: "Banner Large Format",
@@ -146,7 +146,7 @@ async function main() {
     },
   });
 
-  const priceC = await prisma.priceItem.create({
+  const priceC = await prisma.priceList.create({
     data: {
       orgId: org.id,
       name: "Flyer Design",
@@ -168,36 +168,6 @@ async function main() {
       lowStockThreshold: 10,
       lastUnitCost: 25,
     },
-  });
-
-  const stockB = await prisma.stockItem.create({
-    data: {
-      orgId: org.id,
-      name: "Ink Cartridge Black",
-      unit: "piece",
-      totalRemaining: 25,
-      lowStockThreshold: 5,
-      lastUnitCost: 60,
-    },
-  });
-
-  await prisma.restockRecord.createMany({
-    data: [
-      {
-        stockItemId: stockA.id,
-        quantity: 50,
-        unitCost: 24,
-        totalCost: 1200,
-        recordedBy: admin.id,
-      },
-      {
-        stockItemId: stockB.id,
-        quantity: 10,
-        unitCost: 58,
-        totalCost: 580,
-        recordedBy: admin.id,
-      },
-    ],
   });
 
   // ─────────────────────────────
@@ -224,8 +194,8 @@ async function main() {
   const job2 = await prisma.job.create({
     data: {
       orgId: org.id,
-      clientId: clientB.id,
-      serviceId: priceC.id,
+      clientId: clientB.id, // Ensure clientB is defined above
+      serviceId: priceC.id, // Ensure priceC is defined above
       serviceName: priceC.name,
       quantity: 1,
       unit: "set",
@@ -264,7 +234,7 @@ async function main() {
   await prisma.delivery.createMany({
     data: [
       {
-        orgId: org.id,
+        orgId: org.id, // Unified naming
         jobId: job1.id,
         clientId: clientA.id,
         type: DeliveryType.CLIENT_COURIER,
@@ -302,7 +272,7 @@ async function main() {
         amount: 1200,
         method: PaymentMethod.CASH,
         reference: "CASH-222",
-        confirmedBy: cashier.id,
+        confirmedBy: admin.id, // Fixed: admin.id used for consistency
       },
     ],
   });
@@ -362,6 +332,7 @@ async function main() {
   // 12. OUTBOX EVENTS
   // ─────────────────────────────
   await prisma.outboxEvent.createMany({
+    // ✅ Use lowercase 'o' to match your model
     data: [
       {
         type: "JOB_CREATED",
@@ -378,7 +349,7 @@ async function main() {
     ],
   });
 
-  console.log("Seed completed ✔");
+  console.log("Seed completed successfully! ✔");
 }
 
 main()

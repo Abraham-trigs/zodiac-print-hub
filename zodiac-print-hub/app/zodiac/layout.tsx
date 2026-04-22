@@ -2,7 +2,7 @@
 
 import "./globals.css";
 import { useEffect, useState } from "react";
-import { useDataActions } from "./hooks/store.hooks";
+import { useDataActions } from "@hooks/store.hooks";
 export default function ZodiacLayout({
   children,
 }: {

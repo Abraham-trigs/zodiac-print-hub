@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useDataActions, usePrices } from "@hooks/store.hooks";
+import { useDataActions, usePrices } from "@root/lib/hooks/store.hooks";
 import { DeliveryRecord, DeliveryStatus } from "@types/zodiac.types";
 import { useModalStore } from "@store/useModalStore";
 

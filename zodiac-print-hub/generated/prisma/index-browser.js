@@ -179,7 +179,7 @@ exports.Prisma.ClientScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.PriceItemScalarFieldEnum = {
+exports.Prisma.PriceListScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
   name: 'name',
@@ -416,7 +416,7 @@ exports.Prisma.ModelName = {
   User: 'User',
   Staff: 'Staff',
   Client: 'Client',
-  PriceItem: 'PriceItem',
+  PriceList: 'PriceList',
   StockItem: 'StockItem',
   RestockRecord: 'RestockRecord',
   Job: 'Job',

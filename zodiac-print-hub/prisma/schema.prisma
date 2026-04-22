@@ -2,7 +2,7 @@ generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma" // Required in v7
 }
-
+// organisationId
 datasource db {
   provider = "postgresql"
   // Note: No 'url' here anymore
@@ -24,16 +24,23 @@ model Organisation {
   address      String?
   createdAt    DateTime @default(now())
 
+  // Relations (Using the updated PriceList name)
+  outboxEvents OutboxEvent[] 
   users      User[]
   staff      Staff[]
   clients    Client[]
   jobs       Job[]
   stockItems StockItem[]
-  prices     PriceItem[]
+  prices     PriceList[] 
   deliveries Delivery[]
   b2bPushes  B2BPush[]
   auditLogs  AuditLog[]
+
+  // Performance Indexes
+  @@index([name])
+  @@index([createdAt])
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -46,8 +53,16 @@ model OutboxEvent {
   type      String
   payload   Json
   orgId     String
-  status    String   @default("PENDING") // PENDING | SENT | FAILED
+  
+  // Add this to link it properly
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  status    String   @default("PENDING") 
   createdAt DateTime @default(now())
+
+  // Add this index for performance
+  @@index([orgId])
+  @@index([status])
 }
 
 enum UserRole {
@@ -64,13 +79,19 @@ model User {
   organisation Organisation @relation(fields: [orgId], references: [id])
 
   name      String
-  email     String   @unique
+  email     String   @unique // @unique already creates a high-performance index
   role      UserRole
   avatarUrl String?
   createdAt DateTime @default(now())
 
   staffProfile Staff?
+
+  // INDEXING:
+  @@index([orgId])           // Critical: Ensures users stay within their organization
+  @@index([role])            // Fast lookup for global or org-level permission checks
+  @@index([createdAt])       // Useful for sorting the newest sign-ups
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -96,7 +117,15 @@ model Staff {
   assignedJobs Job[] @relation("StaffJobs")
 
   createdAt DateTime @default(now())
+
+  // INDEXING:
+  @@index([orgId])             // Standard for multi-tenant isolation
+  @@index([name])              // Fast lookup for team lists and dropdowns
+  @@index([isActive])          // Important for filtering out former employees
+  @@index([role])              // Useful for permission checks and role-based filtering
+  @@index([orgId, isActive])   // Compound index for loading the active team list
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -128,6 +157,14 @@ model Client {
   jobs Job[]
 
   createdAt DateTime @default(now())
+
+  // INDEXING:
+  @@index([orgId])               // Essential for multi-tenant isolation
+  @@index([name])                // Fast lookup for searching by Client Name
+  @@index([phone])               // Critical for finding customers via their phone number
+  @@index([email])               // Fast lookup for search or login via email
+  @@index([companyName])         // Useful for B2B search
+  @@index([orgId, name])         // Compound index for fast alphabetical lists per shop
 }
 
 //
@@ -162,7 +199,7 @@ enum ServiceUnit {
   PER_YARD
 }
 
-model PriceItem {
+model PriceList {
   id           String       @id @default(cuid())
   orgId        String
   organisation Organisation @relation(fields: [orgId], references: [id])
@@ -175,7 +212,15 @@ model PriceItem {
 
   isActive  Boolean  @default(true)
   updatedAt DateTime @updatedAt
+
+  // INDEXING:
+  @@index([orgId])               // Critical for multi-tenant isolation
+  @@index([category])            // Fast filtering for UI tabs (e.g., "Large Format", "Stickers")
+  @@index([isActive])            // Helps exclude hidden/old prices from your main list
+  @@index([stockRefId])          // Important for linking prices to physical inventory items
+  @@index([orgId, isActive])     // Compound index: perfect for your list() service function
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -196,7 +241,14 @@ model StockItem {
   lastRestockedAt   DateTime?
 
   createdAt DateTime @default(now())
+
+  // INDEXING:
+  @@index([orgId])               // Essential for multi-tenant isolation
+  @@index([name])                // Fast lookup when searching/filtering items by name
+  @@index([totalRemaining])      // Critical for "Low Stock" reports and dashboard alerts
+  @@index([lastRestockedAt])     // Useful for auditing old or stagnant inventory
 }
+
 
 model RestockRecord {
   id          String   @id @default(cuid())
@@ -206,7 +258,13 @@ model RestockRecord {
   totalCost   Float
   recordedBy  String
   date        DateTime @default(now())
+
+  // INDEXING:
+  @@index([stockItemId])    // Critical for viewing the restock history of a specific item
+  @@index([date(sort: Desc)]) // Optimized for "Recent Restocks" logs (newest first)
+  @@index([recordedBy])     // Useful for auditing who logged which inventory update
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -270,7 +328,17 @@ model Job {
   updatedAt   DateTime   @updatedAt
   completedAt DateTime?
   deliveries  Delivery[]
+
+  // INDEXING:
+  @@index([orgId])               // Standard isolation
+  @@index([clientId])            // Fast lookup for "all jobs for this customer"
+  @@index([status])              // Critical for "Production Board" views (Pending vs Printing)
+  @@index([paymentStatus])       // Essential for "Unpaid Jobs" financial reports
+  @@index([assignedStaffId])     // Useful for "My Tasks" view for staff members
+  @@index([createdAt(sort: Desc)]) // Optimized for the main Dashboard (newest first)
+  @@index([orgId, status])       // Compound index for lightning-fast Kanban boards
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -301,7 +369,7 @@ model Delivery {
   jobId String
   job   Job    @relation(fields: [jobId], references: [id])
 
-  clientId String
+  clientId String // Should likely have a relation to the Client model too
 
   type   DeliveryType
   status DeliveryStatus @default(PENDING)
@@ -315,7 +383,15 @@ model Delivery {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // INDEXING:
+  @@index([orgId])            // Standard multi-tenant isolation
+  @@index([jobId])            // Fast lookup for a specific Job's delivery status
+  @@index([status])           // Critical for "Pending" vs "Delivered" dispatch views
+  @@index([scheduledDate])    // Optimized for the "Deliveries for Today" calendar view
+  @@index([clientId])         // Useful for viewing a specific client's delivery history
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -344,7 +420,15 @@ model Payment {
 
   confirmedBy String?
   confirmedAt DateTime @default(now())
+
+  // INDEXING:
+  @@index([orgId])             // Essential for multi-tenant data isolation
+  @@index([jobId])             // Fast lookup for all payments related to a specific Job
+  @@index([method])            // Useful for financial reporting (e.g., total Mobile Money vs Cash)
+  @@index([confirmedAt])       // Optimized for date-range reports (e.g., "Payments this week")
+  @@index([reference])         // Allows instant lookup when searching for a transaction ID/Ref
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -379,7 +463,14 @@ model B2BPush {
   updatedAt      DateTime      @updatedAt
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
   organisationId String?
+
+  // INDEXING:
+  @@index([orgId])             // Essential for multi-tenant filtering
+  @@index([status])            // Fast lookup for "Pending" or "Completed" pushes
+  @@index([originalJobId])     // Critical for linking back to the source Job
+  @@index([deadline])          // Useful for sorting by urgency
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -402,4 +493,10 @@ model AuditLog {
   timestamp      DateTime      @default(now())
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
   organisationId String?
+
+  // INDEXING:
+  @@index([orgId])                   // Fast filtering by Organisation
+  @@index([entityId, entityType])    // Fast lookup for a specific item's history (e.g., all logs for Job X)
+  @@index([timestamp(sort: Desc)])   // Optimized for "Recent Activity" feeds
 }
+

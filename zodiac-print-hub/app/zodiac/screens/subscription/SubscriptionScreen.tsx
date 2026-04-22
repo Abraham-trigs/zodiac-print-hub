@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useZodiac } from "../../store/zodiac.store";
-import { useProcess } from "../../hooks/useProcess";
+import { useProcess } from "@root/lib/hooks/useProcess";
 import { SUBSCRIPTION_STEPS } from "../../process/subscription/steps";
 import { SubscriptionData } from "../../process/subscription/types";
 

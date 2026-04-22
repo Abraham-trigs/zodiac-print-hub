@@ -1,7 +1,7 @@
 "use client";
 
 import { useShallow } from "zustand/react/shallow";
-import { useDataStore } from "../store/core/useDataStore";
+import { useDataStore } from "@store/core/useDataStore";
 import {
   useSelectedService,
   useLiveEstimate,

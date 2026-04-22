@@ -1,36 +1,38 @@
-import { prisma } from "@/lib/prisma";
-import { UnitOfWork } from "@/lib/db/unitOfWork";
-import { Outbox } from "@/lib/db/outbox";
+import { prisma } from "../../lib/prisma-client";
+import { UnitOfWork } from "@lib/db/unitOfWork";
+import { Outbox } from "@lib/db/outbox";
 
 export const priceService = {
   async list(orgId: string) {
-    return prisma.priceList.findFirst({
+    // 1. Fixed 'companyId' -> 'orgId'
+    // 2. Removed 'include' because PriceList is now the flat table
+    const items = await prisma.priceList.findMany({
       where: {
-        companyId: orgId,
+        orgId: orgId,
         isActive: true,
       },
-      include: {
-        items: true,
-      },
     });
+
+    // We wrap it in an object so the frontend still gets a '.items' array
+    return { items };
   },
 
   async updatePrice(serviceId: string, price: number, orgId: string) {
     return UnitOfWork.run(async (tx) => {
-      const existing = await tx.priceItem.findFirst({
+      // 3. Changed 'priceItem' to 'priceList'
+      // 4. Changed 'unitPrice' to 'priceGHS'
+      const existing = await tx.priceList.findFirst({
         where: {
           id: serviceId,
-          priceList: {
-            companyId: orgId,
-          },
+          orgId: orgId,
         },
       });
 
       if (!existing) throw new Error("Price item not found");
 
-      const updated = await tx.priceItem.update({
+      const updated = await tx.priceList.update({
         where: { id: serviceId },
-        data: { unitPrice: price },
+        data: { priceGHS: price },
       });
 
       await Outbox.add(tx, {

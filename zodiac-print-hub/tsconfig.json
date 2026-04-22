@@ -21,18 +21,23 @@
       "@root/*": ["./app/*"],
 
       "@api/*": ["app/api/*"],
-      "@components/*": ["./app/zodiac/components/*"],
-      "@core/*": ["./app/zodiac/core/*"],
-      "@hooks/*": ["./app/zodiac/hooks/*"],
-      "@lib/*": ["./app/zodiac/lib/*"],
-      "@store/*": ["./app/zodiac/store/*"],
-      "@screens/*": ["./app/zodiac/screens/*"],
-      "@ui/*": ["./app/zodiac/ui/*"],
-      "@view/*": ["./app/zodiac/view/*"],
-      "@types/*": ["./app/zodiac/types/*"],
-      "@process/*": ["./app/zodiac/process/*"],
-      "@schema/*": ["./app/zodiac/schema/*"],
-      "@prisma/*": ["./app/zodiac/prisma/*"]
+
+      "@components/*": ["app/zodiac/components/*"],
+      "@core/*": ["app/zodiac/core/*"],
+      "@screens/*": ["app/zodiac/screens/*"],
+      "@store/*": ["app/zodiac/store/*"],
+      "@ui/*": ["app/zodiac/ui/*"],
+      "@view/*": ["app/zodiac/view/*"],
+      "@types/*": ["app/zodiac/types/*"],
+      "@process/*": ["app/zodiac/process/*"],
+      "@schema/*": ["app/zodiac/schema/*"],
+
+      "@lib/*": ["app/lib/*"],
+      "@hooks/*": ["app/lib/hooks/*"],
+
+      "@services/*": ["app/lib/services/*"],
+
+      "@prisma/*": ["prisma/*"]
     }
   },
   "include": [

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { useProcessStore } from "../store/process.store";
+import { useProcessStore } from "@store/process.store";
 
 export function useProcess(
   processId: string,
