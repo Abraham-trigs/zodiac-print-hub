@@ -1,12 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDataStore } from "../../store/core/useDataStore";
 import { useModalStore } from "../../store/useModalStore";
+
 import { WastePromptModal } from "./WastePromptModal";
 import { DeliveryHandlingModal } from "./DeliveryHandlingModal";
 import { PaymentVerificationModal } from "./PaymentVerificationModal";
-import { DeliveryRecord } from "../../types/zodiac.types";
+
+import type { DeliveryRecord } from "../../types/zodiac.types";
+
+/* =========================================================
+   SELECTORS ONLY (no store shape leakage)
+========================================================= */
+
+import {
+  selectJobById,
+  selectAllStaff,
+  selectPricesMap,
+  selectAllDeliveries,
+} from "@store/selectors/data.selectors";
 
 export function JobDetailsModal({
   jobId,
@@ -15,39 +28,39 @@ export function JobDetailsModal({
   jobId: string;
   onClose: () => void;
 }) {
-  const {
-    jobs,
-    prices,
-    deliveries,
-    updateJobStatus,
-    startJob,
-    recordWastage,
-    addDelivery,
-    assignStaff, // Ensure this exists in your store to update job.assignedStaffId
-  } = useDataStore();
   const { swapModal } = useModalStore();
 
-  const job = jobs.find((j) => j.id === jobId);
-  const service = prices.find((p) => p.id === job?.serviceId);
-  const existingDelivery = deliveries.find((d) => d.jobId === jobId);
+  /* -------------------------
+     SELECTED DATA (PURE)
+  --------------------------*/
+  const job = useDataStore((s) => selectJobById(jobId)(s));
+  const staffList = useDataStore(selectAllStaff);
+  const prices = useDataStore(selectPricesMap);
+  const deliveries = useDataStore(selectAllDeliveries);
 
-  // Mock Staff List for assignment (Feature 3.2)
-  const staffList = [
-    { id: "STF-01", name: "Kojo" },
-    { id: "STF-02", name: "Ama" },
-  ];
+  const service = job ? prices[job.serviceId] : undefined;
 
+  const existingDelivery = job
+    ? deliveries.find((d) => d.jobId === job.id)
+    : undefined;
+
+  /* -------------------------
+     TIMER STATE
+  --------------------------*/
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (job?.status === "IN_PROGRESS" && job.startTime) {
-      interval = setInterval(() => {
-        setElapsed(Math.floor((Date.now() - job.startTime!) / 1000));
-      }, 1000);
-    }
+    if (job?.status !== "IN_PROGRESS") return;
+
+    const startTime = (job as any)?.startTime;
+    if (!startTime) return;
+
+    const interval = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, [job?.status, job?.startTime]);
+  }, [job?.status, job]);
 
   if (!job) return null;
 
@@ -55,17 +68,25 @@ export function JobDetailsModal({
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hrs > 0 ? hrs + "h " : ""}${mins}m ${secs.toString().padStart(2, "0")}s`;
+
+    return `${hrs > 0 ? `${hrs}h ` : ""}${mins}m ${secs
+      .toString()
+      .padStart(2, "0")}s`;
   };
 
+  /* -------------------------
+     ACTIONS
+  --------------------------*/
   const triggerWasteAudit = () => {
     swapModal("GLOBAL", () => (
       <WastePromptModal
         job={{ ...job, unit: service?.unit }}
         onConfirm={(waste) => {
-          recordWastage(job.id, waste);
-          if (job.status === "IN_PROGRESS")
-            updateJobStatus(job.id, "SUCCESSFUL");
+          useDataStore.getState().recordWastage(job.id, waste);
+
+          if (job.status === "IN_PROGRESS") {
+            useDataStore.getState().updateJobStatus(job.id, "SUCCESSFUL");
+          }
         }}
       />
     ));
@@ -76,77 +97,71 @@ export function JobDetailsModal({
       swapModal("GLOBAL", () => (
         <DeliveryHandlingModal delivery={existingDelivery} />
       ));
-    } else {
-      const newDelivery: DeliveryRecord = {
-        id: `DLV-${job.id}`,
-        jobId: job.id,
-        type: "PHYSICAL_PICKUP",
-        status: "PENDING_DATE",
-        handledBy: "PRINTER",
-      };
-      addDelivery(newDelivery);
-      swapModal("GLOBAL", () => (
-        <DeliveryHandlingModal delivery={newDelivery} />
-      ));
+      return;
     }
+
+    const newDelivery: DeliveryRecord = {
+      id: `DLV-${job.id}`,
+      orgId: job.orgId,
+      jobId: job.id,
+      clientId: job.clientId,
+      type: "PHYSICAL_PICKUP",
+      status: "PENDING",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    useDataStore.getState().addDelivery(newDelivery);
+
+    swapModal("GLOBAL", () => <DeliveryHandlingModal delivery={newDelivery} />);
   };
 
+  /* -------------------------
+     UI
+  --------------------------*/
   return (
-    <div className="glass-card p-6 w-full max-w-md border border-white/10 flex flex-col gap-6 animate-in slide-in-from-bottom-4 shadow-2xl">
+    <div className="glass-card p-6 w-full max-w-md border border-white/10 flex flex-col gap-6">
+      {/* HEADER */}
       <header className="flex justify-between items-start">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] bg-cyan-400/10 text-cyan-400 px-2 py-0.5 rounded font-black tracking-tighter">
-              #{job.id}
-            </span>
-            <span
-              className={`text-[8px] px-2 py-0.5 rounded-full font-black ${job.isPaid ? "bg-green-500 text-black" : "bg-red-500/20 text-red-500"}`}
-            >
-              {job.isPaid ? "PAID" : "UNPAID"}
-            </span>
-          </div>
-          <h2 className="text-xl font-bold text-white leading-tight">
-            {job.clientName}
-          </h2>
-          <span className="text-[10px] text-cyan-400 uppercase font-black tracking-[0.2em]">
-            {service?.service}
+          <span className="text-[10px] bg-cyan-400/10 text-cyan-400 px-2 py-0.5 rounded">
+            #{job.id}
+          </span>
+
+          <h2 className="text-xl font-bold">{job.clientSnapshot?.name}</h2>
+
+          <span className="text-[10px] text-cyan-400 uppercase">
+            {service?.name}
           </span>
         </div>
-        <button
-          onClick={onClose}
-          className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-xs opacity-40 hover:opacity-100 transition-all"
-        >
-          ✕
-        </button>
+
+        <button onClick={onClose}>✕</button>
       </header>
 
-      {/* Production Clock */}
-      <div className="relative overflow-hidden group py-10 bg-gradient-to-b from-white/5 to-transparent rounded-3xl border border-white/5 flex flex-col items-center">
-        <span className="text-[10px] uppercase opacity-30 tracking-[0.3em] mb-2 font-black">
-          {job.status === "IN_PROGRESS"
-            ? "Active Production"
-            : "Total Time Logged"}
-        </span>
-        <span
-          className={`text-5xl font-mono font-black tracking-tighter ${job.status === "IN_PROGRESS" ? "text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]" : "text-white/20"}`}
-        >
-          {formatTime(elapsed)}
-        </span>
+      {/* TIMER */}
+      <div className="py-10 text-center">
+        <div className="text-xs uppercase opacity-40">
+          {job.status === "IN_PROGRESS" ? "Active Production" : "Total Time"}
+        </div>
+
+        <div className="text-4xl font-mono">{formatTime(elapsed)}</div>
       </div>
 
-      {/* ✅ FEATURE 3.2: Staff Assignment Section */}
-      <div className="flex flex-col gap-2 p-4 bg-white/5 rounded-2xl border border-white/5">
-        <label className="text-[10px] uppercase opacity-40 font-black tracking-widest">
-          Assigned Personnel
+      {/* STAFF */}
+      <div className="p-4 bg-white/5 rounded-2xl">
+        <label className="text-[10px] uppercase opacity-40">
+          Assigned Staff
         </label>
+
         <select
           value={job.assignedStaffId || ""}
-          onChange={(e) => assignStaff(job.id, e.target.value)}
-          className="bg-transparent text-sm font-bold text-cyan-400 outline-none"
+          onChange={(e) =>
+            useDataStore.getState().assignStaff(job.id, e.target.value)
+          }
+          className="w-full bg-transparent text-cyan-400"
         >
-          <option value="" disabled>
-            Select Staff Member
-          </option>
+          <option value="">Select</option>
+
           {staffList.map((s) => (
             <option key={s.id} value={s.id}>
               {s.name}
@@ -155,43 +170,21 @@ export function JobDetailsModal({
         </select>
       </div>
 
+      {/* STATS */}
       <div className="grid grid-cols-3 gap-2">
-        {[
-          { label: "Qty", val: job.quantity, unit: service?.unit },
-          {
-            label: "Size",
-            val: job.dimensions
-              ? `${job.dimensions.w}x${job.dimensions.h}`
-              : "N/A",
-            unit: job.dimensions ? "ft" : "",
-          },
-          {
-            label: "Waste",
-            val: job.materialWastage || 0,
-            unit: service?.unit,
-            highlight: job.materialWastage > 0,
-          },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="bg-white/5 p-3 rounded-2xl border border-white/5 flex flex-col items-center"
-          >
-            <span className="text-[8px] opacity-30 uppercase font-bold">
-              {stat.label}
-            </span>
-            <span
-              className={`text-xs font-black ${stat.highlight ? "text-orange-400" : "text-white"}`}
-            >
-              {stat.val}{" "}
-              <span className="text-[8px] opacity-40 font-normal">
-                {stat.unit}
-              </span>
-            </span>
-          </div>
-        ))}
+        <div className="p-3 bg-white/5 rounded">Qty {job.quantity}</div>
+
+        <div className="p-3 bg-white/5 rounded">
+          Size {job.width && job.height ? `${job.width}x${job.height}` : "N/A"}
+        </div>
+
+        <div className="p-3 bg-white/5 rounded">
+          Waste {job.materialWastage || 0}
+        </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+      {/* ACTIONS */}
+      <div className="flex flex-col gap-2">
         {!job.isPaid && (
           <button
             onClick={() =>
@@ -199,60 +192,35 @@ export function JobDetailsModal({
                 <PaymentVerificationModal jobId={job.id} />
               ))
             }
-            className="w-full py-3 border border-green-500/30 text-green-500 text-[10px] font-bold rounded-xl hover:bg-green-500/5 transition-all"
           >
-            Verify Payment Reference
+            Verify Payment
           </button>
         )}
 
         {job.status === "PENDING" && (
-          <button
-            onClick={() => startJob(job.id)}
-            className="w-full py-4 bg-cyan-500 text-black font-black rounded-2xl uppercase tracking-widest active:scale-95 transition-all shadow-lg shadow-cyan-500/20"
-          >
+          <button onClick={() => useDataStore.getState().startJob(job.id)}>
             Start Production
           </button>
         )}
 
         {job.status === "IN_PROGRESS" && (
-          <div className="grid grid-cols-1 gap-2">
+          <>
+            <button onClick={triggerWasteAudit}>Mark Successful</button>
+
             <button
-              onClick={triggerWasteAudit}
-              className="w-full py-4 bg-orange-500 text-white font-black rounded-2xl uppercase shadow-lg shadow-orange-500/20 active:scale-95 transition-all"
+              onClick={() =>
+                useDataStore.getState().updateJobStatus(job.id, "PAUSED")
+              }
             >
-              Mark Successful
+              Pause
             </button>
-            <button
-              onClick={() => updateJobStatus(job.id, "PAUSED")}
-              className="w-full py-3 bg-white/5 text-white/40 text-[10px] font-bold rounded-xl uppercase tracking-widest hover:bg-white/10"
-            >
-              Pause Production
-            </button>
-          </div>
+          </>
         )}
 
         {job.status === "SUCCESSFUL" && (
-          <div className="flex flex-col gap-2">
-            <div className="text-center py-4 bg-green-500/10 border border-green-500/20 rounded-2xl flex items-center justify-center gap-2">
-              <span className="text-green-500 font-black uppercase text-[10px] tracking-widest">
-                ✔ Production Complete
-              </span>
-            </div>
-            <button
-              onClick={handleFulfillment}
-              className="w-full py-4 bg-white text-black font-black rounded-2xl uppercase text-[10px] tracking-widest shadow-xl active:scale-95 transition-all"
-            >
-              {existingDelivery
-                ? "Manage Delivery / Pickup"
-                : "Arrange Fulfillment"}
-            </button>
-            <button
-              onClick={triggerWasteAudit}
-              className="w-full py-3 border border-orange-500/20 text-orange-400/60 text-[9px] uppercase font-bold rounded-xl"
-            >
-              Update Waste Record
-            </button>
-          </div>
+          <button onClick={handleFulfillment}>
+            {existingDelivery ? "Manage Delivery" : "Arrange Fulfillment"}
+          </button>
         )}
       </div>
     </div>

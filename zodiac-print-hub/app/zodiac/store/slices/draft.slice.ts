@@ -13,7 +13,7 @@ export interface DraftSlice {
     deliveryType: DeliveryType;
   };
 
-  prices: PriceItem[]; // required for calculation consistency
+  prices: Record<string, PriceItem>;
 
   setDraft: (patch: Partial<DraftSlice["draft"]>) => void;
   resetDraft: () => void;
@@ -34,9 +34,18 @@ export const createDraftSlice: StateCreator<DraftSlice> = (set, get) => ({
     deliveryType: "PHYSICAL_PICKUP",
   },
 
-  prices: [],
+  prices: {},
 
-  setPrices: (prices) => set({ prices }),
+  setPrices: (prices) =>
+    set(() => ({
+      prices: prices.reduce(
+        (acc, p) => {
+          acc[p.id] = p;
+          return acc;
+        },
+        {} as Record<string, PriceItem>,
+      ),
+    })),
 
   setDraft: (patch) =>
     set((state) => ({
@@ -59,14 +68,10 @@ export const createDraftSlice: StateCreator<DraftSlice> = (set, get) => ({
   calculateLiveEstimate: () => {
     const state = get();
 
-    const selectedService = state.prices.find(
-      (p) => p.id === state.draft.serviceId,
-    );
-
+    const selectedService = state.prices[state.draft.serviceId];
     if (!selectedService) return 0;
 
     const base = selectedService.priceGHS;
-
     const quantity = state.draft.quantity || 1;
 
     const isAreaBased =

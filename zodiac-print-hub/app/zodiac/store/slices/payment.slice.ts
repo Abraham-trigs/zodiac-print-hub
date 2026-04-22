@@ -1,27 +1,13 @@
 import { StateCreator } from "zustand";
-import type {
-  PaymentRecord,
-  PaymentStatus,
-  PaymentRecordStatus,
-} from "@zodiac/types/zodiac.types";
+import type { PaymentRecord, PaymentRecordStatus } from "@/types/zodiac.types";
 
 export interface PaymentSlice {
-  // ─────────────────────────────
-  // DATA
-  // ─────────────────────────────
   payments: Record<string, PaymentRecord[]>;
   selectedPaymentId?: string;
 
-  // ─────────────────────────────
-  // UI STATE
-  // ─────────────────────────────
   isLoading: boolean;
   isSubmitting: boolean;
   error?: string | null;
-
-  // ─────────────────────────────
-  // ACTIONS
-  // ─────────────────────────────
 
   setPayments: (jobId: string, payments: PaymentRecord[]) => void;
 
@@ -40,20 +26,12 @@ export interface PaymentSlice {
   clearJobPayments: (jobId: string) => void;
 
   setLoading: (value: boolean) => void;
-
   setSubmitting: (value: boolean) => void;
-
   setError: (error?: string | null) => void;
-
-  // ─────────────────────────────
-  // DERIVED
-  // ─────────────────────────────
 
   getJobPayments: (jobId: string) => PaymentRecord[];
 
   getTotalPaid: (jobId: string) => number;
-
-  getPaymentStatus: (jobId: string, totalDue: number) => PaymentStatus;
 }
 
 export const createPaymentSlice: StateCreator<PaymentSlice> = (set, get) => ({
@@ -63,10 +41,6 @@ export const createPaymentSlice: StateCreator<PaymentSlice> = (set, get) => ({
   isLoading: false,
   isSubmitting: false,
   error: null,
-
-  // ─────────────────────────────
-  // ACTIONS
-  // ─────────────────────────────
 
   setPayments: (jobId, payments) =>
     set((state) => ({
@@ -94,10 +68,7 @@ export const createPaymentSlice: StateCreator<PaymentSlice> = (set, get) => ({
       },
     })),
 
-  selectPayment: (paymentId) =>
-    set({
-      selectedPaymentId: paymentId,
-    }),
+  selectPayment: (paymentId) => set({ selectedPaymentId: paymentId }),
 
   removePayment: (jobId, paymentId) =>
     set((state) => ({
@@ -111,50 +82,17 @@ export const createPaymentSlice: StateCreator<PaymentSlice> = (set, get) => ({
 
   clearJobPayments: (jobId) =>
     set((state) => {
-      const updated = { ...state.payments };
-      delete updated[jobId];
-
-      return {
-        payments: updated,
-      };
+      const copy = { ...state.payments };
+      delete copy[jobId];
+      return { payments: copy };
     }),
 
-  setLoading: (value) =>
-    set({
-      isLoading: value,
-    }),
+  setLoading: (value) => set({ isLoading: value }),
+  setSubmitting: (value) => set({ isSubmitting: value }),
+  setError: (error) => set({ error }),
 
-  setSubmitting: (value) =>
-    set({
-      isSubmitting: value,
-    }),
+  getJobPayments: (jobId) => get().payments[jobId] || [],
 
-  setError: (error) =>
-    set({
-      error,
-    }),
-
-  // ─────────────────────────────
-  // DERIVED
-  // ─────────────────────────────
-
-  getJobPayments: (jobId) => {
-    return get().payments[jobId] || [];
-  },
-
-  getTotalPaid: (jobId) => {
-    return (get().payments[jobId] || []).reduce((sum, p) => sum + p.amount, 0);
-  },
-
-  getPaymentStatus: (jobId, totalDue) => {
-    const totalPaid = (get().payments[jobId] || []).reduce(
-      (sum, p) => sum + p.amount,
-      0,
-    );
-
-    if (totalPaid <= 0) return "UNPAID";
-    if (totalPaid < totalDue) return "PARTIAL";
-
-    return "PAID";
-  },
+  getTotalPaid: (jobId) =>
+    (get().payments[jobId] || []).reduce((sum, p) => sum + p.amount, 0),
 });

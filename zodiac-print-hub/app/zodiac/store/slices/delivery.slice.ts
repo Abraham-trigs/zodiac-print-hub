@@ -3,7 +3,6 @@ import type { DeliveryRecord } from "@/types/zodiac.types";
 
 export interface DeliverySlice {
   deliveries: Record<string, DeliveryRecord>;
-  deliveryList: DeliveryRecord[];
   selectedDeliveryId?: string;
 
   isLoading: boolean;
@@ -20,13 +19,10 @@ export interface DeliverySlice {
   setLoading: (value: boolean) => void;
   setSubmitting: (value: boolean) => void;
   setError: (error?: string | null) => void;
-
-  getDeliveryById: (id: string) => DeliveryRecord | undefined;
 }
 
 export const createDeliverySlice: StateCreator<DeliverySlice> = (set, get) => ({
   deliveries: {},
-  deliveryList: [],
   selectedDeliveryId: undefined,
 
   isLoading: false,
@@ -35,8 +31,13 @@ export const createDeliverySlice: StateCreator<DeliverySlice> = (set, get) => ({
 
   setDeliveries: (deliveries) =>
     set(() => ({
-      deliveries: Object.fromEntries(deliveries.map((d) => [d.id, d])),
-      deliveryList: deliveries,
+      deliveries: deliveries.reduce(
+        (acc, d) => {
+          acc[d.id] = d;
+          return acc;
+        },
+        {} as Record<string, DeliveryRecord>,
+      ),
     })),
 
   addDelivery: (delivery) =>
@@ -45,7 +46,6 @@ export const createDeliverySlice: StateCreator<DeliverySlice> = (set, get) => ({
         ...state.deliveries,
         [delivery.id]: delivery,
       },
-      deliveryList: [delivery, ...state.deliveryList],
     })),
 
   updateDelivery: (id, data) =>
@@ -53,16 +53,11 @@ export const createDeliverySlice: StateCreator<DeliverySlice> = (set, get) => ({
       const existing = state.deliveries[id];
       if (!existing) return state;
 
-      const updated = { ...existing, ...data };
-
       return {
         deliveries: {
           ...state.deliveries,
-          [id]: updated,
+          [id]: { ...existing, ...data },
         },
-        deliveryList: state.deliveryList.map((d) =>
-          d.id === id ? updated : d,
-        ),
       };
     }),
 
@@ -72,7 +67,6 @@ export const createDeliverySlice: StateCreator<DeliverySlice> = (set, get) => ({
 
       return {
         deliveries: rest,
-        deliveryList: state.deliveryList.filter((d) => d.id !== id),
         selectedDeliveryId:
           state.selectedDeliveryId === id
             ? undefined
@@ -85,6 +79,4 @@ export const createDeliverySlice: StateCreator<DeliverySlice> = (set, get) => ({
   setLoading: (value) => set({ isLoading: value }),
   setSubmitting: (value) => set({ isSubmitting: value }),
   setError: (error) => set({ error }),
-
-  getDeliveryById: (id) => get().deliveries[id],
 });
