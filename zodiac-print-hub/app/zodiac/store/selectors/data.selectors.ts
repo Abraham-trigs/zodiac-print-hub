@@ -162,8 +162,13 @@ export const selectActiveDeliveries = (s: State) =>
 ========================================================= */
 
 export const selectLiveEstimate = (s: State) => {
-  const draft = s.draft.draft;
-  const price = selectPricesMap(s)[draft.serviceId];
+  // Add optional chaining here to handle cases where draft might be null
+  const draft = s.draft?.draft;
+
+  if (!draft || !draft.serviceId) return 0;
+
+  const prices = selectPricesMap(s);
+  const price = prices[draft.serviceId];
 
   if (!price) return 0;
 

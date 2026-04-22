@@ -2,37 +2,54 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { shallow } from "zustand/shallow";
+import { useDataStore } from "@store/core/useDataStore";
 
 import {
-  useDraft,
-  usePrices,
-  useSelectedService,
-  useLiveEstimate,
+  selectPricesMap,
+  selectLiveEstimate,
 } from "@store/selectors/data.selectors";
 
 export function JobDisplayModal() {
-  const draft = useDraft();
-  const prices = usePrices();
+  /* =========================================================
+     STABLE SELECTORS (HYDRATION-SAFE)
+  ========================================================= */
 
-  const selectedService = useSelectedService();
-  const total = useLiveEstimate();
+  // Added optional chaining to prevent crash if draft is null
+  const draft = useDataStore((s) => s?.draft?.draft, shallow);
+
+  // Use the memoized price map
+  const prices = useDataStore(selectPricesMap, shallow);
+
+  // Compute total estimate safely
+  const total = useDataStore(selectLiveEstimate) ?? 0;
+
+  // Safe lookup: draft might be undefined during initial boot
+  const selectedService = draft?.serviceId
+    ? prices[draft.serviceId]
+    : undefined;
 
   const [sliderIndex, setSliderIndex] = useState<number | null>(null);
 
+  /* =========================================================
+     UI DERIVATIONS (NULL-SAFE)
+  ========================================================= */
   const allLines = [
     { label: "Job type:", value: selectedService?.category || "---" },
     { label: "Material:", value: selectedService?.service || "---" },
-    { label: "Client:", value: draft.clientName || "- UNNAMED -" },
+    { label: "Client:", value: draft?.clientName || "- UNNAMED -" },
     {
       label: "Size:",
-      value: draft.width > 0 ? `${draft.width}x${draft.height}ft` : "N/A",
+      value:
+        draft?.width && draft?.width > 0
+          ? `${draft.width}x${draft.height}ft`
+          : "N/A",
     },
-    { label: "Quantity:", value: draft.quantity || "0" },
-    { label: "Destination:", value: draft.deliveryType || "- PENDING -" },
+    { label: "Quantity:", value: draft?.quantity || "0" },
+    { label: "Destination:", value: draft?.deliveryType || "- PENDING -" },
   ];
 
   const ITEMS_PER_PAGE = 4;
-
   const page = sliderIndex !== null && sliderIndex >= 2 ? 1 : 0;
 
   const visibleLines = allLines.slice(
@@ -51,7 +68,6 @@ export function JobDisplayModal() {
   const prev = () => {
     if (sliderIndex === null) return setSliderIndex(0);
     if (sliderIndex > 0) return setSliderIndex((s) => (s as number) - 1);
-
     setSliderIndex(null);
   };
 
@@ -65,7 +81,7 @@ export function JobDisplayModal() {
       {/* Header */}
       <div className="w-full flex justify-between items-center mb-6">
         <span className="text-[10px] text-cyan-400 font-black tracking-widest bg-cyan-400/10 px-2 py-1 rounded">
-          REF: {draft.id || "---"}
+          REF: {draft?.id || "---"}
         </span>
 
         <span className="text-[9px] text-white/20 uppercase font-black tracking-tighter">
@@ -81,8 +97,8 @@ export function JobDisplayModal() {
               key={i}
               className="flex justify-between items-end gap-4 border-b border-black/5 pb-1"
             >
-              <span>{line.label}</span>
-              <span className="font-black text-black text-right truncate">
+              <span className="opacity-60">{line.label}</span>
+              <span className="font-black text-black text-right truncate max-w-[140px]">
                 {line.value}
               </span>
             </div>
@@ -94,7 +110,7 @@ export function JobDisplayModal() {
           <button
             onClick={prev}
             disabled={!canGoPrev}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 disabled:opacity-10"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 disabled:opacity-10 active:scale-90 transition-transform"
           >
             ←
           </button>
@@ -126,7 +142,7 @@ export function JobDisplayModal() {
           <button
             onClick={next}
             disabled={!canGoNext}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 disabled:opacity-10"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 disabled:opacity-10 active:scale-90 transition-transform"
           >
             →
           </button>
@@ -136,7 +152,7 @@ export function JobDisplayModal() {
       {/* Total */}
       <div className="mt-8">
         <span className="text-white font-black text-4xl">
-          Gh₵ {total.toFixed(2)}
+          Gh₵ {(total || 0).toFixed(2)}
         </span>
       </div>
     </div>
