@@ -11,21 +11,28 @@ export interface PriceSlice {
   };
 
   setPrices: (data: PriceItem[]) => void;
-  updatePrice: (id: string, priceGHS: number) => void;
+
+  updatePrice: (id: string, priceGHS: number, orgId: string) => Promise<void>;
+
   loadPrices: (orgId: string) => Promise<void>;
 }
 
 export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
-  // ✅ INITIAL STATE (The Folder)
+  // =========================================================
+  // INITIAL STATE
+  // =========================================================
   priceState: {
     prices: {},
     isLoading: false,
   },
 
-  // ✅ ACTIONS
+  // =========================================================
+  // SET PRICES (HYDRATION)
+  // =========================================================
   setPrices: (data) =>
     set((state) => {
       const safeData = Array.isArray(data) ? data : [];
+
       return {
         priceState: {
           ...state.priceState,
@@ -40,24 +47,60 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
       };
     }),
 
-  updatePrice: (id, priceGHS) =>
-    set((state) => {
-      const existing = state.priceState?.prices[id];
-      if (!existing) return state;
+  // =========================================================
+  // UPDATE PRICE (OPTIMISTIC + SYNC)
+  // =========================================================
+  updatePrice: async (id, priceGHS, orgId) => {
+    const prev = get().priceState.prices[id];
 
-      return {
+    if (!prev) return;
+
+    // 1. Optimistic update
+    set((state) => ({
+      priceState: {
+        ...state.priceState,
+        prices: {
+          ...state.priceState.prices,
+          [id]: {
+            ...prev,
+            priceGHS,
+          },
+        },
+      },
+    }));
+
+    try {
+      // 2. Persist to backend
+      await apiClient("/api/prices", {
+        method: "PATCH",
+        body: {
+          priceListId: id,
+          priceGHS,
+        },
+      });
+
+      // Optional: re-sync for absolute correctness
+      await get().loadPrices(orgId);
+    } catch (error) {
+      console.error("Failed to update price:", error);
+
+      // 3. Rollback on failure
+      set((state) => ({
         priceState: {
           ...state.priceState,
           prices: {
             ...state.priceState.prices,
-            [id]: { ...existing, priceGHS },
+            [id]: prev,
           },
         },
-      };
-    }),
+      }));
+    }
+  },
 
+  // =========================================================
+  // LOAD PRICES (SERVER SOURCE OF TRUTH)
+  // =========================================================
   loadPrices: async (orgId) => {
-    // 1. Enter Loading State
     set((state) => ({
       priceState: { ...state.priceState, isLoading: true },
     }));
@@ -65,19 +108,17 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
     try {
       const res = await apiClient<{ data: { items: PriceItem[] } }>(
         "/api/prices",
-        { query: { orgId } },
+        {
+          query: { orgId },
+        },
       );
 
-      console.log("DEBUG: Full API response ->", res);
       const items = res?.data?.items ?? [];
-      console.log("DEBUG: Successfully extracted array ->", items);
 
-      // 2. Hydrate State using the action above
       get().setPrices(items);
     } catch (error) {
       console.error("Failed to load prices:", error);
     } finally {
-      // 3. Exit Loading State
       set((state) => ({
         priceState: { ...state.priceState, isLoading: false },
       }));
