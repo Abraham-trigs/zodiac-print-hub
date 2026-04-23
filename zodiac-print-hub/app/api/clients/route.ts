@@ -8,7 +8,10 @@ export const GET = apiHandler(async ({ orgId, query, pagination }) => {
     perPage: pagination.limit,
   });
 
-  return result;
+  // ✅ FIX: Return only the data array.
+  // apiHandler will wrap this as { data: [...] }
+  // This matches how your Frontend loadClients expects the data.
+  return result.data;
 });
 
 // POST

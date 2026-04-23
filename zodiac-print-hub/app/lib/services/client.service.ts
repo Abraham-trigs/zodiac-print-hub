@@ -1,4 +1,4 @@
-import { ClientRepository } from "@/lib/repositories/client.repository";
+import { ClientRepository } from "@lib/repositories/client.repository";
 
 type ClientType = "PRIVATE" | "COMPANY";
 
