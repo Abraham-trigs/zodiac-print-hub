@@ -16,7 +16,9 @@ export const GET = apiHandler(
 // PATCH
 export const PATCH = apiHandler(
   async ({ orgId, body }) => {
-    return priceService.updatePrice(orgId, body.priceListId, body.priceGHS);
+    const { priceListId, ...data } = body;
+
+    return priceService.updatePrice(orgId, priceListId, data);
   },
   {
     requireAuth: true,

@@ -1,16 +1,39 @@
 import { z } from "zod";
+import { ServiceUnitEnum } from "./job.schema";
 
 /* =========================================================
-   UPDATE PRICE (PATCH /prices)
+   PRICE UPDATE (PATCH /prices/:id)
 ========================================================= */
 
 export const UpdatePriceSchema = z.object({
   priceListId: z.string().min(1),
-  priceGHS: z.number().positive(),
+
+  priceGHS: z.number().nonnegative().optional(),
+
+  name: z.string().min(1).optional(),
+  category: z.string().min(1).optional(),
+
+  unit: ServiceUnitEnum.optional(),
 });
 
 /* =========================================================
-   TYPES (derived from schema)
+   PRICE CREATE
+========================================================= */
+
+export const CreatePriceSchema = z.object({
+  name: z.string().min(1),
+  category: z.string().min(1),
+
+  unit: ServiceUnitEnum,
+
+  priceGHS: z.number().nonnegative(),
+
+  stockRefId: z.string().optional(),
+});
+
+/* =========================================================
+   TYPES
 ========================================================= */
 
 export type UpdatePriceInput = z.infer<typeof UpdatePriceSchema>;
+export type CreatePriceInput = z.infer<typeof CreatePriceSchema>;

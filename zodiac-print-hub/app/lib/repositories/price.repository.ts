@@ -32,7 +32,12 @@ export class PriceRepository {
   static async updatePrice(
     orgId: string,
     id: string,
-    priceGHS: number,
+    data: {
+      priceGHS?: number;
+      name?: string;
+      unit?: string;
+      category?: string;
+    },
     tx?: DbClient,
   ) {
     const db = getDb(tx);
@@ -40,9 +45,9 @@ export class PriceRepository {
     return db.priceList.update({
       where: {
         id,
-        orgId, // requires composite unique OR middleware enforcement
+        orgId,
       },
-      data: { priceGHS },
+      data,
     });
   }
 }

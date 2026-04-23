@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/db/prisma";
-import { StaffRepository } from "@/lib/repositories/staff.repository";
-import { Outbox } from "@/lib/db/outbox";
+import { prisma } from "@lib/prisma-client";
+import { StaffRepository } from "@lib/repositories/staff.repository";
+import { Outbox } from "@lib/db/outbox";
 import { StaffStatus } from "@/types/zodiac.types";
 
 export class StaffService {

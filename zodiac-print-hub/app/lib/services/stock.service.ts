@@ -1,4 +1,4 @@
-import { StockRepository } from "@/lib/repositories/stock.repository";
+import { StockRepository } from "@lib/repositories/stock.repository";
 
 export class StockService {
   static async restock(params: {
