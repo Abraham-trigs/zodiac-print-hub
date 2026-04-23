@@ -13,9 +13,7 @@ import { JobDetailsModal } from "./modals/JobDetailsModal";
 import { JobCardSkeleton } from "../components/common/skeleton/JobCardSkeleton";
 import { RefreshButton } from "../components/common/RefreshButton";
 
-import {
-  selectJobsWithRelations, // ✅ use enriched selector
-} from "../store/selectors/data.selectors";
+import { selectJobsWithRelations } from "../store/selectors/data.selectors";
 
 export const JobCartScreen: ZodiacScreen = {
   id: "JOB_CART",
@@ -24,15 +22,21 @@ export const JobCartScreen: ZodiacScreen = {
   TopComponent: () => {
     const { setScreen } = useZodiac();
     const { openModal, closeModal } = useModalStore();
-    const { isLoading, initData } = useDataStore();
-
-    const [searchQuery, setSearchQuery] = useState("");
 
     /* =========================================================
-       STATE (READY-TO-USE DATA)
+       STATE & ACTIONS (SYNCED TO FOLDERS)
     ========================================================= */
 
+    // ✅ Keep selector exactly as is
     const jobs = useDataStore(selectJobsWithRelations, shallow);
+
+    // ✅ Point to the specific jobState folder for loading status
+    const isLoading = useDataStore((s: any) => s.jobState.isLoading);
+
+    // ✅ Grab the global initData action
+    const initData = useDataStore((s: any) => s.initData);
+
+    const [searchQuery, setSearchQuery] = useState("");
 
     /* =========================================================
        FILTER

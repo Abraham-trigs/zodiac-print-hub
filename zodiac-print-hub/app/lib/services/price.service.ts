@@ -1,34 +1,27 @@
-import { prisma } from "../../lib/prisma-client";
+import { PriceRepository } from "@lib/repositories/price.repository";
 import { UnitOfWork } from "@lib/db/unitOfWork";
 import { Outbox } from "@lib/db/outbox";
 
-export const priceService = {
+class PriceService {
   async list(orgId: string) {
-    const items = await prisma.priceList.findMany({
-      where: {
-        orgId,
-        isActive: true,
-      },
-    });
-
+    const items = await PriceRepository.list(orgId);
     return { items };
-  },
+  }
 
-  async updatePrice(priceListId: string, priceGHS: number, orgId: string) {
+  async updatePrice(orgId: string, priceListId: string, priceGHS: number) {
     return UnitOfWork.run(async (tx) => {
-      const existing = await tx.priceList.findFirst({
-        where: {
-          id: priceListId,
-          orgId,
-        },
-      });
+      const existing = await PriceRepository.findById(orgId, priceListId, tx);
 
-      if (!existing) throw new Error("Price item not found");
+      if (!existing) {
+        throw new Error("Price item not found");
+      }
 
-      const updated = await tx.priceList.update({
-        where: { id: priceListId },
-        data: { priceGHS },
-      });
+      const updated = await PriceRepository.updatePrice(
+        orgId,
+        priceListId,
+        priceGHS,
+        tx,
+      );
 
       await Outbox.add(tx, {
         type: "price.updated",
@@ -38,5 +31,9 @@ export const priceService = {
 
       return updated;
     });
-  },
-};
+  }
+}
+
+/* ---------------- INSTANCE EXPORT ---------------- */
+
+export const priceService = new PriceService();

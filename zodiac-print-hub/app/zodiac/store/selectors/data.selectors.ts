@@ -19,22 +19,28 @@ const cache = {
   delivery: { map: null as any, array: EMPTY_ARRAY as any[] },
   payment: { map: null as any, array: EMPTY_ARRAY as any[] },
 };
-
 /* =========================================================
    SAFE BASE ACCESSORS (HYDRATION-PROOF)
 ========================================================= */
 
-// Update this in your selectors file:
+// ✅ Updated to match your new grouped state structure
 export const selectJobsMap = (s: State) => s.jobState?.jobs ?? EMPTY_MAP;
 
-export const selectStaffMap = (s: State) => s.staff?.staff ?? EMPTY_MAP;
-export const selectClientsMap = (s: State) => s.client?.clients ?? EMPTY_MAP;
-export const selectPricesMap = (s: State) => s.prices?.prices ?? EMPTY_MAP;
+export const selectPricesMap = (s: State) => s.priceState?.prices ?? EMPTY_MAP;
+
+export const selectStaffMap = (s: State) => s.staffState?.staff ?? EMPTY_MAP;
+
+export const selectClientsMap = (s: State) =>
+  s.clientState?.clients ?? EMPTY_MAP;
+
 export const selectInventoryMap = (s: State) =>
-  s.inventory?.inventory ?? EMPTY_MAP;
+  s.inventoryState?.inventory ?? EMPTY_MAP;
+
 export const selectDeliveriesMap = (s: State) =>
-  s.delivery?.deliveries ?? EMPTY_MAP;
-export const selectPaymentsMap = (s: State) => s.payment?.payments ?? EMPTY_MAP;
+  s.deliveryState?.deliveries ?? EMPTY_MAP;
+
+export const selectPaymentsMap = (s: State) =>
+  s.paymentState?.payments ?? EMPTY_MAP;
 
 /* =========================================================
    ARRAY / LIST VIEWS (MEMOIZED)
