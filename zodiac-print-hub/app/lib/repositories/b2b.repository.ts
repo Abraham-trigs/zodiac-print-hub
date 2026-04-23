@@ -1,4 +1,4 @@
-import { prisma } from "@lib/db/prisma-client";
+import { prisma } from "@lib/prisma-client";
 import { B2BStatus } from "@types/zodiac.types";
 
 export class B2BRepository {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react"; // Switched to useMemo
+import { useState, useMemo } from "react";
 import { shallow } from "zustand/shallow";
 
 import { useZodiac } from "../store/zodiac.store";
@@ -14,8 +14,7 @@ import { JobCardSkeleton } from "../components/common/skeleton/JobCardSkeleton";
 import { RefreshButton } from "../components/common/RefreshButton";
 
 import {
-  selectPricesMap,
-  selectAllJobs, // Use the base array selector
+  selectJobsWithRelations, // ✅ use enriched selector
 } from "../store/selectors/data.selectors";
 
 export const JobCartScreen: ZodiacScreen = {
@@ -30,30 +29,25 @@ export const JobCartScreen: ZodiacScreen = {
     const [searchQuery, setSearchQuery] = useState("");
 
     /* =========================================================
-       STABLE STATE ACCESS
+       STATE (READY-TO-USE DATA)
     ========================================================= */
 
-    // 1. Get the raw arrays/maps with shallow comparison.
-    // These selectors are now safe because they return existing state references.
-    const allJobs = useDataStore(selectAllJobs, shallow);
-    const prices = useDataStore(selectPricesMap, shallow);
+    const jobs = useDataStore(selectJobsWithRelations, shallow);
 
     /* =========================================================
-       LOCAL COMPUTATION (Infinite Loop Proof)
+       FILTER
     ========================================================= */
 
-    // 2. Perform filtering LOCALLY.
-    // This is "cached" by useMemo and does not touch the store's subscription.
     const filteredJobs = useMemo(() => {
       const q = searchQuery.toLowerCase().trim();
-      if (!q) return allJobs;
+      if (!q) return jobs;
 
-      return allJobs.filter(
+      return jobs.filter(
         (job) =>
           job.id.toLowerCase().includes(q) ||
-          job.clientName?.toLowerCase().includes(q),
+          job.client?.name?.toLowerCase().includes(q),
       );
-    }, [allJobs, searchQuery]);
+    }, [jobs, searchQuery]);
 
     const handleOpenCreation = () => {
       openModal("GLOBAL", () => <JobCreationModal onClose={closeModal} />);
@@ -73,7 +67,7 @@ export const JobCartScreen: ZodiacScreen = {
             <div>
               <h2 className="text-2xl font-bold">Job Manager</h2>
               <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-black">
-                {isLoading ? "Syncing..." : `${allJobs.length} Active Records`}
+                {isLoading ? "Syncing..." : `${jobs.length} Active Records`}
               </p>
             </div>
             <RefreshButton onRefresh={initData} isLoading={isLoading} />
@@ -106,45 +100,42 @@ export const JobCartScreen: ZodiacScreen = {
           {isLoading ? (
             Array.from({ length: 5 }).map((_, i) => <JobCardSkeleton key={i} />)
           ) : filteredJobs.length > 0 ? (
-            filteredJobs.map((job) => {
-              const service = prices[job.serviceId];
-              return (
-                <div
-                  key={job.id}
-                  onClick={() => handleOpenDetails(job.id)}
-                  className="glass-card p-4 flex items-center justify-between border border-white/5 hover:border-cyan-400/30 transition-all cursor-pointer group active:scale-[0.98]"
-                >
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-cyan-400/10 text-cyan-400 text-[10px] font-mono px-2 py-0.5 rounded border border-cyan-400/20">
-                        #{job.id}
-                      </span>
-                      <span className="text-sm font-bold truncate max-w-[120px]">
-                        {service?.service || "Unknown Service"}
-                      </span>
-                    </div>
-                    <span className="text-xs opacity-50 font-medium">
-                      {job.clientName}
+            filteredJobs.map((job) => (
+              <div
+                key={job.id}
+                onClick={() => handleOpenDetails(job.id)}
+                className="glass-card p-4 flex items-center justify-between border border-white/5 hover:border-cyan-400/30 transition-all cursor-pointer group active:scale-[0.98]"
+              >
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-cyan-400/10 text-cyan-400 text-[10px] font-mono px-2 py-0.5 rounded border border-cyan-400/20">
+                      #{job.id}
+                    </span>
+                    <span className="text-sm font-bold truncate max-w-[120px]">
+                      {job.service?.name || "Unknown Service"}
                     </span>
                   </div>
+                  <span className="text-xs opacity-50 font-medium">
+                    {job.client?.name || "Unknown Client"}
+                  </span>
+                </div>
 
-                  <div className="text-right">
-                    <div className="text-orange-400 font-mono font-bold text-sm">
-                      ₵{job.totalEstimate.toFixed(2)}
-                    </div>
-                    <div
-                      className={`text-[9px] uppercase font-black tracking-tighter ${
-                        job.status === "SUCCESSFUL"
-                          ? "text-green-400"
-                          : "text-yellow-400"
-                      }`}
-                    >
-                      ● {job.status}
-                    </div>
+                <div className="text-right">
+                  <div className="text-orange-400 font-mono font-bold text-sm">
+                    ₵{job.totalPrice.toFixed(2)}
+                  </div>
+                  <div
+                    className={`text-[9px] uppercase font-black tracking-tighter ${
+                      job.status === "COMPLETED"
+                        ? "text-green-400"
+                        : "text-yellow-400"
+                    }`}
+                  >
+                    ● {job.status}
                   </div>
                 </div>
-              );
-            })
+              </div>
+            ))
           ) : (
             <div className="flex flex-col items-center justify-center py-20 opacity-20">
               <span className="text-5xl mb-4">📂</span>
@@ -167,5 +158,6 @@ export const JobCartScreen: ZodiacScreen = {
       </div>
     );
   },
+
   DownComponent: undefined,
 };

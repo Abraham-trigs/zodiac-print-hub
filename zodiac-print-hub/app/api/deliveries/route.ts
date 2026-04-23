@@ -17,6 +17,7 @@ export const POST = apiHandler(
     return { data: delivery };
   },
   {
+    requireAuth: true,
     requireOrg: true,
   },
 );

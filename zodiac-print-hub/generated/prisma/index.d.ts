@@ -7038,8 +7038,18 @@ export namespace Prisma {
 
   export type AggregateClient = {
     _count: ClientCountAggregateOutputType | null
+    _avg: ClientAvgAggregateOutputType | null
+    _sum: ClientSumAggregateOutputType | null
     _min: ClientMinAggregateOutputType | null
     _max: ClientMaxAggregateOutputType | null
+  }
+
+  export type ClientAvgAggregateOutputType = {
+    totalJobs: number | null
+  }
+
+  export type ClientSumAggregateOutputType = {
+    totalJobs: number | null
   }
 
   export type ClientMinAggregateOutputType = {
@@ -7054,6 +7064,10 @@ export namespace Prisma {
     profilePictureUrl: string | null
     isNew: boolean | null
     recentStaffId: string | null
+    lastJobId: string | null
+    lastJobDate: Date | null
+    totalJobs: number | null
+    mostPrintedServiceId: string | null
     notes: string | null
     createdAt: Date | null
   }
@@ -7070,6 +7084,10 @@ export namespace Prisma {
     profilePictureUrl: string | null
     isNew: boolean | null
     recentStaffId: string | null
+    lastJobId: string | null
+    lastJobDate: Date | null
+    totalJobs: number | null
+    mostPrintedServiceId: string | null
     notes: string | null
     createdAt: Date | null
   }
@@ -7086,11 +7104,23 @@ export namespace Prisma {
     profilePictureUrl: number
     isNew: number
     recentStaffId: number
+    lastJobId: number
+    lastJobDate: number
+    totalJobs: number
+    mostPrintedServiceId: number
     notes: number
     createdAt: number
     _all: number
   }
 
+
+  export type ClientAvgAggregateInputType = {
+    totalJobs?: true
+  }
+
+  export type ClientSumAggregateInputType = {
+    totalJobs?: true
+  }
 
   export type ClientMinAggregateInputType = {
     id?: true
@@ -7104,6 +7134,10 @@ export namespace Prisma {
     profilePictureUrl?: true
     isNew?: true
     recentStaffId?: true
+    lastJobId?: true
+    lastJobDate?: true
+    totalJobs?: true
+    mostPrintedServiceId?: true
     notes?: true
     createdAt?: true
   }
@@ -7120,6 +7154,10 @@ export namespace Prisma {
     profilePictureUrl?: true
     isNew?: true
     recentStaffId?: true
+    lastJobId?: true
+    lastJobDate?: true
+    totalJobs?: true
+    mostPrintedServiceId?: true
     notes?: true
     createdAt?: true
   }
@@ -7136,6 +7174,10 @@ export namespace Prisma {
     profilePictureUrl?: true
     isNew?: true
     recentStaffId?: true
+    lastJobId?: true
+    lastJobDate?: true
+    totalJobs?: true
+    mostPrintedServiceId?: true
     notes?: true
     createdAt?: true
     _all?: true
@@ -7179,6 +7221,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ClientAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClientSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ClientMinAggregateInputType
@@ -7209,6 +7263,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ClientCountAggregateInputType | true
+    _avg?: ClientAvgAggregateInputType
+    _sum?: ClientSumAggregateInputType
     _min?: ClientMinAggregateInputType
     _max?: ClientMaxAggregateInputType
   }
@@ -7225,9 +7281,15 @@ export namespace Prisma {
     profilePictureUrl: string | null
     isNew: boolean
     recentStaffId: string | null
+    lastJobId: string | null
+    lastJobDate: Date | null
+    totalJobs: number
+    mostPrintedServiceId: string | null
     notes: string | null
     createdAt: Date
     _count: ClientCountAggregateOutputType | null
+    _avg: ClientAvgAggregateOutputType | null
+    _sum: ClientSumAggregateOutputType | null
     _min: ClientMinAggregateOutputType | null
     _max: ClientMaxAggregateOutputType | null
   }
@@ -7258,10 +7320,14 @@ export namespace Prisma {
     profilePictureUrl?: boolean
     isNew?: boolean
     recentStaffId?: boolean
+    lastJobId?: boolean
+    lastJobDate?: boolean
+    totalJobs?: boolean
+    mostPrintedServiceId?: boolean
     notes?: boolean
     createdAt?: boolean
-    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     jobs?: boolean | Client$jobsArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -7277,6 +7343,10 @@ export namespace Prisma {
     profilePictureUrl?: boolean
     isNew?: boolean
     recentStaffId?: boolean
+    lastJobId?: boolean
+    lastJobDate?: boolean
+    totalJobs?: boolean
+    mostPrintedServiceId?: boolean
     notes?: boolean
     createdAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -7294,6 +7364,10 @@ export namespace Prisma {
     profilePictureUrl?: boolean
     isNew?: boolean
     recentStaffId?: boolean
+    lastJobId?: boolean
+    lastJobDate?: boolean
+    totalJobs?: boolean
+    mostPrintedServiceId?: boolean
     notes?: boolean
     createdAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -7311,14 +7385,18 @@ export namespace Prisma {
     profilePictureUrl?: boolean
     isNew?: boolean
     recentStaffId?: boolean
+    lastJobId?: boolean
+    lastJobDate?: boolean
+    totalJobs?: boolean
+    mostPrintedServiceId?: boolean
     notes?: boolean
     createdAt?: boolean
   }
 
-  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "type" | "name" | "companyName" | "email" | "phone" | "location" | "profilePictureUrl" | "isNew" | "recentStaffId" | "notes" | "createdAt", ExtArgs["result"]["client"]>
+  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "type" | "name" | "companyName" | "email" | "phone" | "location" | "profilePictureUrl" | "isNew" | "recentStaffId" | "lastJobId" | "lastJobDate" | "totalJobs" | "mostPrintedServiceId" | "notes" | "createdAt", ExtArgs["result"]["client"]>
   export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     jobs?: boolean | Client$jobsArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7331,8 +7409,8 @@ export namespace Prisma {
   export type $ClientPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Client"
     objects: {
-      organisation: Prisma.$OrganisationPayload<ExtArgs>
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7346,6 +7424,10 @@ export namespace Prisma {
       profilePictureUrl: string | null
       isNew: boolean
       recentStaffId: string | null
+      lastJobId: string | null
+      lastJobDate: Date | null
+      totalJobs: number
+      mostPrintedServiceId: string | null
       notes: string | null
       createdAt: Date
     }, ExtArgs["result"]["client"]>
@@ -7742,8 +7824,8 @@ export namespace Prisma {
    */
   export interface Prisma__ClientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     jobs<T extends Client$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Client$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7784,6 +7866,10 @@ export namespace Prisma {
     readonly profilePictureUrl: FieldRef<"Client", 'String'>
     readonly isNew: FieldRef<"Client", 'Boolean'>
     readonly recentStaffId: FieldRef<"Client", 'String'>
+    readonly lastJobId: FieldRef<"Client", 'String'>
+    readonly lastJobDate: FieldRef<"Client", 'DateTime'>
+    readonly totalJobs: FieldRef<"Client", 'Int'>
+    readonly mostPrintedServiceId: FieldRef<"Client", 'String'>
     readonly notes: FieldRef<"Client", 'String'>
     readonly createdAt: FieldRef<"Client", 'DateTime'>
   }
@@ -17719,6 +17805,10 @@ export namespace Prisma {
     profilePictureUrl: 'profilePictureUrl',
     isNew: 'isNew',
     recentStaffId: 'recentStaffId',
+    lastJobId: 'lastJobId',
+    lastJobDate: 'lastJobDate',
+    totalJobs: 'totalJobs',
+    mostPrintedServiceId: 'mostPrintedServiceId',
     notes: 'notes',
     createdAt: 'createdAt'
   };
@@ -17997,6 +18087,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ServiceUnit'
    */
   export type EnumServiceUnitFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServiceUnit'>
@@ -18105,20 +18209,6 @@ export namespace Prisma {
    * Reference to a field of type 'B2BStatus[]'
    */
   export type ListEnumB2BStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'B2BStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
   /**
    * Deep Input Types
@@ -18451,10 +18541,14 @@ export namespace Prisma {
     profilePictureUrl?: StringNullableFilter<"Client"> | string | null
     isNew?: BoolFilter<"Client"> | boolean
     recentStaffId?: StringNullableFilter<"Client"> | string | null
+    lastJobId?: StringNullableFilter<"Client"> | string | null
+    lastJobDate?: DateTimeNullableFilter<"Client"> | Date | string | null
+    totalJobs?: IntFilter<"Client"> | number
+    mostPrintedServiceId?: StringNullableFilter<"Client"> | string | null
     notes?: StringNullableFilter<"Client"> | string | null
     createdAt?: DateTimeFilter<"Client"> | Date | string
-    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     jobs?: JobListRelationFilter
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }
 
   export type ClientOrderByWithRelationInput = {
@@ -18469,10 +18563,14 @@ export namespace Prisma {
     profilePictureUrl?: SortOrderInput | SortOrder
     isNew?: SortOrder
     recentStaffId?: SortOrderInput | SortOrder
+    lastJobId?: SortOrderInput | SortOrder
+    lastJobDate?: SortOrderInput | SortOrder
+    totalJobs?: SortOrder
+    mostPrintedServiceId?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    organisation?: OrganisationOrderByWithRelationInput
     jobs?: JobOrderByRelationAggregateInput
+    organisation?: OrganisationOrderByWithRelationInput
   }
 
   export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -18490,10 +18588,14 @@ export namespace Prisma {
     profilePictureUrl?: StringNullableFilter<"Client"> | string | null
     isNew?: BoolFilter<"Client"> | boolean
     recentStaffId?: StringNullableFilter<"Client"> | string | null
+    lastJobId?: StringNullableFilter<"Client"> | string | null
+    lastJobDate?: DateTimeNullableFilter<"Client"> | Date | string | null
+    totalJobs?: IntFilter<"Client"> | number
+    mostPrintedServiceId?: StringNullableFilter<"Client"> | string | null
     notes?: StringNullableFilter<"Client"> | string | null
     createdAt?: DateTimeFilter<"Client"> | Date | string
-    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     jobs?: JobListRelationFilter
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }, "id">
 
   export type ClientOrderByWithAggregationInput = {
@@ -18508,11 +18610,17 @@ export namespace Prisma {
     profilePictureUrl?: SortOrderInput | SortOrder
     isNew?: SortOrder
     recentStaffId?: SortOrderInput | SortOrder
+    lastJobId?: SortOrderInput | SortOrder
+    lastJobDate?: SortOrderInput | SortOrder
+    totalJobs?: SortOrder
+    mostPrintedServiceId?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ClientCountOrderByAggregateInput
+    _avg?: ClientAvgOrderByAggregateInput
     _max?: ClientMaxOrderByAggregateInput
     _min?: ClientMinOrderByAggregateInput
+    _sum?: ClientSumOrderByAggregateInput
   }
 
   export type ClientScalarWhereWithAggregatesInput = {
@@ -18530,6 +18638,10 @@ export namespace Prisma {
     profilePictureUrl?: StringNullableWithAggregatesFilter<"Client"> | string | null
     isNew?: BoolWithAggregatesFilter<"Client"> | boolean
     recentStaffId?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    lastJobId?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    lastJobDate?: DateTimeNullableWithAggregatesFilter<"Client"> | Date | string | null
+    totalJobs?: IntWithAggregatesFilter<"Client"> | number
+    mostPrintedServiceId?: StringNullableWithAggregatesFilter<"Client"> | string | null
     notes?: StringNullableWithAggregatesFilter<"Client"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Client"> | Date | string
   }
@@ -19608,10 +19720,14 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
-    organisation: OrganisationCreateNestedOneWithoutClientsInput
     jobs?: JobCreateNestedManyWithoutClientInput
+    organisation: OrganisationCreateNestedOneWithoutClientsInput
   }
 
   export type ClientUncheckedCreateInput = {
@@ -19626,6 +19742,10 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutClientInput
@@ -19642,10 +19762,14 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    organisation?: OrganisationUpdateOneRequiredWithoutClientsNestedInput
     jobs?: JobUpdateManyWithoutClientNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutClientsNestedInput
   }
 
   export type ClientUncheckedUpdateInput = {
@@ -19660,6 +19784,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutClientNestedInput
@@ -19677,6 +19805,10 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
   }
@@ -19692,6 +19824,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19708,6 +19844,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20943,6 +21083,28 @@ export namespace Prisma {
     not?: NestedEnumClientTypeFilter<$PrismaModel> | $Enums.ClientType
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type ClientCountOrderByAggregateInput = {
     id?: SortOrder
     orgId?: SortOrder
@@ -20955,8 +21117,16 @@ export namespace Prisma {
     profilePictureUrl?: SortOrder
     isNew?: SortOrder
     recentStaffId?: SortOrder
+    lastJobId?: SortOrder
+    lastJobDate?: SortOrder
+    totalJobs?: SortOrder
+    mostPrintedServiceId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ClientAvgOrderByAggregateInput = {
+    totalJobs?: SortOrder
   }
 
   export type ClientMaxOrderByAggregateInput = {
@@ -20971,6 +21141,10 @@ export namespace Prisma {
     profilePictureUrl?: SortOrder
     isNew?: SortOrder
     recentStaffId?: SortOrder
+    lastJobId?: SortOrder
+    lastJobDate?: SortOrder
+    totalJobs?: SortOrder
+    mostPrintedServiceId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
   }
@@ -20987,8 +21161,16 @@ export namespace Prisma {
     profilePictureUrl?: SortOrder
     isNew?: SortOrder
     recentStaffId?: SortOrder
+    lastJobId?: SortOrder
+    lastJobDate?: SortOrder
+    totalJobs?: SortOrder
+    mostPrintedServiceId?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type ClientSumOrderByAggregateInput = {
+    totalJobs?: SortOrder
   }
 
   export type EnumClientTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -20999,6 +21181,36 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumClientTypeFilter<$PrismaModel>
     _max?: NestedEnumClientTypeFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumServiceUnitFilter<$PrismaModel = never> = {
@@ -21089,17 +21301,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type StockItemCountOrderByAggregateInput = {
     id?: SortOrder
     orgId?: SortOrder
@@ -21146,20 +21347,6 @@ export namespace Prisma {
     totalRemaining?: SortOrder
     lowStockThreshold?: SortOrder
     lastUnitCost?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type RestockRecordCountOrderByAggregateInput = {
@@ -22249,17 +22436,17 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
-  export type OrganisationCreateNestedOneWithoutClientsInput = {
-    create?: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
-    connectOrCreate?: OrganisationCreateOrConnectWithoutClientsInput
-    connect?: OrganisationWhereUniqueInput
-  }
-
   export type JobCreateNestedManyWithoutClientInput = {
     create?: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput> | JobCreateWithoutClientInput[] | JobUncheckedCreateWithoutClientInput[]
     connectOrCreate?: JobCreateOrConnectWithoutClientInput | JobCreateOrConnectWithoutClientInput[]
     createMany?: JobCreateManyClientInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type OrganisationCreateNestedOneWithoutClientsInput = {
+    create?: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutClientsInput
+    connect?: OrganisationWhereUniqueInput
   }
 
   export type JobUncheckedCreateNestedManyWithoutClientInput = {
@@ -22273,12 +22460,16 @@ export namespace Prisma {
     set?: $Enums.ClientType
   }
 
-  export type OrganisationUpdateOneRequiredWithoutClientsNestedInput = {
-    create?: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
-    connectOrCreate?: OrganisationCreateOrConnectWithoutClientsInput
-    upsert?: OrganisationUpsertWithoutClientsInput
-    connect?: OrganisationWhereUniqueInput
-    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutClientsInput, OrganisationUpdateWithoutClientsInput>, OrganisationUncheckedUpdateWithoutClientsInput>
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type JobUpdateManyWithoutClientNestedInput = {
@@ -22293,6 +22484,14 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutClientInput | JobUpdateWithWhereUniqueWithoutClientInput[]
     updateMany?: JobUpdateManyWithWhereWithoutClientInput | JobUpdateManyWithWhereWithoutClientInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutClientsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutClientsInput
+    upsert?: OrganisationUpsertWithoutClientsInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutClientsInput, OrganisationUpdateWithoutClientsInput>, OrganisationUncheckedUpdateWithoutClientsInput>
   }
 
   export type JobUncheckedUpdateManyWithoutClientNestedInput = {
@@ -22339,10 +22538,6 @@ export namespace Prisma {
     create?: XOR<OrganisationCreateWithoutStockItemsInput, OrganisationUncheckedCreateWithoutStockItemsInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutStockItemsInput
     connect?: OrganisationWhereUniqueInput
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type OrganisationUpdateOneRequiredWithoutStockItemsNestedInput = {
@@ -22700,6 +22895,17 @@ export namespace Prisma {
     not?: NestedEnumClientTypeFilter<$PrismaModel> | $Enums.ClientType
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedEnumClientTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ClientType | EnumClientTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
@@ -22710,11 +22916,34 @@ export namespace Prisma {
     _max?: NestedEnumClientTypeFilter<$PrismaModel>
   }
 
-  export type NestedEnumServiceUnitFilter<$PrismaModel = never> = {
-    equals?: $Enums.ServiceUnit | EnumServiceUnitFieldRefInput<$PrismaModel>
-    in?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel>
-    not?: NestedEnumServiceUnitFilter<$PrismaModel> | $Enums.ServiceUnit
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -22726,6 +22955,13 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumServiceUnitFilter<$PrismaModel = never> = {
+    equals?: $Enums.ServiceUnit | EnumServiceUnitFieldRefInput<$PrismaModel>
+    in?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel>
+    not?: NestedEnumServiceUnitFilter<$PrismaModel> | $Enums.ServiceUnit
   }
 
   export type NestedEnumServiceUnitWithAggregatesFilter<$PrismaModel = never> = {
@@ -22752,31 +22988,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -23034,6 +23245,10 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
     jobs?: JobCreateNestedManyWithoutClientInput
@@ -23050,6 +23265,10 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutClientInput
@@ -23423,6 +23642,10 @@ export namespace Prisma {
     profilePictureUrl?: StringNullableFilter<"Client"> | string | null
     isNew?: BoolFilter<"Client"> | boolean
     recentStaffId?: StringNullableFilter<"Client"> | string | null
+    lastJobId?: StringNullableFilter<"Client"> | string | null
+    lastJobDate?: DateTimeNullableFilter<"Client"> | Date | string | null
+    totalJobs?: IntFilter<"Client"> | number
+    mostPrintedServiceId?: StringNullableFilter<"Client"> | string | null
     notes?: StringNullableFilter<"Client"> | string | null
     createdAt?: DateTimeFilter<"Client"> | Date | string
   }
@@ -24127,51 +24350,6 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutAssignedStaffInput>
   }
 
-  export type OrganisationCreateWithoutClientsInput = {
-    id?: string
-    name: string
-    slug: string
-    logoUrl?: string | null
-    contactEmail?: string | null
-    contactPhone?: string | null
-    address?: string | null
-    createdAt?: Date | string
-    outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
-    users?: UserCreateNestedManyWithoutOrganisationInput
-    staff?: StaffCreateNestedManyWithoutOrganisationInput
-    jobs?: JobCreateNestedManyWithoutOrganisationInput
-    stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
-    prices?: PriceListCreateNestedManyWithoutOrganisationInput
-    deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
-    b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
-    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
-  }
-
-  export type OrganisationUncheckedCreateWithoutClientsInput = {
-    id?: string
-    name: string
-    slug: string
-    logoUrl?: string | null
-    contactEmail?: string | null
-    contactPhone?: string | null
-    address?: string | null
-    createdAt?: Date | string
-    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
-    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
-    staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
-    jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
-    stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
-    prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
-    deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
-    b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
-    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
-  }
-
-  export type OrganisationCreateOrConnectWithoutClientsInput = {
-    where: OrganisationWhereUniqueInput
-    create: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
-  }
-
   export type JobCreateWithoutClientInput = {
     id?: string
     serviceId: string
@@ -24236,6 +24414,67 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OrganisationCreateWithoutClientsInput = {
+    id?: string
+    name: string
+    slug: string
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    staff?: StaffCreateNestedManyWithoutOrganisationInput
+    jobs?: JobCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutClientsInput = {
+    id?: string
+    name: string
+    slug: string
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
+    jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutClientsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutClientInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutClientInput, JobUncheckedUpdateWithoutClientInput>
+    create: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutClientInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutClientInput, JobUncheckedUpdateWithoutClientInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutClientInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutClientInput>
+  }
+
   export type OrganisationUpsertWithoutClientsInput = {
     update: XOR<OrganisationUpdateWithoutClientsInput, OrganisationUncheckedUpdateWithoutClientsInput>
     create: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
@@ -24285,22 +24524,6 @@ export namespace Prisma {
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
-  }
-
-  export type JobUpsertWithWhereUniqueWithoutClientInput = {
-    where: JobWhereUniqueInput
-    update: XOR<JobUpdateWithoutClientInput, JobUncheckedUpdateWithoutClientInput>
-    create: XOR<JobCreateWithoutClientInput, JobUncheckedCreateWithoutClientInput>
-  }
-
-  export type JobUpdateWithWhereUniqueWithoutClientInput = {
-    where: JobWhereUniqueInput
-    data: XOR<JobUpdateWithoutClientInput, JobUncheckedUpdateWithoutClientInput>
-  }
-
-  export type JobUpdateManyWithWhereWithoutClientInput = {
-    where: JobScalarWhereInput
-    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutClientInput>
   }
 
   export type OrganisationCreateWithoutPricesInput = {
@@ -24551,6 +24774,10 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutClientsInput
@@ -24568,6 +24795,10 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
   }
@@ -24721,6 +24952,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutClientsNestedInput
@@ -24738,6 +24973,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25247,6 +25486,10 @@ export namespace Prisma {
     profilePictureUrl?: string | null
     isNew?: boolean
     recentStaffId?: string | null
+    lastJobId?: string | null
+    lastJobDate?: Date | string | null
+    totalJobs?: number
+    mostPrintedServiceId?: string | null
     notes?: string | null
     createdAt?: Date | string
   }
@@ -25441,6 +25684,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutClientNestedInput
@@ -25457,6 +25704,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutClientNestedInput
@@ -25473,6 +25724,10 @@ export namespace Prisma {
     profilePictureUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isNew?: BoolFieldUpdateOperationsInput | boolean
     recentStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastJobDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalJobs?: IntFieldUpdateOperationsInput | number
+    mostPrintedServiceId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

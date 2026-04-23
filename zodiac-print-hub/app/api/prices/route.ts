@@ -19,6 +19,7 @@ export const PATCH = apiHandler(
     return priceService.updatePrice(body.priceListId, body.priceGHS, orgId);
   },
   {
+    requireAuth: true,
     requireOrg: true,
     schema: updatePriceSchema,
   },

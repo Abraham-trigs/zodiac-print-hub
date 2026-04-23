@@ -5,7 +5,7 @@ import { UnitOfWork } from "@lib/db/unitOfWork";
 import { Outbox } from "@lib/db/outbox";
 
 export class JobService {
-  static async createJob(params: {
+  async createJob(params: {
     orgId: string;
     clientId: string;
     service: PriceItem;
@@ -27,13 +27,16 @@ export class JobService {
     } = params;
 
     return UnitOfWork.run(async (tx) => {
-      const now = new Date().toISOString();
+      const now = new Date();
 
-      const isLargeFormat = service.unit === "sqft" || service.unit === "sqm";
+      // Domain rule: only large-format jobs use dimensions
+      const isLargeFormat = ["sqft", "sqm"].includes(service.unit);
 
-      const units = isLargeFormat ? (width || 1) * (height || 1) : 1;
+      // FIXED: Multiply area by quantity to sync with frontend selectLiveEstimate
+      const area = isLargeFormat ? (width ?? 1) * (height ?? 1) : 1;
+      const units = isLargeFormat ? area * quantity : quantity;
 
-      const totalPrice = units * quantity * service.priceGHS;
+      const totalPrice = units * service.priceGHS;
 
       const job = await JobRepository.create(
         {
@@ -58,20 +61,17 @@ export class JobService {
           lastJobId: job.id,
           lastJobDate: now,
           isNew: false,
-          totalJobs: {
-            increment: 1,
-          },
-
-          lastStaffId: assignedStaffId ?? undefined,
+          totalJobs: { increment: 1 },
+          recentStaffId: assignedStaffId ?? undefined,
           mostPrintedServiceId: service.id,
         },
       });
 
-      // ✅ FIXED NAME
       const stockRefId = service.stockRefId;
 
       if (stockRefId) {
-        await StockRepository.deduct(orgId, stockRefId, units * quantity, tx);
+        // We deduct the total units (area * qty for large format)
+        await StockRepository.deduct(orgId, stockRefId, units, tx);
       }
 
       await Outbox.add(tx, {
@@ -84,7 +84,7 @@ export class JobService {
     });
   }
 
-  static async updateStatus(orgId: string, jobId: string, status: any) {
+  async updateStatus(orgId: string, jobId: string, status: any) {
     return UnitOfWork.run(async (tx) => {
       const job = await JobRepository.updateStatus(orgId, jobId, status, tx);
 
@@ -98,7 +98,7 @@ export class JobService {
     });
   }
 
-  static async assignStaff(orgId: string, jobId: string, staffId: string) {
+  async assignStaff(orgId: string, jobId: string, staffId: string) {
     return UnitOfWork.run(async (tx) => {
       const job = await JobRepository.assignStaff(orgId, jobId, staffId, tx);
 
@@ -112,7 +112,7 @@ export class JobService {
     });
   }
 
-  static async confirmPayment(orgId: string, jobId: string, ref: string) {
+  async confirmPayment(orgId: string, jobId: string, ref: string) {
     return UnitOfWork.run(async (tx) => {
       const job = await JobRepository.confirmPayment(orgId, jobId, ref, tx);
 
@@ -126,7 +126,11 @@ export class JobService {
     });
   }
 
-  static async loadJobs(orgId: string) {
+  async loadJobs(orgId: string) {
     return JobRepository.list(orgId);
   }
 }
+
+/* ---------------- INSTANCE EXPORT ---------------- */
+
+export const jobService = new JobService();

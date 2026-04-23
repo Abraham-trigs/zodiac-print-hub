@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/db/prisma";
-import { DbClient } from "@/lib/db/prisma-client";
+import { prisma } from "@lib/prisma-client";
+import { DbClient } from "@lib/prisma-client";
 import { JobStatus, PaymentStatus } from "@prisma/client";
 
 type TxOrDb = DbClient | undefined;

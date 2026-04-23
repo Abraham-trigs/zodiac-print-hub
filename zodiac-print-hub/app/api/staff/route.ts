@@ -7,6 +7,7 @@ export const GET = apiHandler(
     return data;
   },
   {
+    requireAuth: true,
     requireOrg: true,
   },
 );

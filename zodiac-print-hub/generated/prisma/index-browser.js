@@ -175,6 +175,10 @@ exports.Prisma.ClientScalarFieldEnum = {
   profilePictureUrl: 'profilePictureUrl',
   isNew: 'isNew',
   recentStaffId: 'recentStaffId',
+  lastJobId: 'lastJobId',
+  lastJobDate: 'lastJobDate',
+  totalJobs: 'totalJobs',
+  mostPrintedServiceId: 'mostPrintedServiceId',
   notes: 'notes',
   createdAt: 'createdAt'
 };

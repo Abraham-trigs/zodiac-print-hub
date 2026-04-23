@@ -22,6 +22,7 @@ export const POST = apiHandler(
     return client;
   },
   {
+    requireAuth: true,
     requireOrg: true,
   },
 );

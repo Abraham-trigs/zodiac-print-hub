@@ -137,32 +137,40 @@ enum ClientType {
 }
 
 model Client {
-  id           String       @id @default(cuid())
-  orgId        String
-  organisation Organisation @relation(fields: [orgId], references: [id])
+  id    String @id @default(cuid())
+  orgId String
 
-  type              ClientType
-  name              String
-  companyName       String?
-  email             String?
-  phone             String
-  location          String?
+  type        ClientType
+  name        String
+  companyName String?
+  email       String?
+  phone       String
+  location    String?
+
   profilePictureUrl String?
-  isNew             Boolean    @default(true)
-  recentStaffId     String?
-  notes             String?
 
-  jobs Job[]
+  isNew         Boolean @default(true)
+  recentStaffId String?
 
+  lastJobId            String?
+  lastJobDate          DateTime?
+  totalJobs            Int       @default(0)
+  mostPrintedServiceId String?
+
+  notes     String?
+  jobs      Job[]
   createdAt DateTime @default(now())
 
-  // INDEXING:
-  @@index([orgId]) // Essential for multi-tenant isolation
-  @@index([name]) // Fast lookup for searching by Client Name
-  @@index([phone]) // Critical for finding customers via their phone number
-  @@index([email]) // Fast lookup for search or login via email
-  @@index([companyName]) // Useful for B2B search
-  @@index([orgId, name]) // Compound index for fast alphabetical lists per shop
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  @@index([orgId])
+  @@index([orgId, phone])
+  @@index([orgId, name])
+  @@index([orgId, lastJobDate])
+  @@index([orgId, totalJobs])
+  @@index([recentStaffId])
+  @@index([mostPrintedServiceId])
+  @@index([lastJobId])
 }
 
 //

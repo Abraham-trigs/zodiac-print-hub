@@ -24,7 +24,9 @@ const cache = {
    SAFE BASE ACCESSORS (HYDRATION-PROOF)
 ========================================================= */
 
-export const selectJobsMap = (s: State) => s.jobs?.jobs ?? EMPTY_MAP;
+// Update this in your selectors file:
+export const selectJobsMap = (s: State) => s.jobState?.jobs ?? EMPTY_MAP;
+
 export const selectStaffMap = (s: State) => s.staff?.staff ?? EMPTY_MAP;
 export const selectClientsMap = (s: State) => s.client?.clients ?? EMPTY_MAP;
 export const selectPricesMap = (s: State) => s.prices?.prices ?? EMPTY_MAP;
@@ -64,6 +66,42 @@ export const selectDeliveriesArray = (s: State) =>
 export const selectPaymentsArray = (s: State) =>
   getMemoizedArray(selectPaymentsMap(s), "payment");
 
+let jobsWithRelationsCache: any[] = [];
+let jobsRef: any = null;
+let pricesRef: any = null;
+let clientsRef: any = null;
+let staffRef: any = null;
+
+export const selectJobsWithRelations = (s: State) => {
+  const jobs = selectJobsArray(s);
+  const prices = selectPricesMap(s);
+  const clients = selectClientsMap(s);
+  const staff = selectStaffMap(s);
+
+  if (
+    jobs === jobsRef &&
+    prices === pricesRef &&
+    clients === clientsRef &&
+    staff === staffRef
+  ) {
+    return jobsWithRelationsCache;
+  }
+
+  jobsRef = jobs;
+  pricesRef = prices;
+  clientsRef = clients;
+  staffRef = staff;
+
+  jobsWithRelationsCache = jobs.map((job) => ({
+    ...job,
+    service: prices[job.serviceId],
+    client: clients[job.clientId],
+    staff: job.assignedStaffId ? staff[job.assignedStaffId] : undefined,
+  }));
+
+  return jobsWithRelationsCache;
+};
+
 /* =========================================================
    🔁 BACKWARD COMPATIBILITY ALIASES
 ========================================================= */
@@ -86,8 +124,12 @@ export const selectJobWithRelations = (id: string) => (s: State) => {
   const job = selectJobsMap(s)[id];
   if (!job) return undefined;
 
+  const prices = selectPricesMap(s);
+
   return {
     ...job,
+    service: prices[job.serviceId], // ✅ ADD THIS
+
     client: selectClientsMap(s)[job.clientId],
     staff: job.assignedStaffId
       ? selectStaffMap(s)[job.assignedStaffId]

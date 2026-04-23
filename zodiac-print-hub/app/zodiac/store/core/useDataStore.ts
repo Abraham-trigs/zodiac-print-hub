@@ -26,21 +26,15 @@ export const useDataStore = create(
       ...createDeliverySlice(set, get, api),
 
       initData: async () => {
-        const {
-          loadPrices,
-          loadInventory,
-          loadJobs,
-          loadStaff,
-          loadDeliveries,
-        } = get();
-
         await Promise.all([
-          loadPrices?.(),
-          loadInventory?.(),
-          loadJobs?.(),
-          loadStaff?.(),
-          loadDeliveries?.(), // optional if you implement later
+          get().loadPrices?.(), // Needed for job.service
+          get().loadInventory?.(),
+          get().loadJobs?.(), // The jobs themselves
+          get().loadStaff?.(), // Needed for job.staff
+          get().loadClients?.(),
         ]);
+
+        console.log("SYNC COMPLETE. STORE STATE:", get());
       },
     }),
     {

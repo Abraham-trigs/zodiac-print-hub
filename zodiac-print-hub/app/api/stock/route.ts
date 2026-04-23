@@ -1,9 +1,15 @@
 import { apiHandler } from "@lib/server/api/apiHandler";
 import { stockService } from "@lib/services/stock.service";
 
-export const GET = apiHandler(async ({ orgId }) => {
-  return stockService.list(orgId);
-});
+export const GET = apiHandler(
+  async ({ orgId }) => {
+    return stockService.list(orgId);
+  },
+  {
+    requireAuth: true,
+    requireOrg: true,
+  },
+);
 
 export const POST = apiHandler(
   async ({ orgId, body }) => {
@@ -12,5 +18,8 @@ export const POST = apiHandler(
       orgId,
     });
   },
-  { requireOrg: true },
+  {
+    requireAuth: true,
+    requireOrg: true,
+  },
 );
