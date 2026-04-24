@@ -1,8 +1,10 @@
 import { apiHandler } from "@lib/server/api/apiHandler";
 import { priceService } from "@lib/services/price.service";
-import { UpdatePriceSchema } from "@lib/schema/price.schema";
+import { CreatePriceSchema } from "@lib/schema/price.schema";
 
-// GET
+/* =========================================================
+   GET /api/prices
+========================================================= */
 export const GET = apiHandler(
   async ({ orgId }) => {
     return priceService.list(orgId);
@@ -13,16 +15,16 @@ export const GET = apiHandler(
   },
 );
 
-// PATCH
-export const PATCH = apiHandler(
+/* =========================================================
+   POST /api/prices
+========================================================= */
+export const POST = apiHandler(
   async ({ orgId, body }) => {
-    const { priceListId, ...data } = body;
-
-    return priceService.updatePrice(orgId, priceListId, data);
+    return priceService.create(orgId, body);
   },
   {
     requireAuth: true,
     requireOrg: true,
-    schema: UpdatePriceSchema,
+    schema: CreatePriceSchema,
   },
 );

@@ -7,8 +7,8 @@ const getDb = (tx?: TxOrDb) => tx ?? prisma;
 
 export class StockRepository {
   /* =========================================================
-     READ OPERATIONS (SAFE PUBLIC API)
-  ========================================================= */
+   READ-ONLY REPOSITORY
+========================================================= */
 
   static async list(orgId: string, tx?: DbClient) {
     const db = getDb(tx);

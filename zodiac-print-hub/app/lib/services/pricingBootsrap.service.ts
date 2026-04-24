@@ -1,61 +1,63 @@
-import { StockRepository } from "@/lib/repositories/stock.repository";
-import { UnitOfWork } from "@/lib/db/unitOfWork";
-import { Outbox } from "@/lib/db/outbox";
+"use client";
 
-export class StockService {
-  static async restock(params: {
-    orgId: string;
-    stockItemId: string;
-    quantity: number;
-    unitCost: number;
-  }) {
-    return UnitOfWork.run(async (tx) => {
-      const res = await StockRepository.restock(
-        params.orgId,
-        params.stockItemId,
-        params.quantity,
-        params.unitCost,
-        tx,
-      );
+import { apiClient } from "@root/lib/api/client";
+import { useDataStore } from "@store/core/useDataStore";
+import type { PriceItem } from "@/types/zodiac.types";
 
-      await Outbox.add(tx, {
-        type: "stock.restocked",
-        orgId: params.orgId,
-        payload: res,
-      });
+/**
+ * =========================================================
+ * PRICING BOOTSTRAP SERVICE (HYDRATION ONLY)
+ * =========================================================
+ *
+ * Responsibility:
+ * - Fetch server state
+ * - Hydrate Zustand store
+ * - NO mutations
+ * - NO business logic
+ * - NO repository access
+ *
+ * This is NOT a service layer. It's a sync adapter.
+ */
 
-      return res;
-    });
+class PricingBootstrapService {
+  /**
+   * Load all prices into the client store
+   */
+  async loadPrices(orgId: string): Promise<PriceItem[]> {
+    const res = await apiClient<{ data: { items: PriceItem[] } }>(
+      "/api/prices",
+      {
+        query: { orgId },
+      },
+    );
+
+    const items = res?.data?.items ?? [];
+
+    useDataStore.getState().setPrices(items);
+
+    return items;
   }
 
-  static async deduct(params: {
-    orgId: string;
-    stockItemId: string;
-    amount: number;
-  }) {
-    return UnitOfWork.run(async (tx) => {
-      const res = await StockRepository.deduct(
-        params.orgId,
-        params.stockItemId,
-        params.amount,
-        tx,
-      );
+  /**
+   * Optional: full system hydration (future-safe)
+   * - can be expanded to include stock, jobs, clients
+   */
+  async bootstrap(orgId: string) {
+    const prices = await this.loadPrices(orgId);
 
-      await Outbox.add(tx, {
-        type: "stock.updated",
-        orgId: params.orgId,
-        payload: res,
-      });
-
-      return res;
-    });
+    return {
+      prices,
+    };
   }
 
-  static async list(orgId: string) {
-    return StockRepository.list(orgId);
-  }
-
-  static async findById(orgId: string, id: string) {
-    return StockRepository.findById(orgId, id);
+  /**
+   * Soft refresh (re-sync prices only)
+   */
+  async refreshPrices(orgId: string) {
+    return this.loadPrices(orgId);
   }
 }
+
+/* ---------------- SINGLETON EXPORT ---------------- */
+
+export const pricingBootstrapService = new PricingBootstrapService();

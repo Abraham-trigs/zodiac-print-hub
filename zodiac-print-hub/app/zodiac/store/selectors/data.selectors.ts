@@ -18,27 +18,28 @@ const cache = {
   inventory: { map: null as any, array: EMPTY_ARRAY as any[] },
   delivery: { map: null as any, array: EMPTY_ARRAY as any[] },
   payment: { map: null as any, array: EMPTY_ARRAY as any[] },
+  // 🔥 FIXED: Added b2b key to the cache to support the b2b selector
+  b2b: { map: null as any, array: EMPTY_ARRAY as any[] },
 };
+
 /* =========================================================
    SAFE BASE ACCESSORS (HYDRATION-PROOF)
 ========================================================= */
 
-// ✅ Updated to match your new grouped state structure
 export const selectJobsMap = (s: State) => s.jobState?.jobs ?? EMPTY_MAP;
-
 export const selectPricesMap = (s: State) => s.priceState?.prices ?? EMPTY_MAP;
-
 export const selectStaffMap = (s: State) => s.staffState?.staff ?? EMPTY_MAP;
+
+// ✅ SYNCED: Points to b2bState grouping
+export const selectB2BMap = (s: State) => s.b2bState?.items ?? EMPTY_MAP;
+export const selectSelectedB2BId = (s: State) => s.b2bState?.selectedId;
 
 export const selectClientsMap = (s: State) =>
   s.clientState?.clients ?? EMPTY_MAP;
-
 export const selectInventoryMap = (s: State) =>
   s.inventoryState?.inventory ?? EMPTY_MAP;
-
 export const selectDeliveriesMap = (s: State) =>
   s.deliveryState?.deliveries ?? EMPTY_MAP;
-
 export const selectPaymentsMap = (s: State) =>
   s.paymentState?.payments ?? EMPTY_MAP;
 
@@ -50,6 +51,10 @@ export const selectPaymentsMap = (s: State) =>
  * Helper to ensure Object.values doesn't trigger infinite loops
  * by returning the exact same array reference if the map hasn't changed.
  */
+/* =========================================================
+   ARRAY / LIST VIEWS (MEMOIZED)
+========================================================= */
+
 const getMemoizedArray = (currentMap: any, cacheKey: keyof typeof cache) => {
   if (currentMap === cache[cacheKey].map) return cache[cacheKey].array;
   cache[cacheKey].map = currentMap;
@@ -71,6 +76,9 @@ export const selectDeliveriesArray = (s: State) =>
   getMemoizedArray(selectDeliveriesMap(s), "delivery");
 export const selectPaymentsArray = (s: State) =>
   getMemoizedArray(selectPaymentsMap(s), "payment");
+// ✅ SYNCED: Now has a cache entry to refer to
+export const selectB2BArray = (s: State) =>
+  getMemoizedArray(selectB2BMap(s), "b2b");
 
 let jobsWithRelationsCache: any[] = [];
 let jobsRef: any = null;
@@ -124,17 +132,19 @@ export const selectAllPayments = selectPaymentsArray;
    JOB DOMAIN COMPOSITES
 ========================================================= */
 
-export const selectJobById = (id: string) => (s: State) => selectJobsMap(s)[id];
-
 export const selectJobWithRelations = (id: string) => (s: State) => {
   const job = selectJobsMap(s)[id];
   if (!job) return undefined;
 
   const prices = selectPricesMap(s);
+  const b2bItems = selectB2BMap(s); // 🔥 Added to check for negotiations
 
   return {
     ...job,
-    service: prices[job.serviceId], // ✅ ADD THIS
+    service: prices[job.serviceId],
+
+    // 🔥 NEW: Link the negotiated push record if this was a B2B job
+    b2bPush: job.b2bPushId ? b2bItems[job.b2bPushId] : undefined,
 
     client: selectClientsMap(s)[job.clientId],
     staff: job.assignedStaffId
@@ -189,8 +199,16 @@ export const selectLowStockItems =
 
 export const selectStockForJob = (jobId: string) => (s: State) => {
   const job = selectJobsMap(s)[jobId];
-  if (!job) return EMPTY_ARRAY;
-  return selectInventoryArray(s).filter((item) => item.id === job.serviceId);
+  if (!job) return undefined;
+
+  const prices = selectPricesMap(s);
+  const service = prices[job.serviceId];
+
+  // 🔥 FIXED: Trace the link from Job -> PriceList -> stockRefId
+  if (!service || !service.stockRefId) return undefined;
+
+  const inventory = selectInventoryMap(s);
+  return inventory[service.stockRefId];
 };
 
 /* =========================================================
@@ -210,22 +228,38 @@ export const selectActiveDeliveries = (s: State) =>
 ========================================================= */
 
 export const selectLiveEstimate = (s: State) => {
-  // Add optional chaining here to handle cases where draft might be null
-  const draft = s.draft?.draft;
+  // ✅ FIXED: Updated to match s.draftState.draft path
+  const draft = s.draftState?.draft;
 
   if (!draft || !draft.serviceId) return 0;
 
   const prices = selectPricesMap(s);
-  const price = prices[draft.serviceId];
+  const service = prices[draft.serviceId];
 
-  if (!price) return 0;
+  if (!service) return 0;
 
-  const base = price.priceGHS;
+  // 🔥 NEW: B2B Price Hierarchy
+  // If there's a B2B deal linked, we fetch that price from b2bState
+  let basePrice = service.priceGHS;
+
+  if (draft.b2bPushId) {
+    const b2bDeals = selectB2BMap(s);
+    const deal = b2bDeals[draft.b2bPushId];
+    if (deal?.suggestedPrice) {
+      basePrice = deal.suggestedPrice;
+    }
+  }
+
   const qty = draft.quantity || 1;
-  const isArea = price.unit === "sqft" || price.unit === "sqm";
+
+  // ✅ FIXED: Expanded to match Backend isLargeFormat units
+  const isArea = ["sqft", "sqm", "Per Sq Meter", "Per Yard"].includes(
+    service.unit,
+  );
+
   const area = isArea ? (draft.width || 1) * (draft.height || 1) : 1;
 
-  return base * qty * area;
+  return basePrice * qty * area;
 };
 
 /* =========================================================
@@ -236,26 +270,53 @@ export const selectSearchJobs = (query: string) => (s: State) => {
   const all = selectJobsArray(s);
   const q = query.toLowerCase().trim();
   if (!q) return all;
-  return all.filter((j) => j.id.toLowerCase().includes(q));
+
+  return all.filter((j) => {
+    // 🔥 FIXED: Search by ID, Service Name, or Client Name (via relation)
+    const client = selectClientsMap(s)[j.clientId];
+    return (
+      j.id.toLowerCase().includes(q) ||
+      j.serviceName.toLowerCase().includes(q) ||
+      client?.name.toLowerCase().includes(q)
+    );
+  });
 };
 
 export const selectSearchClients = (query: string) => (s: State) => {
   const all = selectClientsArray(s);
   const q = query.toLowerCase().trim();
   if (!q) return all;
-  return all.filter((c) => c.name.toLowerCase().includes(q));
+
+  return all.filter(
+    (c) =>
+      // 🔥 FIXED: Search by Name or Phone Number
+      c.name.toLowerCase().includes(q) || c.phone?.toLowerCase().includes(q),
+  );
 };
 
 /* =========================================================
    HOOK WRAPPERS
 ========================================================= */
 
-export const useDraft = () => useDataStore((s: State) => s.draft.draft);
-export const usePrices = () => useDataStore((s: State) => s.prices.prices);
+// ✅ FIXED: Points to draftState grouping
+export const useDraft = () => useDataStore((s: State) => s.draftState?.draft);
+
+// ✅ SYNCED: Points to priceState
+export const usePrices = () => useDataStore((s) => s.priceState?.prices);
+
 export const useSelectedService = () =>
   useDataStore((s: State) => {
-    const draft = s.draft.draft;
-    return s.prices.prices[draft.serviceId];
+    // ✅ FIXED: Updated path
+    const draft = s.draftState?.draft;
+    if (!draft?.serviceId) return undefined;
+
+    // ✅ SYNCED: Points to priceState
+    return s.priceState?.prices[draft.serviceId];
   });
+
+// ✅ SYNCED: Uses the updated B2B-aware estimate selector
 export const useLiveEstimate = () =>
   useDataStore((s: State) => selectLiveEstimate(s));
+
+// ✅ NEW: Hook for the B2B negotiations
+export const useB2BItems = () => useDataStore((s: State) => s.b2bState?.items);

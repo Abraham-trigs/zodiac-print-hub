@@ -5,11 +5,13 @@ import { StockItem } from "../../types/zodiac.types";
 import { apiClient } from "@root/lib/api/client";
 
 export interface InventorySlice {
-  inventory: Record<string, StockItem>;
-  isLoading: boolean;
+  // ✅ FIXED: Grouped state to match priceState/jobState
+  inventoryState: {
+    inventory: Record<string, StockItem>;
+    isLoading: boolean;
+  };
 
   setInventory: (data: StockItem[]) => void;
-
   loadInventory: (orgId: string) => Promise<StockItem[]>;
 
   restock: (payload: {
@@ -17,12 +19,14 @@ export interface InventorySlice {
     stockItemId: string;
     quantity: number;
     unitCost: number;
+    createdBy: string; // 🔥 Added to align with StockMovement schema
   }) => Promise<void>;
 
   consume: (payload: {
     orgId: string;
     stockItemId: string;
     quantity: number;
+    createdBy: string;
   }) => Promise<void>;
 }
 
@@ -33,25 +37,32 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
   // =========================================================
   // STATE
   // =========================================================
-  inventory: {},
-  isLoading: false,
+  inventoryState: {
+    inventory: {},
+    isLoading: false,
+  },
 
   // =========================================================
   // HYDRATION
   // =========================================================
   setInventory: (data) =>
-    set(() => ({
-      inventory: data.reduce<Record<string, StockItem>>((acc, item) => {
-        acc[item.id] = item;
-        return acc;
-      }, {}),
+    set((state) => ({
+      inventoryState: {
+        ...state.inventoryState,
+        inventory: data.reduce<Record<string, StockItem>>((acc, item) => {
+          acc[item.id] = item;
+          return acc;
+        }, {}),
+      },
     })),
 
   // =========================================================
   // LOAD FROM SERVER
   // =========================================================
   loadInventory: async (orgId: string) => {
-    set((state) => ({ ...state, isLoading: true }));
+    set((state) => ({
+      inventoryState: { ...state.inventoryState, isLoading: true },
+    }));
 
     try {
       const res = await apiClient<{ data: StockItem[] }>("/api/stock", {
@@ -59,43 +70,45 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
       });
 
       const items = res?.data ?? [];
-
       get().setInventory(items);
       return items;
     } finally {
-      set((state) => ({ ...state, isLoading: false }));
+      set((state) => ({
+        inventoryState: { ...state.inventoryState, isLoading: false },
+      }));
     }
   },
 
   // =========================================================
-  // DOMAIN ACTIONS (SOURCE OF TRUTH = SERVER)
+  // DOMAIN ACTIONS (LEDGER-BASED)
   // =========================================================
 
-  restock: async ({ orgId, stockItemId, quantity, unitCost }) => {
+  restock: async ({ orgId, stockItemId, quantity, unitCost, createdBy }) => {
     await apiClient("/api/stock/movement", {
       method: "POST",
-      body: JSON.stringify({
+      body: {
         orgId,
         stockItemId,
         type: "RESTOCK",
         quantity,
         unitCost,
-      }),
+        createdBy,
+      },
     });
 
-    // refresh for consistency (safe model)
     await get().loadInventory(orgId);
   },
 
-  consume: async ({ orgId, stockItemId, quantity }) => {
+  consume: async ({ orgId, stockItemId, quantity, createdBy }) => {
     await apiClient("/api/stock/movement", {
       method: "POST",
-      body: JSON.stringify({
+      body: {
         orgId,
         stockItemId,
         type: "DEDUCT",
         quantity,
-      }),
+        createdBy,
+      },
     });
 
     await get().loadInventory(orgId);

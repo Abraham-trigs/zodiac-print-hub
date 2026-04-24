@@ -1,86 +1,75 @@
+"use client";
+
 import { StateCreator } from "zustand";
 import { generateJobRef } from "../shared/generateRef";
-import { DeliveryType, PriceItem } from "../../types/zodiac.types";
+import { DeliveryType } from "../../types/zodiac.types";
 
 export interface DraftSlice {
-  draft: {
-    id: string;
-    clientName: string;
-    serviceId: string;
-    quantity: number;
-    width: number;
-    height: number;
-    deliveryType: DeliveryType;
+  // ✅ FIXED: Grouped state for path consistency
+  draftState: {
+    draft: {
+      id: string;
+      clientId: string; // 🔥 FIXED: Matches JobService requirement
+      serviceId: string;
+      quantity: number;
+      width: number;
+      height: number;
+      deliveryType: DeliveryType;
+      b2bPushId?: string; // 🔥 NEW: Link for Negotiated prices
+      notes?: string; // 🔥 NEW: Align with CreateJobSchema
+    };
   };
 
-  prices: Record<string, PriceItem>;
-
-  setDraft: (patch: Partial<DraftSlice["draft"]>) => void;
+  setDraft: (patch: Partial<DraftSlice["draftState"]["draft"]>) => void;
   resetDraft: () => void;
 
-  setPrices: (prices: PriceItem[]) => void;
-
-  calculateLiveEstimate: () => number;
+  // Note: calculateLiveEstimate is now handled by selectLiveEstimate
+  // in selectors.ts to avoid cross-slice data duplication.
 }
 
 export const createDraftSlice: StateCreator<DraftSlice> = (set, get) => ({
-  draft: {
-    id: generateJobRef(),
-    clientName: "",
-    serviceId: "",
-    quantity: 1,
-    width: 0,
-    height: 0,
-    deliveryType: "PHYSICAL_PICKUP",
+  // =========================================================
+  // STATE
+  // =========================================================
+  draftState: {
+    draft: {
+      id: generateJobRef(),
+      clientId: "",
+      serviceId: "",
+      quantity: 1,
+      width: 0,
+      height: 0,
+      deliveryType: "PHYSICAL_PICKUP",
+      notes: "",
+    },
   },
 
-  prices: {},
-
-  setPrices: (prices) =>
-    set(() => ({
-      prices: prices.reduce(
-        (acc, p) => {
-          acc[p.id] = p;
-          return acc;
-        },
-        {} as Record<string, PriceItem>,
-      ),
-    })),
+  // =========================================================
+  // ACTIONS
+  // =========================================================
 
   setDraft: (patch) =>
     set((state) => ({
-      draft: { ...state.draft, ...patch },
+      draftState: {
+        ...state.draftState,
+        draft: { ...state.draftState.draft, ...patch },
+      },
     })),
 
   resetDraft: () =>
-    set({
-      draft: {
-        id: generateJobRef(),
-        clientName: "",
-        serviceId: "",
-        quantity: 1,
-        width: 0,
-        height: 0,
-        deliveryType: "PHYSICAL_PICKUP",
+    set((state) => ({
+      draftState: {
+        ...state.draftState,
+        draft: {
+          id: generateJobRef(),
+          clientId: "",
+          serviceId: "",
+          quantity: 1,
+          width: 0,
+          height: 0,
+          deliveryType: "PHYSICAL_PICKUP",
+          notes: "",
+        },
       },
-    }),
-
-  calculateLiveEstimate: () => {
-    const state = get();
-
-    const selectedService = state.prices[state.draft.serviceId];
-    if (!selectedService) return 0;
-
-    const base = selectedService.priceGHS;
-    const quantity = state.draft.quantity || 1;
-
-    const isAreaBased =
-      selectedService.unit === "sqft" || selectedService.unit === "sqm";
-
-    const area = isAreaBased
-      ? (state.draft.width || 1) * (state.draft.height || 1)
-      : 1;
-
-    return base * quantity * area;
-  },
+    })),
 });

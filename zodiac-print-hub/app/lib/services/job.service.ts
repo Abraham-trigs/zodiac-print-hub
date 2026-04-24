@@ -14,6 +14,7 @@ export class JobService {
     height?: number;
     assignedStaffId?: string;
     notes?: string;
+    b2bPushId?: string;
   }) {
     const {
       orgId,
@@ -24,20 +25,45 @@ export class JobService {
       height,
       assignedStaffId,
       notes,
+      b2bPushId,
     } = params;
 
     return UnitOfWork.run(async (tx) => {
       const now = new Date();
 
-      // Domain rule: only large-format jobs use dimensions
-      const isLargeFormat = ["sqft", "sqm"].includes(service.unit);
+      // 1. PRICE RESOLUTION (Security & Negotiation Layer)
+      let priceToUse = service.priceGHS;
+
+      if (b2bPushId) {
+        const b2bPush = await tx.b2BPush.findUnique({
+          where: { id: b2bPushId, orgId },
+        });
+
+        if (!b2bPush) throw new Error("B2B Negotiation record not found");
+
+        if (b2bPush.suggestedPrice) {
+          priceToUse = b2bPush.suggestedPrice;
+        }
+      }
+
+      // Domain math: only large-format jobs use area-based units
+      const isLargeFormat = [
+        "sqft",
+        "sqm",
+        "Per Sq Meter",
+        "Per Yard",
+      ].includes(service.unit);
 
       const area = isLargeFormat ? (width ?? 1) * (height ?? 1) : 1;
       const units = isLargeFormat ? area * quantity : quantity;
 
-      const totalPrice = units * service.priceGHS;
+      const totalPrice = units * priceToUse;
 
-      // 1. CREATE JOB
+      // 🔥 PROFIT LOOP: Calculate total cost for the job record
+      const unitCost = service.costPrice ?? 0;
+      const totalCost = units * unitCost;
+
+      // 2. CREATE JOB
       const job = await JobRepository.create(
         {
           orgId,
@@ -49,13 +75,17 @@ export class JobService {
           height,
           unit: service.unit,
           totalPrice,
+          // 🔥 PROFIT LOOP: Store cost and margin at the time of creation
+          costPrice: totalCost,
+          profitMargin: totalPrice - totalCost,
           assignedStaffId,
           notes,
+          b2bPushId,
         },
         tx,
       );
 
-      // 2. UPDATE CLIENT
+      // 3. UPDATE CLIENT
       await tx.client.update({
         where: { id: clientId },
         data: {
@@ -68,7 +98,7 @@ export class JobService {
         },
       });
 
-      // 3. STOCK MOVEMENT (NOW TX-CORRECT)
+      // 4. STOCK MOVEMENT (NOW FULLY ALIGNED)
       if (service.stockRefId) {
         await stockService.createMovement(
           {
@@ -78,14 +108,16 @@ export class JobService {
             quantity: units,
             referenceId: job.id,
             referenceType: "JOB",
-            note: `Auto deduction from job ${job.id}`,
+            note: `Auto deduction for job ${job.id}${b2bPushId ? " (B2B)" : ""}`,
             createdBy: assignedStaffId ?? "system",
+            // 🔥 PROFIT LOOP: Link the material cost to the ledger entry
+            unitCost: unitCost,
           },
-          tx, // ✅ CRITICAL FIX
+          tx,
         );
       }
 
-      // 4. OUTBOX EVENT
+      // 5. OUTBOX EVENT
       await Outbox.add(tx, {
         type: "job.created",
         orgId,
@@ -95,6 +127,8 @@ export class JobService {
       return job;
     });
   }
+
+  // ... (updateStatus, assignStaff, confirmPayment remain the same)
 
   async updateStatus(orgId: string, jobId: string, status: any) {
     return UnitOfWork.run(async (tx) => {

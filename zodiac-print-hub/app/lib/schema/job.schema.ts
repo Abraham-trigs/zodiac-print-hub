@@ -47,12 +47,9 @@ export const ServiceUnitEnum = z.enum([
 export const PriceItemSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
-
   // strict unit = prevents silent pricing bugs
   unit: ServiceUnitEnum,
-
   priceGHS: z.number().nonnegative(),
-
   stockRefId: z.string().optional(),
 });
 
@@ -65,7 +62,7 @@ export const CreateJobSchema = z.object({
 
   service: PriceItemSchema,
 
-  quantity: z.number().int().positive(),
+  quantity: z.number().positive(), // Changed to positive() to allow decimal quantities if needed (e.g., 1.5 yards)
 
   width: z.number().positive().optional(),
   height: z.number().positive().optional(),
@@ -73,6 +70,9 @@ export const CreateJobSchema = z.object({
   assignedStaffId: z.string().optional(),
 
   notes: z.string().max(1000).optional(),
+
+  // 🔥 NEW: Added to support B2B price overrides
+  b2bPushId: z.string().optional(),
 });
 
 /* =========================================================

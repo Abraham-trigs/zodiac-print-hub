@@ -9,11 +9,6 @@ const getDb = (tx?: TxOrDb) => {
   return prisma;
 };
 
-/**
- * Repository must be transaction-aware.
- * If a tx is passed, ALL operations must use it.
- * No mixed implicit writes.
- */
 export class JobRepository {
   static async create(
     data: {
@@ -30,6 +25,8 @@ export class JobRepository {
       profitMargin?: number;
       assignedStaffId?: string;
       notes?: string;
+      // 🔥 NEW: Link to B2B Negotiation
+      b2bPushId?: string;
     },
     tx?: DbClient,
   ) {
@@ -45,6 +42,8 @@ export class JobRepository {
       include: {
         client: true,
         assignedStaff: true,
+        // 🔥 NEW: Include B2B details for the UI/Store
+        b2bPush: true,
       },
     });
   }
@@ -69,11 +68,18 @@ export class JobRepository {
           paymentStatus: params.paymentStatus,
         }),
       },
+      include: {
+        client: true, // Often needed for list views
+        b2bPush: { select: { status: true } }, // Trace if it's a B2B job
+      },
       orderBy: { createdAt: "desc" },
       take: params?.take ?? 50,
       skip: params?.skip ?? 0,
     });
   }
+
+  // ... rest of methods (updateStatus, assignStaff, etc.) remain the same
+  // as they primarily target the ID and orgId for scoping.
 
   static async updateStatus(
     orgId: string,

@@ -216,7 +216,9 @@ model PriceList {
   name       String
   category   String
   unit       ServiceUnit
+  costPrice  Float?
   priceGHS   Float
+  
   stockRefId String?
 
   isActive  Boolean  @default(true)
@@ -372,6 +374,9 @@ model Job {
 
   notes String?
 
+  b2bPushId String? 
+  b2bPush   B2BPush? @relation(fields: [b2bPushId], references: [id])
+
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   completedAt DateTime?
@@ -385,6 +390,7 @@ model Job {
   @@index([assignedStaffId])     // Useful for "My Tasks" view for staff members
   @@index([createdAt(sort: Desc)]) // Optimized for the main Dashboard (newest first)
   @@index([orgId, status])       // Compound index for lightning-fast Kanban boards
+   @@index([b2bPushId])
 }
 
 
@@ -506,6 +512,7 @@ model B2BPush {
   suggestedPrice Float?
 
   status B2BStatus @default(PENDING)
+   jobs Job[]
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

@@ -5,21 +5,19 @@ import type { CreateStockMovementInput } from "@lib/schema/stock.schema";
 type CreateMovementParams = CreateStockMovementInput;
 
 /**
- * PURE DOMAIN SERVICE
- * - NO UnitOfWork ownership
- * - MUST run inside external transaction (JobService, Restock flows, etc.)
+ * DOMAIN SERVICE (INSTANCE-BASED)
  *
  * RESPONSIBILITIES:
- * 1. Enforce stock rules (business logic)
+ * 1. Enforce stock rules
  * 2. Mutate stockItem inside tx
- * 3. Write stockMovement ledger entry
+ * 3. Write stockMovement ledger
  * 4. Emit outbox event
  */
-export class StockService {
+class StockService {
   /* =========================================================
      WRITE: STOCK MOVEMENT (SOURCE OF TRUTH)
   ========================================================= */
-  static async createMovement(params: CreateMovementParams, tx: any) {
+  async createMovement(params: CreateMovementParams, tx: any) {
     const {
       orgId,
       stockItemId,
@@ -93,19 +91,17 @@ export class StockService {
   }
 
   /* =========================================================
-     READ: SAFE QUERY LAYER (FIX FOR YOUR RUNTIME ERROR)
-     - Keeps UI slices working (inventory.loadInventory, etc.)
-     - No transaction required
+     READ: SAFE QUERY LAYER
   ========================================================= */
 
-  static async list(orgId: string) {
+  async list(orgId: string) {
     return prisma.stockItem.findMany({
       where: { orgId },
       orderBy: { createdAt: "desc" },
     });
   }
 
-  static async findById(orgId: string, id: string) {
+  async findById(orgId: string, id: string) {
     return prisma.stockItem.findFirst({
       where: { id, orgId },
     });
@@ -115,4 +111,5 @@ export class StockService {
 /* =========================================================
    SINGLETON EXPORT
 ========================================================= */
+
 export const stockService = new StockService();
