@@ -1,5 +1,3 @@
-// app/zodiac/store/slices/price.slice.ts
-
 import { StateCreator } from "zustand";
 import { PriceItem } from "@/types/zodiac.types";
 import { apiClient } from "@root/lib/api/client";
@@ -12,9 +10,13 @@ export interface PriceSlice {
 
   setPrices: (data: PriceItem[]) => void;
 
-  updatePrice: (id: string, priceGHS: number, orgId: string) => Promise<void>;
+  updatePrice: (
+    id: string,
+    patch: Partial<Pick<PriceItem, "priceGHS" | "name" | "unit" | "category">>,
+    orgId: string,
+  ) => Promise<void>;
 
-  loadPrices: (orgId: string) => Promise<void>;
+  loadPrices: () => Promise<void>;
 }
 
 export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
@@ -27,35 +29,30 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
   },
 
   // =========================================================
-  // SET PRICES (HYDRATION)
+  // HYDRATION
   // =========================================================
   setPrices: (data) =>
-    set((state) => {
-      const safeData = Array.isArray(data) ? data : [];
-
-      return {
-        priceState: {
-          ...state.priceState,
-          prices: safeData.reduce(
-            (acc, p) => {
-              acc[p.id] = p;
-              return acc;
-            },
-            {} as Record<string, PriceItem>,
-          ),
-        },
-      };
-    }),
+    set((state) => ({
+      priceState: {
+        ...state.priceState,
+        prices: data.reduce(
+          (acc, p) => {
+            acc[p.id] = p;
+            return acc;
+          },
+          {} as Record<string, PriceItem>,
+        ),
+      },
+    })),
 
   // =========================================================
-  // UPDATE PRICE (OPTIMISTIC + SYNC)
+  // UPDATE PRICE (OPTIMISTIC + PATCH PATCH PATCH)
   // =========================================================
-  updatePrice: async (id, priceGHS, orgId) => {
+  updatePrice: async (id, patch, orgId) => {
     const prev = get().priceState.prices[id];
-
     if (!prev) return;
 
-    // 1. Optimistic update
+    // 1. optimistic update (safe merge)
     set((state) => ({
       priceState: {
         ...state.priceState,
@@ -63,28 +60,27 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
           ...state.priceState.prices,
           [id]: {
             ...prev,
-            priceGHS,
+            ...patch,
           },
         },
       },
     }));
 
     try {
-      // 2. Persist to backend
       await apiClient("/api/prices", {
         method: "PATCH",
         body: {
           priceListId: id,
-          priceGHS,
+          ...patch,
         },
       });
 
-      // Optional: re-sync for absolute correctness
-      await get().loadPrices(orgId);
+      // full sync ensures backend truth alignment
+      await get().loadPrices();
     } catch (error) {
       console.error("Failed to update price:", error);
 
-      // 3. Rollback on failure
+      // rollback
       set((state) => ({
         priceState: {
           ...state.priceState,
@@ -98,9 +94,9 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
   },
 
   // =========================================================
-  // LOAD PRICES (SERVER SOURCE OF TRUTH)
+  // LOAD PRICES (SOURCE OF TRUTH)
   // =========================================================
-  loadPrices: async (orgId) => {
+  loadPrices: async () => {
     set((state) => ({
       priceState: { ...state.priceState, isLoading: true },
     }));
@@ -109,7 +105,7 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
       const res = await apiClient<{ data: { items: PriceItem[] } }>(
         "/api/prices",
         {
-          query: { orgId },
+          method: "GET",
         },
       );
 

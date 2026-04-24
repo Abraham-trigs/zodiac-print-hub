@@ -274,6 +274,45 @@ model RestockRecord {
   @@index([recordedBy])     // Useful for auditing who logged which inventory update
 }
 
+model StockMovement {
+  id          String   @id @default(cuid())
+
+  orgId       String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  stockItemId String
+  stockItem   StockItem @relation(fields: [stockItemId], references: [id])
+
+  type        StockMovementType
+
+  quantity    Float
+  unitCost    Float?
+
+  // useful for traceability (job, restock, waste, adjustment)
+  referenceId String?
+  referenceType String? // "JOB" | "RESTOCK" | "WASTE" | "MANUAL"
+
+  note        String?
+
+  createdBy   String
+  createdAt   DateTime @default(now())
+
+  // INDEXING
+  @@index([orgId])
+  @@index([stockItemId])
+  @@index([type])
+  @@index([createdAt(sort: Desc)])
+  @@index([referenceId])
+}
+
+enum StockMovementType {
+  RESTOCK
+  DEDUCT
+  WASTE
+  ADJUST
+}
+
+
 
 //
 // ─────────────────────────────────────────────

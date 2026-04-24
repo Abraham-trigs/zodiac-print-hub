@@ -1,6 +1,6 @@
 import { JobRepository } from "@lib/repositories/job.repository";
-import { StockRepository } from "@lib/repositories/stock.repository";
-import { PriceItem } from "@types/zodiac.types";
+import { stockService } from "@lib/services/stock.service";
+import type { PriceItem } from "@types/zodiac.types";
 import { UnitOfWork } from "@lib/db/unitOfWork";
 import { Outbox } from "@lib/db/outbox";
 
@@ -32,12 +32,12 @@ export class JobService {
       // Domain rule: only large-format jobs use dimensions
       const isLargeFormat = ["sqft", "sqm"].includes(service.unit);
 
-      // FIXED: Multiply area by quantity to sync with frontend selectLiveEstimate
       const area = isLargeFormat ? (width ?? 1) * (height ?? 1) : 1;
       const units = isLargeFormat ? area * quantity : quantity;
 
       const totalPrice = units * service.priceGHS;
 
+      // 1. CREATE JOB
       const job = await JobRepository.create(
         {
           orgId,
@@ -55,6 +55,7 @@ export class JobService {
         tx,
       );
 
+      // 2. UPDATE CLIENT
       await tx.client.update({
         where: { id: clientId },
         data: {
@@ -67,13 +68,24 @@ export class JobService {
         },
       });
 
-      const stockRefId = service.stockRefId;
-
-      if (stockRefId) {
-        // We deduct the total units (area * qty for large format)
-        await StockRepository.deduct(orgId, stockRefId, units, tx);
+      // 3. STOCK MOVEMENT (NOW TX-CORRECT)
+      if (service.stockRefId) {
+        await stockService.createMovement(
+          {
+            orgId,
+            stockItemId: service.stockRefId,
+            type: "DEDUCT",
+            quantity: units,
+            referenceId: job.id,
+            referenceType: "JOB",
+            note: `Auto deduction from job ${job.id}`,
+            createdBy: assignedStaffId ?? "system",
+          },
+          tx, // ✅ CRITICAL FIX
+        );
       }
 
+      // 4. OUTBOX EVENT
       await Outbox.add(tx, {
         type: "job.created",
         orgId,
@@ -130,7 +142,5 @@ export class JobService {
     return JobRepository.list(orgId);
   }
 }
-
-/* ---------------- INSTANCE EXPORT ---------------- */
 
 export const jobService = new JobService();

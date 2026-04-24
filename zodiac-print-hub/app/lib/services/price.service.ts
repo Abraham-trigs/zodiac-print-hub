@@ -1,3 +1,5 @@
+// app/lib/services/price.service.ts
+
 import { PriceRepository } from "@lib/repositories/price.repository";
 import { UnitOfWork } from "@lib/db/unitOfWork";
 import { Outbox } from "@lib/db/outbox";
@@ -40,6 +42,7 @@ class PriceService {
         payload: {
           before: existing,
           after: updated,
+          diff: data,
         },
       });
 

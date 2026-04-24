@@ -28,7 +28,7 @@ export const CreatePriceSchema = z.object({
 
   priceGHS: z.number().nonnegative(),
 
-  stockRefId: z.string().optional(),
+  stockRefId: z.string().optional(), // maps PriceItem → StockItem (material consumed per job)
 });
 
 /* =========================================================

@@ -48,7 +48,7 @@ export const useDataStore = create(
       },
     }),
     {
-      name: "zodiac-store-v4", // ✅ Incrementing version to force a fresh start
+      name: "zodiac-store", // ✅ Incrementing version to force a fresh start
       partialize: (state: any) => ({
         draft: state.draft,
       }),

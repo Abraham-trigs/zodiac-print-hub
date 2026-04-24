@@ -1,9 +1,17 @@
 import { prisma } from "@lib/prisma-client";
 import { DbClient } from "@lib/prisma-client";
 
+type TxOrDb = DbClient | undefined;
+
+const getDb = (tx?: TxOrDb) => tx ?? prisma;
+
 export class StockRepository {
+  /* =========================================================
+     READ OPERATIONS (SAFE PUBLIC API)
+  ========================================================= */
+
   static async list(orgId: string, tx?: DbClient) {
-    const db = tx ?? prisma;
+    const db = getDb(tx);
 
     return db.stockItem.findMany({
       where: { orgId },
@@ -12,61 +20,34 @@ export class StockRepository {
   }
 
   static async findById(orgId: string, id: string, tx?: DbClient) {
-    const db = tx ?? prisma;
+    const db = getDb(tx);
 
     return db.stockItem.findFirst({
       where: { id, orgId },
     });
   }
 
-  static async deduct(
-    orgId: string,
-    stockItemId: string,
-    amount: number,
-    tx?: DbClient,
-  ) {
-    const db = tx ?? prisma;
+  /* =========================================================
+     WRITE GUARD (INTENTIONALLY BLOCKED)
+     - Prevents accidental direct mutation
+     - Enforces StockMovement as ONLY write path
+  ========================================================= */
 
-    const item = await db.stockItem.findFirst({
-      where: { id: stockItemId, orgId },
-    });
-
-    if (!item) throw new Error("Stock item not found");
-
-    return db.stockItem.update({
-      where: { id: stockItemId },
-      data: {
-        totalRemaining: {
-          decrement: amount,
-        },
-      },
-    });
+  static increment(): never {
+    throw new Error(
+      "StockRepository.increment is disabled. Use StockService.createMovement({ type: 'RESTOCK' })",
+    );
   }
 
-  static async restock(
-    orgId: string,
-    stockItemId: string,
-    quantity: number,
-    unitCost: number,
-    tx?: DbClient,
-  ) {
-    const db = tx ?? prisma;
+  static decrement(): never {
+    throw new Error(
+      "StockRepository.decrement is disabled. Use StockService.createMovement({ type: 'DEDUCT' })",
+    );
+  }
 
-    const item = await db.stockItem.findFirst({
-      where: { id: stockItemId, orgId },
-    });
-
-    if (!item) throw new Error("Stock item not found");
-
-    return db.stockItem.update({
-      where: { id: stockItemId },
-      data: {
-        totalRemaining: {
-          increment: quantity,
-        },
-        lastUnitCost: unitCost,
-        lastRestockedAt: new Date(),
-      },
-    });
+  static adjust(): never {
+    throw new Error(
+      "StockRepository.adjust is disabled. Use StockService.createMovement({ type: 'ADJUST' })",
+    );
   }
 }

@@ -1,28 +1,35 @@
+"use client";
+
 import { StateCreator } from "zustand";
 import { JobTicket } from "@/types/zodiac.types";
+import { apiClient } from "@root/lib/api/client";
 
 export interface JobSlice {
-  // We move the data into its own nested object to prevent collisions
   jobState: {
     jobs: Record<string, JobTicket>;
     isLoading: boolean;
   };
 
-  // Actions
   setJobs: (data: JobTicket[]) => void;
   addJob: (job: JobTicket) => void;
   updateJob: (id: string, patch: Partial<JobTicket>) => void;
   removeJob: (id: string) => void;
-  loadJobs: () => Promise<JobTicket[]>;
+
+  loadJobs: (orgId: string) => Promise<JobTicket[]>;
 }
 
 export const createJobSlice: StateCreator<JobSlice> = (set, get) => ({
-  // Initial State nested inside jobState
+  // =========================================================
+  // STATE
+  // =========================================================
   jobState: {
     jobs: {},
     isLoading: false,
   },
 
+  // =========================================================
+  // HYDRATION
+  // =========================================================
   setJobs: (data) =>
     set((state) => ({
       jobState: {
@@ -37,31 +44,33 @@ export const createJobSlice: StateCreator<JobSlice> = (set, get) => ({
       },
     })),
 
-  loadJobs: async () => {
-    // Set loading state
-    set((state) => ({ jobState: { ...state.jobState, isLoading: true } }));
+  // =========================================================
+  // LOAD (SERVER SOURCE OF TRUTH)
+  // =========================================================
+  loadJobs: async (orgId: string) => {
+    set((state) => ({
+      jobState: { ...state.jobState, isLoading: true },
+    }));
 
     try {
-      const res = await fetch("/api/jobs", {
-        headers: {
-          Authorization: "Bearer cmoa30is40001o0dwpfkom18r",
-        },
+      const res = await apiClient<{ data: JobTicket[] }>("/api/jobs", {
+        query: { orgId },
       });
 
-      if (!res.ok) throw new Error("Failed to load jobs");
+      const jobs = res?.data ?? [];
 
-      const json = await res.json();
-      const jobs: JobTicket[] = json.data ?? [];
-
-      // Hydrate
       get().setJobs(jobs);
       return jobs;
     } finally {
-      // Clear loading state
-      set((state) => ({ jobState: { ...state.jobState, isLoading: false } }));
+      set((state) => ({
+        jobState: { ...state.jobState, isLoading: false },
+      }));
     }
   },
 
+  // =========================================================
+  // LOCAL STATE OPS
+  // =========================================================
   addJob: (job) =>
     set((state) => ({
       jobState: {
@@ -89,8 +98,12 @@ export const createJobSlice: StateCreator<JobSlice> = (set, get) => ({
   removeJob: (id) =>
     set((state) => {
       const { [id]: _, ...rest } = state.jobState.jobs;
+
       return {
-        jobState: { ...state.jobState, jobs: rest },
+        jobState: {
+          ...state.jobState,
+          jobs: rest,
+        },
       };
     }),
 });

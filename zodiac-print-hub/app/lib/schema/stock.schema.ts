@@ -1,101 +1,71 @@
 import { z } from "zod";
 
 /* =========================================================
-   ENUMS (DOMAIN TRUTH)
+   STOCK MOVEMENT (FINAL SOURCE OF TRUTH)
+   - Replaces RestockRecord completely
+   - Used by Job, Restock, Waste, Manual adjustments
 ========================================================= */
 
-export const JobStatusEnum = z.enum([
-  "PENDING",
-  "IN_PROGRESS",
-  "QUALITY_CHECK",
-  "READY_FOR_PICKUP",
-  "COMPLETED",
-  "CANCELLED",
-  "PAUSED",
+export const StockMovementTypeEnum = z.enum([
+  "RESTOCK",
+  "DEDUCT",
+  "WASTE",
+  "ADJUST",
 ]);
 
-export const ServiceUnitEnum = z.enum([
-  "sqft",
-  "sqm",
-  "sqcm",
-  "inch",
-  "ft",
-  "yd",
-  "mm",
-  "cm",
-  "m",
-  "meter",
-  "pack",
-  "piece",
-  "roll",
-  "box",
-  "ream",
-  "bottle",
-  "liter",
-  "hour",
-  "Per Page",
-  "Per 100",
-  "Per Sq Meter",
-  "Per Set",
-  "Per Yard",
-]);
+export const ReferenceTypeEnum = z.enum(["JOB", "RESTOCK", "WASTE", "MANUAL"]);
 
-/* =========================================================
-   PRICE ITEM (SERVICE SNAPSHOT)
-========================================================= */
-
-export const PriceItemSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  unit: ServiceUnitEnum, // STRICT (no fallback string)
-  priceGHS: z.number().nonnegative(),
-  stockRefId: z.string().optional(),
-});
-
-/* =========================================================
-   STOCK MODULE
-========================================================= */
-
-/** POST /stock (restock) */
-export const RestockStockSchema = z.object({
+/**
+ * Core inventory ledger entry
+ * Every stock change MUST go through this schema
+ */
+export const CreateStockMovementSchema = z.object({
   stockItemId: z.string().min(1),
+
+  type: StockMovementTypeEnum,
+
+  /**
+   * Always positive value.
+   * Direction is determined by `type`:
+   *
+   * - RESTOCK → increases stock quantity
+   * - DEDUCT  → decreases stock quantity
+   * - WASTE   → represents physical loss and reduces stock
+   * - ADJUST  → sets stock to an absolute corrected value
+   */
   quantity: z.number().positive(),
-  unitCost: z.number().nonnegative(),
-});
 
-/** GET /stock (optional query filters) */
-export const StockQuerySchema = z.object({
-  search: z.string().optional(),
-});
+  unitCost: z.number().nonnegative().optional(),
 
-/* =========================================================
-   CREATE JOB (POST /jobs)
-========================================================= */
+  referenceId: z.string().optional(),
+  referenceType: ReferenceTypeEnum.optional(),
 
-export const CreateJobSchema = z.object({
-  clientId: z.string().min(1),
-  service: PriceItemSchema,
-  quantity: z.number().int().positive(),
-  width: z.number().positive().optional(),
-  height: z.number().positive().optional(),
-  assignedStaffId: z.string().optional(),
-  notes: z.string().max(1000).optional(),
+  note: z.string().max(500).optional(),
+
+  createdBy: z.string().min(1),
 });
 
 /* =========================================================
-   UPDATE JOB STATUS (PATCH /jobs/:id)
+   QUERY
 ========================================================= */
 
-export const UpdateJobStatusSchema = z.object({
-  status: JobStatusEnum,
+export const StockMovementQuerySchema = z.object({
+  stockItemId: z.string().optional(),
+  type: StockMovementTypeEnum.optional(),
+  referenceId: z.string().optional(),
+  dateFrom: z.string().optional(),
+  dateTo: z.string().optional(),
 });
 
 /* =========================================================
-   TYPES (DERIVED)
+   TYPES
 ========================================================= */
 
-export type CreateJobInput = z.infer<typeof CreateJobSchema>;
-export type UpdateJobStatusInput = z.infer<typeof UpdateJobStatusSchema>;
-export type PriceItemInput = z.infer<typeof PriceItemSchema>;
-export type RestockStockInput = z.infer<typeof RestockStockSchema>;
-export type StockQueryInput = z.infer<typeof StockQuerySchema>;
+export type CreateStockMovementInput = z.infer<
+  typeof CreateStockMovementSchema
+>;
+
+export type StockMovementQueryInput = z.infer<typeof StockMovementQuerySchema>;
+
+export type StockMovementType = z.infer<typeof StockMovementTypeEnum>;
+export type ReferenceType = z.infer<typeof ReferenceTypeEnum>;

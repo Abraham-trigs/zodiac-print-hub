@@ -224,6 +224,48 @@ export interface WasteAudit {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// STOCK MOVEMENT (INVENTORY LEDGER)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type StockMovementType = "RESTOCK" | "DEDUCT" | "WASTE" | "ADJUST";
+
+/**
+ * Single source of truth for ALL inventory changes.
+ * Replaces RestockRecord as the canonical ledger.
+ */
+export interface StockMovement {
+  id: string;
+
+  orgId: string;
+  stockItemId: string;
+
+  type: StockMovementType;
+
+  quantity: number;
+  unitCost?: number;
+
+  // Traceability (important for job → stock linkage)
+  referenceId?: string; // jobId, restockId, etc.
+  referenceType?: "JOB" | "RESTOCK" | "WASTE" | "MANUAL";
+
+  note?: string;
+
+  createdBy: string; // StaffMember.id
+  createdAt: string;
+}
+
+/**
+ * Lightweight analytics view (for dashboards)
+ */
+export interface StockMovementSummary {
+  stockItemId: string;
+  type: StockMovementType;
+  totalQuantity: number;
+  totalCost?: number;
+  lastUpdatedAt: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 7. JOB ENGINE b2b
 // payment
 // ─────────────────────────────────────────────────────────────────────────────
