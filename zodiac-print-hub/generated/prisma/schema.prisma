@@ -26,16 +26,17 @@ model Organisation {
   createdAt    DateTime @default(now())
 
   // Relations (Using the updated PriceList name)
-  outboxEvents OutboxEvent[]
-  users        User[]
-  staff        Staff[]
-  clients      Client[]
-  jobs         Job[]
-  stockItems   StockItem[]
-  prices       PriceList[]
-  deliveries   Delivery[]
-  b2bPushes    B2BPush[]
-  auditLogs    AuditLog[]
+  outboxEvents   OutboxEvent[]
+  users          User[]
+  staff          Staff[]
+  clients        Client[]
+  jobs           Job[]
+  stockItems     StockItem[]
+  stockMovements StockMovement[]
+  prices         PriceList[]
+  deliveries     Delivery[]
+  b2bPushes      B2BPush[]
+  auditLogs      AuditLog[]
 
   // Performance Indexes
   @@index([name])
@@ -210,10 +211,12 @@ model PriceList {
   orgId        String
   organisation Organisation @relation(fields: [orgId], references: [id])
 
-  name       String
-  category   String
-  unit       ServiceUnit
-  priceGHS   Float
+  name      String
+  category  String
+  unit      ServiceUnit
+  costPrice Float?
+  priceGHS  Float
+
   stockRefId String?
 
   isActive  Boolean  @default(true)
@@ -245,7 +248,8 @@ model StockItem {
   lastUnitCost      Float
   lastRestockedAt   DateTime?
 
-  createdAt DateTime @default(now())
+  createdAt      DateTime        @default(now())
+  stockMovements StockMovement[]
 
   // INDEXING:
   @@index([orgId]) // Essential for multi-tenant isolation
@@ -267,6 +271,44 @@ model RestockRecord {
   @@index([stockItemId]) // Critical for viewing the restock history of a specific item
   @@index([date(sort: Desc)]) // Optimized for "Recent Restocks" logs (newest first)
   @@index([recordedBy]) // Useful for auditing who logged which inventory update
+}
+
+model StockMovement {
+  id String @id @default(cuid())
+
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  stockItemId String
+  stockItem   StockItem @relation(fields: [stockItemId], references: [id])
+
+  type StockMovementType
+
+  quantity Float
+  unitCost Float?
+
+  // useful for traceability (job, restock, waste, adjustment)
+  referenceId   String?
+  referenceType String? // "JOB" | "RESTOCK" | "WASTE" | "MANUAL"
+
+  note String?
+
+  createdBy String
+  createdAt DateTime @default(now())
+
+  // INDEXING
+  @@index([orgId])
+  @@index([stockItemId])
+  @@index([type])
+  @@index([createdAt(sort: Desc)])
+  @@index([referenceId])
+}
+
+enum StockMovementType {
+  RESTOCK
+  DEDUCT
+  WASTE
+  ADJUST
 }
 
 //
@@ -327,6 +369,9 @@ model Job {
 
   notes String?
 
+  b2bPushId String?
+  b2bPush   B2BPush? @relation(fields: [b2bPushId], references: [id])
+
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   completedAt DateTime?
@@ -340,6 +385,7 @@ model Job {
   @@index([assignedStaffId]) // Useful for "My Tasks" view for staff members
   @@index([createdAt(sort: Desc)]) // Optimized for the main Dashboard (newest first)
   @@index([orgId, status]) // Compound index for lightning-fast Kanban boards
+  @@index([b2bPushId])
 }
 
 //
@@ -458,6 +504,7 @@ model B2BPush {
   suggestedPrice Float?
 
   status B2BStatus @default(PENDING)
+  jobs   Job[]
 
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

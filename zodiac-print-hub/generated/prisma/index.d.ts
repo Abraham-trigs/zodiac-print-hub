@@ -54,6 +54,11 @@ export type StockItem = $Result.DefaultSelection<Prisma.$StockItemPayload>
  */
 export type RestockRecord = $Result.DefaultSelection<Prisma.$RestockRecordPayload>
 /**
+ * Model StockMovement
+ * 
+ */
+export type StockMovement = $Result.DefaultSelection<Prisma.$StockMovementPayload>
+/**
  * Model Job
  * 
  */
@@ -129,6 +134,16 @@ export const ServiceUnit: {
 };
 
 export type ServiceUnit = (typeof ServiceUnit)[keyof typeof ServiceUnit]
+
+
+export const StockMovementType: {
+  RESTOCK: 'RESTOCK',
+  DEDUCT: 'DEDUCT',
+  WASTE: 'WASTE',
+  ADJUST: 'ADJUST'
+};
+
+export type StockMovementType = (typeof StockMovementType)[keyof typeof StockMovementType]
 
 
 export const JobStatus: {
@@ -208,6 +223,10 @@ export const ClientType: typeof $Enums.ClientType
 export type ServiceUnit = $Enums.ServiceUnit
 
 export const ServiceUnit: typeof $Enums.ServiceUnit
+
+export type StockMovementType = $Enums.StockMovementType
+
+export const StockMovementType: typeof $Enums.StockMovementType
 
 export type JobStatus = $Enums.JobStatus
 
@@ -433,6 +452,16 @@ export class PrismaClient<
     * ```
     */
   get restockRecord(): Prisma.RestockRecordDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stockMovement`: Exposes CRUD operations for the **StockMovement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StockMovements
+    * const stockMovements = await prisma.stockMovement.findMany()
+    * ```
+    */
+  get stockMovement(): Prisma.StockMovementDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.job`: Exposes CRUD operations for the **Job** model.
@@ -925,6 +954,7 @@ export namespace Prisma {
     PriceList: 'PriceList',
     StockItem: 'StockItem',
     RestockRecord: 'RestockRecord',
+    StockMovement: 'StockMovement',
     Job: 'Job',
     Delivery: 'Delivery',
     Payment: 'Payment',
@@ -945,7 +975,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organisation" | "outboxEvent" | "user" | "staff" | "client" | "priceList" | "stockItem" | "restockRecord" | "job" | "delivery" | "payment" | "b2BPush" | "auditLog"
+      modelProps: "organisation" | "outboxEvent" | "user" | "staff" | "client" | "priceList" | "stockItem" | "restockRecord" | "stockMovement" | "job" | "delivery" | "payment" | "b2BPush" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1541,6 +1571,80 @@ export namespace Prisma {
           }
         }
       }
+      StockMovement: {
+        payload: Prisma.$StockMovementPayload<ExtArgs>
+        fields: Prisma.StockMovementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StockMovementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StockMovementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>
+          }
+          findFirst: {
+            args: Prisma.StockMovementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StockMovementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>
+          }
+          findMany: {
+            args: Prisma.StockMovementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>[]
+          }
+          create: {
+            args: Prisma.StockMovementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>
+          }
+          createMany: {
+            args: Prisma.StockMovementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StockMovementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>[]
+          }
+          delete: {
+            args: Prisma.StockMovementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>
+          }
+          update: {
+            args: Prisma.StockMovementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>
+          }
+          deleteMany: {
+            args: Prisma.StockMovementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StockMovementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StockMovementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>[]
+          }
+          upsert: {
+            args: Prisma.StockMovementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockMovementPayload>
+          }
+          aggregate: {
+            args: Prisma.StockMovementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStockMovement>
+          }
+          groupBy: {
+            args: Prisma.StockMovementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StockMovementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StockMovementCountArgs<ExtArgs>
+            result: $Utils.Optional<StockMovementCountAggregateOutputType> | number
+          }
+        }
+      }
       Job: {
         payload: Prisma.$JobPayload<ExtArgs>
         fields: Prisma.JobFieldRefs
@@ -2027,6 +2131,7 @@ export namespace Prisma {
     priceList?: PriceListOmit
     stockItem?: StockItemOmit
     restockRecord?: RestockRecordOmit
+    stockMovement?: StockMovementOmit
     job?: JobOmit
     delivery?: DeliveryOmit
     payment?: PaymentOmit
@@ -2118,6 +2223,7 @@ export namespace Prisma {
     clients: number
     jobs: number
     stockItems: number
+    stockMovements: number
     prices: number
     deliveries: number
     b2bPushes: number
@@ -2131,6 +2237,7 @@ export namespace Prisma {
     clients?: boolean | OrganisationCountOutputTypeCountClientsArgs
     jobs?: boolean | OrganisationCountOutputTypeCountJobsArgs
     stockItems?: boolean | OrganisationCountOutputTypeCountStockItemsArgs
+    stockMovements?: boolean | OrganisationCountOutputTypeCountStockMovementsArgs
     prices?: boolean | OrganisationCountOutputTypeCountPricesArgs
     deliveries?: boolean | OrganisationCountOutputTypeCountDeliveriesArgs
     b2bPushes?: boolean | OrganisationCountOutputTypeCountB2bPushesArgs
@@ -2188,6 +2295,13 @@ export namespace Prisma {
    */
   export type OrganisationCountOutputTypeCountStockItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockItemWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountStockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockMovementWhereInput
   }
 
   /**
@@ -2282,6 +2396,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type StockItemCountOutputType
+   */
+
+  export type StockItemCountOutputType = {
+    stockMovements: number
+  }
+
+  export type StockItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    stockMovements?: boolean | StockItemCountOutputTypeCountStockMovementsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StockItemCountOutputType without action
+   */
+  export type StockItemCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockItemCountOutputType
+     */
+    select?: StockItemCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StockItemCountOutputType without action
+   */
+  export type StockItemCountOutputTypeCountStockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockMovementWhereInput
+  }
+
+
+  /**
    * Count Type JobCountOutputType
    */
 
@@ -2309,6 +2454,37 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountDeliveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DeliveryWhereInput
+  }
+
+
+  /**
+   * Count Type B2BPushCountOutputType
+   */
+
+  export type B2BPushCountOutputType = {
+    jobs: number
+  }
+
+  export type B2BPushCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | B2BPushCountOutputTypeCountJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * B2BPushCountOutputType without action
+   */
+  export type B2BPushCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the B2BPushCountOutputType
+     */
+    select?: B2BPushCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * B2BPushCountOutputType without action
+   */
+  export type B2BPushCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
   }
 
 
@@ -2510,6 +2686,7 @@ export namespace Prisma {
     clients?: boolean | Organisation$clientsArgs<ExtArgs>
     jobs?: boolean | Organisation$jobsArgs<ExtArgs>
     stockItems?: boolean | Organisation$stockItemsArgs<ExtArgs>
+    stockMovements?: boolean | Organisation$stockMovementsArgs<ExtArgs>
     prices?: boolean | Organisation$pricesArgs<ExtArgs>
     deliveries?: boolean | Organisation$deliveriesArgs<ExtArgs>
     b2bPushes?: boolean | Organisation$b2bPushesArgs<ExtArgs>
@@ -2558,6 +2735,7 @@ export namespace Prisma {
     clients?: boolean | Organisation$clientsArgs<ExtArgs>
     jobs?: boolean | Organisation$jobsArgs<ExtArgs>
     stockItems?: boolean | Organisation$stockItemsArgs<ExtArgs>
+    stockMovements?: boolean | Organisation$stockMovementsArgs<ExtArgs>
     prices?: boolean | Organisation$pricesArgs<ExtArgs>
     deliveries?: boolean | Organisation$deliveriesArgs<ExtArgs>
     b2bPushes?: boolean | Organisation$b2bPushesArgs<ExtArgs>
@@ -2576,6 +2754,7 @@ export namespace Prisma {
       clients: Prisma.$ClientPayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
       stockItems: Prisma.$StockItemPayload<ExtArgs>[]
+      stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
       prices: Prisma.$PriceListPayload<ExtArgs>[]
       deliveries: Prisma.$DeliveryPayload<ExtArgs>[]
       b2bPushes: Prisma.$B2BPushPayload<ExtArgs>[]
@@ -2990,6 +3169,7 @@ export namespace Prisma {
     clients<T extends Organisation$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends Organisation$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockItems<T extends Organisation$stockItemsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$stockItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    stockMovements<T extends Organisation$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     prices<T extends Organisation$pricesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$pricesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     deliveries<T extends Organisation$deliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$deliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b2bPushes<T extends Organisation$b2bPushesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$b2bPushesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$B2BPushPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3565,6 +3745,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StockItemScalarFieldEnum | StockItemScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.stockMovements
+   */
+  export type Organisation$stockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    where?: StockMovementWhereInput
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    cursor?: StockMovementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
   }
 
   /**
@@ -8328,10 +8532,12 @@ export namespace Prisma {
   }
 
   export type PriceListAvgAggregateOutputType = {
+    costPrice: number | null
     priceGHS: number | null
   }
 
   export type PriceListSumAggregateOutputType = {
+    costPrice: number | null
     priceGHS: number | null
   }
 
@@ -8341,6 +8547,7 @@ export namespace Prisma {
     name: string | null
     category: string | null
     unit: $Enums.ServiceUnit | null
+    costPrice: number | null
     priceGHS: number | null
     stockRefId: string | null
     isActive: boolean | null
@@ -8353,6 +8560,7 @@ export namespace Prisma {
     name: string | null
     category: string | null
     unit: $Enums.ServiceUnit | null
+    costPrice: number | null
     priceGHS: number | null
     stockRefId: string | null
     isActive: boolean | null
@@ -8365,6 +8573,7 @@ export namespace Prisma {
     name: number
     category: number
     unit: number
+    costPrice: number
     priceGHS: number
     stockRefId: number
     isActive: number
@@ -8374,10 +8583,12 @@ export namespace Prisma {
 
 
   export type PriceListAvgAggregateInputType = {
+    costPrice?: true
     priceGHS?: true
   }
 
   export type PriceListSumAggregateInputType = {
+    costPrice?: true
     priceGHS?: true
   }
 
@@ -8387,6 +8598,7 @@ export namespace Prisma {
     name?: true
     category?: true
     unit?: true
+    costPrice?: true
     priceGHS?: true
     stockRefId?: true
     isActive?: true
@@ -8399,6 +8611,7 @@ export namespace Prisma {
     name?: true
     category?: true
     unit?: true
+    costPrice?: true
     priceGHS?: true
     stockRefId?: true
     isActive?: true
@@ -8411,6 +8624,7 @@ export namespace Prisma {
     name?: true
     category?: true
     unit?: true
+    costPrice?: true
     priceGHS?: true
     stockRefId?: true
     isActive?: true
@@ -8510,6 +8724,7 @@ export namespace Prisma {
     name: string
     category: string
     unit: $Enums.ServiceUnit
+    costPrice: number | null
     priceGHS: number
     stockRefId: string | null
     isActive: boolean
@@ -8541,6 +8756,7 @@ export namespace Prisma {
     name?: boolean
     category?: boolean
     unit?: boolean
+    costPrice?: boolean
     priceGHS?: boolean
     stockRefId?: boolean
     isActive?: boolean
@@ -8554,6 +8770,7 @@ export namespace Prisma {
     name?: boolean
     category?: boolean
     unit?: boolean
+    costPrice?: boolean
     priceGHS?: boolean
     stockRefId?: boolean
     isActive?: boolean
@@ -8567,6 +8784,7 @@ export namespace Prisma {
     name?: boolean
     category?: boolean
     unit?: boolean
+    costPrice?: boolean
     priceGHS?: boolean
     stockRefId?: boolean
     isActive?: boolean
@@ -8580,13 +8798,14 @@ export namespace Prisma {
     name?: boolean
     category?: boolean
     unit?: boolean
+    costPrice?: boolean
     priceGHS?: boolean
     stockRefId?: boolean
     isActive?: boolean
     updatedAt?: boolean
   }
 
-  export type PriceListOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "name" | "category" | "unit" | "priceGHS" | "stockRefId" | "isActive" | "updatedAt", ExtArgs["result"]["priceList"]>
+  export type PriceListOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "name" | "category" | "unit" | "costPrice" | "priceGHS" | "stockRefId" | "isActive" | "updatedAt", ExtArgs["result"]["priceList"]>
   export type PriceListInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }
@@ -8608,6 +8827,7 @@ export namespace Prisma {
       name: string
       category: string
       unit: $Enums.ServiceUnit
+      costPrice: number | null
       priceGHS: number
       stockRefId: string | null
       isActive: boolean
@@ -9041,6 +9261,7 @@ export namespace Prisma {
     readonly name: FieldRef<"PriceList", 'String'>
     readonly category: FieldRef<"PriceList", 'String'>
     readonly unit: FieldRef<"PriceList", 'ServiceUnit'>
+    readonly costPrice: FieldRef<"PriceList", 'Float'>
     readonly priceGHS: FieldRef<"PriceList", 'Float'>
     readonly stockRefId: FieldRef<"PriceList", 'String'>
     readonly isActive: FieldRef<"PriceList", 'Boolean'>
@@ -9703,6 +9924,8 @@ export namespace Prisma {
     lastRestockedAt?: boolean
     createdAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockMovements?: boolean | StockItem$stockMovementsArgs<ExtArgs>
+    _count?: boolean | StockItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockItem"]>
 
   export type StockItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9746,6 +9969,8 @@ export namespace Prisma {
   export type StockItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "name" | "unit" | "totalRemaining" | "lowStockThreshold" | "lastUnitCost" | "lastRestockedAt" | "createdAt", ExtArgs["result"]["stockItem"]>
   export type StockItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockMovements?: boolean | StockItem$stockMovementsArgs<ExtArgs>
+    _count?: boolean | StockItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StockItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -9758,6 +9983,7 @@ export namespace Prisma {
     name: "StockItem"
     objects: {
       organisation: Prisma.$OrganisationPayload<ExtArgs>
+      stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10164,6 +10390,7 @@ export namespace Prisma {
   export interface Prisma__StockItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    stockMovements<T extends StockItem$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, StockItem$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10600,6 +10827,30 @@ export namespace Prisma {
      * Limit how many StockItems to delete.
      */
     limit?: number
+  }
+
+  /**
+   * StockItem.stockMovements
+   */
+  export type StockItem$stockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    where?: StockMovementWhereInput
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    cursor?: StockMovementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
   }
 
   /**
@@ -11690,6 +11941,1193 @@ export namespace Prisma {
 
 
   /**
+   * Model StockMovement
+   */
+
+  export type AggregateStockMovement = {
+    _count: StockMovementCountAggregateOutputType | null
+    _avg: StockMovementAvgAggregateOutputType | null
+    _sum: StockMovementSumAggregateOutputType | null
+    _min: StockMovementMinAggregateOutputType | null
+    _max: StockMovementMaxAggregateOutputType | null
+  }
+
+  export type StockMovementAvgAggregateOutputType = {
+    quantity: number | null
+    unitCost: number | null
+  }
+
+  export type StockMovementSumAggregateOutputType = {
+    quantity: number | null
+    unitCost: number | null
+  }
+
+  export type StockMovementMinAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    stockItemId: string | null
+    type: $Enums.StockMovementType | null
+    quantity: number | null
+    unitCost: number | null
+    referenceId: string | null
+    referenceType: string | null
+    note: string | null
+    createdBy: string | null
+    createdAt: Date | null
+  }
+
+  export type StockMovementMaxAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    stockItemId: string | null
+    type: $Enums.StockMovementType | null
+    quantity: number | null
+    unitCost: number | null
+    referenceId: string | null
+    referenceType: string | null
+    note: string | null
+    createdBy: string | null
+    createdAt: Date | null
+  }
+
+  export type StockMovementCountAggregateOutputType = {
+    id: number
+    orgId: number
+    stockItemId: number
+    type: number
+    quantity: number
+    unitCost: number
+    referenceId: number
+    referenceType: number
+    note: number
+    createdBy: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type StockMovementAvgAggregateInputType = {
+    quantity?: true
+    unitCost?: true
+  }
+
+  export type StockMovementSumAggregateInputType = {
+    quantity?: true
+    unitCost?: true
+  }
+
+  export type StockMovementMinAggregateInputType = {
+    id?: true
+    orgId?: true
+    stockItemId?: true
+    type?: true
+    quantity?: true
+    unitCost?: true
+    referenceId?: true
+    referenceType?: true
+    note?: true
+    createdBy?: true
+    createdAt?: true
+  }
+
+  export type StockMovementMaxAggregateInputType = {
+    id?: true
+    orgId?: true
+    stockItemId?: true
+    type?: true
+    quantity?: true
+    unitCost?: true
+    referenceId?: true
+    referenceType?: true
+    note?: true
+    createdBy?: true
+    createdAt?: true
+  }
+
+  export type StockMovementCountAggregateInputType = {
+    id?: true
+    orgId?: true
+    stockItemId?: true
+    type?: true
+    quantity?: true
+    unitCost?: true
+    referenceId?: true
+    referenceType?: true
+    note?: true
+    createdBy?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type StockMovementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockMovement to aggregate.
+     */
+    where?: StockMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockMovements to fetch.
+     */
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StockMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StockMovements
+    **/
+    _count?: true | StockMovementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StockMovementAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StockMovementSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StockMovementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StockMovementMaxAggregateInputType
+  }
+
+  export type GetStockMovementAggregateType<T extends StockMovementAggregateArgs> = {
+        [P in keyof T & keyof AggregateStockMovement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStockMovement[P]>
+      : GetScalarType<T[P], AggregateStockMovement[P]>
+  }
+
+
+
+
+  export type StockMovementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockMovementWhereInput
+    orderBy?: StockMovementOrderByWithAggregationInput | StockMovementOrderByWithAggregationInput[]
+    by: StockMovementScalarFieldEnum[] | StockMovementScalarFieldEnum
+    having?: StockMovementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StockMovementCountAggregateInputType | true
+    _avg?: StockMovementAvgAggregateInputType
+    _sum?: StockMovementSumAggregateInputType
+    _min?: StockMovementMinAggregateInputType
+    _max?: StockMovementMaxAggregateInputType
+  }
+
+  export type StockMovementGroupByOutputType = {
+    id: string
+    orgId: string
+    stockItemId: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost: number | null
+    referenceId: string | null
+    referenceType: string | null
+    note: string | null
+    createdBy: string
+    createdAt: Date
+    _count: StockMovementCountAggregateOutputType | null
+    _avg: StockMovementAvgAggregateOutputType | null
+    _sum: StockMovementSumAggregateOutputType | null
+    _min: StockMovementMinAggregateOutputType | null
+    _max: StockMovementMaxAggregateOutputType | null
+  }
+
+  type GetStockMovementGroupByPayload<T extends StockMovementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StockMovementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StockMovementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StockMovementGroupByOutputType[P]>
+            : GetScalarType<T[P], StockMovementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StockMovementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    stockItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    referenceId?: boolean
+    referenceType?: boolean
+    note?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockMovement"]>
+
+  export type StockMovementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    stockItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    referenceId?: boolean
+    referenceType?: boolean
+    note?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockMovement"]>
+
+  export type StockMovementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    stockItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    referenceId?: boolean
+    referenceType?: boolean
+    note?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockMovement"]>
+
+  export type StockMovementSelectScalar = {
+    id?: boolean
+    orgId?: boolean
+    stockItemId?: boolean
+    type?: boolean
+    quantity?: boolean
+    unitCost?: boolean
+    referenceId?: boolean
+    referenceType?: boolean
+    note?: boolean
+    createdBy?: boolean
+    createdAt?: boolean
+  }
+
+  export type StockMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "stockItemId" | "type" | "quantity" | "unitCost" | "referenceId" | "referenceType" | "note" | "createdBy" | "createdAt", ExtArgs["result"]["stockMovement"]>
+  export type StockMovementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+  }
+  export type StockMovementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+  }
+  export type StockMovementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | StockItemDefaultArgs<ExtArgs>
+  }
+
+  export type $StockMovementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StockMovement"
+    objects: {
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+      stockItem: Prisma.$StockItemPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orgId: string
+      stockItemId: string
+      type: $Enums.StockMovementType
+      quantity: number
+      unitCost: number | null
+      referenceId: string | null
+      referenceType: string | null
+      note: string | null
+      createdBy: string
+      createdAt: Date
+    }, ExtArgs["result"]["stockMovement"]>
+    composites: {}
+  }
+
+  type StockMovementGetPayload<S extends boolean | null | undefined | StockMovementDefaultArgs> = $Result.GetResult<Prisma.$StockMovementPayload, S>
+
+  type StockMovementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StockMovementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StockMovementCountAggregateInputType | true
+    }
+
+  export interface StockMovementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockMovement'], meta: { name: 'StockMovement' } }
+    /**
+     * Find zero or one StockMovement that matches the filter.
+     * @param {StockMovementFindUniqueArgs} args - Arguments to find a StockMovement
+     * @example
+     * // Get one StockMovement
+     * const stockMovement = await prisma.stockMovement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StockMovementFindUniqueArgs>(args: SelectSubset<T, StockMovementFindUniqueArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StockMovement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StockMovementFindUniqueOrThrowArgs} args - Arguments to find a StockMovement
+     * @example
+     * // Get one StockMovement
+     * const stockMovement = await prisma.stockMovement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StockMovementFindUniqueOrThrowArgs>(args: SelectSubset<T, StockMovementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockMovement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockMovementFindFirstArgs} args - Arguments to find a StockMovement
+     * @example
+     * // Get one StockMovement
+     * const stockMovement = await prisma.stockMovement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StockMovementFindFirstArgs>(args?: SelectSubset<T, StockMovementFindFirstArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockMovement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockMovementFindFirstOrThrowArgs} args - Arguments to find a StockMovement
+     * @example
+     * // Get one StockMovement
+     * const stockMovement = await prisma.stockMovement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StockMovementFindFirstOrThrowArgs>(args?: SelectSubset<T, StockMovementFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StockMovements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockMovementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StockMovements
+     * const stockMovements = await prisma.stockMovement.findMany()
+     * 
+     * // Get first 10 StockMovements
+     * const stockMovements = await prisma.stockMovement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stockMovementWithIdOnly = await prisma.stockMovement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StockMovementFindManyArgs>(args?: SelectSubset<T, StockMovementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StockMovement.
+     * @param {StockMovementCreateArgs} args - Arguments to create a StockMovement.
+     * @example
+     * // Create one StockMovement
+     * const StockMovement = await prisma.stockMovement.create({
+     *   data: {
+     *     // ... data to create a StockMovement
+     *   }
+     * })
+     * 
+     */
+    create<T extends StockMovementCreateArgs>(args: SelectSubset<T, StockMovementCreateArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StockMovements.
+     * @param {StockMovementCreateManyArgs} args - Arguments to create many StockMovements.
+     * @example
+     * // Create many StockMovements
+     * const stockMovement = await prisma.stockMovement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StockMovementCreateManyArgs>(args?: SelectSubset<T, StockMovementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StockMovements and returns the data saved in the database.
+     * @param {StockMovementCreateManyAndReturnArgs} args - Arguments to create many StockMovements.
+     * @example
+     * // Create many StockMovements
+     * const stockMovement = await prisma.stockMovement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StockMovements and only return the `id`
+     * const stockMovementWithIdOnly = await prisma.stockMovement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StockMovementCreateManyAndReturnArgs>(args?: SelectSubset<T, StockMovementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StockMovement.
+     * @param {StockMovementDeleteArgs} args - Arguments to delete one StockMovement.
+     * @example
+     * // Delete one StockMovement
+     * const StockMovement = await prisma.stockMovement.delete({
+     *   where: {
+     *     // ... filter to delete one StockMovement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StockMovementDeleteArgs>(args: SelectSubset<T, StockMovementDeleteArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StockMovement.
+     * @param {StockMovementUpdateArgs} args - Arguments to update one StockMovement.
+     * @example
+     * // Update one StockMovement
+     * const stockMovement = await prisma.stockMovement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StockMovementUpdateArgs>(args: SelectSubset<T, StockMovementUpdateArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StockMovements.
+     * @param {StockMovementDeleteManyArgs} args - Arguments to filter StockMovements to delete.
+     * @example
+     * // Delete a few StockMovements
+     * const { count } = await prisma.stockMovement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StockMovementDeleteManyArgs>(args?: SelectSubset<T, StockMovementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockMovements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockMovementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StockMovements
+     * const stockMovement = await prisma.stockMovement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StockMovementUpdateManyArgs>(args: SelectSubset<T, StockMovementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockMovements and returns the data updated in the database.
+     * @param {StockMovementUpdateManyAndReturnArgs} args - Arguments to update many StockMovements.
+     * @example
+     * // Update many StockMovements
+     * const stockMovement = await prisma.stockMovement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StockMovements and only return the `id`
+     * const stockMovementWithIdOnly = await prisma.stockMovement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StockMovementUpdateManyAndReturnArgs>(args: SelectSubset<T, StockMovementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StockMovement.
+     * @param {StockMovementUpsertArgs} args - Arguments to update or create a StockMovement.
+     * @example
+     * // Update or create a StockMovement
+     * const stockMovement = await prisma.stockMovement.upsert({
+     *   create: {
+     *     // ... data to create a StockMovement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StockMovement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StockMovementUpsertArgs>(args: SelectSubset<T, StockMovementUpsertArgs<ExtArgs>>): Prisma__StockMovementClient<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StockMovements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockMovementCountArgs} args - Arguments to filter StockMovements to count.
+     * @example
+     * // Count the number of StockMovements
+     * const count = await prisma.stockMovement.count({
+     *   where: {
+     *     // ... the filter for the StockMovements we want to count
+     *   }
+     * })
+    **/
+    count<T extends StockMovementCountArgs>(
+      args?: Subset<T, StockMovementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StockMovementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StockMovement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockMovementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StockMovementAggregateArgs>(args: Subset<T, StockMovementAggregateArgs>): Prisma.PrismaPromise<GetStockMovementAggregateType<T>>
+
+    /**
+     * Group by StockMovement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockMovementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StockMovementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StockMovementGroupByArgs['orderBy'] }
+        : { orderBy?: StockMovementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StockMovementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockMovementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StockMovement model
+   */
+  readonly fields: StockMovementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StockMovement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StockMovementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    stockItem<T extends StockItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockItemDefaultArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StockMovement model
+   */
+  interface StockMovementFieldRefs {
+    readonly id: FieldRef<"StockMovement", 'String'>
+    readonly orgId: FieldRef<"StockMovement", 'String'>
+    readonly stockItemId: FieldRef<"StockMovement", 'String'>
+    readonly type: FieldRef<"StockMovement", 'StockMovementType'>
+    readonly quantity: FieldRef<"StockMovement", 'Float'>
+    readonly unitCost: FieldRef<"StockMovement", 'Float'>
+    readonly referenceId: FieldRef<"StockMovement", 'String'>
+    readonly referenceType: FieldRef<"StockMovement", 'String'>
+    readonly note: FieldRef<"StockMovement", 'String'>
+    readonly createdBy: FieldRef<"StockMovement", 'String'>
+    readonly createdAt: FieldRef<"StockMovement", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StockMovement findUnique
+   */
+  export type StockMovementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which StockMovement to fetch.
+     */
+    where: StockMovementWhereUniqueInput
+  }
+
+  /**
+   * StockMovement findUniqueOrThrow
+   */
+  export type StockMovementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which StockMovement to fetch.
+     */
+    where: StockMovementWhereUniqueInput
+  }
+
+  /**
+   * StockMovement findFirst
+   */
+  export type StockMovementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which StockMovement to fetch.
+     */
+    where?: StockMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockMovements to fetch.
+     */
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockMovements.
+     */
+    cursor?: StockMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockMovements.
+     */
+    distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
+  }
+
+  /**
+   * StockMovement findFirstOrThrow
+   */
+  export type StockMovementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which StockMovement to fetch.
+     */
+    where?: StockMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockMovements to fetch.
+     */
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockMovements.
+     */
+    cursor?: StockMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockMovements.
+     */
+    distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
+  }
+
+  /**
+   * StockMovement findMany
+   */
+  export type StockMovementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * Filter, which StockMovements to fetch.
+     */
+    where?: StockMovementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockMovements to fetch.
+     */
+    orderBy?: StockMovementOrderByWithRelationInput | StockMovementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StockMovements.
+     */
+    cursor?: StockMovementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockMovements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockMovements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockMovements.
+     */
+    distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
+  }
+
+  /**
+   * StockMovement create
+   */
+  export type StockMovementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StockMovement.
+     */
+    data: XOR<StockMovementCreateInput, StockMovementUncheckedCreateInput>
+  }
+
+  /**
+   * StockMovement createMany
+   */
+  export type StockMovementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StockMovements.
+     */
+    data: StockMovementCreateManyInput | StockMovementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockMovement createManyAndReturn
+   */
+  export type StockMovementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * The data used to create many StockMovements.
+     */
+    data: StockMovementCreateManyInput | StockMovementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockMovement update
+   */
+  export type StockMovementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StockMovement.
+     */
+    data: XOR<StockMovementUpdateInput, StockMovementUncheckedUpdateInput>
+    /**
+     * Choose, which StockMovement to update.
+     */
+    where: StockMovementWhereUniqueInput
+  }
+
+  /**
+   * StockMovement updateMany
+   */
+  export type StockMovementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StockMovements.
+     */
+    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyInput>
+    /**
+     * Filter which StockMovements to update
+     */
+    where?: StockMovementWhereInput
+    /**
+     * Limit how many StockMovements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockMovement updateManyAndReturn
+   */
+  export type StockMovementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * The data used to update StockMovements.
+     */
+    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyInput>
+    /**
+     * Filter which StockMovements to update
+     */
+    where?: StockMovementWhereInput
+    /**
+     * Limit how many StockMovements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockMovement upsert
+   */
+  export type StockMovementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StockMovement to update in case it exists.
+     */
+    where: StockMovementWhereUniqueInput
+    /**
+     * In case the StockMovement found by the `where` argument doesn't exist, create a new StockMovement with this data.
+     */
+    create: XOR<StockMovementCreateInput, StockMovementUncheckedCreateInput>
+    /**
+     * In case the StockMovement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StockMovementUpdateInput, StockMovementUncheckedUpdateInput>
+  }
+
+  /**
+   * StockMovement delete
+   */
+  export type StockMovementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+    /**
+     * Filter which StockMovement to delete.
+     */
+    where: StockMovementWhereUniqueInput
+  }
+
+  /**
+   * StockMovement deleteMany
+   */
+  export type StockMovementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockMovements to delete
+     */
+    where?: StockMovementWhereInput
+    /**
+     * Limit how many StockMovements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockMovement without action
+   */
+  export type StockMovementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockMovement
+     */
+    select?: StockMovementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockMovement
+     */
+    omit?: StockMovementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockMovementInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Job
    */
 
@@ -11745,6 +13183,7 @@ export namespace Prisma {
     assignedStaffId: string | null
     deliveryId: string | null
     notes: string | null
+    b2bPushId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     completedAt: Date | null
@@ -11772,6 +13211,7 @@ export namespace Prisma {
     assignedStaffId: string | null
     deliveryId: string | null
     notes: string | null
+    b2bPushId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     completedAt: Date | null
@@ -11799,6 +13239,7 @@ export namespace Prisma {
     assignedStaffId: number
     deliveryId: number
     notes: number
+    b2bPushId: number
     createdAt: number
     updatedAt: number
     completedAt: number
@@ -11850,6 +13291,7 @@ export namespace Prisma {
     assignedStaffId?: true
     deliveryId?: true
     notes?: true
+    b2bPushId?: true
     createdAt?: true
     updatedAt?: true
     completedAt?: true
@@ -11877,6 +13319,7 @@ export namespace Prisma {
     assignedStaffId?: true
     deliveryId?: true
     notes?: true
+    b2bPushId?: true
     createdAt?: true
     updatedAt?: true
     completedAt?: true
@@ -11904,6 +13347,7 @@ export namespace Prisma {
     assignedStaffId?: true
     deliveryId?: true
     notes?: true
+    b2bPushId?: true
     createdAt?: true
     updatedAt?: true
     completedAt?: true
@@ -12018,6 +13462,7 @@ export namespace Prisma {
     assignedStaffId: string | null
     deliveryId: string | null
     notes: string | null
+    b2bPushId: string | null
     createdAt: Date
     updatedAt: Date
     completedAt: Date | null
@@ -12064,12 +13509,14 @@ export namespace Prisma {
     assignedStaffId?: boolean
     deliveryId?: boolean
     notes?: boolean
+    b2bPushId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     completedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
+    b2bPush?: boolean | Job$b2bPushArgs<ExtArgs>
     deliveries?: boolean | Job$deliveriesArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
@@ -12096,12 +13543,14 @@ export namespace Prisma {
     assignedStaffId?: boolean
     deliveryId?: boolean
     notes?: boolean
+    b2bPushId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     completedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
+    b2bPush?: boolean | Job$b2bPushArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12126,12 +13575,14 @@ export namespace Prisma {
     assignedStaffId?: boolean
     deliveryId?: boolean
     notes?: boolean
+    b2bPushId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     completedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
+    b2bPush?: boolean | Job$b2bPushArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
   export type JobSelectScalar = {
@@ -12156,16 +13607,18 @@ export namespace Prisma {
     assignedStaffId?: boolean
     deliveryId?: boolean
     notes?: boolean
+    b2bPushId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     completedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "clientId" | "serviceId" | "serviceName" | "quantity" | "width" | "height" | "unit" | "totalPrice" | "costPrice" | "profitMargin" | "materialUsed" | "materialWastage" | "status" | "paymentStatus" | "isPaid" | "paymentRef" | "assignedStaffId" | "deliveryId" | "notes" | "createdAt" | "updatedAt" | "completedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "clientId" | "serviceId" | "serviceName" | "quantity" | "width" | "height" | "unit" | "totalPrice" | "costPrice" | "profitMargin" | "materialUsed" | "materialWastage" | "status" | "paymentStatus" | "isPaid" | "paymentRef" | "assignedStaffId" | "deliveryId" | "notes" | "b2bPushId" | "createdAt" | "updatedAt" | "completedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
+    b2bPush?: boolean | Job$b2bPushArgs<ExtArgs>
     deliveries?: boolean | Job$deliveriesArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -12173,11 +13626,13 @@ export namespace Prisma {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
+    b2bPush?: boolean | Job$b2bPushArgs<ExtArgs>
   }
   export type JobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
+    b2bPush?: boolean | Job$b2bPushArgs<ExtArgs>
   }
 
   export type $JobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12186,6 +13641,7 @@ export namespace Prisma {
       organisation: Prisma.$OrganisationPayload<ExtArgs>
       client: Prisma.$ClientPayload<ExtArgs>
       assignedStaff: Prisma.$StaffPayload<ExtArgs> | null
+      b2bPush: Prisma.$B2BPushPayload<ExtArgs> | null
       deliveries: Prisma.$DeliveryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -12210,6 +13666,7 @@ export namespace Prisma {
       assignedStaffId: string | null
       deliveryId: string | null
       notes: string | null
+      b2bPushId: string | null
       createdAt: Date
       updatedAt: Date
       completedAt: Date | null
@@ -12610,6 +14067,7 @@ export namespace Prisma {
     organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     assignedStaff<T extends Job$assignedStaffArgs<ExtArgs> = {}>(args?: Subset<T, Job$assignedStaffArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    b2bPush<T extends Job$b2bPushArgs<ExtArgs> = {}>(args?: Subset<T, Job$b2bPushArgs<ExtArgs>>): Prisma__B2BPushClient<$Result.GetResult<Prisma.$B2BPushPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     deliveries<T extends Job$deliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Job$deliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -12661,6 +14119,7 @@ export namespace Prisma {
     readonly assignedStaffId: FieldRef<"Job", 'String'>
     readonly deliveryId: FieldRef<"Job", 'String'>
     readonly notes: FieldRef<"Job", 'String'>
+    readonly b2bPushId: FieldRef<"Job", 'String'>
     readonly createdAt: FieldRef<"Job", 'DateTime'>
     readonly updatedAt: FieldRef<"Job", 'DateTime'>
     readonly completedAt: FieldRef<"Job", 'DateTime'>
@@ -13081,6 +14540,25 @@ export namespace Prisma {
      */
     include?: StaffInclude<ExtArgs> | null
     where?: StaffWhereInput
+  }
+
+  /**
+   * Job.b2bPush
+   */
+  export type Job$b2bPushArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the B2BPush
+     */
+    select?: B2BPushSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the B2BPush
+     */
+    omit?: B2BPushOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: B2BPushInclude<ExtArgs> | null
+    where?: B2BPushWhereInput
   }
 
   /**
@@ -15641,7 +17119,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     organisationId?: boolean
+    jobs?: boolean | B2BPush$jobsArgs<ExtArgs>
     organisation?: boolean | B2BPush$organisationArgs<ExtArgs>
+    _count?: boolean | B2BPushCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b2BPush"]>
 
   export type B2BPushSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -15693,7 +17173,9 @@ export namespace Prisma {
 
   export type B2BPushOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "originalJobId" | "clientName" | "serviceName" | "specs" | "deadline" | "suggestedPrice" | "status" | "createdAt" | "updatedAt" | "organisationId", ExtArgs["result"]["b2BPush"]>
   export type B2BPushInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobs?: boolean | B2BPush$jobsArgs<ExtArgs>
     organisation?: boolean | B2BPush$organisationArgs<ExtArgs>
+    _count?: boolean | B2BPushCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type B2BPushIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | B2BPush$organisationArgs<ExtArgs>
@@ -15705,6 +17187,7 @@ export namespace Prisma {
   export type $B2BPushPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "B2BPush"
     objects: {
+      jobs: Prisma.$JobPayload<ExtArgs>[]
       organisation: Prisma.$OrganisationPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -16114,6 +17597,7 @@ export namespace Prisma {
    */
   export interface Prisma__B2BPushClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    jobs<T extends B2BPush$jobsArgs<ExtArgs> = {}>(args?: Subset<T, B2BPush$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     organisation<T extends B2BPush$organisationArgs<ExtArgs> = {}>(args?: Subset<T, B2BPush$organisationArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -16554,6 +18038,30 @@ export namespace Prisma {
      * Limit how many B2BPushes to delete.
      */
     limit?: number
+  }
+
+  /**
+   * B2BPush.jobs
+   */
+  export type B2BPush$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Job
+     */
+    select?: JobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Job
+     */
+    omit?: JobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobInclude<ExtArgs> | null
+    where?: JobWhereInput
+    orderBy?: JobOrderByWithRelationInput | JobOrderByWithRelationInput[]
+    cursor?: JobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
   }
 
   /**
@@ -17822,6 +19330,7 @@ export namespace Prisma {
     name: 'name',
     category: 'category',
     unit: 'unit',
+    costPrice: 'costPrice',
     priceGHS: 'priceGHS',
     stockRefId: 'stockRefId',
     isActive: 'isActive',
@@ -17859,6 +19368,23 @@ export namespace Prisma {
   export type RestockRecordScalarFieldEnum = (typeof RestockRecordScalarFieldEnum)[keyof typeof RestockRecordScalarFieldEnum]
 
 
+  export const StockMovementScalarFieldEnum: {
+    id: 'id',
+    orgId: 'orgId',
+    stockItemId: 'stockItemId',
+    type: 'type',
+    quantity: 'quantity',
+    unitCost: 'unitCost',
+    referenceId: 'referenceId',
+    referenceType: 'referenceType',
+    note: 'note',
+    createdBy: 'createdBy',
+    createdAt: 'createdAt'
+  };
+
+  export type StockMovementScalarFieldEnum = (typeof StockMovementScalarFieldEnum)[keyof typeof StockMovementScalarFieldEnum]
+
+
   export const JobScalarFieldEnum: {
     id: 'id',
     orgId: 'orgId',
@@ -17881,6 +19407,7 @@ export namespace Prisma {
     assignedStaffId: 'assignedStaffId',
     deliveryId: 'deliveryId',
     notes: 'notes',
+    b2bPushId: 'b2bPushId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     completedAt: 'completedAt'
@@ -18129,6 +19656,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'StockMovementType'
+   */
+  export type EnumStockMovementTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StockMovementType'>
+    
+
+
+  /**
+   * Reference to a field of type 'StockMovementType[]'
+   */
+  export type ListEnumStockMovementTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StockMovementType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'JobStatus'
    */
   export type EnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus'>
@@ -18233,6 +19774,7 @@ export namespace Prisma {
     clients?: ClientListRelationFilter
     jobs?: JobListRelationFilter
     stockItems?: StockItemListRelationFilter
+    stockMovements?: StockMovementListRelationFilter
     prices?: PriceListListRelationFilter
     deliveries?: DeliveryListRelationFilter
     b2bPushes?: B2BPushListRelationFilter
@@ -18254,6 +19796,7 @@ export namespace Prisma {
     clients?: ClientOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
     stockItems?: StockItemOrderByRelationAggregateInput
+    stockMovements?: StockMovementOrderByRelationAggregateInput
     prices?: PriceListOrderByRelationAggregateInput
     deliveries?: DeliveryOrderByRelationAggregateInput
     b2bPushes?: B2BPushOrderByRelationAggregateInput
@@ -18278,6 +19821,7 @@ export namespace Prisma {
     clients?: ClientListRelationFilter
     jobs?: JobListRelationFilter
     stockItems?: StockItemListRelationFilter
+    stockMovements?: StockMovementListRelationFilter
     prices?: PriceListListRelationFilter
     deliveries?: DeliveryListRelationFilter
     b2bPushes?: B2BPushListRelationFilter
@@ -18655,6 +20199,7 @@ export namespace Prisma {
     name?: StringFilter<"PriceList"> | string
     category?: StringFilter<"PriceList"> | string
     unit?: EnumServiceUnitFilter<"PriceList"> | $Enums.ServiceUnit
+    costPrice?: FloatNullableFilter<"PriceList"> | number | null
     priceGHS?: FloatFilter<"PriceList"> | number
     stockRefId?: StringNullableFilter<"PriceList"> | string | null
     isActive?: BoolFilter<"PriceList"> | boolean
@@ -18668,6 +20213,7 @@ export namespace Prisma {
     name?: SortOrder
     category?: SortOrder
     unit?: SortOrder
+    costPrice?: SortOrderInput | SortOrder
     priceGHS?: SortOrder
     stockRefId?: SortOrderInput | SortOrder
     isActive?: SortOrder
@@ -18684,6 +20230,7 @@ export namespace Prisma {
     name?: StringFilter<"PriceList"> | string
     category?: StringFilter<"PriceList"> | string
     unit?: EnumServiceUnitFilter<"PriceList"> | $Enums.ServiceUnit
+    costPrice?: FloatNullableFilter<"PriceList"> | number | null
     priceGHS?: FloatFilter<"PriceList"> | number
     stockRefId?: StringNullableFilter<"PriceList"> | string | null
     isActive?: BoolFilter<"PriceList"> | boolean
@@ -18697,6 +20244,7 @@ export namespace Prisma {
     name?: SortOrder
     category?: SortOrder
     unit?: SortOrder
+    costPrice?: SortOrderInput | SortOrder
     priceGHS?: SortOrder
     stockRefId?: SortOrderInput | SortOrder
     isActive?: SortOrder
@@ -18717,6 +20265,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"PriceList"> | string
     category?: StringWithAggregatesFilter<"PriceList"> | string
     unit?: EnumServiceUnitWithAggregatesFilter<"PriceList"> | $Enums.ServiceUnit
+    costPrice?: FloatNullableWithAggregatesFilter<"PriceList"> | number | null
     priceGHS?: FloatWithAggregatesFilter<"PriceList"> | number
     stockRefId?: StringNullableWithAggregatesFilter<"PriceList"> | string | null
     isActive?: BoolWithAggregatesFilter<"PriceList"> | boolean
@@ -18737,6 +20286,7 @@ export namespace Prisma {
     lastRestockedAt?: DateTimeNullableFilter<"StockItem"> | Date | string | null
     createdAt?: DateTimeFilter<"StockItem"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    stockMovements?: StockMovementListRelationFilter
   }
 
   export type StockItemOrderByWithRelationInput = {
@@ -18750,6 +20300,7 @@ export namespace Prisma {
     lastRestockedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
+    stockMovements?: StockMovementOrderByRelationAggregateInput
   }
 
   export type StockItemWhereUniqueInput = Prisma.AtLeast<{
@@ -18766,6 +20317,7 @@ export namespace Prisma {
     lastRestockedAt?: DateTimeNullableFilter<"StockItem"> | Date | string | null
     createdAt?: DateTimeFilter<"StockItem"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    stockMovements?: StockMovementListRelationFilter
   }, "id">
 
   export type StockItemOrderByWithAggregationInput = {
@@ -18864,6 +20416,96 @@ export namespace Prisma {
     date?: DateTimeWithAggregatesFilter<"RestockRecord"> | Date | string
   }
 
+  export type StockMovementWhereInput = {
+    AND?: StockMovementWhereInput | StockMovementWhereInput[]
+    OR?: StockMovementWhereInput[]
+    NOT?: StockMovementWhereInput | StockMovementWhereInput[]
+    id?: StringFilter<"StockMovement"> | string
+    orgId?: StringFilter<"StockMovement"> | string
+    stockItemId?: StringFilter<"StockMovement"> | string
+    type?: EnumStockMovementTypeFilter<"StockMovement"> | $Enums.StockMovementType
+    quantity?: FloatFilter<"StockMovement"> | number
+    unitCost?: FloatNullableFilter<"StockMovement"> | number | null
+    referenceId?: StringNullableFilter<"StockMovement"> | string | null
+    referenceType?: StringNullableFilter<"StockMovement"> | string | null
+    note?: StringNullableFilter<"StockMovement"> | string | null
+    createdBy?: StringFilter<"StockMovement"> | string
+    createdAt?: DateTimeFilter<"StockMovement"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+  }
+
+  export type StockMovementOrderByWithRelationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    stockItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrderInput | SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    referenceType?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+    organisation?: OrganisationOrderByWithRelationInput
+    stockItem?: StockItemOrderByWithRelationInput
+  }
+
+  export type StockMovementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StockMovementWhereInput | StockMovementWhereInput[]
+    OR?: StockMovementWhereInput[]
+    NOT?: StockMovementWhereInput | StockMovementWhereInput[]
+    orgId?: StringFilter<"StockMovement"> | string
+    stockItemId?: StringFilter<"StockMovement"> | string
+    type?: EnumStockMovementTypeFilter<"StockMovement"> | $Enums.StockMovementType
+    quantity?: FloatFilter<"StockMovement"> | number
+    unitCost?: FloatNullableFilter<"StockMovement"> | number | null
+    referenceId?: StringNullableFilter<"StockMovement"> | string | null
+    referenceType?: StringNullableFilter<"StockMovement"> | string | null
+    note?: StringNullableFilter<"StockMovement"> | string | null
+    createdBy?: StringFilter<"StockMovement"> | string
+    createdAt?: DateTimeFilter<"StockMovement"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    stockItem?: XOR<StockItemScalarRelationFilter, StockItemWhereInput>
+  }, "id">
+
+  export type StockMovementOrderByWithAggregationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    stockItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrderInput | SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    referenceType?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+    _count?: StockMovementCountOrderByAggregateInput
+    _avg?: StockMovementAvgOrderByAggregateInput
+    _max?: StockMovementMaxOrderByAggregateInput
+    _min?: StockMovementMinOrderByAggregateInput
+    _sum?: StockMovementSumOrderByAggregateInput
+  }
+
+  export type StockMovementScalarWhereWithAggregatesInput = {
+    AND?: StockMovementScalarWhereWithAggregatesInput | StockMovementScalarWhereWithAggregatesInput[]
+    OR?: StockMovementScalarWhereWithAggregatesInput[]
+    NOT?: StockMovementScalarWhereWithAggregatesInput | StockMovementScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StockMovement"> | string
+    orgId?: StringWithAggregatesFilter<"StockMovement"> | string
+    stockItemId?: StringWithAggregatesFilter<"StockMovement"> | string
+    type?: EnumStockMovementTypeWithAggregatesFilter<"StockMovement"> | $Enums.StockMovementType
+    quantity?: FloatWithAggregatesFilter<"StockMovement"> | number
+    unitCost?: FloatNullableWithAggregatesFilter<"StockMovement"> | number | null
+    referenceId?: StringNullableWithAggregatesFilter<"StockMovement"> | string | null
+    referenceType?: StringNullableWithAggregatesFilter<"StockMovement"> | string | null
+    note?: StringNullableWithAggregatesFilter<"StockMovement"> | string | null
+    createdBy?: StringWithAggregatesFilter<"StockMovement"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"StockMovement"> | Date | string
+  }
+
   export type JobWhereInput = {
     AND?: JobWhereInput | JobWhereInput[]
     OR?: JobWhereInput[]
@@ -18889,12 +20531,14 @@ export namespace Prisma {
     assignedStaffId?: StringNullableFilter<"Job"> | string | null
     deliveryId?: StringNullableFilter<"Job"> | string | null
     notes?: StringNullableFilter<"Job"> | string | null
+    b2bPushId?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
     assignedStaff?: XOR<StaffNullableScalarRelationFilter, StaffWhereInput> | null
+    b2bPush?: XOR<B2BPushNullableScalarRelationFilter, B2BPushWhereInput> | null
     deliveries?: DeliveryListRelationFilter
   }
 
@@ -18920,12 +20564,14 @@ export namespace Prisma {
     assignedStaffId?: SortOrderInput | SortOrder
     deliveryId?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
+    b2bPushId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
     organisation?: OrganisationOrderByWithRelationInput
     client?: ClientOrderByWithRelationInput
     assignedStaff?: StaffOrderByWithRelationInput
+    b2bPush?: B2BPushOrderByWithRelationInput
     deliveries?: DeliveryOrderByRelationAggregateInput
   }
 
@@ -18954,12 +20600,14 @@ export namespace Prisma {
     assignedStaffId?: StringNullableFilter<"Job"> | string | null
     deliveryId?: StringNullableFilter<"Job"> | string | null
     notes?: StringNullableFilter<"Job"> | string | null
+    b2bPushId?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
     assignedStaff?: XOR<StaffNullableScalarRelationFilter, StaffWhereInput> | null
+    b2bPush?: XOR<B2BPushNullableScalarRelationFilter, B2BPushWhereInput> | null
     deliveries?: DeliveryListRelationFilter
   }, "id">
 
@@ -18985,6 +20633,7 @@ export namespace Prisma {
     assignedStaffId?: SortOrderInput | SortOrder
     deliveryId?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
+    b2bPushId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     completedAt?: SortOrderInput | SortOrder
@@ -19020,6 +20669,7 @@ export namespace Prisma {
     assignedStaffId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     deliveryId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     notes?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    b2bPushId?: StringNullableWithAggregatesFilter<"Job"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
@@ -19213,6 +20863,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"B2BPush"> | Date | string
     updatedAt?: DateTimeFilter<"B2BPush"> | Date | string
     organisationId?: StringNullableFilter<"B2BPush"> | string | null
+    jobs?: JobListRelationFilter
     organisation?: XOR<OrganisationNullableScalarRelationFilter, OrganisationWhereInput> | null
   }
 
@@ -19229,6 +20880,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisationId?: SortOrderInput | SortOrder
+    jobs?: JobOrderByRelationAggregateInput
     organisation?: OrganisationOrderByWithRelationInput
   }
 
@@ -19248,6 +20900,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"B2BPush"> | Date | string
     updatedAt?: DateTimeFilter<"B2BPush"> | Date | string
     organisationId?: StringNullableFilter<"B2BPush"> | string | null
+    jobs?: JobListRelationFilter
     organisation?: XOR<OrganisationNullableScalarRelationFilter, OrganisationWhereInput> | null
   }, "id">
 
@@ -19379,6 +21032,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -19400,6 +21054,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -19421,6 +21076,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -19442,6 +21098,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -19857,6 +21514,7 @@ export namespace Prisma {
     name: string
     category: string
     unit: $Enums.ServiceUnit
+    costPrice?: number | null
     priceGHS: number
     stockRefId?: string | null
     isActive?: boolean
@@ -19870,6 +21528,7 @@ export namespace Prisma {
     name: string
     category: string
     unit: $Enums.ServiceUnit
+    costPrice?: number | null
     priceGHS: number
     stockRefId?: string | null
     isActive?: boolean
@@ -19881,6 +21540,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
     stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -19894,6 +21554,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
     stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -19906,6 +21567,7 @@ export namespace Prisma {
     name: string
     category: string
     unit: $Enums.ServiceUnit
+    costPrice?: number | null
     priceGHS: number
     stockRefId?: string | null
     isActive?: boolean
@@ -19917,6 +21579,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
     stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -19929,6 +21592,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
     stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -19945,6 +21609,7 @@ export namespace Prisma {
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutStockItemsInput
+    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemUncheckedCreateInput = {
@@ -19957,6 +21622,7 @@ export namespace Prisma {
     lastUnitCost: number
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemUpdateInput = {
@@ -19969,6 +21635,7 @@ export namespace Prisma {
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutStockItemsNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemUncheckedUpdateInput = {
@@ -19981,6 +21648,7 @@ export namespace Prisma {
     lastUnitCost?: FloatFieldUpdateOperationsInput | number
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemCreateManyInput = {
@@ -20088,6 +21756,102 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StockMovementCreateInput = {
+    id?: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutStockMovementsInput
+    stockItem: StockItemCreateNestedOneWithoutStockMovementsInput
+  }
+
+  export type StockMovementUncheckedCreateInput = {
+    id?: string
+    orgId: string
+    stockItemId: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+  }
+
+  export type StockMovementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutStockMovementsNestedInput
+    stockItem?: StockItemUpdateOneRequiredWithoutStockMovementsNestedInput
+  }
+
+  export type StockMovementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    stockItemId?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementCreateManyInput = {
+    id?: string
+    orgId: string
+    stockItemId: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+  }
+
+  export type StockMovementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    stockItemId?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobCreateInput = {
     id?: string
     serviceId: string
@@ -20113,6 +21877,7 @@ export namespace Prisma {
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
+    b2bPush?: B2BPushCreateNestedOneWithoutJobsInput
     deliveries?: DeliveryCreateNestedManyWithoutJobInput
   }
 
@@ -20138,6 +21903,7 @@ export namespace Prisma {
     assignedStaffId?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -20169,6 +21935,7 @@ export namespace Prisma {
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
+    b2bPush?: B2BPushUpdateOneWithoutJobsNestedInput
     deliveries?: DeliveryUpdateManyWithoutJobNestedInput
   }
 
@@ -20194,6 +21961,7 @@ export namespace Prisma {
     assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20222,6 +21990,7 @@ export namespace Prisma {
     assignedStaffId?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -20273,6 +22042,7 @@ export namespace Prisma {
     assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20484,6 +22254,7 @@ export namespace Prisma {
     status?: $Enums.B2BStatus
     createdAt?: Date | string
     updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutB2bPushInput
     organisation?: OrganisationCreateNestedOneWithoutB2bPushesInput
   }
 
@@ -20500,6 +22271,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     organisationId?: string | null
+    jobs?: JobUncheckedCreateNestedManyWithoutB2bPushInput
   }
 
   export type B2BPushUpdateInput = {
@@ -20514,6 +22286,7 @@ export namespace Prisma {
     status?: EnumB2BStatusFieldUpdateOperationsInput | $Enums.B2BStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutB2bPushNestedInput
     organisation?: OrganisationUpdateOneWithoutB2bPushesNestedInput
   }
 
@@ -20530,6 +22303,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobs?: JobUncheckedUpdateManyWithoutB2bPushNestedInput
   }
 
   export type B2BPushCreateManyInput = {
@@ -20736,6 +22510,12 @@ export namespace Prisma {
     none?: StockItemWhereInput
   }
 
+  export type StockMovementListRelationFilter = {
+    every?: StockMovementWhereInput
+    some?: StockMovementWhereInput
+    none?: StockMovementWhereInput
+  }
+
   export type PriceListListRelationFilter = {
     every?: PriceListWhereInput
     some?: PriceListWhereInput
@@ -20786,6 +22566,10 @@ export namespace Prisma {
   }
 
   export type StockItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StockMovementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21220,6 +23004,17 @@ export namespace Prisma {
     not?: NestedEnumServiceUnitFilter<$PrismaModel> | $Enums.ServiceUnit
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -21237,6 +23032,7 @@ export namespace Prisma {
     name?: SortOrder
     category?: SortOrder
     unit?: SortOrder
+    costPrice?: SortOrder
     priceGHS?: SortOrder
     stockRefId?: SortOrder
     isActive?: SortOrder
@@ -21244,6 +23040,7 @@ export namespace Prisma {
   }
 
   export type PriceListAvgOrderByAggregateInput = {
+    costPrice?: SortOrder
     priceGHS?: SortOrder
   }
 
@@ -21253,6 +23050,7 @@ export namespace Prisma {
     name?: SortOrder
     category?: SortOrder
     unit?: SortOrder
+    costPrice?: SortOrder
     priceGHS?: SortOrder
     stockRefId?: SortOrder
     isActive?: SortOrder
@@ -21265,6 +23063,7 @@ export namespace Prisma {
     name?: SortOrder
     category?: SortOrder
     unit?: SortOrder
+    costPrice?: SortOrder
     priceGHS?: SortOrder
     stockRefId?: SortOrder
     isActive?: SortOrder
@@ -21272,6 +23071,7 @@ export namespace Prisma {
   }
 
   export type PriceListSumOrderByAggregateInput = {
+    costPrice?: SortOrder
     priceGHS?: SortOrder
   }
 
@@ -21283,6 +23083,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumServiceUnitFilter<$PrismaModel>
     _max?: NestedEnumServiceUnitFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -21391,15 +23207,78 @@ export namespace Prisma {
     totalCost?: SortOrder
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  export type EnumStockMovementTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.StockMovementType | EnumStockMovementTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumStockMovementTypeFilter<$PrismaModel> | $Enums.StockMovementType
+  }
+
+  export type StockItemScalarRelationFilter = {
+    is?: StockItemWhereInput
+    isNot?: StockItemWhereInput
+  }
+
+  export type StockMovementCountOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    stockItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    referenceId?: SortOrder
+    referenceType?: SortOrder
+    note?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StockMovementAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitCost?: SortOrder
+  }
+
+  export type StockMovementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    stockItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    referenceId?: SortOrder
+    referenceType?: SortOrder
+    note?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StockMovementMinOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    stockItemId?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    unitCost?: SortOrder
+    referenceId?: SortOrder
+    referenceType?: SortOrder
+    note?: SortOrder
+    createdBy?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StockMovementSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitCost?: SortOrder
+  }
+
+  export type EnumStockMovementTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StockMovementType | EnumStockMovementTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumStockMovementTypeWithAggregatesFilter<$PrismaModel> | $Enums.StockMovementType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStockMovementTypeFilter<$PrismaModel>
+    _max?: NestedEnumStockMovementTypeFilter<$PrismaModel>
   }
 
   export type EnumJobStatusFilter<$PrismaModel = never> = {
@@ -21419,6 +23298,11 @@ export namespace Prisma {
   export type ClientScalarRelationFilter = {
     is?: ClientWhereInput
     isNot?: ClientWhereInput
+  }
+
+  export type B2BPushNullableScalarRelationFilter = {
+    is?: B2BPushWhereInput | null
+    isNot?: B2BPushWhereInput | null
   }
 
   export type JobCountOrderByAggregateInput = {
@@ -21443,6 +23327,7 @@ export namespace Prisma {
     assignedStaffId?: SortOrder
     deliveryId?: SortOrder
     notes?: SortOrder
+    b2bPushId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     completedAt?: SortOrder
@@ -21481,6 +23366,7 @@ export namespace Prisma {
     assignedStaffId?: SortOrder
     deliveryId?: SortOrder
     notes?: SortOrder
+    b2bPushId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     completedAt?: SortOrder
@@ -21508,6 +23394,7 @@ export namespace Prisma {
     assignedStaffId?: SortOrder
     deliveryId?: SortOrder
     notes?: SortOrder
+    b2bPushId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     completedAt?: SortOrder
@@ -21522,22 +23409,6 @@ export namespace Prisma {
     profitMargin?: SortOrder
     materialUsed?: SortOrder
     materialWastage?: SortOrder
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type EnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -21908,6 +23779,13 @@ export namespace Prisma {
     connect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
   }
 
+  export type StockMovementCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<StockMovementCreateWithoutOrganisationInput, StockMovementUncheckedCreateWithoutOrganisationInput> | StockMovementCreateWithoutOrganisationInput[] | StockMovementUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutOrganisationInput | StockMovementCreateOrConnectWithoutOrganisationInput[]
+    createMany?: StockMovementCreateManyOrganisationInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+  }
+
   export type PriceListCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<PriceListCreateWithoutOrganisationInput, PriceListUncheckedCreateWithoutOrganisationInput> | PriceListCreateWithoutOrganisationInput[] | PriceListUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: PriceListCreateOrConnectWithoutOrganisationInput | PriceListCreateOrConnectWithoutOrganisationInput[]
@@ -21976,6 +23854,13 @@ export namespace Prisma {
     connectOrCreate?: StockItemCreateOrConnectWithoutOrganisationInput | StockItemCreateOrConnectWithoutOrganisationInput[]
     createMany?: StockItemCreateManyOrganisationInputEnvelope
     connect?: StockItemWhereUniqueInput | StockItemWhereUniqueInput[]
+  }
+
+  export type StockMovementUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<StockMovementCreateWithoutOrganisationInput, StockMovementUncheckedCreateWithoutOrganisationInput> | StockMovementCreateWithoutOrganisationInput[] | StockMovementUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutOrganisationInput | StockMovementCreateOrConnectWithoutOrganisationInput[]
+    createMany?: StockMovementCreateManyOrganisationInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
   }
 
   export type PriceListUncheckedCreateNestedManyWithoutOrganisationInput = {
@@ -22100,6 +23985,20 @@ export namespace Prisma {
     update?: StockItemUpdateWithWhereUniqueWithoutOrganisationInput | StockItemUpdateWithWhereUniqueWithoutOrganisationInput[]
     updateMany?: StockItemUpdateManyWithWhereWithoutOrganisationInput | StockItemUpdateManyWithWhereWithoutOrganisationInput[]
     deleteMany?: StockItemScalarWhereInput | StockItemScalarWhereInput[]
+  }
+
+  export type StockMovementUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<StockMovementCreateWithoutOrganisationInput, StockMovementUncheckedCreateWithoutOrganisationInput> | StockMovementCreateWithoutOrganisationInput[] | StockMovementUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutOrganisationInput | StockMovementCreateOrConnectWithoutOrganisationInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutOrganisationInput | StockMovementUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: StockMovementCreateManyOrganisationInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutOrganisationInput | StockMovementUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutOrganisationInput | StockMovementUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
   export type PriceListUpdateManyWithoutOrganisationNestedInput = {
@@ -22240,6 +24139,20 @@ export namespace Prisma {
     update?: StockItemUpdateWithWhereUniqueWithoutOrganisationInput | StockItemUpdateWithWhereUniqueWithoutOrganisationInput[]
     updateMany?: StockItemUpdateManyWithWhereWithoutOrganisationInput | StockItemUpdateManyWithWhereWithoutOrganisationInput[]
     deleteMany?: StockItemScalarWhereInput | StockItemScalarWhereInput[]
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<StockMovementCreateWithoutOrganisationInput, StockMovementUncheckedCreateWithoutOrganisationInput> | StockMovementCreateWithoutOrganisationInput[] | StockMovementUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutOrganisationInput | StockMovementCreateOrConnectWithoutOrganisationInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutOrganisationInput | StockMovementUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: StockMovementCreateManyOrganisationInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutOrganisationInput | StockMovementUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutOrganisationInput | StockMovementUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
   export type PriceListUncheckedUpdateManyWithoutOrganisationNestedInput = {
@@ -22518,6 +24431,14 @@ export namespace Prisma {
     set?: $Enums.ServiceUnit
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -22540,12 +24461,86 @@ export namespace Prisma {
     connect?: OrganisationWhereUniqueInput
   }
 
+  export type StockMovementCreateNestedManyWithoutStockItemInput = {
+    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
+    createMany?: StockMovementCreateManyStockItemInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+  }
+
+  export type StockMovementUncheckedCreateNestedManyWithoutStockItemInput = {
+    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
+    createMany?: StockMovementCreateManyStockItemInputEnvelope
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+  }
+
   export type OrganisationUpdateOneRequiredWithoutStockItemsNestedInput = {
     create?: XOR<OrganisationCreateWithoutStockItemsInput, OrganisationUncheckedCreateWithoutStockItemsInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutStockItemsInput
     upsert?: OrganisationUpsertWithoutStockItemsInput
     connect?: OrganisationWhereUniqueInput
     update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutStockItemsInput, OrganisationUpdateWithoutStockItemsInput>, OrganisationUncheckedUpdateWithoutStockItemsInput>
+  }
+
+  export type StockMovementUpdateManyWithoutStockItemNestedInput = {
+    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutStockItemInput | StockMovementUpsertWithWhereUniqueWithoutStockItemInput[]
+    createMany?: StockMovementCreateManyStockItemInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutStockItemInput | StockMovementUpdateWithWhereUniqueWithoutStockItemInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutStockItemInput | StockMovementUpdateManyWithWhereWithoutStockItemInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutStockItemNestedInput = {
+    create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
+    upsert?: StockMovementUpsertWithWhereUniqueWithoutStockItemInput | StockMovementUpsertWithWhereUniqueWithoutStockItemInput[]
+    createMany?: StockMovementCreateManyStockItemInputEnvelope
+    set?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    disconnect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    delete?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+    update?: StockMovementUpdateWithWhereUniqueWithoutStockItemInput | StockMovementUpdateWithWhereUniqueWithoutStockItemInput[]
+    updateMany?: StockMovementUpdateManyWithWhereWithoutStockItemInput | StockMovementUpdateManyWithWhereWithoutStockItemInput[]
+    deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+  }
+
+  export type OrganisationCreateNestedOneWithoutStockMovementsInput = {
+    create?: XOR<OrganisationCreateWithoutStockMovementsInput, OrganisationUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutStockMovementsInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type StockItemCreateNestedOneWithoutStockMovementsInput = {
+    create?: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: StockItemCreateOrConnectWithoutStockMovementsInput
+    connect?: StockItemWhereUniqueInput
+  }
+
+  export type EnumStockMovementTypeFieldUpdateOperationsInput = {
+    set?: $Enums.StockMovementType
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutStockMovementsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutStockMovementsInput, OrganisationUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutStockMovementsInput
+    upsert?: OrganisationUpsertWithoutStockMovementsInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutStockMovementsInput, OrganisationUpdateWithoutStockMovementsInput>, OrganisationUncheckedUpdateWithoutStockMovementsInput>
+  }
+
+  export type StockItemUpdateOneRequiredWithoutStockMovementsNestedInput = {
+    create?: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
+    connectOrCreate?: StockItemCreateOrConnectWithoutStockMovementsInput
+    upsert?: StockItemUpsertWithoutStockMovementsInput
+    connect?: StockItemWhereUniqueInput
+    update?: XOR<XOR<StockItemUpdateToOneWithWhereWithoutStockMovementsInput, StockItemUpdateWithoutStockMovementsInput>, StockItemUncheckedUpdateWithoutStockMovementsInput>
   }
 
   export type OrganisationCreateNestedOneWithoutJobsInput = {
@@ -22566,6 +24561,12 @@ export namespace Prisma {
     connect?: StaffWhereUniqueInput
   }
 
+  export type B2BPushCreateNestedOneWithoutJobsInput = {
+    create?: XOR<B2BPushCreateWithoutJobsInput, B2BPushUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: B2BPushCreateOrConnectWithoutJobsInput
+    connect?: B2BPushWhereUniqueInput
+  }
+
   export type DeliveryCreateNestedManyWithoutJobInput = {
     create?: XOR<DeliveryCreateWithoutJobInput, DeliveryUncheckedCreateWithoutJobInput> | DeliveryCreateWithoutJobInput[] | DeliveryUncheckedCreateWithoutJobInput[]
     connectOrCreate?: DeliveryCreateOrConnectWithoutJobInput | DeliveryCreateOrConnectWithoutJobInput[]
@@ -22578,14 +24579,6 @@ export namespace Prisma {
     connectOrCreate?: DeliveryCreateOrConnectWithoutJobInput | DeliveryCreateOrConnectWithoutJobInput[]
     createMany?: DeliveryCreateManyJobInputEnvelope
     connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type EnumJobStatusFieldUpdateOperationsInput = {
@@ -22620,6 +24613,16 @@ export namespace Prisma {
     delete?: StaffWhereInput | boolean
     connect?: StaffWhereUniqueInput
     update?: XOR<XOR<StaffUpdateToOneWithWhereWithoutAssignedJobsInput, StaffUpdateWithoutAssignedJobsInput>, StaffUncheckedUpdateWithoutAssignedJobsInput>
+  }
+
+  export type B2BPushUpdateOneWithoutJobsNestedInput = {
+    create?: XOR<B2BPushCreateWithoutJobsInput, B2BPushUncheckedCreateWithoutJobsInput>
+    connectOrCreate?: B2BPushCreateOrConnectWithoutJobsInput
+    upsert?: B2BPushUpsertWithoutJobsInput
+    disconnect?: B2BPushWhereInput | boolean
+    delete?: B2BPushWhereInput | boolean
+    connect?: B2BPushWhereUniqueInput
+    update?: XOR<XOR<B2BPushUpdateToOneWithWhereWithoutJobsInput, B2BPushUpdateWithoutJobsInput>, B2BPushUncheckedUpdateWithoutJobsInput>
   }
 
   export type DeliveryUpdateManyWithoutJobNestedInput = {
@@ -22690,14 +24693,42 @@ export namespace Prisma {
     set?: $Enums.PaymentMethod
   }
 
+  export type JobCreateNestedManyWithoutB2bPushInput = {
+    create?: XOR<JobCreateWithoutB2bPushInput, JobUncheckedCreateWithoutB2bPushInput> | JobCreateWithoutB2bPushInput[] | JobUncheckedCreateWithoutB2bPushInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutB2bPushInput | JobCreateOrConnectWithoutB2bPushInput[]
+    createMany?: JobCreateManyB2bPushInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
   export type OrganisationCreateNestedOneWithoutB2bPushesInput = {
     create?: XOR<OrganisationCreateWithoutB2bPushesInput, OrganisationUncheckedCreateWithoutB2bPushesInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutB2bPushesInput
     connect?: OrganisationWhereUniqueInput
   }
 
+  export type JobUncheckedCreateNestedManyWithoutB2bPushInput = {
+    create?: XOR<JobCreateWithoutB2bPushInput, JobUncheckedCreateWithoutB2bPushInput> | JobCreateWithoutB2bPushInput[] | JobUncheckedCreateWithoutB2bPushInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutB2bPushInput | JobCreateOrConnectWithoutB2bPushInput[]
+    createMany?: JobCreateManyB2bPushInputEnvelope
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
   export type EnumB2BStatusFieldUpdateOperationsInput = {
     set?: $Enums.B2BStatus
+  }
+
+  export type JobUpdateManyWithoutB2bPushNestedInput = {
+    create?: XOR<JobCreateWithoutB2bPushInput, JobUncheckedCreateWithoutB2bPushInput> | JobCreateWithoutB2bPushInput[] | JobUncheckedCreateWithoutB2bPushInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutB2bPushInput | JobCreateOrConnectWithoutB2bPushInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutB2bPushInput | JobUpsertWithWhereUniqueWithoutB2bPushInput[]
+    createMany?: JobCreateManyB2bPushInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutB2bPushInput | JobUpdateWithWhereUniqueWithoutB2bPushInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutB2bPushInput | JobUpdateManyWithWhereWithoutB2bPushInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
   export type OrganisationUpdateOneWithoutB2bPushesNestedInput = {
@@ -22708,6 +24739,20 @@ export namespace Prisma {
     delete?: OrganisationWhereInput | boolean
     connect?: OrganisationWhereUniqueInput
     update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutB2bPushesInput, OrganisationUpdateWithoutB2bPushesInput>, OrganisationUncheckedUpdateWithoutB2bPushesInput>
+  }
+
+  export type JobUncheckedUpdateManyWithoutB2bPushNestedInput = {
+    create?: XOR<JobCreateWithoutB2bPushInput, JobUncheckedCreateWithoutB2bPushInput> | JobCreateWithoutB2bPushInput[] | JobUncheckedCreateWithoutB2bPushInput[]
+    connectOrCreate?: JobCreateOrConnectWithoutB2bPushInput | JobCreateOrConnectWithoutB2bPushInput[]
+    upsert?: JobUpsertWithWhereUniqueWithoutB2bPushInput | JobUpsertWithWhereUniqueWithoutB2bPushInput[]
+    createMany?: JobCreateManyB2bPushInputEnvelope
+    set?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    disconnect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    delete?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+    update?: JobUpdateWithWhereUniqueWithoutB2bPushInput | JobUpdateWithWhereUniqueWithoutB2bPushInput[]
+    updateMany?: JobUpdateManyWithWhereWithoutB2bPushInput | JobUpdateManyWithWhereWithoutB2bPushInput[]
+    deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
   export type OrganisationCreateNestedOneWithoutAuditLogsInput = {
@@ -22964,6 +25009,17 @@ export namespace Prisma {
     not?: NestedEnumServiceUnitFilter<$PrismaModel> | $Enums.ServiceUnit
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumServiceUnitWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ServiceUnit | EnumServiceUnitFieldRefInput<$PrismaModel>
     in?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel>
@@ -22972,6 +25028,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumServiceUnitFilter<$PrismaModel>
     _max?: NestedEnumServiceUnitFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -22990,15 +25062,21 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  export type NestedEnumStockMovementTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.StockMovementType | EnumStockMovementTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumStockMovementTypeFilter<$PrismaModel> | $Enums.StockMovementType
+  }
+
+  export type NestedEnumStockMovementTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StockMovementType | EnumStockMovementTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StockMovementType[] | ListEnumStockMovementTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumStockMovementTypeWithAggregatesFilter<$PrismaModel> | $Enums.StockMovementType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStockMovementTypeFilter<$PrismaModel>
+    _max?: NestedEnumStockMovementTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumJobStatusFilter<$PrismaModel = never> = {
@@ -23013,22 +25091,6 @@ export namespace Prisma {
     in?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.PaymentStatus[] | ListEnumPaymentStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
-  }
-
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -23308,6 +25370,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     client: ClientCreateNestedOneWithoutJobsInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
+    b2bPush?: B2BPushCreateNestedOneWithoutJobsInput
     deliveries?: DeliveryCreateNestedManyWithoutJobInput
   }
 
@@ -23332,6 +25395,7 @@ export namespace Prisma {
     assignedStaffId?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -23357,6 +25421,7 @@ export namespace Prisma {
     lastUnitCost: number
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
+    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemUncheckedCreateWithoutOrganisationInput = {
@@ -23368,6 +25433,7 @@ export namespace Prisma {
     lastUnitCost: number
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemCreateOrConnectWithoutOrganisationInput = {
@@ -23380,11 +25446,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StockMovementCreateWithoutOrganisationInput = {
+    id?: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+    stockItem: StockItemCreateNestedOneWithoutStockMovementsInput
+  }
+
+  export type StockMovementUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    stockItemId: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+  }
+
+  export type StockMovementCreateOrConnectWithoutOrganisationInput = {
+    where: StockMovementWhereUniqueInput
+    create: XOR<StockMovementCreateWithoutOrganisationInput, StockMovementUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type StockMovementCreateManyOrganisationInputEnvelope = {
+    data: StockMovementCreateManyOrganisationInput | StockMovementCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type PriceListCreateWithoutOrganisationInput = {
     id?: string
     name: string
     category: string
     unit: $Enums.ServiceUnit
+    costPrice?: number | null
     priceGHS: number
     stockRefId?: string | null
     isActive?: boolean
@@ -23396,6 +25499,7 @@ export namespace Prisma {
     name: string
     category: string
     unit: $Enums.ServiceUnit
+    costPrice?: number | null
     priceGHS: number
     stockRefId?: string | null
     isActive?: boolean
@@ -23464,6 +25568,7 @@ export namespace Prisma {
     status?: $Enums.B2BStatus
     createdAt?: Date | string
     updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutB2bPushInput
   }
 
   export type B2BPushUncheckedCreateWithoutOrganisationInput = {
@@ -23478,6 +25583,7 @@ export namespace Prisma {
     status?: $Enums.B2BStatus
     createdAt?: Date | string
     updatedAt?: Date | string
+    jobs?: JobUncheckedCreateNestedManyWithoutB2bPushInput
   }
 
   export type B2BPushCreateOrConnectWithoutOrganisationInput = {
@@ -23691,6 +25797,7 @@ export namespace Prisma {
     assignedStaffId?: StringNullableFilter<"Job"> | string | null
     deliveryId?: StringNullableFilter<"Job"> | string | null
     notes?: StringNullableFilter<"Job"> | string | null
+    b2bPushId?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     completedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
@@ -23727,6 +25834,39 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StockItem"> | Date | string
   }
 
+  export type StockMovementUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: StockMovementWhereUniqueInput
+    update: XOR<StockMovementUpdateWithoutOrganisationInput, StockMovementUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<StockMovementCreateWithoutOrganisationInput, StockMovementUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type StockMovementUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: StockMovementWhereUniqueInput
+    data: XOR<StockMovementUpdateWithoutOrganisationInput, StockMovementUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type StockMovementUpdateManyWithWhereWithoutOrganisationInput = {
+    where: StockMovementScalarWhereInput
+    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type StockMovementScalarWhereInput = {
+    AND?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+    OR?: StockMovementScalarWhereInput[]
+    NOT?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+    id?: StringFilter<"StockMovement"> | string
+    orgId?: StringFilter<"StockMovement"> | string
+    stockItemId?: StringFilter<"StockMovement"> | string
+    type?: EnumStockMovementTypeFilter<"StockMovement"> | $Enums.StockMovementType
+    quantity?: FloatFilter<"StockMovement"> | number
+    unitCost?: FloatNullableFilter<"StockMovement"> | number | null
+    referenceId?: StringNullableFilter<"StockMovement"> | string | null
+    referenceType?: StringNullableFilter<"StockMovement"> | string | null
+    note?: StringNullableFilter<"StockMovement"> | string | null
+    createdBy?: StringFilter<"StockMovement"> | string
+    createdAt?: DateTimeFilter<"StockMovement"> | Date | string
+  }
+
   export type PriceListUpsertWithWhereUniqueWithoutOrganisationInput = {
     where: PriceListWhereUniqueInput
     update: XOR<PriceListUpdateWithoutOrganisationInput, PriceListUncheckedUpdateWithoutOrganisationInput>
@@ -23752,6 +25892,7 @@ export namespace Prisma {
     name?: StringFilter<"PriceList"> | string
     category?: StringFilter<"PriceList"> | string
     unit?: EnumServiceUnitFilter<"PriceList"> | $Enums.ServiceUnit
+    costPrice?: FloatNullableFilter<"PriceList"> | number | null
     priceGHS?: FloatFilter<"PriceList"> | number
     stockRefId?: StringNullableFilter<"PriceList"> | string | null
     isActive?: BoolFilter<"PriceList"> | boolean
@@ -23872,6 +26013,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -23892,6 +26034,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -23928,6 +26071,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -23948,6 +26092,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -23968,6 +26113,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -23988,6 +26134,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -24055,6 +26202,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -24075,6 +26223,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -24132,6 +26281,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -24152,6 +26302,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -24212,6 +26363,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    b2bPush?: B2BPushCreateNestedOneWithoutJobsInput
     deliveries?: DeliveryCreateNestedManyWithoutJobInput
   }
 
@@ -24236,6 +26388,7 @@ export namespace Prisma {
     paymentRef?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -24277,6 +26430,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -24297,6 +26451,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -24374,6 +26529,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
+    b2bPush?: B2BPushCreateNestedOneWithoutJobsInput
     deliveries?: DeliveryCreateNestedManyWithoutJobInput
   }
 
@@ -24398,6 +26554,7 @@ export namespace Prisma {
     assignedStaffId?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -24428,6 +26585,7 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -24448,6 +26606,7 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -24500,6 +26659,7 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -24520,6 +26680,7 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -24541,6 +26702,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
@@ -24561,6 +26723,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
@@ -24597,6 +26760,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
@@ -24617,6 +26781,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -24636,6 +26801,7 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -24656,6 +26822,7 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -24665,6 +26832,42 @@ export namespace Prisma {
   export type OrganisationCreateOrConnectWithoutStockItemsInput = {
     where: OrganisationWhereUniqueInput
     create: XOR<OrganisationCreateWithoutStockItemsInput, OrganisationUncheckedCreateWithoutStockItemsInput>
+  }
+
+  export type StockMovementCreateWithoutStockItemInput = {
+    id?: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutStockMovementsInput
+  }
+
+  export type StockMovementUncheckedCreateWithoutStockItemInput = {
+    id?: string
+    orgId: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+  }
+
+  export type StockMovementCreateOrConnectWithoutStockItemInput = {
+    where: StockMovementWhereUniqueInput
+    create: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput>
+  }
+
+  export type StockMovementCreateManyStockItemInputEnvelope = {
+    data: StockMovementCreateManyStockItemInput | StockMovementCreateManyStockItemInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrganisationUpsertWithoutStockItemsInput = {
@@ -24692,6 +26895,7 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -24712,10 +26916,191 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type StockMovementUpsertWithWhereUniqueWithoutStockItemInput = {
+    where: StockMovementWhereUniqueInput
+    update: XOR<StockMovementUpdateWithoutStockItemInput, StockMovementUncheckedUpdateWithoutStockItemInput>
+    create: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput>
+  }
+
+  export type StockMovementUpdateWithWhereUniqueWithoutStockItemInput = {
+    where: StockMovementWhereUniqueInput
+    data: XOR<StockMovementUpdateWithoutStockItemInput, StockMovementUncheckedUpdateWithoutStockItemInput>
+  }
+
+  export type StockMovementUpdateManyWithWhereWithoutStockItemInput = {
+    where: StockMovementScalarWhereInput
+    data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutStockItemInput>
+  }
+
+  export type OrganisationCreateWithoutStockMovementsInput = {
+    id?: string
+    name: string
+    slug: string
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    staff?: StaffCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    jobs?: JobCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutStockMovementsInput = {
+    id?: string
+    name: string
+    slug: string
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutStockMovementsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutStockMovementsInput, OrganisationUncheckedCreateWithoutStockMovementsInput>
+  }
+
+  export type StockItemCreateWithoutStockMovementsInput = {
+    id?: string
+    name: string
+    unit: string
+    totalRemaining: number
+    lowStockThreshold: number
+    lastUnitCost: number
+    lastRestockedAt?: Date | string | null
+    createdAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutStockItemsInput
+  }
+
+  export type StockItemUncheckedCreateWithoutStockMovementsInput = {
+    id?: string
+    orgId: string
+    name: string
+    unit: string
+    totalRemaining: number
+    lowStockThreshold: number
+    lastUnitCost: number
+    lastRestockedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type StockItemCreateOrConnectWithoutStockMovementsInput = {
+    where: StockItemWhereUniqueInput
+    create: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
+  }
+
+  export type OrganisationUpsertWithoutStockMovementsInput = {
+    update: XOR<OrganisationUpdateWithoutStockMovementsInput, OrganisationUncheckedUpdateWithoutStockMovementsInput>
+    create: XOR<OrganisationCreateWithoutStockMovementsInput, OrganisationUncheckedCreateWithoutStockMovementsInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutStockMovementsInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutStockMovementsInput, OrganisationUncheckedUpdateWithoutStockMovementsInput>
+  }
+
+  export type OrganisationUpdateWithoutStockMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutStockMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type StockItemUpsertWithoutStockMovementsInput = {
+    update: XOR<StockItemUpdateWithoutStockMovementsInput, StockItemUncheckedUpdateWithoutStockMovementsInput>
+    create: XOR<StockItemCreateWithoutStockMovementsInput, StockItemUncheckedCreateWithoutStockMovementsInput>
+    where?: StockItemWhereInput
+  }
+
+  export type StockItemUpdateToOneWithWhereWithoutStockMovementsInput = {
+    where?: StockItemWhereInput
+    data: XOR<StockItemUpdateWithoutStockMovementsInput, StockItemUncheckedUpdateWithoutStockMovementsInput>
+  }
+
+  export type StockItemUpdateWithoutStockMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    totalRemaining?: FloatFieldUpdateOperationsInput | number
+    lowStockThreshold?: FloatFieldUpdateOperationsInput | number
+    lastUnitCost?: FloatFieldUpdateOperationsInput | number
+    lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutStockItemsNestedInput
+  }
+
+  export type StockItemUncheckedUpdateWithoutStockMovementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    totalRemaining?: FloatFieldUpdateOperationsInput | number
+    lowStockThreshold?: FloatFieldUpdateOperationsInput | number
+    lastUnitCost?: FloatFieldUpdateOperationsInput | number
+    lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganisationCreateWithoutJobsInput = {
@@ -24732,6 +27117,7 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -24752,6 +27138,7 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -24839,6 +27226,41 @@ export namespace Prisma {
     create: XOR<StaffCreateWithoutAssignedJobsInput, StaffUncheckedCreateWithoutAssignedJobsInput>
   }
 
+  export type B2BPushCreateWithoutJobsInput = {
+    id?: string
+    orgId: string
+    originalJobId: string
+    clientName: string
+    serviceName: string
+    specs: string
+    deadline: Date | string
+    suggestedPrice?: number | null
+    status?: $Enums.B2BStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation?: OrganisationCreateNestedOneWithoutB2bPushesInput
+  }
+
+  export type B2BPushUncheckedCreateWithoutJobsInput = {
+    id?: string
+    orgId: string
+    originalJobId: string
+    clientName: string
+    serviceName: string
+    specs: string
+    deadline: Date | string
+    suggestedPrice?: number | null
+    status?: $Enums.B2BStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisationId?: string | null
+  }
+
+  export type B2BPushCreateOrConnectWithoutJobsInput = {
+    where: B2BPushWhereUniqueInput
+    create: XOR<B2BPushCreateWithoutJobsInput, B2BPushUncheckedCreateWithoutJobsInput>
+  }
+
   export type DeliveryCreateWithoutJobInput = {
     id?: string
     clientId: string
@@ -24904,6 +27326,7 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -24924,6 +27347,7 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -25018,6 +27442,47 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type B2BPushUpsertWithoutJobsInput = {
+    update: XOR<B2BPushUpdateWithoutJobsInput, B2BPushUncheckedUpdateWithoutJobsInput>
+    create: XOR<B2BPushCreateWithoutJobsInput, B2BPushUncheckedCreateWithoutJobsInput>
+    where?: B2BPushWhereInput
+  }
+
+  export type B2BPushUpdateToOneWithWhereWithoutJobsInput = {
+    where?: B2BPushWhereInput
+    data: XOR<B2BPushUpdateWithoutJobsInput, B2BPushUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type B2BPushUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    originalJobId?: StringFieldUpdateOperationsInput | string
+    clientName?: StringFieldUpdateOperationsInput | string
+    serviceName?: StringFieldUpdateOperationsInput | string
+    specs?: StringFieldUpdateOperationsInput | string
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    suggestedPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: EnumB2BStatusFieldUpdateOperationsInput | $Enums.B2BStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneWithoutB2bPushesNestedInput
+  }
+
+  export type B2BPushUncheckedUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    originalJobId?: StringFieldUpdateOperationsInput | string
+    clientName?: StringFieldUpdateOperationsInput | string
+    serviceName?: StringFieldUpdateOperationsInput | string
+    specs?: StringFieldUpdateOperationsInput | string
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    suggestedPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: EnumB2BStatusFieldUpdateOperationsInput | $Enums.B2BStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type DeliveryUpsertWithWhereUniqueWithoutJobInput = {
     where: DeliveryWhereUniqueInput
     update: XOR<DeliveryUpdateWithoutJobInput, DeliveryUncheckedUpdateWithoutJobInput>
@@ -25049,6 +27514,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
@@ -25069,6 +27535,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
@@ -25104,6 +27571,7 @@ export namespace Prisma {
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
+    b2bPush?: B2BPushCreateNestedOneWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutDeliveriesInput = {
@@ -25128,6 +27596,7 @@ export namespace Prisma {
     assignedStaffId?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -25164,6 +27633,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
@@ -25184,6 +27654,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -25225,6 +27696,7 @@ export namespace Prisma {
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
+    b2bPush?: B2BPushUpdateOneWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutDeliveriesInput = {
@@ -25249,9 +27721,76 @@ export namespace Prisma {
     assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type JobCreateWithoutB2bPushInput = {
+    id?: string
+    serviceId: string
+    serviceName: string
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unit?: string | null
+    totalPrice: number
+    costPrice?: number | null
+    profitMargin?: number | null
+    materialUsed?: number | null
+    materialWastage?: number | null
+    status?: $Enums.JobStatus
+    paymentStatus?: $Enums.PaymentStatus
+    isPaid?: boolean
+    paymentRef?: string | null
+    deliveryId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    organisation: OrganisationCreateNestedOneWithoutJobsInput
+    client: ClientCreateNestedOneWithoutJobsInput
+    assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
+    deliveries?: DeliveryCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutB2bPushInput = {
+    id?: string
+    orgId: string
+    clientId: string
+    serviceId: string
+    serviceName: string
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unit?: string | null
+    totalPrice: number
+    costPrice?: number | null
+    profitMargin?: number | null
+    materialUsed?: number | null
+    materialWastage?: number | null
+    status?: $Enums.JobStatus
+    paymentStatus?: $Enums.PaymentStatus
+    isPaid?: boolean
+    paymentRef?: string | null
+    assignedStaffId?: string | null
+    deliveryId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutB2bPushInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutB2bPushInput, JobUncheckedCreateWithoutB2bPushInput>
+  }
+
+  export type JobCreateManyB2bPushInputEnvelope = {
+    data: JobCreateManyB2bPushInput | JobCreateManyB2bPushInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrganisationCreateWithoutB2bPushesInput = {
@@ -25269,6 +27808,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
@@ -25289,6 +27829,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
@@ -25297,6 +27838,22 @@ export namespace Prisma {
   export type OrganisationCreateOrConnectWithoutB2bPushesInput = {
     where: OrganisationWhereUniqueInput
     create: XOR<OrganisationCreateWithoutB2bPushesInput, OrganisationUncheckedCreateWithoutB2bPushesInput>
+  }
+
+  export type JobUpsertWithWhereUniqueWithoutB2bPushInput = {
+    where: JobWhereUniqueInput
+    update: XOR<JobUpdateWithoutB2bPushInput, JobUncheckedUpdateWithoutB2bPushInput>
+    create: XOR<JobCreateWithoutB2bPushInput, JobUncheckedCreateWithoutB2bPushInput>
+  }
+
+  export type JobUpdateWithWhereUniqueWithoutB2bPushInput = {
+    where: JobWhereUniqueInput
+    data: XOR<JobUpdateWithoutB2bPushInput, JobUncheckedUpdateWithoutB2bPushInput>
+  }
+
+  export type JobUpdateManyWithWhereWithoutB2bPushInput = {
+    where: JobScalarWhereInput
+    data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutB2bPushInput>
   }
 
   export type OrganisationUpsertWithoutB2bPushesInput = {
@@ -25325,6 +27882,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
@@ -25345,6 +27903,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -25365,6 +27924,7 @@ export namespace Prisma {
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -25385,6 +27945,7 @@ export namespace Prisma {
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -25421,6 +27982,7 @@ export namespace Prisma {
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -25441,6 +28003,7 @@ export namespace Prisma {
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -25515,6 +28078,7 @@ export namespace Prisma {
     assignedStaffId?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -25531,11 +28095,25 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type StockMovementCreateManyOrganisationInput = {
+    id?: string
+    stockItemId: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+  }
+
   export type PriceListCreateManyOrganisationInput = {
     id?: string
     name: string
     category: string
     unit: $Enums.ServiceUnit
+    costPrice?: number | null
     priceGHS: number
     stockRefId?: string | null
     isActive?: boolean
@@ -25756,6 +28334,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
+    b2bPush?: B2BPushUpdateOneWithoutJobsNestedInput
     deliveries?: DeliveryUpdateManyWithoutJobNestedInput
   }
 
@@ -25780,6 +28359,7 @@ export namespace Prisma {
     assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25807,6 +28387,7 @@ export namespace Prisma {
     assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25821,6 +28402,7 @@ export namespace Prisma {
     lastUnitCost?: FloatFieldUpdateOperationsInput | number
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemUncheckedUpdateWithoutOrganisationInput = {
@@ -25832,6 +28414,7 @@ export namespace Prisma {
     lastUnitCost?: FloatFieldUpdateOperationsInput | number
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemUncheckedUpdateManyWithoutOrganisationInput = {
@@ -25845,11 +28428,51 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StockMovementUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockItem?: StockItemUpdateOneRequiredWithoutStockMovementsNestedInput
+  }
+
+  export type StockMovementUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stockItemId?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    stockItemId?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PriceListUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
     stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -25861,6 +28484,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
     stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -25872,6 +28496,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
     stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
@@ -25935,6 +28560,7 @@ export namespace Prisma {
     status?: EnumB2BStatusFieldUpdateOperationsInput | $Enums.B2BStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutB2bPushNestedInput
   }
 
   export type B2BPushUncheckedUpdateWithoutOrganisationInput = {
@@ -25949,6 +28575,7 @@ export namespace Prisma {
     status?: EnumB2BStatusFieldUpdateOperationsInput | $Enums.B2BStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUncheckedUpdateManyWithoutB2bPushNestedInput
   }
 
   export type B2BPushUncheckedUpdateManyWithoutOrganisationInput = {
@@ -26019,6 +28646,7 @@ export namespace Prisma {
     paymentRef?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -26048,6 +28676,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    b2bPush?: B2BPushUpdateOneWithoutJobsNestedInput
     deliveries?: DeliveryUpdateManyWithoutJobNestedInput
   }
 
@@ -26072,6 +28701,7 @@ export namespace Prisma {
     paymentRef?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26099,6 +28729,7 @@ export namespace Prisma {
     paymentRef?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26125,6 +28756,7 @@ export namespace Prisma {
     assignedStaffId?: string | null
     deliveryId?: string | null
     notes?: string | null
+    b2bPushId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
@@ -26154,6 +28786,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
+    b2bPush?: B2BPushUpdateOneWithoutJobsNestedInput
     deliveries?: DeliveryUpdateManyWithoutJobNestedInput
   }
 
@@ -26178,6 +28811,7 @@ export namespace Prisma {
     assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26205,9 +28839,62 @@ export namespace Prisma {
     assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type StockMovementCreateManyStockItemInput = {
+    id?: string
+    orgId: string
+    type: $Enums.StockMovementType
+    quantity: number
+    unitCost?: number | null
+    referenceId?: string | null
+    referenceType?: string | null
+    note?: string | null
+    createdBy: string
+    createdAt?: Date | string
+  }
+
+  export type StockMovementUpdateWithoutStockItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutStockMovementsNestedInput
+  }
+
+  export type StockMovementUncheckedUpdateWithoutStockItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockMovementUncheckedUpdateManyWithoutStockItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+    quantity?: FloatFieldUpdateOperationsInput | number
+    unitCost?: NullableFloatFieldUpdateOperationsInput | number | null
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdBy?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeliveryCreateManyJobInput = {
@@ -26268,6 +28955,116 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobCreateManyB2bPushInput = {
+    id?: string
+    orgId: string
+    clientId: string
+    serviceId: string
+    serviceName: string
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unit?: string | null
+    totalPrice: number
+    costPrice?: number | null
+    profitMargin?: number | null
+    materialUsed?: number | null
+    materialWastage?: number | null
+    status?: $Enums.JobStatus
+    paymentStatus?: $Enums.PaymentStatus
+    isPaid?: boolean
+    paymentRef?: string | null
+    assignedStaffId?: string | null
+    deliveryId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type JobUpdateWithoutB2bPushInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    serviceName?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    profitMargin?: NullableFloatFieldUpdateOperationsInput | number | null
+    materialUsed?: NullableFloatFieldUpdateOperationsInput | number | null
+    materialWastage?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paymentRef?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
+    deliveries?: DeliveryUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutB2bPushInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    serviceName?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    profitMargin?: NullableFloatFieldUpdateOperationsInput | number | null
+    materialUsed?: NullableFloatFieldUpdateOperationsInput | number | null
+    materialWastage?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paymentRef?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateManyWithoutB2bPushInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    serviceId?: StringFieldUpdateOperationsInput | string
+    serviceName?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unit?: NullableStringFieldUpdateOperationsInput | string | null
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    profitMargin?: NullableFloatFieldUpdateOperationsInput | number | null
+    materialUsed?: NullableFloatFieldUpdateOperationsInput | number | null
+    materialWastage?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paymentRef?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 

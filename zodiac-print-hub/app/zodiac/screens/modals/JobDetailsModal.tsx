@@ -11,14 +11,14 @@ import { PaymentVerificationModal } from "./PaymentVerificationModal";
 import type { DeliveryRecord } from "../../types/zodiac.types";
 
 /* =========================================================
-   SELECTORS ONLY (no store shape leakage)
+   SELECTORS ONLY (Synced with Grouped Store)
 ========================================================= */
-
 import {
   selectJobById,
-  selectAllStaff,
+  selectStaffArray, // ✅ FIXED: consistent with selectors naming
   selectPricesMap,
-  selectAllDeliveries,
+  selectDeliveriesArray,
+  selectB2BMap, // 🔥 NEW: To show negotiation context
 } from "@store/selectors/data.selectors";
 
 export function JobDetailsModal({
@@ -31,14 +31,16 @@ export function JobDetailsModal({
   const { swapModal } = useModalStore();
 
   /* -------------------------
-     SELECTED DATA (PURE)
+     SELECTED DATA (Synced Paths)
   --------------------------*/
   const job = useDataStore((s) => selectJobById(jobId)(s));
-  const staffList = useDataStore(selectAllStaff);
+  const staffList = useDataStore(selectStaffArray);
   const prices = useDataStore(selectPricesMap);
-  const deliveries = useDataStore(selectAllDeliveries);
+  const deliveries = useDataStore(selectDeliveriesArray);
+  const b2bDeals = useDataStore(selectB2BMap);
 
   const service = job ? prices[job.serviceId] : undefined;
+  const b2bDeal = job?.b2bPushId ? b2bDeals[job.b2bPushId] : undefined;
 
   const existingDelivery = job
     ? deliveries.find((d) => d.jobId === job.id)
@@ -50,17 +52,19 @@ export function JobDetailsModal({
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
+    // Note: status names must match JobStatusEnum (e.g., IN_PROGRESS)
     if (job?.status !== "IN_PROGRESS") return;
 
-    const startTime = (job as any)?.startTime;
-    if (!startTime) return;
+    const startTime = (job as any)?.updatedAt
+      ? new Date((job as any).updatedAt).getTime()
+      : Date.now();
 
     const interval = setInterval(() => {
       setElapsed(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [job?.status, job]);
+  }, [job?.status, job?.updatedAt]);
 
   if (!job) return null;
 
@@ -68,25 +72,19 @@ export function JobDetailsModal({
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-
-    return `${hrs > 0 ? `${hrs}h ` : ""}${mins}m ${secs
-      .toString()
-      .padStart(2, "0")}s`;
+    return `${hrs > 0 ? `${hrs}h ` : ""}${mins}m ${secs.toString().padStart(2, "0")}s`;
   };
 
   /* -------------------------
-     ACTIONS
+     ACTIONS (Synced with frozen Service logic)
   --------------------------*/
   const triggerWasteAudit = () => {
     swapModal("GLOBAL", () => (
       <WastePromptModal
         job={{ ...job, unit: service?.unit }}
         onConfirm={(waste) => {
-          useDataStore.getState().recordWastage(job.id, waste);
-
-          if (job.status === "IN_PROGRESS") {
-            useDataStore.getState().updateJobStatus(job.id, "SUCCESSFUL");
-          }
+          // Logic Sync: Should call a unified job status update that handles ledger
+          useDataStore.getState().updateJobStatus(job.id, "COMPLETED");
         }}
       />
     ));
@@ -112,81 +110,109 @@ export function JobDetailsModal({
     };
 
     useDataStore.getState().addDelivery(newDelivery);
-
     swapModal("GLOBAL", () => <DeliveryHandlingModal delivery={newDelivery} />);
   };
 
-  /* -------------------------
-     UI
-  --------------------------*/
   return (
-    <div className="glass-card p-6 w-full max-w-md border border-white/10 flex flex-col gap-6">
+    <div className="glass-card p-6 w-full max-w-md border border-white/10 flex flex-col gap-6 bg-zinc-900 text-white rounded-3xl">
       {/* HEADER */}
       <header className="flex justify-between items-start">
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] bg-cyan-400/10 text-cyan-400 px-2 py-0.5 rounded">
-            #{job.id}
-          </span>
-
-          <h2 className="text-xl font-bold">{job.clientSnapshot?.name}</h2>
-
-          <span className="text-[10px] text-cyan-400 uppercase">
-            {service?.name}
+          <div className="flex gap-2 items-center">
+            <span className="text-[10px] bg-cyan-400/10 text-cyan-400 px-2 py-0.5 rounded">
+              #{job.id.slice(-6)}
+            </span>
+            {b2bDeal && (
+              <span className="text-[10px] bg-amber-400/10 text-amber-400 px-2 py-0.5 rounded border border-amber-400/20">
+                B2B DEAL
+              </span>
+            )}
+          </div>
+          <h2 className="text-xl font-bold">Client: {job.clientId}</h2>
+          <span className="text-[10px] text-cyan-400 uppercase tracking-widest">
+            {service?.name || job.serviceName}
           </span>
         </div>
-
-        <button onClick={onClose}>✕</button>
+        <button
+          onClick={onClose}
+          className="opacity-40 hover:opacity-100 transition-opacity"
+        >
+          ✕
+        </button>
       </header>
 
-      {/* TIMER */}
-      <div className="py-10 text-center">
-        <div className="text-xs uppercase opacity-40">
-          {job.status === "IN_PROGRESS" ? "Active Production" : "Total Time"}
+      {/* TIMER SECTION */}
+      <div className="py-6 text-center bg-white/5 rounded-3xl border border-white/5">
+        <div className="text-[10px] uppercase tracking-tighter opacity-40 mb-1">
+          {job.status === "IN_PROGRESS"
+            ? "Active Production Time"
+            : "Status: " + job.status}
         </div>
-
-        <div className="text-4xl font-mono">{formatTime(elapsed)}</div>
+        <div className="text-4xl font-mono tracking-tight">
+          {formatTime(elapsed)}
+        </div>
       </div>
 
-      {/* STAFF */}
-      <div className="p-4 bg-white/5 rounded-2xl">
-        <label className="text-[10px] uppercase opacity-40">
+      {/* STAFF ASSIGNMENT */}
+      <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+        <label className="text-[10px] uppercase opacity-40 mb-2 block">
           Assigned Staff
         </label>
-
         <select
           value={job.assignedStaffId || ""}
           onChange={(e) =>
             useDataStore.getState().assignStaff(job.id, e.target.value)
           }
-          className="w-full bg-transparent text-cyan-400"
+          className="w-full bg-transparent text-cyan-400 outline-none"
         >
-          <option value="">Select</option>
-
+          <option value="" className="bg-zinc-900">
+            Unassigned
+          </option>
           {staffList.map((s) => (
-            <option key={s.id} value={s.id}>
+            <option key={s.id} value={s.id} className="bg-zinc-900">
               {s.name}
             </option>
           ))}
         </select>
       </div>
 
-      {/* STATS */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="p-3 bg-white/5 rounded">Qty {job.quantity}</div>
-
-        <div className="p-3 bg-white/5 rounded">
-          Size {job.width && job.height ? `${job.width}x${job.height}` : "N/A"}
+      {/* JOB STATS */}
+      <div className="grid grid-cols-3 gap-2 text-center text-xs">
+        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+          <div className="opacity-40 mb-1">Qty</div>
+          <div className="font-bold">{job.quantity}</div>
         </div>
-
-        <div className="p-3 bg-white/5 rounded">
-          Waste {job.materialWastage || 0}
+        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+          <div className="opacity-40 mb-1">Size</div>
+          <div className="font-bold">
+            {job.width && job.height ? `${job.width}x${job.height}` : "N/A"}
+          </div>
+        </div>
+        <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+          <div className="opacity-40 mb-1">Waste</div>
+          <div className="font-bold text-rose-400">
+            {job.materialWastage || 0}
+          </div>
         </div>
       </div>
 
-      {/* ACTIONS */}
-      <div className="flex flex-col gap-2">
+      {/* FINANCIAL STATUS */}
+      <div className="flex justify-between items-center px-2">
+        <span
+          className={`text-[10px] font-bold px-3 py-1 rounded-full ${job.isPaid ? "bg-emerald-400/10 text-emerald-400" : "bg-rose-400/10 text-rose-400"}`}
+        >
+          {job.isPaid ? "FULLY PAID" : "PAYMENT PENDING"}
+        </span>
+        <span className="font-mono text-sm">
+          GHS {job.totalPrice.toFixed(2)}
+        </span>
+      </div>
+
+      {/* ACTION FOOTER */}
+      <div className="flex flex-col gap-2 pt-2">
         {!job.isPaid && (
           <button
+            className="btn-primary py-3 rounded-2xl bg-cyan-500 text-black font-bold"
             onClick={() =>
               swapModal("GLOBAL", () => (
                 <PaymentVerificationModal jobId={job.id} />
@@ -198,28 +224,41 @@ export function JobDetailsModal({
         )}
 
         {job.status === "PENDING" && (
-          <button onClick={() => useDataStore.getState().startJob(job.id)}>
+          <button
+            className="btn-secondary py-3 rounded-2xl bg-white/10 font-bold"
+            onClick={() =>
+              useDataStore.getState().updateJobStatus(job.id, "IN_PROGRESS")
+            }
+          >
             Start Production
           </button>
         )}
 
         {job.status === "IN_PROGRESS" && (
-          <>
-            <button onClick={triggerWasteAudit}>Mark Successful</button>
-
+          <div className="flex gap-2">
             <button
+              className="flex-1 py-3 rounded-2xl bg-emerald-500 text-black font-bold text-sm"
+              onClick={triggerWasteAudit}
+            >
+              Complete Job
+            </button>
+            <button
+              className="px-6 py-3 rounded-2xl bg-white/10 font-bold text-sm"
               onClick={() =>
                 useDataStore.getState().updateJobStatus(job.id, "PAUSED")
               }
             >
               Pause
             </button>
-          </>
+          </div>
         )}
 
-        {job.status === "SUCCESSFUL" && (
-          <button onClick={handleFulfillment}>
-            {existingDelivery ? "Manage Delivery" : "Arrange Fulfillment"}
+        {job.status === "COMPLETED" && (
+          <button
+            className="btn-primary py-3 rounded-2xl bg-white text-black font-bold"
+            onClick={handleFulfillment}
+          >
+            {existingDelivery ? "Manage Delivery" : "Ready for Fulfillment"}
           </button>
         )}
       </div>

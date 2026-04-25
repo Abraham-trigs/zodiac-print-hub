@@ -132,6 +132,8 @@ export const selectAllPayments = selectPaymentsArray;
    JOB DOMAIN COMPOSITES
 ========================================================= */
 
+export const selectJobById = (id: string) => (s: State) => selectJobsMap(s)[id];
+
 export const selectJobWithRelations = (id: string) => (s: State) => {
   const job = selectJobsMap(s)[id];
   if (!job) return undefined;

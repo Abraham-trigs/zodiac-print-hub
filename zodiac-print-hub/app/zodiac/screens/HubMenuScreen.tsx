@@ -3,8 +3,7 @@
 import { useZodiac } from "../store/zodiac.store";
 import { useModalStore } from "../store/useModalStore";
 import { ZodiacScreen } from "../types/screen.types";
-import { PriceListModal } from "../screens/modals/priceListModal";
-import { SettingsPermissionsModal } from "../screens/modals/SettingsPermissionsModal"; // ✅ Import new modal
+import { SettingsPermissionsModal } from "../screens/modals/SettingsPermissionsModal";
 
 export const HubMenuScreen: ZodiacScreen = {
   id: "HUB_MENU",
@@ -13,13 +12,15 @@ export const HubMenuScreen: ZodiacScreen = {
     const { setScreen } = useZodiac();
     const { openModal } = useModalStore();
 
+    /* =========================================================
+       NAVIGATION LOGIC (Synced with Screen Registry)
+    ========================================================= */
     const handleMenuClick = (id: string) => {
-      if (id === "PRICE_LIST") {
-        openModal("GLOBAL", PriceListModal);
-      } else if (id === "SETTINGS") {
-        // 🔥 Trigger Settings & Permissions Modal
+      if (id === "SETTINGS") {
+        // Settings remains a modal for quick overlay access
         openModal("GLOBAL", SettingsPermissionsModal);
       } else {
+        // 🔥 FIXED: PRICE_CATALOG is now a formal screen transition
         setScreen(id as any);
       }
     };
@@ -38,7 +39,7 @@ export const HubMenuScreen: ZodiacScreen = {
         desc: "Load & Performance",
       },
       {
-        id: "PRICE_LIST",
+        id: "PRICE_CATALOG", // 🔥 UPDATED: Matches Registry Screen ID
         label: "Price Config",
         icon: "💰",
         desc: "Market Benchmarks",
@@ -51,9 +52,9 @@ export const HubMenuScreen: ZodiacScreen = {
       },
       {
         id: "SETTINGS",
-        label: "Settings & Permissions", // ✅ Updated label
+        label: "Settings & Permissions",
         icon: "🛡️",
-        desc: "Permissions & Global Keys", // ✅ New Menu Item
+        desc: "Permissions & Global Keys",
       },
     ];
 
@@ -68,7 +69,7 @@ export const HubMenuScreen: ZodiacScreen = {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-3 overflow-y-auto">
+        <div className="grid grid-cols-1 gap-3 overflow-y-auto pr-1 custom-scrollbar">
           {menuItems.map((item) => (
             <div
               key={item.id}
@@ -91,10 +92,10 @@ export const HubMenuScreen: ZodiacScreen = {
           ))}
         </div>
 
+        {/* Dynamic Management Insight */}
         <div className="mt-auto p-4 bg-orange-500/10 border border-orange-500/20 rounded-3xl">
-          <p className="text-[9px] text-orange-200 leading-relaxed italic text-center">
-            💡 <strong>Management Tip:</strong> Weekly material waste is
-            currently at 4.2%.
+          <p className="text-[9px] text-orange-200 leading-relaxed italic text-center uppercase font-bold tracking-tighter">
+            💡 Management Tip: Weekly material waste is at 4.2%.
           </p>
         </div>
       </div>

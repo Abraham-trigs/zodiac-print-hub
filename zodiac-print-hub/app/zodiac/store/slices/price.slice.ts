@@ -22,6 +22,7 @@ export interface PriceSlice {
 
   // READ
   loadPrices: (query?: {
+    orgId?: string;
     search?: string;
     category?: string;
     unit?: string;
@@ -105,7 +106,6 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
 
     return res?.data ?? null;
   },
-
   /* =========================================================
      CREATE
   ========================================================= */
@@ -137,6 +137,14 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
             },
           },
         }));
+
+        // 🔥 SEAMLESS SYNC:
+        // If the new price was linked to a material, refresh inventory
+        // so the Material Catalog and selectors reflect the new stock state.
+        if (payload.isPhysical || created.stockRefId) {
+          const orgId = (get() as any).orgId;
+          if (orgId) await (get() as any).loadInventory(orgId);
+        }
       }
     } catch (e: any) {
       get().setError(e?.message ?? "Failed to create price");
@@ -155,7 +163,7 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
     const prev = get().priceState.prices[id];
     if (!prev) return;
 
-    // optimistic update
+    // Optimistic update for snappy UI
     set((state) => ({
       priceState: {
         ...state.priceState,
@@ -172,10 +180,17 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
         body: patch,
       });
 
-      await get().loadPrices();
+      // Refresh both to ensure stock links and costs are perfectly aligned
+      const orgId = (get() as any).orgId;
+      await get().loadPrices({ orgId });
+
+      if (patch.stockRefId || prev.stockRefId) {
+        if (orgId) await (get() as any).loadInventory(orgId);
+      }
     } catch (e: any) {
       get().setError(e?.message ?? "Failed to update price");
 
+      // Rollback on failure
       set((state) => ({
         priceState: {
           ...state.priceState,

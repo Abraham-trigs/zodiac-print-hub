@@ -6,9 +6,12 @@ import { AnalyticsDashboard } from "../screens/AnalyticsDashboard";
 import { HubMenuScreen } from "../screens/HubMenuScreen";
 import { StaffManagementScreen } from "../screens/StaffManagementScreen";
 import { StaffProfileScreen } from "../screens/StaffProfileScreen";
-import { JobIntakeScreen } from "../screens/JobIntakeScreen"; // ✅ New Import
+import { JobIntakeScreen } from "../screens/JobIntakeScreen";
 import { ZodiacScreen } from "../types/screen.types";
-
+import { ServiceSearchScreen } from "../screens/ServiceSearchScreen";
+import { ClientSearchScreen } from "../screens/ClientSearchScreen";
+import { PriceCreationScreen } from "@/screens/PriceCatalogScreen";
+import { MaterialServiceCatalog } from "@/screens/MaterialServiceCatalog";
 /**
  * Central screen registry (source of truth for navigation engine)
  */
@@ -21,7 +24,11 @@ export const SCREEN_MAP = {
   HUB_MENU: HubMenuScreen,
   STAFF_MGMT: StaffManagementScreen,
   STAFF_PROFILE: StaffProfileScreen,
-  JOB_INTAKE: JobIntakeScreen, // ✅ Registered for the Intake Process
+  JOB_INTAKE: JobIntakeScreen,
+  SERVICE_SEARCH: ServiceSearchScreen,
+  CLIENT_SEARCH: ClientSearchScreen,
+  PRICE_CATALOG: PriceCreationScreen,
+  MATERIAL_SERVICE_CATALOG: MaterialServiceCatalog,
 } as const satisfies Record<string, ZodiacScreen>;
 
 /**

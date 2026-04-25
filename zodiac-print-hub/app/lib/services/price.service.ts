@@ -1,210 +1,127 @@
-import { StateCreator } from "zustand";
-import { PriceItem } from "@/types/zodiac.types";
-import { apiClient } from "@root/lib/api/client";
+// app/lib/services/price.service.ts
 
-// 🔥 UPDATED: Added costPrice, stockRefId, and isActive to align with Zod schema
-type PricePatch = Partial<
-  Pick<
-    PriceItem,
-    | "priceGHS"
-    | "costPrice"
-    | "name"
-    | "unit"
-    | "category"
-    | "stockRefId"
-    | "isActive"
-  >
->;
+import { PriceRepository } from "@lib/repositories/price.repository";
+import { UnitOfWork } from "@lib/db/unitOfWork";
+import { Outbox } from "@lib/db/outbox";
 
-export interface PriceSlice {
-  priceState: {
-    prices: Record<string, PriceItem>;
-    isLoading: boolean;
-    isSubmitting: boolean;
-  };
+// 🔥 ALIGNED: Types now include costPrice and isActive
+type CreatePriceInput = {
+  name: string;
+  category: string;
+  unit: string;
+  priceGHS: number;
+  costPrice?: number;
+  stockRefId?: string;
+};
 
-  setPrices: (data: PriceItem[]) => void;
+type UpdatePriceInput = {
+  priceGHS?: number;
+  costPrice?: number;
+  name?: string;
+  unit?: string;
+  category?: string;
+  stockRefId?: string;
+  isActive?: boolean;
+};
 
-  // READ
-  loadPrices: () => Promise<void>;
-  loadPriceById: (id: string) => Promise<PriceItem | null>;
+class PriceService {
+  /* =========================================================
+     READ
+  ========================================================= */
 
-  // CREATE
-  createPrice: (payload: Partial<PriceItem>) => Promise<void>;
+  async list(orgId: string) {
+    const items = await PriceRepository.list(orgId);
+    return { items };
+  }
 
-  // UPDATE
-  updatePrice: (id: string, patch: PricePatch) => Promise<void>;
+  async findById(orgId: string, id: string) {
+    const item = await PriceRepository.findById(orgId, id);
+    if (!item) throw new Error("Price item not found");
+    return item;
+  }
 
-  // DELETE
-  deletePrice: (id: string) => Promise<void>;
-}
+  /* =========================================================
+     CREATE
+  ========================================================= */
 
-export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
-  // =========================================================
-  // STATE
-  // =========================================================
-  priceState: {
-    prices: {},
-    isLoading: false,
-    isSubmitting: false,
-  },
+  async create(orgId: string, data: CreatePriceInput) {
+    return UnitOfWork.run(async (tx) => {
+      const created = await PriceRepository.create(orgId, data, tx);
 
-  // =========================================================
-  // HYDRATION
-  // =========================================================
-  setPrices: (data) =>
-    set((state) => ({
-      priceState: {
-        ...state.priceState,
-        prices: data.reduce(
-          (acc, p) => {
-            acc[p.id] = p;
-            return acc;
-          },
-          {} as Record<string, PriceItem>,
-        ),
-      },
-    })),
+      await Outbox.add(tx, {
+        type: "price.created",
+        orgId,
+        payload: created,
+      });
 
-  // =========================================================
-  // READ
-  // =========================================================
-  loadPrices: async () => {
-    set((s) => ({
-      priceState: { ...s.priceState, isLoading: true },
-    }));
+      return created;
+    });
+  }
 
-    try {
-      // Logic Sync: backend returns { items: [] }
-      const res = await apiClient<{ data: { items: PriceItem[] } }>(
-        "/api/prices",
+  /* =========================================================
+     UPDATE
+  ========================================================= */
+
+  async updatePrice(
+    orgId: string,
+    priceListId: string,
+    data: UpdatePriceInput,
+  ) {
+    return UnitOfWork.run(async (tx) => {
+      const existing = await PriceRepository.findById(orgId, priceListId, tx);
+
+      if (!existing) {
+        throw new Error("Price item not found");
+      }
+
+      // 🔥 FIXED: Method name was updatePrice, repository is usually .update
+      const updated = await PriceRepository.update(
+        orgId,
+        priceListId,
+        data,
+        tx,
       );
 
-      get().setPrices(res?.data?.items ?? []);
-    } finally {
-      set((s) => ({
-        priceState: { ...s.priceState, isLoading: false },
-      }));
-    }
-  },
-
-  loadPriceById: async (id) => {
-    const res = await apiClient<{ data: PriceItem }>(`/api/prices/${id}`);
-    return res?.data ?? null;
-  },
-
-  // =========================================================
-  // CREATE
-  // =========================================================
-  createPrice: async (payload) => {
-    set((s) => ({
-      priceState: { ...s.priceState, isSubmitting: true },
-    }));
-
-    try {
-      const res = await apiClient<{ data: PriceItem }>("/api/prices", {
-        method: "POST",
-        body: payload,
+      await Outbox.add(tx, {
+        type: "price.updated",
+        orgId,
+        payload: {
+          before: existing,
+          after: updated,
+          diff: data,
+        },
       });
 
-      const created = res?.data;
-
-      if (created) {
-        set((state) => ({
-          priceState: {
-            ...state.priceState,
-            prices: {
-              ...state.priceState.prices,
-              [created.id]: created,
-            },
-          },
-        }));
-      }
-    } finally {
-      set((s) => ({
-        priceState: { ...s.priceState, isSubmitting: false },
-      }));
-    }
-  },
-
-  // =========================================================
-  // UPDATE (OPTIMISTIC + ROLLBACK SAFE)
-  // =========================================================
-  // 🔥 FIX: Removed unused orgId param (handled by backend auth)
-  updatePrice: async (id, patch) => {
-    const prev = get().priceState.prices[id];
-    if (!prev) return;
-
-    // optimistic update
-    set((state) => ({
-      priceState: {
-        ...state.priceState,
-        prices: {
-          ...state.priceState.prices,
-          [id]: { ...prev, ...patch },
-        },
-      },
-    }));
-
-    try {
-      await apiClient(`/api/prices/${id}`, {
-        method: "PATCH",
-        body: patch,
-      });
-      // Silent re-fetch to ensure server sync
-      await get().loadPrices();
-    } catch (e) {
-      // rollback on failure
-      set((state) => ({
-        priceState: {
-          ...state.priceState,
-          prices: {
-            ...state.priceState.prices,
-            [id]: prev,
-          },
-        },
-      }));
-    }
-  },
-
-  // =========================================================
-  // DELETE
-  // =========================================================
-  // 🔥 FIX: Removed unused orgId param
-  deletePrice: async (id) => {
-    const prev = get().priceState.prices[id];
-
-    if (!prev) return;
-
-    // optimistic remove
-    set((state) => {
-      const { [id]: _, ...rest } = state.priceState.prices;
-
-      return {
-        priceState: {
-          ...state.priceState,
-          prices: rest,
-        },
-      };
+      return updated;
     });
+  }
 
-    try {
-      await apiClient(`/api/prices/${id}`, {
-        method: "DELETE",
+  /* =========================================================
+     DELETE
+  ========================================================= */
+
+  async delete(orgId: string, id: string) {
+    return UnitOfWork.run(async (tx) => {
+      const existing = await PriceRepository.findById(orgId, id, tx);
+
+      if (!existing) {
+        throw new Error("Price item not found");
+      }
+
+      const deleted = await PriceRepository.delete(orgId, id, tx);
+
+      await Outbox.add(tx, {
+        type: "price.deleted",
+        orgId,
+        payload: deleted,
       });
-    } catch (e) {
-      // rollback on failure
-      set((state) => ({
-        priceState: {
-          ...state.priceState,
-          prices: {
-            ...state.priceState.prices,
-            [id]: prev,
-          },
-        },
-      }));
-    }
-  },
-});
 
+      return deleted;
+    });
+  }
+}
+
+/* ---------------- INSTANCE EXPORT ---------------- */
+
+// ✅ MOVED: Instance created after class is fully defined to fix ReferenceError
 export const priceService = new PriceService();

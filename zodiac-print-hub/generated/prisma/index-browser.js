@@ -189,6 +189,7 @@ exports.Prisma.PriceListScalarFieldEnum = {
   name: 'name',
   category: 'category',
   unit: 'unit',
+  costPrice: 'costPrice',
   priceGHS: 'priceGHS',
   stockRefId: 'stockRefId',
   isActive: 'isActive',
@@ -217,6 +218,20 @@ exports.Prisma.RestockRecordScalarFieldEnum = {
   date: 'date'
 };
 
+exports.Prisma.StockMovementScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  stockItemId: 'stockItemId',
+  type: 'type',
+  quantity: 'quantity',
+  unitCost: 'unitCost',
+  referenceId: 'referenceId',
+  referenceType: 'referenceType',
+  note: 'note',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.JobScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
@@ -239,6 +254,7 @@ exports.Prisma.JobScalarFieldEnum = {
   assignedStaffId: 'assignedStaffId',
   deliveryId: 'deliveryId',
   notes: 'notes',
+  b2bPushId: 'b2bPushId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   completedAt: 'completedAt'
@@ -367,6 +383,13 @@ exports.ServiceUnit = exports.$Enums.ServiceUnit = {
   PER_YARD: 'PER_YARD'
 };
 
+exports.StockMovementType = exports.$Enums.StockMovementType = {
+  RESTOCK: 'RESTOCK',
+  DEDUCT: 'DEDUCT',
+  WASTE: 'WASTE',
+  ADJUST: 'ADJUST'
+};
+
 exports.JobStatus = exports.$Enums.JobStatus = {
   PENDING: 'PENDING',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -423,6 +446,7 @@ exports.Prisma.ModelName = {
   PriceList: 'PriceList',
   StockItem: 'StockItem',
   RestockRecord: 'RestockRecord',
+  StockMovement: 'StockMovement',
   Job: 'Job',
   Delivery: 'Delivery',
   Payment: 'Payment',
