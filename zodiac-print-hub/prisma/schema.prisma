@@ -217,18 +217,22 @@ model PriceList {
   costPrice Float?
   priceGHS  Float
 
+  // 🔥 FORMAL RELATION: Connects PriceList to the StockItem table
+  // This ensures the "Joinery" is visible in Prisma Studio and enforced by DB
   stockRefId String?
+  stockItem  StockItem? @relation(fields: [stockRefId], references: [id])
 
   isActive  Boolean  @default(true)
   updatedAt DateTime @updatedAt
 
   // INDEXING:
-  @@index([orgId]) // Critical for multi-tenant isolation
-  @@index([category]) // Fast filtering for UI tabs (e.g., "Large Format", "Stickers")
-  @@index([isActive]) // Helps exclude hidden/old prices from your main list
-  @@index([stockRefId]) // Important for linking prices to physical inventory items
-  @@index([orgId, isActive]) // Compound index: perfect for your list() service function
+  @@index([orgId])
+  @@index([category])
+  @@index([isActive])
+  @@index([stockRefId])
+  @@index([orgId, isActive])
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -250,13 +254,18 @@ model StockItem {
 
   createdAt      DateTime        @default(now())
   stockMovements StockMovement[]
+  
+  // 🔥 THE FIX: Add the opposite relation field
+  // This allows one StockItem to be linked to multiple PriceList entries
+  prices         PriceList[]     
 
   // INDEXING:
-  @@index([orgId]) // Essential for multi-tenant isolation
-  @@index([name]) // Fast lookup when searching/filtering items by name
-  @@index([totalRemaining]) // Critical for "Low Stock" reports and dashboard alerts
-  @@index([lastRestockedAt]) // Useful for auditing old or stagnant inventory
+  @@index([orgId])
+  @@index([name])
+  @@index([totalRemaining])
+  @@index([lastRestockedAt])
 }
+
 
 model RestockRecord {
   id          String   @id @default(cuid())

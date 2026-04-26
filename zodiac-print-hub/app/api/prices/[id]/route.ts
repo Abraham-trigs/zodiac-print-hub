@@ -1,61 +1,32 @@
+// app/api/prices/route.ts
 import { apiHandler } from "@lib/server/api/apiHandler";
+import { productCoordinator } from "@lib/handlers/product-coordinator.handler";
 import { priceService } from "@lib/services/price.service";
-import { UpdatePriceSchema } from "@lib/schema/price.schema";
+import { CreatePriceSchema } from "@lib/schema/price.schema";
 
-/* =========================================================
-   GET /api/prices/:id
-========================================================= */
-export const GET = apiHandler<{ id: string }>(
-  async ({ orgId, params }) => {
-    const { id } = await params;
+export const GET = apiHandler(async ({ orgId }) => priceService.list(orgId), {
+  requireAuth: true,
+  requireOrg: true,
+});
 
-    if (!id) {
-      throw new Error("Missing price id in route params");
+export const POST = apiHandler(
+  async ({ orgId, body }) => {
+    try {
+      // 🔥 The "Joinery" happens here: Material + Price
+      return await productCoordinator.saveNewProduct(orgId, body);
+    } catch (error: any) {
+      // This will force the REAL error (Prisma, Zod, or Logic) to appear in your terminal
+      console.error("❌ [API/PRICES] POST ERROR:", {
+        message: error.message,
+        stack: error.stack,
+        body,
+      });
+      throw error; // Re-throw so the apiHandler sends the 500 to the client
     }
-
-    return priceService.findById(orgId, id);
   },
   {
     requireAuth: true,
     requireOrg: true,
-  },
-);
-
-/* =========================================================
-   PATCH /api/prices/:id
-========================================================= */
-export const PATCH = apiHandler<{ id: string }, any>(
-  async ({ orgId, params, body }) => {
-    const { id } = await params;
-
-    if (!id) {
-      throw new Error("Missing price id in route params");
-    }
-
-    return priceService.updatePrice(orgId, id, body);
-  },
-  {
-    requireAuth: true,
-    requireOrg: true,
-    schema: UpdatePriceSchema,
-  },
-);
-
-/* =========================================================
-   DELETE /api/prices/:id
-========================================================= */
-export const DELETE = apiHandler<{ id: string }>(
-  async ({ orgId, params }) => {
-    const { id } = await params;
-
-    if (!id) {
-      throw new Error("Missing price id in route params");
-    }
-
-    return priceService.delete(orgId, id);
-  },
-  {
-    requireAuth: true,
-    requireOrg: true,
+    schema: CreatePriceSchema,
   },
 );

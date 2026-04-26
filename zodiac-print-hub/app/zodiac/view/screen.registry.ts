@@ -12,6 +12,9 @@ import { ServiceSearchScreen } from "../screens/ServiceSearchScreen";
 import { ClientSearchScreen } from "../screens/ClientSearchScreen";
 import { PriceCreationScreen } from "@/screens/PriceCatalogScreen";
 import { MaterialServiceCatalog } from "@/screens/MaterialServiceCatalog";
+import { UnitVaultScreen } from "@/screens/UnitVaultScreen";
+import { PriceStockDetailScreen } from "@/screens/PriceStockDetailScreen";
+
 /**
  * Central screen registry (source of truth for navigation engine)
  */
@@ -29,6 +32,8 @@ export const SCREEN_MAP = {
   CLIENT_SEARCH: ClientSearchScreen,
   PRICE_CATALOG: PriceCreationScreen,
   MATERIAL_SERVICE_CATALOG: MaterialServiceCatalog,
+  UNIT_VAULT: UnitVaultScreen,
+  PRICE_STOCK_DETAIL: PriceStockDetailScreen,
 } as const satisfies Record<string, ZodiacScreen>;
 
 /**

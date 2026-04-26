@@ -15,6 +15,61 @@ type CreateMovementParams = CreateStockMovementInput;
  */
 class StockService {
   /* =========================================================
+     WRITE: INITIAL REGISTRATION
+     - Creates the base Item
+     - Creates the first RESTOCK movement
+     - Ensures ledger consistency from day one
+  ========================================================= */
+  async registerInitialStock(
+    orgId: string,
+    data: {
+      name: string;
+      unit: string;
+      quantity: number;
+      unitCost?: number;
+      lowStockThreshold?: number;
+      createdBy?: string;
+    },
+    tx: any,
+  ) {
+    // 1. Create the base item record
+    const item = await tx.stockItem.create({
+      data: {
+        orgId,
+        name: data.name,
+        unit: data.unit,
+        totalRemaining: data.quantity || 0,
+        lowStockThreshold: data.lowStockThreshold ?? 10,
+        // 🔥 FIXED: Satisfying mandatory 'lastUnitCost' field in schema
+        lastUnitCost: data.unitCost || 0,
+      },
+    });
+    console.log("✅ STOCK ITEM CREATED IN TX:", item.id);
+
+    // 2. Create the first Ledger entry (The Source of Truth)
+    const movement = await tx.stockMovement.create({
+      data: {
+        orgId,
+        stockItemId: item.id,
+        type: "RESTOCK",
+        quantity: data.quantity || 0,
+        unitCost: data.unitCost || 0, // 🔥 Synced with ledger
+        note: "Initial registration via Product Coordinator",
+        createdBy: data.createdBy || "SYSTEM",
+      },
+    });
+
+    // 3. Emit event for background workers
+    await Outbox.add(tx, {
+      type: "stock.item_registered",
+      orgId,
+      payload: { item, movement },
+    });
+
+    return item;
+  }
+
+  /* =========================================================
      WRITE: STOCK MOVEMENT (SOURCE OF TRUTH)
   ========================================================= */
   async createMovement(params: CreateMovementParams, tx: any) {

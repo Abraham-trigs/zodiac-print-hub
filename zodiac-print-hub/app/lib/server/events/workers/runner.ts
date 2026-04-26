@@ -1,4 +1,4 @@
-import { processOutbox } from "@/lib/db/outbox.worker";
+import { processOutbox } from "@lib/db/outbox.worker";
 
 let isRunning = false;
 

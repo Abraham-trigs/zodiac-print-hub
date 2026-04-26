@@ -2401,10 +2401,12 @@ export namespace Prisma {
 
   export type StockItemCountOutputType = {
     stockMovements: number
+    prices: number
   }
 
   export type StockItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockMovements?: boolean | StockItemCountOutputTypeCountStockMovementsArgs
+    prices?: boolean | StockItemCountOutputTypeCountPricesArgs
   }
 
   // Custom InputTypes
@@ -2423,6 +2425,13 @@ export namespace Prisma {
    */
   export type StockItemCountOutputTypeCountStockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockMovementWhereInput
+  }
+
+  /**
+   * StockItemCountOutputType without action
+   */
+  export type StockItemCountOutputTypeCountPricesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PriceListWhereInput
   }
 
 
@@ -8762,6 +8771,7 @@ export namespace Prisma {
     isActive?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | PriceList$stockItemArgs<ExtArgs>
   }, ExtArgs["result"]["priceList"]>
 
   export type PriceListSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8776,6 +8786,7 @@ export namespace Prisma {
     isActive?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | PriceList$stockItemArgs<ExtArgs>
   }, ExtArgs["result"]["priceList"]>
 
   export type PriceListSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8790,6 +8801,7 @@ export namespace Prisma {
     isActive?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | PriceList$stockItemArgs<ExtArgs>
   }, ExtArgs["result"]["priceList"]>
 
   export type PriceListSelectScalar = {
@@ -8808,18 +8820,22 @@ export namespace Prisma {
   export type PriceListOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "name" | "category" | "unit" | "costPrice" | "priceGHS" | "stockRefId" | "isActive" | "updatedAt", ExtArgs["result"]["priceList"]>
   export type PriceListInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | PriceList$stockItemArgs<ExtArgs>
   }
   export type PriceListIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | PriceList$stockItemArgs<ExtArgs>
   }
   export type PriceListIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    stockItem?: boolean | PriceList$stockItemArgs<ExtArgs>
   }
 
   export type $PriceListPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "PriceList"
     objects: {
       organisation: Prisma.$OrganisationPayload<ExtArgs>
+      stockItem: Prisma.$StockItemPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9227,6 +9243,7 @@ export namespace Prisma {
   export interface Prisma__PriceListClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    stockItem<T extends PriceList$stockItemArgs<ExtArgs> = {}>(args?: Subset<T, PriceList$stockItemArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9667,6 +9684,25 @@ export namespace Prisma {
   }
 
   /**
+   * PriceList.stockItem
+   */
+  export type PriceList$stockItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockItem
+     */
+    select?: StockItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockItem
+     */
+    omit?: StockItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockItemInclude<ExtArgs> | null
+    where?: StockItemWhereInput
+  }
+
+  /**
    * PriceList without action
    */
   export type PriceListDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9925,6 +9961,7 @@ export namespace Prisma {
     createdAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     stockMovements?: boolean | StockItem$stockMovementsArgs<ExtArgs>
+    prices?: boolean | StockItem$pricesArgs<ExtArgs>
     _count?: boolean | StockItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockItem"]>
 
@@ -9970,6 +10007,7 @@ export namespace Prisma {
   export type StockItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     stockMovements?: boolean | StockItem$stockMovementsArgs<ExtArgs>
+    prices?: boolean | StockItem$pricesArgs<ExtArgs>
     _count?: boolean | StockItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StockItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9984,6 +10022,7 @@ export namespace Prisma {
     objects: {
       organisation: Prisma.$OrganisationPayload<ExtArgs>
       stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
+      prices: Prisma.$PriceListPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10391,6 +10430,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     stockMovements<T extends StockItem$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, StockItem$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    prices<T extends StockItem$pricesArgs<ExtArgs> = {}>(args?: Subset<T, StockItem$pricesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10851,6 +10891,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
+  }
+
+  /**
+   * StockItem.prices
+   */
+  export type StockItem$pricesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PriceList
+     */
+    select?: PriceListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PriceList
+     */
+    omit?: PriceListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PriceListInclude<ExtArgs> | null
+    where?: PriceListWhereInput
+    orderBy?: PriceListOrderByWithRelationInput | PriceListOrderByWithRelationInput[]
+    cursor?: PriceListWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PriceListScalarFieldEnum | PriceListScalarFieldEnum[]
   }
 
   /**
@@ -20205,6 +20269,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"PriceList"> | boolean
     updatedAt?: DateTimeFilter<"PriceList"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    stockItem?: XOR<StockItemNullableScalarRelationFilter, StockItemWhereInput> | null
   }
 
   export type PriceListOrderByWithRelationInput = {
@@ -20219,6 +20284,7 @@ export namespace Prisma {
     isActive?: SortOrder
     updatedAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
+    stockItem?: StockItemOrderByWithRelationInput
   }
 
   export type PriceListWhereUniqueInput = Prisma.AtLeast<{
@@ -20236,6 +20302,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"PriceList"> | boolean
     updatedAt?: DateTimeFilter<"PriceList"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    stockItem?: XOR<StockItemNullableScalarRelationFilter, StockItemWhereInput> | null
   }, "id">
 
   export type PriceListOrderByWithAggregationInput = {
@@ -20287,6 +20354,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StockItem"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     stockMovements?: StockMovementListRelationFilter
+    prices?: PriceListListRelationFilter
   }
 
   export type StockItemOrderByWithRelationInput = {
@@ -20301,6 +20369,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
     stockMovements?: StockMovementOrderByRelationAggregateInput
+    prices?: PriceListOrderByRelationAggregateInput
   }
 
   export type StockItemWhereUniqueInput = Prisma.AtLeast<{
@@ -20318,6 +20387,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"StockItem"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     stockMovements?: StockMovementListRelationFilter
+    prices?: PriceListListRelationFilter
   }, "id">
 
   export type StockItemOrderByWithAggregationInput = {
@@ -21516,10 +21586,10 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit
     costPrice?: number | null
     priceGHS: number
-    stockRefId?: string | null
     isActive?: boolean
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutPricesInput
+    stockItem?: StockItemCreateNestedOneWithoutPricesInput
   }
 
   export type PriceListUncheckedCreateInput = {
@@ -21542,10 +21612,10 @@ export namespace Prisma {
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
-    stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutPricesNestedInput
+    stockItem?: StockItemUpdateOneWithoutPricesNestedInput
   }
 
   export type PriceListUncheckedUpdateInput = {
@@ -21581,7 +21651,6 @@ export namespace Prisma {
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
-    stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21610,6 +21679,7 @@ export namespace Prisma {
     createdAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutStockItemsInput
     stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
+    prices?: PriceListCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemUncheckedCreateInput = {
@@ -21623,6 +21693,7 @@ export namespace Prisma {
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
+    prices?: PriceListUncheckedCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemUpdateInput = {
@@ -21636,6 +21707,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutStockItemsNestedInput
     stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
+    prices?: PriceListUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemUncheckedUpdateInput = {
@@ -21649,6 +21721,7 @@ export namespace Prisma {
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
+    prices?: PriceListUncheckedUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemCreateManyInput = {
@@ -23024,6 +23097,11 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type StockItemNullableScalarRelationFilter = {
+    is?: StockItemWhereInput | null
+    isNot?: StockItemWhereInput | null
   }
 
   export type PriceListCountOrderByAggregateInput = {
@@ -24427,6 +24505,12 @@ export namespace Prisma {
     connect?: OrganisationWhereUniqueInput
   }
 
+  export type StockItemCreateNestedOneWithoutPricesInput = {
+    create?: XOR<StockItemCreateWithoutPricesInput, StockItemUncheckedCreateWithoutPricesInput>
+    connectOrCreate?: StockItemCreateOrConnectWithoutPricesInput
+    connect?: StockItemWhereUniqueInput
+  }
+
   export type EnumServiceUnitFieldUpdateOperationsInput = {
     set?: $Enums.ServiceUnit
   }
@@ -24455,6 +24539,16 @@ export namespace Prisma {
     update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutPricesInput, OrganisationUpdateWithoutPricesInput>, OrganisationUncheckedUpdateWithoutPricesInput>
   }
 
+  export type StockItemUpdateOneWithoutPricesNestedInput = {
+    create?: XOR<StockItemCreateWithoutPricesInput, StockItemUncheckedCreateWithoutPricesInput>
+    connectOrCreate?: StockItemCreateOrConnectWithoutPricesInput
+    upsert?: StockItemUpsertWithoutPricesInput
+    disconnect?: StockItemWhereInput | boolean
+    delete?: StockItemWhereInput | boolean
+    connect?: StockItemWhereUniqueInput
+    update?: XOR<XOR<StockItemUpdateToOneWithWhereWithoutPricesInput, StockItemUpdateWithoutPricesInput>, StockItemUncheckedUpdateWithoutPricesInput>
+  }
+
   export type OrganisationCreateNestedOneWithoutStockItemsInput = {
     create?: XOR<OrganisationCreateWithoutStockItemsInput, OrganisationUncheckedCreateWithoutStockItemsInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutStockItemsInput
@@ -24468,11 +24562,25 @@ export namespace Prisma {
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
   }
 
+  export type PriceListCreateNestedManyWithoutStockItemInput = {
+    create?: XOR<PriceListCreateWithoutStockItemInput, PriceListUncheckedCreateWithoutStockItemInput> | PriceListCreateWithoutStockItemInput[] | PriceListUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: PriceListCreateOrConnectWithoutStockItemInput | PriceListCreateOrConnectWithoutStockItemInput[]
+    createMany?: PriceListCreateManyStockItemInputEnvelope
+    connect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+  }
+
   export type StockMovementUncheckedCreateNestedManyWithoutStockItemInput = {
     create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
     connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
     createMany?: StockMovementCreateManyStockItemInputEnvelope
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
+  }
+
+  export type PriceListUncheckedCreateNestedManyWithoutStockItemInput = {
+    create?: XOR<PriceListCreateWithoutStockItemInput, PriceListUncheckedCreateWithoutStockItemInput> | PriceListCreateWithoutStockItemInput[] | PriceListUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: PriceListCreateOrConnectWithoutStockItemInput | PriceListCreateOrConnectWithoutStockItemInput[]
+    createMany?: PriceListCreateManyStockItemInputEnvelope
+    connect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
   }
 
   export type OrganisationUpdateOneRequiredWithoutStockItemsNestedInput = {
@@ -24497,6 +24605,20 @@ export namespace Prisma {
     deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
+  export type PriceListUpdateManyWithoutStockItemNestedInput = {
+    create?: XOR<PriceListCreateWithoutStockItemInput, PriceListUncheckedCreateWithoutStockItemInput> | PriceListCreateWithoutStockItemInput[] | PriceListUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: PriceListCreateOrConnectWithoutStockItemInput | PriceListCreateOrConnectWithoutStockItemInput[]
+    upsert?: PriceListUpsertWithWhereUniqueWithoutStockItemInput | PriceListUpsertWithWhereUniqueWithoutStockItemInput[]
+    createMany?: PriceListCreateManyStockItemInputEnvelope
+    set?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    disconnect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    delete?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    connect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    update?: PriceListUpdateWithWhereUniqueWithoutStockItemInput | PriceListUpdateWithWhereUniqueWithoutStockItemInput[]
+    updateMany?: PriceListUpdateManyWithWhereWithoutStockItemInput | PriceListUpdateManyWithWhereWithoutStockItemInput[]
+    deleteMany?: PriceListScalarWhereInput | PriceListScalarWhereInput[]
+  }
+
   export type StockMovementUncheckedUpdateManyWithoutStockItemNestedInput = {
     create?: XOR<StockMovementCreateWithoutStockItemInput, StockMovementUncheckedCreateWithoutStockItemInput> | StockMovementCreateWithoutStockItemInput[] | StockMovementUncheckedCreateWithoutStockItemInput[]
     connectOrCreate?: StockMovementCreateOrConnectWithoutStockItemInput | StockMovementCreateOrConnectWithoutStockItemInput[]
@@ -24509,6 +24631,20 @@ export namespace Prisma {
     update?: StockMovementUpdateWithWhereUniqueWithoutStockItemInput | StockMovementUpdateWithWhereUniqueWithoutStockItemInput[]
     updateMany?: StockMovementUpdateManyWithWhereWithoutStockItemInput | StockMovementUpdateManyWithWhereWithoutStockItemInput[]
     deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
+  }
+
+  export type PriceListUncheckedUpdateManyWithoutStockItemNestedInput = {
+    create?: XOR<PriceListCreateWithoutStockItemInput, PriceListUncheckedCreateWithoutStockItemInput> | PriceListCreateWithoutStockItemInput[] | PriceListUncheckedCreateWithoutStockItemInput[]
+    connectOrCreate?: PriceListCreateOrConnectWithoutStockItemInput | PriceListCreateOrConnectWithoutStockItemInput[]
+    upsert?: PriceListUpsertWithWhereUniqueWithoutStockItemInput | PriceListUpsertWithWhereUniqueWithoutStockItemInput[]
+    createMany?: PriceListCreateManyStockItemInputEnvelope
+    set?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    disconnect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    delete?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    connect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
+    update?: PriceListUpdateWithWhereUniqueWithoutStockItemInput | PriceListUpdateWithWhereUniqueWithoutStockItemInput[]
+    updateMany?: PriceListUpdateManyWithWhereWithoutStockItemInput | PriceListUpdateManyWithWhereWithoutStockItemInput[]
+    deleteMany?: PriceListScalarWhereInput | PriceListScalarWhereInput[]
   }
 
   export type OrganisationCreateNestedOneWithoutStockMovementsInput = {
@@ -25422,6 +25558,7 @@ export namespace Prisma {
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
+    prices?: PriceListCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemUncheckedCreateWithoutOrganisationInput = {
@@ -25434,6 +25571,7 @@ export namespace Prisma {
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
+    prices?: PriceListUncheckedCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemCreateOrConnectWithoutOrganisationInput = {
@@ -25489,9 +25627,9 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit
     costPrice?: number | null
     priceGHS: number
-    stockRefId?: string | null
     isActive?: boolean
     updatedAt?: Date | string
+    stockItem?: StockItemCreateNestedOneWithoutPricesInput
   }
 
   export type PriceListUncheckedCreateWithoutOrganisationInput = {
@@ -26734,6 +26872,37 @@ export namespace Prisma {
     create: XOR<OrganisationCreateWithoutPricesInput, OrganisationUncheckedCreateWithoutPricesInput>
   }
 
+  export type StockItemCreateWithoutPricesInput = {
+    id?: string
+    name: string
+    unit: string
+    totalRemaining: number
+    lowStockThreshold: number
+    lastUnitCost: number
+    lastRestockedAt?: Date | string | null
+    createdAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutStockItemsInput
+    stockMovements?: StockMovementCreateNestedManyWithoutStockItemInput
+  }
+
+  export type StockItemUncheckedCreateWithoutPricesInput = {
+    id?: string
+    orgId: string
+    name: string
+    unit: string
+    totalRemaining: number
+    lowStockThreshold: number
+    lastUnitCost: number
+    lastRestockedAt?: Date | string | null
+    createdAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutStockItemInput
+  }
+
+  export type StockItemCreateOrConnectWithoutPricesInput = {
+    where: StockItemWhereUniqueInput
+    create: XOR<StockItemCreateWithoutPricesInput, StockItemUncheckedCreateWithoutPricesInput>
+  }
+
   export type OrganisationUpsertWithoutPricesInput = {
     update: XOR<OrganisationUpdateWithoutPricesInput, OrganisationUncheckedUpdateWithoutPricesInput>
     create: XOR<OrganisationCreateWithoutPricesInput, OrganisationUncheckedCreateWithoutPricesInput>
@@ -26785,6 +26954,43 @@ export namespace Prisma {
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type StockItemUpsertWithoutPricesInput = {
+    update: XOR<StockItemUpdateWithoutPricesInput, StockItemUncheckedUpdateWithoutPricesInput>
+    create: XOR<StockItemCreateWithoutPricesInput, StockItemUncheckedCreateWithoutPricesInput>
+    where?: StockItemWhereInput
+  }
+
+  export type StockItemUpdateToOneWithWhereWithoutPricesInput = {
+    where?: StockItemWhereInput
+    data: XOR<StockItemUpdateWithoutPricesInput, StockItemUncheckedUpdateWithoutPricesInput>
+  }
+
+  export type StockItemUpdateWithoutPricesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    totalRemaining?: FloatFieldUpdateOperationsInput | number
+    lowStockThreshold?: FloatFieldUpdateOperationsInput | number
+    lastUnitCost?: FloatFieldUpdateOperationsInput | number
+    lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutStockItemsNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
+  }
+
+  export type StockItemUncheckedUpdateWithoutPricesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    unit?: StringFieldUpdateOperationsInput | string
+    totalRemaining?: FloatFieldUpdateOperationsInput | number
+    lowStockThreshold?: FloatFieldUpdateOperationsInput | number
+    lastUnitCost?: FloatFieldUpdateOperationsInput | number
+    lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
   }
 
   export type OrganisationCreateWithoutStockItemsInput = {
@@ -26870,6 +27076,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PriceListCreateWithoutStockItemInput = {
+    id?: string
+    name: string
+    category: string
+    unit: $Enums.ServiceUnit
+    costPrice?: number | null
+    priceGHS: number
+    isActive?: boolean
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutPricesInput
+  }
+
+  export type PriceListUncheckedCreateWithoutStockItemInput = {
+    id?: string
+    orgId: string
+    name: string
+    category: string
+    unit: $Enums.ServiceUnit
+    costPrice?: number | null
+    priceGHS: number
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
+  export type PriceListCreateOrConnectWithoutStockItemInput = {
+    where: PriceListWhereUniqueInput
+    create: XOR<PriceListCreateWithoutStockItemInput, PriceListUncheckedCreateWithoutStockItemInput>
+  }
+
+  export type PriceListCreateManyStockItemInputEnvelope = {
+    data: PriceListCreateManyStockItemInput | PriceListCreateManyStockItemInput[]
+    skipDuplicates?: boolean
+  }
+
   export type OrganisationUpsertWithoutStockItemsInput = {
     update: XOR<OrganisationUpdateWithoutStockItemsInput, OrganisationUncheckedUpdateWithoutStockItemsInput>
     create: XOR<OrganisationCreateWithoutStockItemsInput, OrganisationUncheckedCreateWithoutStockItemsInput>
@@ -26939,6 +27179,22 @@ export namespace Prisma {
     data: XOR<StockMovementUpdateManyMutationInput, StockMovementUncheckedUpdateManyWithoutStockItemInput>
   }
 
+  export type PriceListUpsertWithWhereUniqueWithoutStockItemInput = {
+    where: PriceListWhereUniqueInput
+    update: XOR<PriceListUpdateWithoutStockItemInput, PriceListUncheckedUpdateWithoutStockItemInput>
+    create: XOR<PriceListCreateWithoutStockItemInput, PriceListUncheckedCreateWithoutStockItemInput>
+  }
+
+  export type PriceListUpdateWithWhereUniqueWithoutStockItemInput = {
+    where: PriceListWhereUniqueInput
+    data: XOR<PriceListUpdateWithoutStockItemInput, PriceListUncheckedUpdateWithoutStockItemInput>
+  }
+
+  export type PriceListUpdateManyWithWhereWithoutStockItemInput = {
+    where: PriceListScalarWhereInput
+    data: XOR<PriceListUpdateManyMutationInput, PriceListUncheckedUpdateManyWithoutStockItemInput>
+  }
+
   export type OrganisationCreateWithoutStockMovementsInput = {
     id?: string
     name: string
@@ -26996,6 +27252,7 @@ export namespace Prisma {
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutStockItemsInput
+    prices?: PriceListCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemUncheckedCreateWithoutStockMovementsInput = {
@@ -27008,6 +27265,7 @@ export namespace Prisma {
     lastUnitCost: number
     lastRestockedAt?: Date | string | null
     createdAt?: Date | string
+    prices?: PriceListUncheckedCreateNestedManyWithoutStockItemInput
   }
 
   export type StockItemCreateOrConnectWithoutStockMovementsInput = {
@@ -27089,6 +27347,7 @@ export namespace Prisma {
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutStockItemsNestedInput
+    prices?: PriceListUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemUncheckedUpdateWithoutStockMovementsInput = {
@@ -27101,6 +27360,7 @@ export namespace Prisma {
     lastUnitCost?: FloatFieldUpdateOperationsInput | number
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    prices?: PriceListUncheckedUpdateManyWithoutStockItemNestedInput
   }
 
   export type OrganisationCreateWithoutJobsInput = {
@@ -28403,6 +28663,7 @@ export namespace Prisma {
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutStockItemNestedInput
+    prices?: PriceListUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemUncheckedUpdateWithoutOrganisationInput = {
@@ -28415,6 +28676,7 @@ export namespace Prisma {
     lastRestockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutStockItemNestedInput
+    prices?: PriceListUncheckedUpdateManyWithoutStockItemNestedInput
   }
 
   export type StockItemUncheckedUpdateManyWithoutOrganisationInput = {
@@ -28474,9 +28736,9 @@ export namespace Prisma {
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
     priceGHS?: FloatFieldUpdateOperationsInput | number
-    stockRefId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockItem?: StockItemUpdateOneWithoutPricesNestedInput
   }
 
   export type PriceListUncheckedUpdateWithoutOrganisationInput = {
@@ -28858,6 +29120,18 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type PriceListCreateManyStockItemInput = {
+    id?: string
+    orgId: string
+    name: string
+    category: string
+    unit: $Enums.ServiceUnit
+    costPrice?: number | null
+    priceGHS: number
+    isActive?: boolean
+    updatedAt?: Date | string
+  }
+
   export type StockMovementUpdateWithoutStockItemInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
@@ -28895,6 +29169,42 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdBy?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceListUpdateWithoutStockItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    priceGHS?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutPricesNestedInput
+  }
+
+  export type PriceListUncheckedUpdateWithoutStockItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    priceGHS?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PriceListUncheckedUpdateManyWithoutStockItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    priceGHS?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeliveryCreateManyJobInput = {

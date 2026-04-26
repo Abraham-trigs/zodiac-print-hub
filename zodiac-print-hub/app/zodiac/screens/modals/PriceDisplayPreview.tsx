@@ -4,123 +4,145 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { shallow } from "zustand/shallow";
 import { useDataStore } from "@store/core/useDataStore";
-
-/* =========================================================
-   STABLE SELECTORS
-========================================================= */
-import { selectPricesMap } from "@store/selectors/data.selectors";
+import { useModalStore } from "@store/useModalStore";
 
 export function PriceDisplayPreview() {
   /* -------------------------
      STATE & SELECTORS
   --------------------------*/
-  // Accessing the current price draft state
   const draft = useDataStore((s) => s.draftState?.draft, shallow);
-  const prices = useDataStore(selectPricesMap, shallow);
+  const setDraft = (updates: any) => useDataStore.getState().setDraft(updates);
+  const { swapModal, closeModal } = useModalStore();
 
-  /* -------------------------
-     DERIVED DATA
-  --------------------------*/
   const [sliderIndex, setSliderIndex] = useState<number | null>(null);
 
-  // 🔥 6 CORE LINES (Tailored for Price Creation)
+  /* -------------------------
+     QUICK EDIT LOGIC
+  --------------------------*/
+  const openQuickEdit = (field: string, label: string, current: any) => {
+    swapModal("GLOBAL", () => (
+      <div className="absolute bottom-0 w-full p-10 bg-black/90 backdrop-blur-2xl border-t border-cyan-400/30 rounded-t-[3rem] animate-in slide-in-from-bottom duration-300 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        <div className="max-w-md mx-auto">
+          <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em] mb-2 block">
+            Quick Edit: {label.replace(":", "")}
+          </span>
+          <input
+            autoFocus
+            className="w-full bg-transparent text-5xl font-black text-white outline-none py-4 border-b border-white/10 focus:border-cyan-400 transition-all"
+            defaultValue={current === "---" ? "" : current}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                const val = e.currentTarget.value;
+                setDraft({
+                  [field]: isNaN(Number(val)) || val === "" ? val : Number(val),
+                });
+                closeModal("GLOBAL");
+              }
+              if (e.key === "Escape") closeModal("GLOBAL");
+            }}
+          />
+          <div className="flex justify-between items-center mt-6">
+            <button
+              onClick={() => closeModal("GLOBAL")}
+              className="text-[10px] text-white/20 hover:text-white uppercase font-black transition-colors"
+            >
+              Cancel
+            </button>
+            <span className="text-[9px] text-cyan-400/40 font-black italic">
+              HIT ENTER TO COMMIT
+            </span>
+          </div>
+        </div>
+      </div>
+    ));
+  };
+
+  /* -------------------------
+     DATA MAPPING
+  --------------------------*/
   const allLines = [
-    { label: "Category:", value: draft?.category || "---" },
-    { label: "Product Name:", value: draft?.name || "---" },
+    { key: "category", label: "Category:", value: draft?.category || "---" },
+    { key: "name", label: "Product Name:", value: draft?.name || "---" },
     {
-      label: "Base Price:",
-      value: draft?.basePrice ? `$${draft.basePrice}` : "---",
+      key: "priceGHS",
+      label: "Selling Price:",
+      value: draft?.priceGHS ? `₵${draft.priceGHS}` : "---",
     },
-    { label: "Unit Type:", value: draft?.unit || "sqft" },
-    { label: "Min. Order:", value: draft?.minOrder || "1" },
+    { key: "unit", label: "Unit Type:", value: draft?.unit || "---" },
     {
-      label: "Status:",
-      value: draft?.isActive ? "Active" : "Draft Mode",
+      key: "costPrice",
+      label: "Buying Cost:",
+      value: draft?.costPrice ? `₵${draft.costPrice}` : "---",
     },
+    { key: "minOrder", label: "Min. Order:", value: draft?.minOrder || "1" },
   ];
 
   const ITEMS_PER_PAGE = 6;
   const totalPages = Math.ceil(allLines.length / ITEMS_PER_PAGE);
   const page = sliderIndex !== null ? sliderIndex : 0;
-
   const visibleLines = allLines.slice(
     page * ITEMS_PER_PAGE,
     (page + 1) * ITEMS_PER_PAGE,
   );
 
-  const canGoNext = page < totalPages - 1;
-  const canGoPrev = page > 0;
-
-  const next = () => {
-    if (canGoNext) setSliderIndex(page + 1);
-  };
-  const prev = () => {
-    if (canGoPrev) setSliderIndex(page - 1);
-  };
-
-  const getX = () => page * 19.3;
+  const next = () => page < totalPages - 1 && setSliderIndex(page + 1);
+  const prev = () => page > 0 && setSliderIndex(page - 1);
 
   return (
-    <div className="flex flex-col items-center w-full px-6 animate-in fade-in duration-700">
+    <div className="flex flex-col items-center w-full animate-in fade-in duration-700">
       {/* Header */}
-      <div className="w-full flex justify-between items-center mb-6">
+      <div className="w-full flex justify-between items-center mb-2 px-2">
         <span className="text-[10px] text-cyan-400 font-black tracking-widest bg-cyan-400/10 px-2 py-1 rounded">
-          PRICE ID: {draft?.id?.substring(0, 8) || "NEW_TEMP"}
+          LIVE DRAFT
         </span>
         <span className="text-[9px] text-white/20 uppercase font-black tracking-tighter">
-          Price Preview
+          Tap Line to Edit
         </span>
       </div>
 
       {/* Glass Card */}
-      <div className="glass-card w-full max-w-[320px] p-8 rounded-[3rem] bg-white/10 backdrop-blur-3xl border border-white/10 shadow-2xl relative overflow-hidden min-h-[320px] flex flex-col">
-        <div className="flex flex-col gap-3 text-[12px] font-medium text-white flex-1">
+      <div className="glass-card w-full max-w-[320px] p-8 rounded-[3rem] bg-white/10 backdrop-blur-3xl border border-white/10 shadow-2xl relative overflow-hidden min-h-[340px] flex flex-col">
+        <div className="flex flex-col gap-4 text-[12px] font-medium text-white flex-1">
           {visibleLines.map((line, i) => (
             <div
               key={i}
-              className="flex justify-between items-end gap-4 border-b border-white/5 pb-1"
+              onClick={() => openQuickEdit(line.key, line.label, line.value)}
+              className="flex justify-between items-end gap-4 border-b border-white/5 pb-2 cursor-pointer group hover:border-cyan-400/30 transition-all"
             >
-              <span className="opacity-40">{line.label}</span>
-              <span className="font-bold text-right truncate max-w-[140px]">
+              <span className="opacity-40 group-hover:opacity-100 group-hover:text-cyan-400 transition-all">
+                {line.label}
+              </span>
+              <span className="font-bold text-right truncate max-w-[140px] group-hover:scale-105 transition-transform">
                 {line.value}
               </span>
             </div>
           ))}
         </div>
 
-        {/* Slider Navigation (Matches the "Dot" UI) */}
+        {/* Navigation */}
         <div className="flex items-center justify-between mt-8">
-          <button
-            onClick={prev}
-            disabled={!canGoPrev}
-            className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 text-white disabled:opacity-10 active:scale-90 transition-transform"
-          >
+          <button onClick={prev} className="nav-btn">
             ←
           </button>
-
           <div className="relative flex items-center justify-between w-[64px]">
             {Array.from({ length: totalPages }).map((_, i) => (
               <div
                 key={i}
-                className={`w-1 h-1 rounded-full transition-all ${page === i ? "bg-cyan-400 scale-125" : "bg-white/20"}`}
+                className={`w-1 h-1 rounded-full ${page === i ? "bg-cyan-400 scale-125" : "bg-white/20"}`}
               />
             ))}
-            <motion.div
-              className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
-              animate={{ x: getX(), scale: 1.4 }}
-              transition={{ type: "spring", stiffness: 320, damping: 22 }}
-            />
           </div>
-
-          <button
-            onClick={next}
-            disabled={!canGoNext}
-            className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 text-white disabled:opacity-10 active:scale-90 transition-transform"
-          >
+          <button onClick={next} className="nav-btn">
             →
           </button>
         </div>
       </div>
+
+      <style jsx>{`
+        .nav-btn {
+          @apply w-8 h-8 rounded-full flex items-center justify-center bg-white/5 text-white disabled:opacity-10 active:scale-90 transition-all hover:bg-white/10;
+        }
+      `}</style>
     </div>
   );
 }

@@ -122,8 +122,14 @@ export function apiHandler<TParams = unknown, TBody = any>(
         const raw = await req.text();
 
         if (raw) {
-          const json = JSON.parse(raw);
-          body = options.schema ? options.schema.parse(json) : json;
+          try {
+            const json = JSON.parse(raw);
+            // Validation happens here. If it fails, ZodError is thrown.
+            body = options.schema ? options.schema.parse(json) : json;
+          } catch (jsonErr) {
+            if (jsonErr instanceof ZodError) throw jsonErr;
+            throw new ApiError("Invalid JSON body", 400);
+          }
         }
       }
 
@@ -140,20 +146,35 @@ export function apiHandler<TParams = unknown, TBody = any>(
 
       return NextResponse.json({ data });
     } catch (err: any) {
-      const status = err instanceof ApiError ? err.status : 500;
+      // Log the actual error for the developer to see in the console
+      console.error(`[apiHandler] Error:`, err);
 
+      /* ---------------- ZOD VALIDATION ERRORS ---------------- */
       if (err instanceof ZodError) {
+        // 🔥 SAFE: Ensure we don't crash when mapping errors
+        const messages = err.errors
+          ?.map((e) => `${e.path.join(".")}: ${e.message}`)
+          .join(", ");
         return NextResponse.json(
           {
-            error: err.errors.map((e) => e.message).join(", "),
+            error: messages || "Validation failed",
           },
           { status: 400 },
         );
       }
 
+      /* ---------------- KNOWN API ERRORS ---------------- */
+      if (err instanceof ApiError) {
+        return NextResponse.json(
+          { error: err.message },
+          { status: err.status },
+        );
+      }
+
+      /* ---------------- UNKNOWN INTERNAL ERRORS ---------------- */
       return NextResponse.json(
-        { error: err.message || "Internal error" },
-        { status },
+        { error: err.message || "Internal server error" },
+        { status: 500 },
       );
     }
   };

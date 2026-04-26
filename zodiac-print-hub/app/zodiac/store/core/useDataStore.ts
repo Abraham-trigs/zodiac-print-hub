@@ -26,7 +26,6 @@ export const useDataStore = create(
 
       initData: async () => {
         const orgId = "cmoa30ire0000o0dwz69fjgah";
-        await get().loadPrices({ orgId });
 
         console.log("--- SYNC START ---");
 

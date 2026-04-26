@@ -3,8 +3,10 @@
 import { PriceRepository } from "@lib/repositories/price.repository";
 import { UnitOfWork } from "@lib/db/unitOfWork";
 import { Outbox } from "@lib/db/outbox";
+import { Prisma } from "@prisma/client";
 
-// 🔥 ALIGNED: Types now include costPrice and isActive
+type PrismaTransactionClient = Prisma.TransactionClient;
+
 type CreatePriceInput = {
   name: string;
   category: string;
@@ -34,8 +36,8 @@ class PriceService {
     return { items };
   }
 
-  async findById(orgId: string, id: string) {
-    const item = await PriceRepository.findById(orgId, id);
+  async findById(orgId: string, id: string, tx?: PrismaTransactionClient) {
+    const item = await PriceRepository.findById(orgId, id, tx);
     if (!item) throw new Error("Price item not found");
     return item;
   }
@@ -44,8 +46,15 @@ class PriceService {
      CREATE
   ========================================================= */
 
-  async create(orgId: string, data: CreatePriceInput) {
-    return UnitOfWork.run(async (tx) => {
+  /**
+   * Supports both standalone calls and nested coordinator calls via txClient
+   */
+  async create(
+    orgId: string,
+    data: CreatePriceInput,
+    txClient?: PrismaTransactionClient,
+  ) {
+    const execute = async (tx: PrismaTransactionClient) => {
       const created = await PriceRepository.create(orgId, data, tx);
 
       await Outbox.add(tx, {
@@ -55,7 +64,10 @@ class PriceService {
       });
 
       return created;
-    });
+    };
+
+    // If txClient exists (from Coordinator), use it. Otherwise, start new UnitOfWork.
+    return txClient ? execute(txClient) : UnitOfWork.run(execute);
   }
 
   /* =========================================================
@@ -66,15 +78,15 @@ class PriceService {
     orgId: string,
     priceListId: string,
     data: UpdatePriceInput,
+    txClient?: PrismaTransactionClient,
   ) {
-    return UnitOfWork.run(async (tx) => {
+    const execute = async (tx: PrismaTransactionClient) => {
       const existing = await PriceRepository.findById(orgId, priceListId, tx);
 
       if (!existing) {
         throw new Error("Price item not found");
       }
 
-      // 🔥 FIXED: Method name was updatePrice, repository is usually .update
       const updated = await PriceRepository.update(
         orgId,
         priceListId,
@@ -93,15 +105,17 @@ class PriceService {
       });
 
       return updated;
-    });
+    };
+
+    return txClient ? execute(txClient) : UnitOfWork.run(execute);
   }
 
   /* =========================================================
      DELETE
   ========================================================= */
 
-  async delete(orgId: string, id: string) {
-    return UnitOfWork.run(async (tx) => {
+  async delete(orgId: string, id: string, txClient?: PrismaTransactionClient) {
+    const execute = async (tx: PrismaTransactionClient) => {
       const existing = await PriceRepository.findById(orgId, id, tx);
 
       if (!existing) {
@@ -117,11 +131,12 @@ class PriceService {
       });
 
       return deleted;
-    });
+    };
+
+    return txClient ? execute(txClient) : UnitOfWork.run(execute);
   }
 }
 
 /* ---------------- INSTANCE EXPORT ---------------- */
 
-// ✅ MOVED: Instance created after class is fully defined to fix ReferenceError
 export const priceService = new PriceService();

@@ -10,11 +10,8 @@ export const UpdatePriceSchema = z.object({
   category: z.string().min(1).optional(),
   unit: ServiceUnitEnum.optional(),
   priceGHS: z.number().nonnegative().optional(),
-  // 🔥 NEW: Track cost changes
   costPrice: z.number().nonnegative().optional(),
-  // 🔥 NEW: Link/Unlink stock items (CUID compatible)
   stockRefId: z.string().optional(),
-  // 🔥 NEW: Archive/Disable status
   isActive: z.boolean().optional(),
 });
 
@@ -28,10 +25,16 @@ export const CreatePriceSchema = z.object({
   unit: ServiceUnitEnum,
   priceGHS: z.number().nonnegative(),
 
-  // 🔥 NEW: Set initial cost for profit tracking
+  // 🔥 ALIGNED: Capturing costPrice for lastUnitCost mapping
   costPrice: z.number().nonnegative().optional(),
 
-  // 🔥 FIX: Changed .uuid() to .string() to support CUIDs
+  // 🔥 JOINERY FIELDS: Allowed to pass to the ProductCoordinator
+  isPhysical: z.boolean().optional(),
+  quantity: z.number().nonnegative().optional(),
+  width: z.number().nonnegative().optional(),
+  height: z.number().nonnegative().optional(),
+
+  // 🔥 FIX: Support CUIDs
   stockRefId: z.string().optional(),
 });
 
