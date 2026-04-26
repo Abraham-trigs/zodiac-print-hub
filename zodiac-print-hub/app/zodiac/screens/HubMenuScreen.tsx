@@ -20,7 +20,7 @@ export const HubMenuScreen: ZodiacScreen = {
         // Settings remains a modal for quick overlay access
         openModal("GLOBAL", SettingsPermissionsModal);
       } else {
-        // 🔥 FIXED: PRICE_CATALOG is now a formal screen transition
+        // 🔥 FIXED: PRICE_CREATION is now a formal screen transition
         setScreen(id as any);
       }
     };
@@ -39,7 +39,7 @@ export const HubMenuScreen: ZodiacScreen = {
         desc: "Load & Performance",
       },
       {
-        id: "PRICE_CATALOG", // 🔥 UPDATED: Matches Registry Screen ID
+        id: "PRICE_CREATION", // 🔥 UPDATED: Matches Registry Screen ID
         label: "Price Config",
         icon: "💰",
         desc: "Market Benchmarks",

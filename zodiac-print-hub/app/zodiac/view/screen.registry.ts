@@ -30,7 +30,7 @@ export const SCREEN_MAP = {
   JOB_INTAKE: JobIntakeScreen,
   SERVICE_SEARCH: ServiceSearchScreen,
   CLIENT_SEARCH: ClientSearchScreen,
-  PRICE_CATALOG: PriceCreationScreen,
+  PRICE_CREATION: PriceCreationScreen,
   MATERIAL_SERVICE_CATALOG: MaterialServiceCatalog,
   UNIT_VAULT: UnitVaultScreen,
   PRICE_STOCK_DETAIL: PriceStockDetailScreen,

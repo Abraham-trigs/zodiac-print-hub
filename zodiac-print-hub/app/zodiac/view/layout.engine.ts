@@ -48,8 +48,12 @@ export function resolveLayout(
 
   if (isLockedToDetail) {
     calculatedHeight = "100%";
-  } else if (activeScreenId === "JOB_INTAKE") {
-    calculatedHeight = "60%"; // ✅ Custom height for the Intake Screen
+  } else if (
+    activeScreenId === "JOB_INTAKE" ||
+    activeScreenId === "PRICE_CREATION"
+  ) {
+    // ✅ Custom height for both Intake and Price Creation Screens
+    calculatedHeight = "60%";
   }
 
   return {
