@@ -10,14 +10,16 @@ import { JobIntakeScreen } from "../screens/JobIntakeScreen";
 import { ZodiacScreen } from "../types/screen.types";
 import { ServiceSearchScreen } from "../screens/ServiceSearchScreen";
 import { ClientSearchScreen } from "../screens/ClientSearchScreen";
-import { PriceCreationScreen } from "@/screens/PriceCatalogScreen";
-import { MaterialServiceCatalog } from "@/screens/MaterialServiceCatalog";
-import { UnitVaultScreen } from "@/screens/UnitVaultScreen";
-import { PriceStockDetailScreen } from "@/screens/PriceStockDetailScreen";
+import { PriceCreationScreen } from "../screens/PriceCreationScreen";
+import { MaterialServiceCatalog } from "../screens/MaterialServiceCatalog";
+import { UnitVaultScreen } from "../screens/UnitVaultScreen";
+import { PriceStockDetailScreen } from "../screens/PriceStockDetailScreen";
+import { PriceEntryCenter } from "../screens/PriceEntryCenter";
 
 /**
  * Central screen registry (source of truth for navigation engine)
  */
+
 export const SCREEN_MAP = {
   WELCOME: WelcomeScreen,
   USER_PROFILE: UserProfileScreen,
@@ -34,16 +36,19 @@ export const SCREEN_MAP = {
   MATERIAL_SERVICE_CATALOG: MaterialServiceCatalog,
   UNIT_VAULT: UnitVaultScreen,
   PRICE_STOCK_DETAIL: PriceStockDetailScreen,
+  PRICE_ENTRY_CENTER: PriceEntryCenter,
 } as const satisfies Record<string, ZodiacScreen>;
 
 /**
  * Strongly typed screen IDs derived from registry
  */
+
 export type ScreenID = keyof typeof SCREEN_MAP;
 
 /**
  * Safe resolver (prevents undefined runtime access)
  */
+
 export function getScreen(id: ScreenID): ZodiacScreen {
   return SCREEN_MAP[id];
 }
@@ -51,6 +56,7 @@ export function getScreen(id: ScreenID): ZodiacScreen {
 /**
  * Optional: preload hook
  */
+
 export function preloadScreen(id: ScreenID) {
   return SCREEN_MAP[id];
 }

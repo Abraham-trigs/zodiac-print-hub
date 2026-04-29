@@ -4,8 +4,8 @@
 import { useState, useMemo } from "react";
 import { useZodiac } from "@store/zodiac.store";
 import { useDataStore } from "@store/core/useDataStore";
-import { useModalStore } from "@store/useModalStore";
 import { ZodiacScreen } from "../types/screen.types";
+// 🔥 PULLING DIRECTLY FROM SCHEMA
 import { ServiceUnitEnum } from "@lib/schema/job.schema";
 
 export const UnitVaultScreen: ZodiacScreen = {
@@ -14,10 +14,10 @@ export const UnitVaultScreen: ZodiacScreen = {
 
   TopComponent: () => {
     const { goBack } = useZodiac();
-    const { closeModal, activeGlobalComponent } = useModalStore();
     const setDraft = useDataStore((s) => s.setDraft);
     const [q, setQ] = useState("");
 
+    // ✅ NO HARDCODING: Pulling the options from the Zod Enum
     const units = ServiceUnitEnum.options;
 
     const filtered = useMemo(
@@ -26,32 +26,15 @@ export const UnitVaultScreen: ZodiacScreen = {
     );
 
     const handleSelect = (unit: string) => {
-      // 1. Commit the selection
       setDraft({ unit });
-
-      // 2. Layer Exit Logic
-      if (activeGlobalComponent) {
-        // If opened via openModal("GLOBAL", UnitVaultScreen.TopComponent)
-        closeModal("GLOBAL");
-      } else {
-        // Fallback for standard screen navigation stack
-        goBack();
-      }
-    };
-
-    const handleManualClose = () => {
-      if (activeGlobalComponent) {
-        closeModal("GLOBAL");
-      } else {
-        goBack();
-      }
+      goBack();
     };
 
     return (
       <div className="flex flex-col h-full p-8 animate-in fade-in duration-500">
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h2 className="text-4xl font-black italic text-white tracking-tighter">
+            <h2 className="text-4xl font-black italic text-white">
               UNIT VAULT
             </h2>
             <p className="text-[7px] text-cyan-400 font-black uppercase tracking-[0.4em]">
@@ -59,8 +42,8 @@ export const UnitVaultScreen: ZodiacScreen = {
             </p>
           </div>
           <button
-            onClick={handleManualClose}
-            className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/20 hover:text-white transition-all"
+            onClick={goBack}
+            className="text-white/20 hover:text-white text-xl"
           >
             ✕
           </button>
@@ -70,7 +53,7 @@ export const UnitVaultScreen: ZodiacScreen = {
           <input
             autoFocus
             placeholder="Filter units..."
-            className="w-full bg-white/5 border border-white/10 rounded-3xl py-5 px-14 text-sm focus:border-cyan-400 outline-none transition-all text-white placeholder:text-white/10"
+            className="w-full bg-white/5 border border-white/10 rounded-3xl py-5 px-14 text-sm focus:border-cyan-400 outline-none transition-all text-white"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />

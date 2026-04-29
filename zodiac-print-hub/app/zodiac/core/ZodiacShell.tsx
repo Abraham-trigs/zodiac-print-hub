@@ -144,8 +144,11 @@ export function ZodiacShell() {
   // =====================================================
   const cached = getCachedScreen(activeScreenId);
 
-  const TopRender = TopModal || cached?.Top || TopZoneComponent;
-  const DownRender = DownModal || cached?.Down || DownZoneComponent;
+  // const TopRender = TopModal || cached?.Top || TopZoneComponent;
+  // const DownRender = DownModal || cached?.Down || DownZoneComponent;
+
+  const TopRender = TopModal || cached?.TopComponent || TopZoneComponent;
+  const DownRender = DownModal || cached?.DownComponent || DownZoneComponent;
 
   return (
     <div className="zodiac-shell flex flex-col h-full overflow-hidden bg-black text-white relative">
@@ -178,20 +181,26 @@ export function ZodiacShell() {
             {TopRender && <TopRender key={`top-${activeScreenId}`} />}
           </div>
         </section>
-
         <section
           className="zodiac-down flex-1 overflow-hidden relative transition-all duration-500"
           style={{
-            opacity: !showDownZone || isDetail ? 0 : 1,
+            // ✅ FIX: Show the zone if DownRender exists, even if the screen thinks it should be hidden
+            opacity: (!showDownZone || isDetail) && !DownModal ? 0 : 1,
             transform:
-              !showDownZone || isDetail
+              (!showDownZone || isDetail) && !DownModal
                 ? "translateY(40px)"
                 : "translateY(0px)",
-            pointerEvents: !showDownZone || isDetail ? "none" : "auto",
+            pointerEvents:
+              (!showDownZone || isDetail) && !DownModal ? "none" : "auto",
           }}
         >
           <div className="modal-box p-4 h-full">
-            {DownRender && <DownRender key={`down-${activeScreenId}`} />}
+            {/* ✅ Use a key that changes with the component to ensure clean mounting */}
+            {DownRender && (
+              <DownRender
+                key={DownModal ? "modal-active" : `down-${activeScreenId}`}
+              />
+            )}
           </div>
         </section>
       </main>
