@@ -1,40 +1,41 @@
+// src/store/slices/price.slice.ts
 import { StateCreator } from "zustand";
-import { PriceItem } from "@/types/zodiac.types";
 import { apiClient } from "@root/lib/api/client";
-import type {
-  CreatePriceInput,
-  UpdatePriceInput,
-} from "@lib/schema/price.schema";
+import { PriceList, Material, Service } from "@prisma/client";
 
-type PricePatch = Partial<
-  Pick<PriceItem, "priceGHS" | "name" | "unit" | "category">
->;
+/* =========================================================
+   TYPES (ALIGNED WITH PRODUCTION RECIPE)
+========================================================= */
+
+// The "Full Recipe" as returned by our new API selects
+export type PriceListFull = PriceList & {
+  material?: Material | null;
+  service?: Service | null;
+};
 
 export interface PriceSlice {
   priceState: {
-    prices: Record<string, PriceItem>;
+    prices: Record<string, PriceListFull>;
     isLoading: boolean;
     isSubmitting: boolean;
     error?: string | null;
   };
 
-  setPrices: (data: PriceItem[]) => void;
+  setPrices: (data: PriceListFull[]) => void;
 
   // READ
   loadPrices: (query?: {
-    orgId?: string;
-    search?: string;
     category?: string;
-    unit?: string;
+    isActive?: boolean;
   }) => Promise<void>;
 
-  loadPriceById: (id: string) => Promise<PriceItem | null>;
+  loadPriceById: (id: string) => Promise<PriceListFull | null>;
 
   // CREATE
-  createPrice: (payload: CreatePriceInput) => Promise<void>;
+  createPrice: (payload: any) => Promise<void>;
 
   // UPDATE
-  updatePrice: (id: string, patch: UpdatePriceInput) => Promise<void>;
+  updatePrice: (id: string, patch: any) => Promise<void>;
 
   // DELETE
   deletePrice: (id: string) => Promise<void>;
@@ -42,6 +43,10 @@ export interface PriceSlice {
   // UI
   setError: (error?: string | null) => void;
 }
+
+/* =========================================================
+   SLICE IMPLEMENTATION
+========================================================= */
 
 export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
   priceState: {
@@ -60,38 +65,29 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
             acc[p.id] = p;
             return acc;
           },
-          {} as Record<string, PriceItem>,
+          {} as Record<string, PriceListFull>,
         ),
       },
     })),
-
-  /* =========================================================
-     ERROR HANDLING
-  ========================================================= */
 
   setError: (error) =>
     set((state) => ({
       priceState: { ...state.priceState, error },
     })),
 
-  /* =========================================================
-     READ
-  ========================================================= */
-
+  /* --- READ --- */
   loadPrices: async (query) => {
     set((s) => ({
       priceState: { ...s.priceState, isLoading: true, error: null },
     }));
 
     try {
-      const res = await apiClient<{ data: { items: PriceItem[] } }>(
-        "/api/prices",
-        {
-          query,
-        },
-      );
+      // res.data now returns the data-wrapped array from our apiHandler
+      const res = await apiClient<{ data: PriceListFull[] }>("/api/prices", {
+        query,
+      });
 
-      get().setPrices(res?.data?.items ?? []);
+      get().setPrices(res?.data ?? []);
     } catch (e: any) {
       get().setError(e?.message ?? "Failed to load prices");
     } finally {
@@ -102,25 +98,18 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
   },
 
   loadPriceById: async (id) => {
-    const res = await apiClient<{ data: PriceItem }>(`/api/prices/${id}`);
-
+    const res = await apiClient<{ data: PriceListFull }>(`/api/prices/${id}`);
     return res?.data ?? null;
   },
-  /* =========================================================
-     CREATE
-  ========================================================= */
 
+  /* --- CREATE --- */
   createPrice: async (payload) => {
     set((s) => ({
-      priceState: {
-        ...s.priceState,
-        isSubmitting: true,
-        error: null,
-      },
+      priceState: { ...s.priceState, isSubmitting: true, error: null },
     }));
 
     try {
-      const res = await apiClient<{ data: PriceItem }>("/api/prices", {
+      const res = await apiClient<{ data: PriceListFull }>("/api/prices", {
         method: "POST",
         body: payload,
       });
@@ -131,19 +120,16 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
         set((state) => ({
           priceState: {
             ...state.priceState,
-            prices: {
-              ...state.priceState.prices,
-              [created.id]: created,
-            },
+            prices: { ...state.priceState.prices, [created.id]: created },
           },
         }));
 
-        // 🔥 SEAMLESS SYNC:
-        // If the new price was linked to a material, refresh inventory
-        // so the Material Catalog and selectors reflect the new stock state.
-        if (payload.isPhysical || created.stockRefId) {
-          const orgId = (get() as any).orgId;
-          if (orgId) await (get() as any).loadInventory(orgId);
+        // 🔥 SEAMLESS INVENTORY SYNC
+        // If the new price list item is linked to a Material,
+        // we trigger the Inventory slice to refresh the stock counts.
+        if (created.materialId) {
+          const store = get() as any;
+          if (store.loadInventory) await store.loadInventory();
         }
       }
     } catch (e: any) {
@@ -155,15 +141,12 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
     }
   },
 
-  /* =========================================================
-     UPDATE
-  ========================================================= */
-
+  /* --- UPDATE --- */
   updatePrice: async (id, patch) => {
     const prev = get().priceState.prices[id];
     if (!prev) return;
 
-    // Optimistic update for snappy UI
+    // Optimistic Update
     set((state) => ({
       priceState: {
         ...state.priceState,
@@ -175,68 +158,49 @@ export const createPriceSlice: StateCreator<PriceSlice> = (set, get) => ({
     }));
 
     try {
-      await apiClient(`/api/prices/${id}`, {
-        method: "PATCH",
-        body: patch,
-      });
+      const res = await apiClient<{ data: PriceListFull }>(
+        `/api/prices/${id}`,
+        {
+          method: "PATCH",
+          body: patch,
+        },
+      );
 
-      // Refresh both to ensure stock links and costs are perfectly aligned
-      const orgId = (get() as any).orgId;
-      await get().loadPrices({ orgId });
-
-      if (patch.stockRefId || prev.stockRefId) {
-        if (orgId) await (get() as any).loadInventory(orgId);
+      // If stock links were modified, refresh the inventory slice
+      if (patch.materialId || prev.materialId) {
+        const store = get() as any;
+        if (store.loadInventory) await store.loadInventory();
       }
     } catch (e: any) {
       get().setError(e?.message ?? "Failed to update price");
-
-      // Rollback on failure
+      // Rollback
       set((state) => ({
         priceState: {
           ...state.priceState,
-          prices: {
-            ...state.priceState.prices,
-            [id]: prev,
-          },
+          prices: { ...state.priceState.prices, [id]: prev },
         },
       }));
     }
   },
 
-  /* =========================================================
-     DELETE
-  ========================================================= */
-
+  /* --- DELETE --- */
   deletePrice: async (id) => {
     const prev = get().priceState.prices[id];
     if (!prev) return;
 
-    // optimistic remove
     set((state) => {
       const { [id]: _, ...rest } = state.priceState.prices;
-
-      return {
-        priceState: {
-          ...state.priceState,
-          prices: rest,
-        },
-      };
+      return { priceState: { ...state.priceState, prices: rest } };
     });
 
     try {
-      await apiClient(`/api/prices/${id}`, {
-        method: "DELETE",
-      });
+      await apiClient(`/api/prices/${id}`, { method: "DELETE" });
     } catch (e: any) {
       get().setError(e?.message ?? "Failed to delete price");
-
       set((state) => ({
         priceState: {
           ...state.priceState,
-          prices: {
-            ...state.priceState.prices,
-            [id]: prev,
-          },
+          prices: { ...state.priceState.prices, [id]: prev },
         },
       }));
     }

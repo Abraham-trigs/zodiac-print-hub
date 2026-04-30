@@ -1,116 +1,119 @@
-"use client";
-
+// src/store/slices/inventory.slice.ts
 import { StateCreator } from "zustand";
-import { StockItem } from "../../types/zodiac.types";
+import { StockItem, Material, StockMovement } from "@prisma/client";
 import { apiClient } from "@root/lib/api/client";
 
+/* =========================================================
+   TYPES (ALIGNED WITH MATERIAL ↔ STOCK LINK)
+========================================================= */
+
+export type StockItemFull = StockItem & {
+  material?: Material | null;
+  movements?: StockMovement[]; // Optional: for the "Stock History" tab
+};
+
 export interface InventorySlice {
-  // ✅ FIXED: Grouped state to match priceState/jobState
   inventoryState: {
-    inventory: Record<string, StockItem>;
+    inventory: Record<string, StockItemFull>;
     isLoading: boolean;
+    error: string | null;
   };
 
-  setInventory: (data: StockItem[]) => void;
-  loadInventory: (orgId: string) => Promise<StockItem[]>;
+  setInventory: (data: StockItemFull[]) => void;
+  loadInventory: (query?: { orgId?: string }) => Promise<void>;
 
+  // LEDGER ACTIONS
   restock: (payload: {
-    orgId: string;
     stockItemId: string;
     quantity: number;
     unitCost: number;
-    createdBy: string; // 🔥 Added to align with StockMovement schema
+    note?: string;
   }) => Promise<void>;
 
-  consume: (payload: {
-    orgId: string;
+  adjust: (payload: {
     stockItemId: string;
-    quantity: number;
-    createdBy: string;
+    quantity: number; // Negative for loss, Positive for correction
+    type: "WASTE" | "ADJUST";
+    note?: string;
   }) => Promise<void>;
 }
+
+/* =========================================================
+   SLICE IMPLEMENTATION
+========================================================= */
 
 export const createInventorySlice: StateCreator<InventorySlice> = (
   set,
   get,
 ) => ({
-  // =========================================================
-  // STATE
-  // =========================================================
   inventoryState: {
     inventory: {},
     isLoading: false,
+    error: null,
   },
 
-  // =========================================================
-  // HYDRATION
-  // =========================================================
   setInventory: (data) =>
     set((state) => ({
       inventoryState: {
         ...state.inventoryState,
-        inventory: data.reduce<Record<string, StockItem>>((acc, item) => {
-          acc[item.id] = item;
-          return acc;
-        }, {}),
+        inventory: data.reduce(
+          (acc, item) => {
+            acc[item.id] = item;
+            return acc;
+          },
+          {} as Record<string, StockItemFull>,
+        ),
       },
     })),
 
-  // =========================================================
-  // LOAD FROM SERVER
-  // =========================================================
-  loadInventory: async (orgId: string) => {
-    set((state) => ({
-      inventoryState: { ...state.inventoryState, isLoading: true },
+  /* --- READ (Server Source of Truth) --- */
+  loadInventory: async (query) => {
+    set((s) => ({
+      inventoryState: { ...s.inventoryState, isLoading: true, error: null },
     }));
 
     try {
-      const res = await apiClient<{ data: StockItem[] }>("/api/stock", {
-        query: { orgId },
+      const res = await apiClient<{ data: StockItemFull[] }>("/api/stock", {
+        query,
       });
-
-      const items = res?.data ?? [];
-      get().setInventory(items);
-      return items;
+      get().setInventory(res?.data ?? []);
+    } catch (e: any) {
+      set((s) => ({
+        inventoryState: { ...s.inventoryState, error: e.message },
+      }));
     } finally {
-      set((state) => ({
-        inventoryState: { ...state.inventoryState, isLoading: false },
+      set((s) => ({
+        inventoryState: { ...s.inventoryState, isLoading: false },
       }));
     }
   },
 
-  // =========================================================
-  // DOMAIN ACTIONS (LEDGER-BASED)
-  // =========================================================
+  /* --- RESTOCK (Adding Value) --- */
+  restock: async (payload) => {
+    try {
+      await apiClient("/api/stock/movement", {
+        method: "POST",
+        body: { ...payload, type: "RESTOCK" },
+      });
 
-  restock: async ({ orgId, stockItemId, quantity, unitCost, createdBy }) => {
-    await apiClient("/api/stock/movement", {
-      method: "POST",
-      body: {
-        orgId,
-        stockItemId,
-        type: "RESTOCK",
-        quantity,
-        unitCost,
-        createdBy,
-      },
-    });
-
-    await get().loadInventory(orgId);
+      // Refresh to get the new totalRemaining and updated lastUnitCost
+      await get().loadInventory();
+    } catch (e: any) {
+      console.error("Restock failed", e);
+    }
   },
 
-  consume: async ({ orgId, stockItemId, quantity, createdBy }) => {
-    await apiClient("/api/stock/movement", {
-      method: "POST",
-      body: {
-        orgId,
-        stockItemId,
-        type: "DEDUCT",
-        quantity,
-        createdBy,
-      },
-    });
+  /* --- ADJUST / WASTE (Manual Corrections) --- */
+  adjust: async (payload) => {
+    try {
+      await apiClient("/api/stock/movement", {
+        method: "POST",
+        body: payload,
+      });
 
-    await get().loadInventory(orgId);
+      await get().loadInventory();
+    } catch (e: any) {
+      console.error("Adjustment failed", e);
+    }
   },
 });

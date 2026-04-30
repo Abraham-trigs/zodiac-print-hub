@@ -1,40 +1,47 @@
-// app/api/prices/route.ts
+// src/app/api/prices/route.ts
 import { apiHandler } from "@lib/server/api/apiHandler";
-import { productCoordinator } from "@root/lib/hooks/product-coordinator.handler";
-import { priceService } from "@lib/services/price.service";
-import { CreatePriceSchema } from "@lib/schema/price.schema";
+import { prisma } from "@lib/prisma";
 
+/**
+ * GET /api/prices
+ * Returns the "Menu" for the frontend.
+ * Optimized to include the 'Rules' (calcType, unit) needed for the UI logic.
+ */
 export const GET = apiHandler(
-  async ({ orgId }) => {
-    return priceService.list(orgId);
-  },
-  {
-    requireAuth: true,
-    requireOrg: true,
-  },
-);
+  async ({ orgId, query }) => {
+    const { category, isActive } = query;
 
-export const POST = apiHandler(
-  async ({ orgId, body }) => {
-    try {
-      return await productCoordinator.saveNewProduct(orgId, body);
-    } catch (error: any) {
-      console.error("❌ [API/PRICES][POST]", {
-        message: error?.message,
-        stack: error?.stack,
-        // 🔥 avoid dumping full body (PII / noise risk)
-        input: {
-          name: body?.name,
-          type: body?.type,
+    return await prisma.priceList.findMany({
+      where: {
+        orgId,
+        isActive: isActive === "false" ? false : true,
+        ...(category && {
+          OR: [
+            { materialCategory: category as any },
+            { serviceCategory: category as any },
+          ],
+        }),
+      },
+      include: {
+        // We include these to tell the Frontend HOW to calculate
+        material: {
+          select: {
+            calcType: true,
+            unit: true,
+            purchasePrice: true,
+          },
         },
-      });
-
-      throw error;
-    }
+        service: {
+          select: {
+            calcType: true,
+          },
+        },
+      },
+      orderBy: { displayName: "asc" },
+    });
   },
   {
     requireAuth: true,
     requireOrg: true,
-    schema: CreatePriceSchema,
   },
 );
