@@ -1,6 +1,6 @@
 // app/api/prices/route.ts
 import { apiHandler } from "@lib/server/api/apiHandler";
-import { productCoordinator } from "@lib/handlers/product-coordinator.handler";
+import { productCoordinator } from "@root/lib/hooks/product-coordinator.handler";
 import { priceService } from "@lib/services/price.service";
 import { CreatePriceSchema } from "@lib/schema/price.schema";
 

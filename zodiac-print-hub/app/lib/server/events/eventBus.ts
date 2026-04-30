@@ -1,86 +1,79 @@
 import { WebSocketServer } from "ws";
+import type {
+  DomainEventType,
+  DomainEventEnvelope,
+} from "@/types/zodiac.types";
 
-type EventHandler = (payload: any) => void;
-
-export interface RealtimeEnvelope<T = any> {
-  type: string;
-  payload: T;
-  entityId?: string;
-  version?: number;
-}
+type EventHandler<T = unknown> = (payload: T) => void;
 
 type SocketMeta = {
   orgId: string | null;
   userId: string | null;
 };
 
+function getMeta(client: any): SocketMeta {
+  return client.meta ?? { orgId: null, userId: null };
+}
+
 class EventBus {
   private wsServer: WebSocketServer | null = null;
-  private handlers: Record<string, EventHandler[]> = {};
+
+  // strongly typed event registry
+  private handlers: Partial<Record<DomainEventType, EventHandler[]>> = {};
 
   init(server: any) {
     this.wsServer = new WebSocketServer({ server });
 
     this.wsServer.on("connection", (socket) => {
-      // attach metadata per connection (to be filled after auth handshake)
       (socket as any).meta = {
         orgId: null,
         userId: null,
       } satisfies SocketMeta;
-
-      socket.on("message", () => {
-        // reserved for client → server events
-      });
     });
   }
 
-  publish(
-    type: string,
-    payload: any,
-    meta?: {
-      entityId?: string;
-      version?: number;
-      orgId?: string;
-    },
-  ) {
-    // 1. internal listeners
-    (this.handlers[type] || []).forEach((fn) => fn(payload));
+  /**
+   * SINGLE SOURCE OF TRUTH DISPATCH
+   * - used by Outbox processor
+   * - used by internal services (optional)
+   */
+  publish<T>(event: DomainEventEnvelope<T>) {
+    // internal handlers (side effects, projections, etc.)
+    const handlers = this.handlers[event.type] ?? [];
+    for (const fn of handlers) fn(event.payload);
 
-    // 2. WS broadcast
     if (!this.wsServer) return;
 
-    const message: RealtimeEnvelope = {
-      type,
-      payload,
-      entityId: meta?.entityId,
-      version: meta?.version,
-    };
+    const message = JSON.stringify(event);
 
     this.wsServer.clients.forEach((client: any) => {
       if (client.readyState !== 1) return;
 
-      // tenant isolation (safe default)
-      if (
-        meta?.orgId &&
-        client.meta?.orgId &&
-        client.meta.orgId !== meta.orgId
-      ) {
+      const meta = getMeta(client);
+
+      // HARD TENANT ISOLATION
+      if (event.orgId && meta.orgId && meta.orgId !== event.orgId) {
         return;
       }
 
       try {
-        client.send(JSON.stringify(message));
+        client.send(message);
       } catch {
         client.terminate?.();
       }
     });
   }
 
-  subscribe(type: string, handler: EventHandler) {
+  /**
+   * INTERNAL SUBSCRIPTIONS ONLY
+   * (projections, caches, analytics hooks)
+   */
+  subscribe<T>(type: DomainEventType, handler: EventHandler<T>) {
     if (!this.handlers[type]) {
       this.handlers[type] = [];
     }
-    this.handlers[type].push(handler);
+
+    this.handlers[type]!.push(handler as EventHandler);
   }
 }
 

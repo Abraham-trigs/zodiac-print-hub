@@ -2,11 +2,13 @@
 
 import { useDataStore } from "@store/core/useDataStore";
 import { useModalStore } from "@store/useModalStore";
-import { ClassificationHub } from "../ClassificationHub";
+import { ClassificationHub } from "./ClassificationHub";
+import { shallow } from "zustand/shallow";
 
 export function QuickEditDimensions() {
-  const setDraft = useDataStore((s) => s.setDraft);
-  const draft = useDataStore((s) => s.draftState?.draft);
+  // ✅ Switch to isolated Pricing state and setter
+  const draft = useDataStore((s) => s.pricingDraft, shallow);
+  const setPricingDraft = useDataStore((s) => s.setPricingDraft);
   const { swapModal } = useModalStore();
 
   return (
@@ -25,7 +27,8 @@ export function QuickEditDimensions() {
             type="number"
             className="w-24 bg-transparent text-center text-5xl font-black border-b border-white/10 focus:border-cyan-400 outline-none pb-2 transition-all"
             defaultValue={draft?.width || ""}
-            onChange={(e) => setDraft({ width: Number(e.target.value) })}
+            // ✅ Commit to pricingDraft
+            onChange={(e) => setPricingDraft({ width: Number(e.target.value) })}
           />
         </div>
 
@@ -39,7 +42,10 @@ export function QuickEditDimensions() {
             type="number"
             className="w-24 bg-transparent text-center text-5xl font-black border-b border-white/10 focus:border-cyan-400 outline-none pb-2 transition-all"
             defaultValue={draft?.height || ""}
-            onChange={(e) => setDraft({ height: Number(e.target.value) })}
+            // ✅ Commit to pricingDraft
+            onChange={(e) =>
+              setPricingDraft({ height: Number(e.target.value) })
+            }
             onKeyDown={(e) =>
               e.key === "Enter" && swapModal("DOWN", ClassificationHub)
             }

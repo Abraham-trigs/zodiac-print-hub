@@ -5,7 +5,7 @@ import { useZodiac } from "../store/zodiac.store";
 import { useModalStore } from "../store/useModalStore";
 
 // ✅ Newly created components for the Intake Flow
-import { JobDisplayModal } from "./modals/JobDisplayModal";
+import { JobDisplayModal } from "./modals/MaterialDraftCard";
 import { JobEntryModal } from "./modals/JobEntryModal";
 
 export const JobIntakeScreen = {

@@ -5,8 +5,8 @@ import { useModalStore } from "@/store/useModalStore";
 import { ZodiacScreen } from "../types/screen.types";
 
 // ✅ Updated imports to match our new file names
-import { PriceDisplayPreview } from "./modals/PriceDisplayPreview";
-import { ClassificationHub } from "./modals/ClassificationHub";
+import { PriceDisplayPreview } from "../components/workstation/pricecreation/components/PriceDisplayPreview";
+import { ClassificationHub } from "../components/workstation/pricecreation/components/ClassificationHub";
 
 /**
  * PRICE_CREATION_SCREEN

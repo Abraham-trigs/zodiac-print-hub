@@ -154,10 +154,7 @@ exports.Prisma.StaffScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
   userId: 'userId',
-  name: 'name',
-  role: 'role',
   phone: 'phone',
-  avatarUrl: 'avatarUrl',
   specialisation: 'specialisation',
   isActive: 'isActive',
   createdAt: 'createdAt'
@@ -186,36 +183,42 @@ exports.Prisma.ClientScalarFieldEnum = {
 exports.Prisma.PriceListScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
-  name: 'name',
-  category: 'category',
-  unit: 'unit',
-  costPrice: 'costPrice',
-  priceGHS: 'priceGHS',
-  stockRefId: 'stockRefId',
+  displayName: 'displayName',
+  salePrice: 'salePrice',
+  materialCategory: 'materialCategory',
+  serviceCategory: 'serviceCategory',
+  materialId: 'materialId',
+  serviceId: 'serviceId',
   isActive: 'isActive',
+  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MaterialScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  calcType: 'calcType',
+  unit: 'unit',
+  purchasePrice: 'purchasePrice',
+  stockItemId: 'stockItemId'
+};
+
+exports.Prisma.ServiceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  calcType: 'calcType',
+  basePrice: 'basePrice',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.StockItemScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
-  name: 'name',
-  unit: 'unit',
   totalRemaining: 'totalRemaining',
   lowStockThreshold: 'lowStockThreshold',
-  lastUnitCost: 'lastUnitCost',
-  lastRestockedAt: 'lastRestockedAt',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.RestockRecordScalarFieldEnum = {
-  id: 'id',
-  stockItemId: 'stockItemId',
-  quantity: 'quantity',
-  unitCost: 'unitCost',
-  totalCost: 'totalCost',
-  recordedBy: 'recordedBy',
-  date: 'date'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.StockMovementScalarFieldEnum = {
@@ -224,7 +227,6 @@ exports.Prisma.StockMovementScalarFieldEnum = {
   stockItemId: 'stockItemId',
   type: 'type',
   quantity: 'quantity',
-  unitCost: 'unitCost',
   referenceId: 'referenceId',
   referenceType: 'referenceType',
   note: 'note',
@@ -236,28 +238,38 @@ exports.Prisma.JobScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
   clientId: 'clientId',
-  serviceId: 'serviceId',
+  priceListId: 'priceListId',
   serviceName: 'serviceName',
   quantity: 'quantity',
   width: 'width',
   height: 'height',
   unit: 'unit',
+  basePrice: 'basePrice',
+  variableTotal: 'variableTotal',
   totalPrice: 'totalPrice',
   costPrice: 'costPrice',
   profitMargin: 'profitMargin',
-  materialUsed: 'materialUsed',
-  materialWastage: 'materialWastage',
-  status: 'status',
   paymentStatus: 'paymentStatus',
   isPaid: 'isPaid',
-  paymentRef: 'paymentRef',
+  status: 'status',
   assignedStaffId: 'assignedStaffId',
-  deliveryId: 'deliveryId',
-  notes: 'notes',
   b2bPushId: 'b2bPushId',
+  notes: 'notes',
+  completedAt: 'completedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  completedAt: 'completedAt'
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobVariableScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  priceListId: 'priceListId',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  subtotal: 'subtotal',
+  createdAt: 'createdAt',
+  materialId: 'materialId',
+  serviceId: 'serviceId'
 };
 
 exports.Prisma.DeliveryScalarFieldEnum = {
@@ -285,7 +297,8 @@ exports.Prisma.PaymentScalarFieldEnum = {
   reference: 'reference',
   screenshotUrl: 'screenshotUrl',
   confirmedBy: 'confirmedBy',
-  confirmedAt: 'confirmedAt'
+  confirmedAt: 'confirmedAt',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.B2BPushScalarFieldEnum = {
@@ -299,8 +312,7 @@ exports.Prisma.B2BPushScalarFieldEnum = {
   suggestedPrice: 'suggestedPrice',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  organisationId: 'organisationId'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AuditLogScalarFieldEnum = {
@@ -311,8 +323,7 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   entityType: 'entityType',
   performedBy: 'performedBy',
   meta: 'meta',
-  timestamp: 'timestamp',
-  organisationId: 'organisationId'
+  timestamp: 'timestamp'
 };
 
 exports.Prisma.SortOrder = {
@@ -357,6 +368,29 @@ exports.ClientType = exports.$Enums.ClientType = {
   COMPANY: 'COMPANY'
 };
 
+exports.MaterialCategory = exports.$Enums.MaterialCategory = {
+  MEDIA: 'MEDIA',
+  RIGID: 'RIGID',
+  CONSUMABLE: 'CONSUMABLE',
+  FINISHING: 'FINISHING',
+  HARDWARE: 'HARDWARE'
+};
+
+exports.ServiceCategory = exports.$Enums.ServiceCategory = {
+  DESIGN: 'DESIGN',
+  PRINTING: 'PRINTING',
+  FINISHING: 'FINISHING',
+  INSTALLATION: 'INSTALLATION',
+  LOGISTICS: 'LOGISTICS'
+};
+
+exports.MaterialCalculationType = exports.$Enums.MaterialCalculationType = {
+  FLAT: 'FLAT',
+  DIMENSIONAL: 'DIMENSIONAL',
+  LINEAR: 'LINEAR',
+  VOLUMETRIC: 'VOLUMETRIC'
+};
+
 exports.ServiceUnit = exports.$Enums.ServiceUnit = {
   sqft: 'sqft',
   sqm: 'sqm',
@@ -383,11 +417,24 @@ exports.ServiceUnit = exports.$Enums.ServiceUnit = {
   PER_YARD: 'PER_YARD'
 };
 
+exports.ServiceCalculationType = exports.$Enums.ServiceCalculationType = {
+  FIXED: 'FIXED',
+  PER_UNIT: 'PER_UNIT',
+  AREA_BASED: 'AREA_BASED',
+  TIME_BASED: 'TIME_BASED'
+};
+
 exports.StockMovementType = exports.$Enums.StockMovementType = {
   RESTOCK: 'RESTOCK',
   DEDUCT: 'DEDUCT',
   WASTE: 'WASTE',
   ADJUST: 'ADJUST'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  UNPAID: 'UNPAID',
+  PARTIAL: 'PARTIAL',
+  PAID: 'PAID'
 };
 
 exports.JobStatus = exports.$Enums.JobStatus = {
@@ -398,12 +445,6 @@ exports.JobStatus = exports.$Enums.JobStatus = {
   COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
   PAUSED: 'PAUSED'
-};
-
-exports.PaymentStatus = exports.$Enums.PaymentStatus = {
-  UNPAID: 'UNPAID',
-  PARTIAL: 'PARTIAL',
-  PAID: 'PAID'
 };
 
 exports.DeliveryType = exports.$Enums.DeliveryType = {
@@ -444,10 +485,12 @@ exports.Prisma.ModelName = {
   Staff: 'Staff',
   Client: 'Client',
   PriceList: 'PriceList',
+  Material: 'Material',
+  Service: 'Service',
   StockItem: 'StockItem',
-  RestockRecord: 'RestockRecord',
   StockMovement: 'StockMovement',
   Job: 'Job',
+  JobVariable: 'JobVariable',
   Delivery: 'Delivery',
   Payment: 'Payment',
   B2BPush: 'B2BPush',

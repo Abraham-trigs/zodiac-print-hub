@@ -1,3 +1,5 @@
+"use client";
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -5,6 +7,7 @@ import { createPriceSlice } from "../slices/price.slice";
 import { createInventorySlice } from "../slices/inventory.slice";
 import { createJobSlice } from "../slices/job.slice";
 import { createDraftSlice } from "../slices/draft.slice";
+import { createPricingDraftSlice } from "../slices/pricing-draft.slice"; // ✅ Added
 import { createStaffSlice } from "../slices/staff.slice";
 import { createPaymentSlice } from "../slices/payment.slice";
 import { createDeliverySlice } from "../slices/delivery.slice";
@@ -15,6 +18,7 @@ export const useDataStore = create(
   persist(
     (set, get, api) => ({
       ...createDraftSlice(set, get, api),
+      ...createPricingDraftSlice(set, get, api), // ✅ Plugged in
       ...createPriceSlice(set, get, api),
       ...createInventorySlice(set, get, api),
       ...createJobSlice(set, get, api),
@@ -37,20 +41,15 @@ export const useDataStore = create(
           get().loadClients?.(orgId),
         ]);
 
-        const finalState = get();
         console.log("--- SYNC COMPLETE ---");
-        console.log(
-          "Target Folder (priceState):",
-          finalState.priceState?.prices,
-        );
-        console.log("Old Shelf (prices):", finalState.prices);
-        console.log("FULL STATE:", finalState);
       },
     }),
     {
-      name: "zodiac-store", // ✅ Incrementing version to force a fresh start
+      name: "zodiac-store-v2", // ✅ Version bump for structural change
       partialize: (state: any) => ({
+        // ✅ Persist both the Job Cart and the Pricing Workstation data
         draft: state.draft,
+        pricingDraft: state.pricingDraft,
       }),
     },
   ),

@@ -17,12 +17,17 @@
 export interface Organisation {
   id: string;
   name: string;
-  slug: string; // URL-safe identifier e.g. "printzone-accra"
-  logoUrl?: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  address?: string;
-  createdAt: string; // ISO 8601
+  slug: string;
+
+  // These map 1:1 to Prisma's 'String?' (Nullable)
+  logoUrl: string | null;
+  contactEmail: string | null;
+  contactPhone: string | null;
+  address: string | null;
+
+  // Maps to Prisma's 'DateTime'
+  // Use 'Date' if working in the backend, 'string' if data is serialized (JSON)
+  createdAt: Date | string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -51,54 +56,60 @@ export interface AppUser {
   name: string;
   email: string;
   role: UserRole;
-  avatarUrl?: string;
-  createdAt: string;
+  avatarUrl: string | null;
+  createdAt: Date | string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 3. STAFF
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** A staff member who can be assigned to jobs. Linked to an AppUser. */
+/**
+ * A staff member who can be assigned to jobs.
+ * Strictly matches 'model Staff' + Joined 'User'.
+ */
 export interface StaffMember {
   id: string;
   orgId: string;
   userId: string;
-  name: string;
-  role: UserRole;
-  phone?: string;
-  avatarUrl?: string;
-  specialisation?: string;
 
-  isActive: boolean;
+  // Professional fields (Directly on Staff model)
+  phone: string | null; // Prisma String?
+  specialisation: string | null; // Prisma String?
+  isActive: boolean; // Prisma @default(true)
+  createdAt: Date | string;
 
-  // NEW (safe, non-breaking)
-  currentJobId?: string;
-  status?: StaffStatus;
-
-  createdAt: string;
+  // Joined Identity (The 1:1 link to User)
+  user?: AppUser;
 }
 
-/** Lightweight summary used on job cards and dashboards. */
+/**
+ * Lightweight summary used on job cards and dashboards.
+ * Typically mapped from a Staff + User join.
+ */
 export interface StaffSummary {
-  id: string;
-  name: string;
-  avatarUrl?: string;
-  role: UserRole;
+  id: string; // Usually Staff ID
+  name: string; // From User
+  avatarUrl: string | null; // From User
+  role: UserRole; // From User
 
-  // NEW for dashboards
-  status?: StaffStatus;
-  currentJobId?: string;
+  // Operational state (Runtime/UI only)
+  status: StaffStatus;
+  currentJobId: string | null;
 }
 
 export type StaffStatus = "ONLINE" | "BUSY" | "OFFLINE";
 
+/**
+ * Real-time presence tracking.
+ * Note: If this isn't in Prisma yet, keep it as is for UI/Redis.
+ */
 export interface StaffPresence {
   staffId: string;
   orgId: string;
   status: StaffStatus;
-  activeJobId?: string;
-  lastSeenAt: string;
+  activeJobId: string | null;
+  lastSeenAt: Date | string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -110,25 +121,38 @@ export type ClientType = "PRIVATE" | "COMPANY";
 export interface Client {
   id: string;
   orgId: string;
+
   type: ClientType;
   name: string;
-  companyName?: string; // if type === "COMPANY"
-  email?: string;
-  phone: string;
-  location?: string;
-  profilePictureUrl?: string;
-  isNew: boolean; // auto-flagged on first job
-  recentStaffId?: string; // → StaffMember.id of last staff who served them
-  notes?: string;
-  createdAt: string;
+
+  // Nullable fields (Prisma String?)
+  companyName: string | null;
+  email: string | null;
+  phone: string; // Required in schema
+  location: string | null;
+  profilePictureUrl: string | null;
+
+  // CRM State (Projections)
+  isNew: boolean;
+  recentStaffId: string | null;
+
+  lastJobId: string | null;
+  lastJobDate: Date | string | null; // Prisma DateTime?
+
+  totalJobs: number; // Prisma Int
+  mostPrintedServiceId: string | null;
+
+  notes: string | null;
+
+  createdAt: Date | string;
 }
 
-/** Read-only summary for job cards, search results, delivery records. */
+/** Read-only summary for job cards and search results. */
 export interface ClientSummary {
   id: string;
   name: string;
   phone: string;
-  profilePictureUrl?: string;
+  profilePictureUrl: string | null;
   type: ClientType;
 }
 
@@ -140,6 +164,7 @@ export interface ClientSummary {
  * A single service/product in the price list.
  * stock_ref links to StockItem.id so job creation can auto-deduct material.
  */
+export type PriceItemType = "MATERIAL" | "SERVICE";
 
 export type ServiceUnit =
   | "sqft"
@@ -160,31 +185,60 @@ export type ServiceUnit =
   | "bottle"
   | "liter"
   | "hour"
-  | "Per Page"
-  | "Per 100"
-  | "Per Sq Meter"
-  | "Per Set"
-  | "Per Yard";
+  | "PER_PAGE"
+  | "PER_100"
+  | "PER_SQ_METER"
+  | "PER_SET"
+  | "PER_YARD";
 
 export interface PriceItem {
   id: string;
   orgId: string;
+
   name: string;
-  category: string; // e.g. "Large Format", "Business Cards", "Banners"
-  unit: string; // e.g. "sqft", "pcs", "sheets"
+  category: string;
+
+  unit: ServiceUnit;
+
   priceGHS: number;
-  stockRefId?: string;
+
   isActive: boolean;
   updatedAt: string;
+
   notes?: string;
+
+  type: PriceItemType;
+
+  metadata: PriceItemMetadata;
 }
+
+export type PriceItemMetadata = MaterialMetadata | ServiceMetadata;
 
 /** Used by the estimate generator — no prices attached. */
 export interface ServiceOption {
   id: string;
   name: string;
   category: string;
-  unit: string;
+  unit: ServiceUnit;
+}
+
+export interface MaterialMetadata {
+  kind: "MATERIAL";
+
+  costPrice: number;
+
+  width?: number;
+  height?: number;
+
+  stockRefId?: string;
+}
+
+export interface ServiceMetadata {
+  kind: "SERVICE";
+
+  costPrice: number;
+
+  minOrder?: number;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -194,32 +248,33 @@ export interface ServiceOption {
 export interface StockItem {
   id: string;
   orgId: string;
-  name: string;
-  unit: string; // e.g. "sqft", "sheets", "rolls"
-  totalRemaining: number;
-  lowStockThreshold: number; // trigger warning below this value
-  lastUnitCost: number; // GHS — cost of most recent restock
-  lastRestockedAt?: string;
-  supplierId?: string;
-}
 
-export interface RestockRecord {
-  id: string;
-  stockItemId: string;
-  quantity: number;
-  unitCost: number;
-  totalCost: number;
-  recordedBy: string; // → StaffMember.id
-  date: string;
+  name: string;
+
+  unit: ServiceUnit; // ✅ FIXED (was string — must align with PriceList)
+
+  totalRemaining: number;
+
+  lowStockThreshold: number;
+
+  lastUnitCost: number;
+
+  lastRestockedAt?: string;
+
+  supplierId?: string;
 }
 
 export interface WasteAudit {
   staffName: string;
   machineId: string;
   serviceName: string;
+
   wastedQuantity: number;
-  unit: string;
+
+  unit: ServiceUnit;
+
   monetaryLoss: number;
+
   date: string;
 }
 
@@ -231,7 +286,7 @@ export type StockMovementType = "RESTOCK" | "DEDUCT" | "WASTE" | "ADJUST";
 
 /**
  * Single source of truth for ALL inventory changes.
- * Replaces RestockRecord as the canonical ledger.
+ * Event-sourced ledger (DO NOT mutate StockItem directly).
  */
 export interface StockMovement {
   id: string;
@@ -242,15 +297,17 @@ export interface StockMovement {
   type: StockMovementType;
 
   quantity: number;
+
   unitCost?: number;
 
-  // Traceability (important for job → stock linkage)
   referenceId?: string; // jobId, restockId, etc.
+
   referenceType?: "JOB" | "RESTOCK" | "WASTE" | "MANUAL";
 
   note?: string;
 
-  createdBy: string; // StaffMember.id
+  createdBy: string;
+
   createdAt: string;
 }
 
@@ -260,8 +317,11 @@ export interface StockMovement {
 export interface StockMovementSummary {
   stockItemId: string;
   type: StockMovementType;
+
   totalQuantity: number;
+
   totalCost?: number;
+
   lastUpdatedAt: string;
 }
 
@@ -270,7 +330,7 @@ export interface StockMovementSummary {
 // payment
 // ─────────────────────────────────────────────────────────────────────────────
 
-type JobStatus =
+export type JobStatus =
   | "PENDING"
   | "IN_PROGRESS"
   | "QUALITY_CHECK"
@@ -282,7 +342,13 @@ type JobStatus =
 export type DomainEvent =
   | "JOB_CREATED"
   | "JOB_UPDATED"
-  | "STOCK_UPDATED"
+  | "STOCK_RESTOCKED"
+  | "STOCK_DEDUCTED"
+  | "STOCK_WASTED"
+  | "STOCK_ADJUSTED"
+  | "PRICE_CREATED"
+  | "PRICE_UPDATED"
+  | "PRICE_DELETED"
   | "PAYMENT_UPDATED"
   | "DELIVERY_UPDATED"
   | "B2B_PUSHED";
@@ -290,45 +356,125 @@ export type DomainEvent =
 export type PaymentStatus = "UNPAID" | "PARTIAL" | "PAID";
 
 export interface JobTicket {
-  id: string; // job reference e.g. "ZDC-2024-001"
+  id: string;
+
   orgId: string;
-  clientId: string; // → Client.id
-  clientSnapshot: ClientSummary; // frozen at job creation (survives client edits)
-  serviceId: string; // → PriceItem.id
-  serviceName: string; // frozen at creation
+
+  clientId: string;
+
+  clientSnapshot: ClientSummary;
+
+  serviceId: string;
+
+  serviceName: string;
+
   quantity: number;
-  width?: number; // for large format (feet or metres)
+
+  width?: number;
   height?: number;
-  unit?: string; // "sqft" | "pcs" | etc.
-  totalPrice: number; // GHS — calculated at creation
-  materialUsed?: number; // units deducted from inventory
-  materialWastage?: number; // units recorded as waste
+
+  unit?: ServiceUnit;
+
+  totalPrice: number;
+
+  materialUsed?: number;
+  materialWastage?: number;
+
   status: JobStatus;
+
   paymentStatus: PaymentStatus;
-  isPaid: boolean; // convenience flag (true when paymentStatus === "PAID")
-  paymentRef?: string; // e.g. Momo ref, screenshot filename, job code
-  assignedStaffId?: string; // → StaffMember.id
+
+  isPaid: boolean;
+
+  paymentRef?: string;
+
+  assignedStaffId?: string;
+
   assignedStaffSnapshot?: StaffSummary;
-  deliveryId?: string; // → DeliveryRecord.id
+
+  deliveryId?: string;
+
   notes?: string;
+
   createdAt: string;
   updatedAt: string;
   completedAt?: string;
+
   b2bPushId?: string;
 }
 
 /**
  * Lightweight card used in lists, staff dashboards, client history.
  * Never carry full job data through list renders.
+ * Service
  */
 export interface JobSummary {
   id: string;
+
   clientName: string;
+
   serviceName: string;
+
   status: JobStatus;
+
   paymentStatus: PaymentStatus;
+
   totalPrice: number;
+
   assignedStaffId?: string;
+
+  createdAt: string;
+}
+
+/* =========================================================
+   OUTBOX EVENT CONTRACT (SINGLE SOURCE OF TRUTH)
+========================================================= */
+
+export type DomainEventType =
+  | "job.created"
+  | "job.updated"
+  | "job.status_changed"
+  | "stock.updated"
+  | "stock.restocked"
+  | "stock.deducted"
+
+  // ✅ ADD THESE
+  | "price.created"
+  | "price.updated"
+  | "price.deleted"
+  | "payment.updated"
+  | "payment.confirmed"
+  | "delivery.updated"
+  | "client.created"
+  | "client.updated"
+  | "staff.updated"
+  | "estimate.created"
+  | "estimate.converted"
+  | "b2b.pushed";
+
+/**
+ * Maps runtime events → strict domain contract
+ * This is what EVERYTHING must use going forward.
+ */
+export interface DomainEventEnvelope<T = unknown> {
+  type: DomainEventType;
+  orgId: string;
+
+  entityId: string;
+  entityType:
+    | "JOB"
+    | "CLIENT"
+    | "STOCK"
+    | "PAYMENT"
+    | "DELIVERY"
+    | "STAFF"
+    | "ESTIMATE"
+    | "B2B";
+
+  version: number;
+
+  payload: T;
+
   createdAt: string;
 }
 

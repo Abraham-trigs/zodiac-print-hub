@@ -131,3 +131,40 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+/* =========================
+   WORKSTATION LAYOUT (New)
+========================= */
+
+/* The Master Container that fills the GLOBAL modal zone */
+.workstation-shell {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: var(--zodiac-dark-bg); /* Match the app theme */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Specific styling for the Top zone in a workstation */
+.ws-top {
+  height: 45vh; /* Standardised height for the Preview Card */
+  padding: 20px 16px 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Specific styling for the Down zone in a workstation */
+.ws-down {
+  flex: 1; /* Fills the remaining space at the bottom */
+  padding: 10px 16px 20px 16px;
+}
+
+/* Override modal-box for workstations to make them "Invisible Containers" 
+   if you want the cards to float directly on the gradient background */
+.ws-container {
+  background: transparent !important;
+  box-shadow: none !important;
+}

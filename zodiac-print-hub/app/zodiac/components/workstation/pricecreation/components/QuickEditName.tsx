@@ -2,28 +2,29 @@
 
 import { useDataStore } from "@store/core/useDataStore";
 import { useModalStore } from "@store/useModalStore";
-import { useZodiac } from "@store/zodiac.store";
-import { ClassificationHub } from "../ClassificationHub";
+import { ClassificationHub } from "./ClassificationHub";
+import { MaterialServiceCatalog } from "./MaterialServiceCatalog"; // ✅ Direct local import
 
 /**
  * QUICK_EDIT_NAME
- * Integrated with a gateway to the Material/Service Catalog.
+ * Updated to use isolated setPricingDraft bucket.
  */
 export function QuickEditName({ current }: { current: string }) {
-  const setDraft = useDataStore((s) => s.setDraft);
+  // ✅ Switch to isolated Pricing setter
+  const setPricingDraft = useDataStore((s) => s.setPricingDraft);
   const { swapModal } = useModalStore();
-  const { setScreen } = useZodiac();
 
   const handleConfirm = (value: string) => {
     if (value.trim()) {
-      setDraft({ name: value.trim(), stockRefId: undefined }); // Clear ID if manually typing
+      // ✅ Commit to pricingDraft bucket
+      setPricingDraft({ name: value.trim(), stockRefId: undefined });
     }
     swapModal("DOWN", ClassificationHub);
   };
 
   const handleOpenCatalog = () => {
-    // Navigate to the full search screen
-    setScreen("MATERIAL_SERVICE_CATALOG");
+    // ✅ SWITCH: Open Catalog as a DETAIL modal overlay (Bypassing Registry/Navigation)
+    swapModal("DETAIL", MaterialServiceCatalog);
   };
 
   return (
@@ -58,7 +59,7 @@ export function QuickEditName({ current }: { current: string }) {
           className="w-full py-5 px-6 bg-white/5 border border-white/10 rounded-[2rem] flex items-center justify-center gap-3 group hover:border-cyan-400 transition-all active:scale-95"
         >
           <span className="text-xl">🗂️</span>
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start text-left">
             <span className="text-[11px] font-black uppercase text-white/80 group-hover:text-cyan-400">
               Select From Database
             </span>

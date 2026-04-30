@@ -5,20 +5,15 @@ import type { CreateStockMovementInput } from "@lib/schema/stock.schema";
 type CreateMovementParams = CreateStockMovementInput;
 
 /**
- * DOMAIN SERVICE (INSTANCE-BASED)
+ * DOMAIN SERVICE
  *
- * RESPONSIBILITIES:
- * 1. Enforce stock rules
- * 2. Mutate stockItem inside tx
- * 3. Write stockMovement ledger
- * 4. Emit outbox event
+ * CORE PRINCIPLE:
+ * StockMovement = Source of Truth (ledger)
+ * StockItem = Projection (cached state)
  */
 class StockService {
   /* =========================================================
-     WRITE: INITIAL REGISTRATION
-     - Creates the base Item
-     - Creates the first RESTOCK movement
-     - Ensures ledger consistency from day one
+     INITIAL STOCK REGISTRATION
   ========================================================= */
   async registerInitialStock(
     orgId: string,
@@ -32,7 +27,6 @@ class StockService {
     },
     tx: any,
   ) {
-    // 1. Create the base item record
     const item = await tx.stockItem.create({
       data: {
         orgId,
@@ -40,26 +34,23 @@ class StockService {
         unit: data.unit,
         totalRemaining: data.quantity || 0,
         lowStockThreshold: data.lowStockThreshold ?? 10,
-        // 🔥 FIXED: Satisfying mandatory 'lastUnitCost' field in schema
         lastUnitCost: data.unitCost || 0,
       },
     });
-    console.log("✅ STOCK ITEM CREATED IN TX:", item.id);
 
-    // 2. Create the first Ledger entry (The Source of Truth)
     const movement = await tx.stockMovement.create({
       data: {
         orgId,
         stockItemId: item.id,
         type: "RESTOCK",
         quantity: data.quantity || 0,
-        unitCost: data.unitCost || 0, // 🔥 Synced with ledger
+        unitCost: data.unitCost || 0,
+        referenceType: "RESTOCK",
         note: "Initial registration via Product Coordinator",
         createdBy: data.createdBy || "SYSTEM",
       },
     });
 
-    // 3. Emit event for background workers
     await Outbox.add(tx, {
       type: "stock.item_registered",
       orgId,
@@ -70,7 +61,7 @@ class StockService {
   }
 
   /* =========================================================
-     WRITE: STOCK MOVEMENT (SOURCE OF TRUTH)
+     STOCK MOVEMENT ENGINE (SOURCE OF TRUTH)
   ========================================================= */
   async createMovement(params: CreateMovementParams, tx: any) {
     const {
@@ -91,11 +82,11 @@ class StockService {
 
     if (!item) throw new Error("Stock item not found");
 
-    let newQuantity = item.totalRemaining;
+    let delta = 0;
 
     switch (type) {
       case "RESTOCK":
-        newQuantity += quantity;
+        delta = quantity;
         break;
 
       case "DEDUCT":
@@ -103,28 +94,39 @@ class StockService {
         if (item.totalRemaining < quantity) {
           throw new Error("Insufficient stock");
         }
-        newQuantity -= quantity;
+        delta = -quantity;
         break;
 
       case "ADJUST":
-        newQuantity = quantity;
+        delta = quantity - item.totalRemaining;
         break;
 
       default:
         throw new Error(`Unsupported stock movement type: ${type}`);
     }
 
+    const newQuantity = item.totalRemaining + delta;
+
+    /**
+     * PROJECTION UPDATE (cache layer)
+     */
     const updated = await tx.stockItem.update({
       where: { id: stockItemId },
-      data: { totalRemaining: newQuantity },
+      data: {
+        totalRemaining: newQuantity,
+        lastUnitCost: unitCost ?? item.lastUnitCost,
+      },
     });
 
+    /**
+     * LEDGER WRITE (source of truth)
+     */
     const movement = await tx.stockMovement.create({
       data: {
         orgId,
         stockItemId,
         type,
-        quantity,
+        quantity: Math.abs(delta), // FIX: ledger stores actual movement size, not signed delta
         unitCost,
         referenceId,
         referenceType,
@@ -133,6 +135,9 @@ class StockService {
       },
     });
 
+    /**
+     * OUTBOX EVENT
+     */
     await Outbox.add(tx, {
       type: "stock.movement_created",
       orgId,
@@ -146,9 +151,8 @@ class StockService {
   }
 
   /* =========================================================
-     READ: SAFE QUERY LAYER
+     READ LAYER (PROJECTION ACCESS)
   ========================================================= */
-
   async list(orgId: string) {
     return prisma.stockItem.findMany({
       where: { orgId },
@@ -166,5 +170,4 @@ class StockService {
 /* =========================================================
    SINGLETON EXPORT
 ========================================================= */
-
 export const stockService = new StockService();

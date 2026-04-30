@@ -16,30 +16,38 @@ datasource db {
 //
 
 model Organisation {
-  id           String   @id @default(cuid())
-  name         String
-  slug         String   @unique
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
   logoUrl      String?
   contactEmail String?
   contactPhone String?
   address      String?
-  createdAt    DateTime @default(now())
 
-  // Relations (Using the updated PriceList name)
-  outboxEvents   OutboxEvent[]
+  createdAt DateTime @default(now())
+
+  // ─────────────────────────────────────────────
+  // Core Relations (strict multi-tenant boundary)
+  // ─────────────────────────────────────────────
   users          User[]
   staff          Staff[]
   clients        Client[]
   jobs           Job[]
+  prices         PriceList[]
   stockItems     StockItem[]
   stockMovements StockMovement[]
-  prices         PriceList[]
   deliveries     Delivery[]
   b2bPushes      B2BPush[]
   auditLogs      AuditLog[]
+  outboxEvents   OutboxEvent[]
+  payments       Payment[]
 
-  // Performance Indexes
+  // ─────────────────────────────────────────────
+  // Performance + SaaS scaling indexes
+  // ─────────────────────────────────────────────
   @@index([name])
+  @@index([slug])
   @@index([createdAt])
 }
 
@@ -75,22 +83,19 @@ enum UserRole {
 }
 
 model User {
-  id           String       @id @default(cuid())
-  orgId        String
-  organisation Organisation @relation(fields: [orgId], references: [id])
-
+  id        String   @id @default(cuid())
+  orgId     String
   name      String
-  email     String   @unique // @unique already creates a high-performance index
+  email     String
   role      UserRole
   avatarUrl String?
   createdAt DateTime @default(now())
 
+  organisation Organisation @relation(fields: [orgId], references: [id])
   staffProfile Staff?
 
-  // INDEXING:
-  @@index([orgId]) // Critical: Ensures users stay within their organization
-  @@index([role]) // Fast lookup for global or org-level permission checks
-  @@index([createdAt]) // Useful for sorting the newest sign-ups
+  @@unique([orgId, email])
+  @@index([orgId])
 }
 
 //
@@ -100,30 +105,25 @@ model User {
 //
 
 model Staff {
-  id           String       @id @default(cuid())
-  orgId        String
-  organisation Organisation @relation(fields: [orgId], references: [id])
+  id    String @id @default(cuid())
+  orgId String
 
+  // Relation to identity
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
-  name           String
-  role           UserRole
+  // Professional-only fields
   phone          String?
-  avatarUrl      String?
   specialisation String?
-  isActive       Boolean  @default(true)
+  isActive       Boolean @default(true)
 
-  assignedJobs Job[] @relation("StaffJobs")
+  organisation Organisation @relation(fields: [orgId], references: [id])
+  assignedJobs Job[]        @relation("StaffJobs")
 
   createdAt DateTime @default(now())
 
-  // INDEXING:
-  @@index([orgId]) // Standard for multi-tenant isolation
-  @@index([name]) // Fast lookup for team lists and dropdowns
-  @@index([isActive]) // Important for filtering out former employees
-  @@index([role]) // Useful for permission checks and role-based filtering
-  @@index([orgId, isActive]) // Compound index for loading the active team list
+  @@index([orgId])
+  @@index([orgId, isActive])
 }
 
 //
@@ -141,6 +141,8 @@ model Client {
   id    String @id @default(cuid())
   orgId String
 
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
   type        ClientType
   name        String
   companyName String?
@@ -150,25 +152,38 @@ model Client {
 
   profilePictureUrl String?
 
+  // ─────────────────────────────────────────────
+  // Lightweight CRM state (cached projections)
+  // ─────────────────────────────────────────────
   isNew         Boolean @default(true)
   recentStaffId String?
 
-  lastJobId            String?
-  lastJobDate          DateTime?
-  totalJobs            Int       @default(0)
+  lastJobId   String?
+  lastJobDate DateTime?
+
+  totalJobs Int @default(0)
+
   mostPrintedServiceId String?
 
-  notes     String?
-  jobs      Job[]
-  createdAt DateTime @default(now())
+  notes String?
 
-  organisation Organisation @relation(fields: [orgId], references: [id])
+  // ─────────────────────────────────────────────
+  // Relations
+  // ─────────────────────────────────────────────
+  jobs Job[]
 
+  createdAt  DateTime   @default(now())
+  deliveries Delivery[]
+
+  // ─────────────────────────────────────────────
+  // INDEXING (SaaS + CRM performance layer)
+  // ─────────────────────────────────────────────
   @@index([orgId])
   @@index([orgId, phone])
   @@index([orgId, name])
   @@index([orgId, lastJobDate])
   @@index([orgId, totalJobs])
+  @@index([orgId, isNew])
   @@index([recentStaffId])
   @@index([mostPrintedServiceId])
   @@index([lastJobId])
@@ -179,6 +194,11 @@ model Client {
 // 5. PRICE LIST
 // ─────────────────────────────────────────────
 //
+
+enum PriceItemType {
+  MATERIAL
+  SERVICE
+}
 
 enum ServiceUnit {
   sqft
@@ -211,26 +231,99 @@ model PriceList {
   orgId        String
   organisation Organisation @relation(fields: [orgId], references: [id])
 
-  name      String
-  category  String
-  unit      ServiceUnit
-  costPrice Float?
-  priceGHS  Float
+  displayName String // Customer-facing name
+  salePrice   Float // Retail price
 
-  // 🔥 FORMAL RELATION: Connects PriceList to the StockItem table
-  // This ensures the "Joinery" is visible in Prisma Studio and enforced by DB
-  stockRefId String?
-  stockItem  StockItem? @relation(fields: [stockRefId], references: [id])
+  // Contextual Categories pulled from the Price List's role
+  materialCategory MaterialCategory?
+  serviceCategory  ServiceCategory?
+
+  // The Recipe: Multiple services/price items can point to one Material
+  materialId String?
+  material   Material? @relation(fields: [materialId], references: [id], onDelete: SetNull)
+
+  serviceId String?
+  service   Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 
   isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // INDEXING:
-  @@index([orgId])
-  @@index([category])
-  @@index([isActive])
-  @@index([stockRefId])
+  // Job Links
+  jobs         Job[]
+  jobVariables JobVariable[]
+
   @@index([orgId, isActive])
+  @@index([materialId])
+  @@index([serviceId])
+  @@index([materialCategory])
+  @@index([serviceCategory])
+}
+
+enum MaterialCalculationType {
+  FLAT // Quantity only (e.g., 100 Business Card Blanks)
+  DIMENSIONAL // Width x Height x Quantity (e.g., Vinyl, Flex, Acrylic)
+  LINEAR // Length x Quantity (e.g., Binding coils, Framing timber)
+  VOLUMETRIC // Liters/Grams (e.g., Ink, Resin)
+}
+
+enum MaterialCategory {
+  MEDIA // Vinyl, Paper, Canvas, Fabric
+  RIGID // Foam board, Alucobond, Acrylic, Wood
+  CONSUMABLE // Ink, Toner, Glue, Laminate
+  FINISHING // Eyelets, Roll-up stands, Frames, Binding wires
+  HARDWARE // Spare parts, Blades
+}
+
+enum MaterialStatus {
+  ACTIVE
+  ARCHIVED // Discontinued by supplier
+  OUT_OF_STOCK // Temporarily unavailable
+}
+
+model Material {
+  id            String                  @id @default(cuid())
+  name          String // Internal/Technical name
+  calcType      MaterialCalculationType
+  unit          ServiceUnit
+  purchasePrice Float // Base cost per unit
+
+  // 1-to-1 link to physical stock
+  stockItemId String?    @unique
+  stockItem   StockItem? @relation(fields: [stockItemId], references: [id], onDelete: SetNull)
+
+  priceListItems PriceList[]
+  jobVariables   JobVariable[]
+
+  @@index([name])
+}
+
+enum ServiceCalculationType {
+  FIXED // A one-time fee regardless of size (e.g., Design Fee, Setup Fee)
+  PER_UNIT // Charged per item (e.g., Eyelet punching, Lamination per sheet)
+  AREA_BASED // Labor depends on size (e.g., Installation labor per sqft, Weeding vinyl)
+  TIME_BASED // Charged per duration (e.g., Machine hourly rate, Consulting)
+}
+
+enum ServiceCategory {
+  DESIGN // Graphic design, Pre-press, Layout
+  PRINTING // Actual machine time (Digital, Offset, Large Format)
+  FINISHING // Cutting, Folding, Laminating, Eyeleting
+  INSTALLATION // Site visits, Mounting, Vehicle wrapping
+  LOGISTICS // Delivery, Packaging, Handling
+}
+
+model Service {
+  id        String                 @id @default(cuid())
+  name      String // Workshop/Operation name
+  calcType  ServiceCalculationType
+  basePrice Float // Standard rate for the effort
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  priceListItems PriceList[]
+  jobVariables   JobVariable[]
 }
 
 //
@@ -244,70 +337,42 @@ model StockItem {
   orgId        String
   organisation Organisation @relation(fields: [orgId], references: [id])
 
-  name              String
-  unit              String
-  totalRemaining    Float
-  lowStockThreshold Float
-  lastUnitCost      Float
-  lastRestockedAt   DateTime?
+  // Current Physical State
+  totalRemaining    Float @default(0)
+  lowStockThreshold Float @default(0)
 
-  createdAt      DateTime        @default(now())
+  // Link back to Material Definition
+  material       Material?
   stockMovements StockMovement[]
 
-  // 🔥 THE FIX: Add the opposite relation field
-  // This allows one StockItem to be linked to multiple PriceList entries
-  prices PriceList[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // INDEXING:
   @@index([orgId])
-  @@index([name])
-  @@index([totalRemaining])
-  @@index([lastRestockedAt])
-}
-
-model RestockRecord {
-  id          String   @id @default(cuid())
-  stockItemId String
-  quantity    Float
-  unitCost    Float
-  totalCost   Float
-  recordedBy  String
-  date        DateTime @default(now())
-
-  // INDEXING:
-  @@index([stockItemId]) // Critical for viewing the restock history of a specific item
-  @@index([date(sort: Desc)]) // Optimized for "Recent Restocks" logs (newest first)
-  @@index([recordedBy]) // Useful for auditing who logged which inventory update
+  @@index([totalRemaining]) // Fast filtering for out-of-stock
 }
 
 model StockMovement {
-  id String @id @default(cuid())
-
+  id           String       @id @default(cuid())
   orgId        String
   organisation Organisation @relation(fields: [orgId], references: [id])
 
   stockItemId String
-  stockItem   StockItem @relation(fields: [stockItemId], references: [id])
+  stockItem   StockItem @relation(fields: [stockItemId], references: [id], onDelete: Cascade)
 
-  type StockMovementType
+  type     StockMovementType
+  quantity Float // Amount added/removed
 
-  quantity Float
-  unitCost Float?
+  // Context: Why did this move?
+  referenceId   String? // JobID or JobVariableID
+  referenceType String? // "JOB" or "JOB_VARIABLE"
 
-  // useful for traceability (job, restock, waste, adjustment)
-  referenceId   String?
-  referenceType String? // "JOB" | "RESTOCK" | "WASTE" | "MANUAL"
-
-  note String?
-
-  createdBy String
+  note      String?
+  createdBy String // User ID
   createdAt DateTime @default(now())
 
-  // INDEXING
   @@index([orgId])
-  @@index([stockItemId])
-  @@index([type])
-  @@index([createdAt(sort: Desc)])
+  @@index([stockItemId, createdAt(sort: Desc)]) // Fast history lookup
   @@index([referenceId])
 }
 
@@ -317,12 +382,6 @@ enum StockMovementType {
   WASTE
   ADJUST
 }
-
-//
-// ─────────────────────────────────────────────
-// 7. JOB ENGINE
-// ─────────────────────────────────────────────
-//
 
 enum JobStatus {
   PENDING
@@ -348,51 +407,81 @@ model Job {
   clientId String
   client   Client @relation(fields: [clientId], references: [id])
 
-  serviceId   String
+  // --- Core Reference ---
+  priceListId String
+  priceList   PriceList @relation(fields: [priceListId], references: [id])
+
+  // We keep serviceName as a snapshot of PriceList.displayName 
+  // so the invoice doesn't change if you rename the PriceList item later.
   serviceName String
 
+  // --- Multi-Service Support ---
+  variables JobVariable[]
+
+  // --- Dimensions & Quantity ---
   quantity Float
   width    Float?
   height   Float?
-  unit     String?
+  unit     ServiceUnit? // Pulled from the linked Material
 
-  totalPrice   Float
-  costPrice    Float?
-  profitMargin Float?
+  // --- Financial Snapshots (Critical for Production) ---
+  basePrice     Float // Snapshot of PriceList.salePrice at time of order
+  variableTotal Float @default(0)
+  totalPrice    Float // (basePrice * quantity/area) + variableTotal
 
-  materialUsed    Float?
-  materialWastage Float?
+  costPrice    Float? // Sum of Material.purchasePrice * usage
+  profitMargin Float? // totalPrice - costPrice
 
-  status        JobStatus     @default(PENDING)
+  // --- Payment & Status ---
   paymentStatus PaymentStatus @default(UNPAID)
   isPaid        Boolean       @default(false)
+  status        JobStatus     @default(PENDING)
 
-  paymentRef String?
-
+  // --- Relations ---
   assignedStaffId String?
   assignedStaff   Staff?  @relation("StaffJobs", fields: [assignedStaffId], references: [id])
 
-  deliveryId String?
+  deliveries   Delivery[]
+  payments     Payment[]
+  b2bPushId    String?
+  b2bPush      B2BPush?   @relation("B2BPushResult", fields: [b2bPushId], references: [id])
+  b2bSourceFor B2BPush[]  @relation("B2BOriginalSource")
 
-  notes String?
-
-  b2bPushId String?
-  b2bPush   B2BPush? @relation(fields: [b2bPushId], references: [id])
-
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  // --- Meta ---
+  notes       String?
   completedAt DateTime?
-  deliveries  Delivery[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  // INDEXING:
-  @@index([orgId]) // Standard isolation
-  @@index([clientId]) // Fast lookup for "all jobs for this customer"
-  @@index([status]) // Critical for "Production Board" views (Pending vs Printing)
-  @@index([paymentStatus]) // Essential for "Unpaid Jobs" financial reports
-  @@index([assignedStaffId]) // Useful for "My Tasks" view for staff members
-  @@index([createdAt(sort: Desc)]) // Optimized for the main Dashboard (newest first)
-  @@index([orgId, status]) // Compound index for lightning-fast Kanban boards
-  @@index([b2bPushId])
+  @@index([orgId, status])
+  @@index([orgId, paymentStatus])
+  @@index([clientId])
+  @@index([priceListId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model JobVariable {
+  id    String @id @default(cuid())
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // Direct mapping to the PriceList item added as a variable
+  priceListId String
+  priceList   PriceList @relation(fields: [priceListId], references: [id])
+
+  // Calculation Snapshot
+  quantity  Float
+  unitPrice Float // Price at time of creation
+  subtotal  Float
+
+  createdAt  DateTime  @default(now())
+  material   Material? @relation(fields: [materialId], references: [id])
+  materialId String?
+  service    Service?  @relation(fields: [serviceId], references: [id])
+  serviceId  String?
+
+  @@index([jobId])
+  @@index([priceListId])
 }
 
 //
@@ -400,7 +489,6 @@ model Job {
 // 8. DELIVERY
 // ─────────────────────────────────────────────
 //
-
 enum DeliveryType {
   PHYSICAL_PICKUP
   PRINTER_DELIVERY
@@ -417,15 +505,23 @@ enum DeliveryStatus {
 }
 
 model Delivery {
-  id           String       @id @default(cuid())
-  orgId        String
+  id    String @id @default(cuid())
+  orgId String
+
   organisation Organisation @relation(fields: [orgId], references: [id])
 
+  // ─────────────────────────────────────────────
+  // RELATIONS (domain integrity)
+  // ─────────────────────────────────────────────
   jobId String
   job   Job    @relation(fields: [jobId], references: [id])
 
-  clientId String // Should likely have a relation to the Client model too
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id])
 
+  // ─────────────────────────────────────────────
+  // DELIVERY CORE
+  // ─────────────────────────────────────────────
   type   DeliveryType
   status DeliveryStatus @default(PENDING)
 
@@ -439,12 +535,15 @@ model Delivery {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // INDEXING:
-  @@index([orgId]) // Standard multi-tenant isolation
-  @@index([jobId]) // Fast lookup for a specific Job's delivery status
-  @@index([status]) // Critical for "Pending" vs "Delivered" dispatch views
-  @@index([scheduledDate]) // Optimized for the "Deliveries for Today" calendar view
-  @@index([clientId]) // Useful for viewing a specific client's delivery history
+  // ─────────────────────────────────────────────
+  // INDEXES (dispatch + logistics performance)
+  // ─────────────────────────────────────────────
+  @@index([orgId])
+  @@index([orgId, status])
+  @@index([orgId, jobId])
+  @@index([orgId, clientId])
+  @@index([scheduledDate])
+  @@index([status])
 }
 
 //
@@ -464,8 +563,18 @@ enum PaymentMethod {
 model Payment {
   id    String @id @default(cuid())
   orgId String
-  jobId String
 
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  // ─────────────────────────────────────────────
+  // RELATION (financial integrity)
+  // ─────────────────────────────────────────────
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  // ─────────────────────────────────────────────
+  // PAYMENT CORE
+  // ─────────────────────────────────────────────
   amount    Float
   method    PaymentMethod
   reference String?
@@ -475,12 +584,16 @@ model Payment {
   confirmedBy String?
   confirmedAt DateTime @default(now())
 
-  // INDEXING:
-  @@index([orgId]) // Essential for multi-tenant data isolation
-  @@index([jobId]) // Fast lookup for all payments related to a specific Job
-  @@index([method]) // Useful for financial reporting (e.g., total Mobile Money vs Cash)
-  @@index([confirmedAt]) // Optimized for date-range reports (e.g., "Payments this week")
-  @@index([reference]) // Allows instant lookup when searching for a transaction ID/Ref
+  createdAt DateTime @default(now())
+
+  // ─────────────────────────────────────────────
+  // INDEXES (finance + reporting performance)
+  // ─────────────────────────────────────────────
+  @@index([orgId])
+  @@index([orgId, jobId])
+  @@index([orgId, method])
+  @@index([orgId, confirmedAt])
+  @@index([reference])
 }
 
 //
@@ -488,7 +601,6 @@ model Payment {
 // 10. B2B LAYER
 // ─────────────────────────────────────────────
 //
-
 enum B2BStatus {
   PENDING
   ACCEPTED
@@ -501,8 +613,19 @@ model B2BPush {
   id    String @id @default(cuid())
   orgId String
 
-  originalJobId String
+  organisation Organisation @relation(fields: [orgId], references: [id])
 
+  // ─────────────────────────────────────────────
+  // RELATION (critical fix)
+  // ─────────────────────────────────────────────
+  originalJobId String
+  originalJob   Job    @relation("B2BOriginalSource", fields: [originalJobId], references: [id])
+
+  jobs Job[] @relation("B2BPushResult")
+
+  // ─────────────────────────────────────────────
+  // BUSINESS SNAPSHOT DATA
+  // ─────────────────────────────────────────────
   clientName  String
   serviceName String
   specs       String
@@ -510,31 +633,33 @@ model B2BPush {
 
   suggestedPrice Float?
 
+  // ─────────────────────────────────────────────
+  // WORKFLOW STATE
+  // ─────────────────────────────────────────────
   status B2BStatus @default(PENDING)
-  jobs   Job[]
 
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  organisation   Organisation? @relation(fields: [organisationId], references: [id])
-  organisationId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // INDEXING:
-  @@index([orgId]) // Essential for multi-tenant filtering
-  @@index([status]) // Fast lookup for "Pending" or "Completed" pushes
-  @@index([originalJobId]) // Critical for linking back to the source Job
-  @@index([deadline]) // Useful for sorting by urgency
+  // ─────────────────────────────────────────────
+  // INDEXES (workflow + urgency optimization)
+  // ─────────────────────────────────────────────
+  @@index([orgId])
+  @@index([orgId, status])
+  @@index([orgId, originalJobId])
+  @@index([deadline])
 }
 
 //
-// ─────────────────────────────────────────────
-// 11. AUDIT LOG
-// ─────────────────────────────────────────────
-//
-
 model AuditLog {
   id    String @id @default(cuid())
   orgId String
 
+  organisation Organisation @relation(fields: [orgId], references: [id])
+
+  // ─────────────────────────────────────────────
+  // EVENT DATA
+  // ─────────────────────────────────────────────
   action     String
   entityId   String
   entityType String
@@ -543,12 +668,13 @@ model AuditLog {
 
   meta Json?
 
-  timestamp      DateTime      @default(now())
-  organisation   Organisation? @relation(fields: [organisationId], references: [id])
-  organisationId String?
+  timestamp DateTime @default(now())
 
-  // INDEXING:
-  @@index([orgId]) // Fast filtering by Organisation
-  @@index([entityId, entityType]) // Fast lookup for a specific item's history (e.g., all logs for Job X)
-  @@index([timestamp(sort: Desc)]) // Optimized for "Recent Activity" feeds
+  // ─────────────────────────────────────────────
+  // INDEXES (debug + analytics + compliance)
+  // ─────────────────────────────────────────────
+  @@index([orgId])
+  @@index([orgId, entityType])
+  @@index([orgId, entityId])
+  @@index([timestamp(sort: Desc)])
 }

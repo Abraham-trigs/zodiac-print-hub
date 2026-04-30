@@ -18,7 +18,7 @@ export class PriceRepository {
     return db.priceList.findMany({
       where: {
         orgId,
-        isActive: true, // Only return active prices for the main list
+        isActive: true,
       },
       orderBy: { updatedAt: "desc" },
     });
@@ -41,10 +41,12 @@ export class PriceRepository {
     data: {
       name: string;
       category: string;
-      unit: any; // Using any or matching Prisma enum
+      unit: string;
       priceGHS: number;
-      costPrice?: number; // 🔥 NEW: Added for profit tracking
-      stockRefId?: string;
+
+      // 🔥 DOMAIN MODEL (ONLY SOURCE OF TRUTH)
+      type: string;
+      metadata: any;
     },
     tx?: DbClient,
   ) {
@@ -52,8 +54,15 @@ export class PriceRepository {
 
     return db.priceList.create({
       data: {
-        ...data,
         orgId,
+        name: data.name,
+        category: data.category,
+        unit: data.unit,
+        priceGHS: data.priceGHS,
+
+        type: data.type,
+        metadata: data.metadata,
+
         isActive: true,
       },
     });
@@ -67,13 +76,14 @@ export class PriceRepository {
     orgId: string,
     id: string,
     data: {
-      priceGHS?: number;
-      costPrice?: number; // 🔥 NEW: Added
       name?: string;
-      unit?: any;
       category?: string;
-      stockRefId?: string; // 🔥 NEW: Allow re-linking to stock
-      isActive?: boolean; // 🔥 NEW: Allow reactivation
+      unit?: string;
+      priceGHS?: number;
+      isActive?: boolean;
+
+      metadata?: any;
+      type?: string;
     },
     tx?: DbClient,
   ) {
@@ -95,8 +105,6 @@ export class PriceRepository {
   static async delete(orgId: string, id: string, tx?: DbClient) {
     const db = getDb(tx);
 
-    // Standard practice: mark as inactive rather than removing
-    // historical data needed for old Jobs.
     return db.priceList.update({
       where: {
         id,

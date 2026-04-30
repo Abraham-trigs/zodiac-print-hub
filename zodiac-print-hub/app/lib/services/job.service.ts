@@ -3,6 +3,7 @@ import { stockService } from "@lib/services/stock.service";
 import type { PriceItem } from "@types/zodiac.types";
 import { UnitOfWork } from "@lib/db/unitOfWork";
 import { Outbox } from "@lib/db/outbox";
+import { MeasurementCalculator } from "@lib/utils/measurement-calculator";
 
 export class JobService {
   async createJob(params: {
@@ -31,7 +32,7 @@ export class JobService {
     return UnitOfWork.run(async (tx) => {
       const now = new Date();
 
-      // 1. PRICE RESOLUTION (Security & Negotiation Layer)
+      // 1. PRICE RESOLUTION (B2B override only)
       let priceToUse = service.priceGHS;
 
       if (b2bPushId) {
@@ -46,24 +47,28 @@ export class JobService {
         }
       }
 
-      // Domain math: only large-format jobs use area-based units
-      const isLargeFormat = [
-        "sqft",
-        "sqm",
-        "Per Sq Meter",
-        "Per Yard",
-      ].includes(service.unit);
+      // 2. SINGLE SOURCE OF TRUTH: MEASUREMENT ENGINE
+      const calc = MeasurementCalculator.calculate({
+        jobWidth: width,
+        jobHeight: height,
+        jobQty: quantity,
+        appUnit: service.unit as any,
+        manualRate: priceToUse,
+        stockAnchor: undefined,
+      });
 
-      const area = isLargeFormat ? (width ?? 1) * (height ?? 1) : 1;
-      const units = isLargeFormat ? area * quantity : quantity;
+      if (calc.price === 0 && (calc as any).error) {
+        throw new Error((calc as any).error);
+      }
 
-      const totalPrice = units * priceToUse;
+      const totalPrice = calc.price;
+      const units = (calc as any).area ?? (calc as any).count ?? quantity;
 
-      // 🔥 PROFIT LOOP: Calculate total cost for the job record
+      // 3. COST + PROFIT
       const unitCost = service.costPrice ?? 0;
       const totalCost = units * unitCost;
 
-      // 2. CREATE JOB
+      // 4. CREATE JOB
       const job = await JobRepository.create(
         {
           orgId,
@@ -75,7 +80,6 @@ export class JobService {
           height,
           unit: service.unit,
           totalPrice,
-          // 🔥 PROFIT LOOP: Store cost and margin at the time of creation
           costPrice: totalCost,
           profitMargin: totalPrice - totalCost,
           assignedStaffId,
@@ -85,7 +89,7 @@ export class JobService {
         tx,
       );
 
-      // 3. UPDATE CLIENT
+      // 5. CLIENT UPDATE
       await tx.client.update({
         where: { id: clientId },
         data: {
@@ -98,26 +102,25 @@ export class JobService {
         },
       });
 
-      // 4. STOCK MOVEMENT (NOW FULLY ALIGNED)
+      // 6. STOCK DEDUCTION (uses calc deduction)
       if (service.stockRefId) {
         await stockService.createMovement(
           {
             orgId,
             stockItemId: service.stockRefId,
             type: "DEDUCT",
-            quantity: units,
+            quantity: (calc as any).deduction ?? units,
             referenceId: job.id,
             referenceType: "JOB",
             note: `Auto deduction for job ${job.id}${b2bPushId ? " (B2B)" : ""}`,
             createdBy: assignedStaffId ?? "system",
-            // 🔥 PROFIT LOOP: Link the material cost to the ledger entry
-            unitCost: unitCost,
+            unitCost,
           },
           tx,
         );
       }
 
-      // 5. OUTBOX EVENT
+      // 7. OUTBOX
       await Outbox.add(tx, {
         type: "job.created",
         orgId,
@@ -127,8 +130,6 @@ export class JobService {
       return job;
     });
   }
-
-  // ... (updateStatus, assignStaff, confirmPayment remain the same)
 
   async updateStatus(orgId: string, jobId: string, status: any) {
     return UnitOfWork.run(async (tx) => {

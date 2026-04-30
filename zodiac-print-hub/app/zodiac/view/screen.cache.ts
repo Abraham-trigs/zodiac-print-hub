@@ -1,8 +1,12 @@
 import { SCREEN_MAP, ScreenID } from "../view/screen.registry";
 
+/**
+ * CACHED_SCREEN TYPE
+ * Aligned with ZodiacScreen interface (TopComponent / DownComponent)
+ */
 type CachedScreen = {
-  Top: React.FC;
-  Down: React.FC;
+  TopComponent: React.FC;
+  DownComponent?: React.FC; // Made optional to match registry
 };
 
 const screenCache = new Map<ScreenID, CachedScreen>();
@@ -16,8 +20,7 @@ export function getCachedScreen(screenId: ScreenID): CachedScreen {
   // 2. Resolve from Registry
   let screen = SCREEN_MAP[screenId];
 
-  // 3. SAFE FALLBACK: If screen is missing, don't crash.
-  // Redirect to WELCOME (or your main dashboard)
+  // 3. SAFE FALLBACK
   if (!screen) {
     console.error(
       `🚨 Screen ID "${screenId}" not found in SCREEN_MAP. Falling back to WELCOME.`,
@@ -25,12 +28,14 @@ export function getCachedScreen(screenId: ScreenID): CachedScreen {
     screen = SCREEN_MAP["WELCOME"];
   }
 
+  // 4. ALIGNED MAPPING
+  // We keep the original names so the Shell knows what it's looking at
   const cached: CachedScreen = {
-    Top: screen.TopComponent,
-    Down: screen.DownComponent,
+    TopComponent: screen.TopComponent,
+    DownComponent: screen.DownComponent,
   };
 
-  // 4. Cache it for next time
+  // 5. Cache it for next time
   screenCache.set(screenId, cached);
 
   return cached;

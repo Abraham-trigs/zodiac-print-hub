@@ -5,26 +5,37 @@ import { UnitOfWork } from "@lib/db/unitOfWork";
 import { Outbox } from "@lib/db/outbox";
 import { Prisma } from "@prisma/client";
 
+import type { PriceItemType, PriceItemMetadata } from "@types/zodiac.types";
+
 type PrismaTransactionClient = Prisma.TransactionClient;
+
+/* =========================================================
+   INPUT TYPES (CANONICAL)
+========================================================= */
 
 type CreatePriceInput = {
   name: string;
   category: string;
   unit: string;
   priceGHS: number;
-  costPrice?: number;
-  stockRefId?: string;
+
+  type: PriceItemType;
+  metadata: PriceItemMetadata;
 };
 
 type UpdatePriceInput = {
-  priceGHS?: number;
-  costPrice?: number;
   name?: string;
-  unit?: string;
   category?: string;
-  stockRefId?: string;
+  unit?: string;
+  priceGHS?: number;
   isActive?: boolean;
+
+  metadata?: Partial<PriceItemMetadata>;
 };
+
+/* =========================================================
+   SERVICE
+========================================================= */
 
 class PriceService {
   /* =========================================================
@@ -46,19 +57,29 @@ class PriceService {
      CREATE
   ========================================================= */
 
-  /**
-   * Supports both standalone calls and nested coordinator calls via txClient
-   */
   async create(
     orgId: string,
     data: CreatePriceInput,
     txClient?: PrismaTransactionClient,
   ) {
     const execute = async (tx: PrismaTransactionClient) => {
-      const created = await PriceRepository.create(orgId, data, tx);
+      const created = await PriceRepository.create(
+        orgId,
+        {
+          name: data.name,
+          category: data.category,
+          unit: data.unit,
+          priceGHS: data.priceGHS,
+
+          // 🔥 SINGLE SOURCE OF TRUTH
+          type: data.type,
+          metadata: data.metadata,
+        } as any,
+        tx,
+      );
 
       await Outbox.add(tx, {
-        type: "price.created",
+        type: "PRICE_CREATED"
         orgId,
         payload: created,
       });
@@ -66,7 +87,6 @@ class PriceService {
       return created;
     };
 
-    // If txClient exists (from Coordinator), use it. Otherwise, start new UnitOfWork.
     return txClient ? execute(txClient) : UnitOfWork.run(execute);
   }
 
@@ -90,12 +110,12 @@ class PriceService {
       const updated = await PriceRepository.update(
         orgId,
         priceListId,
-        data,
+        data as any,
         tx,
       );
 
       await Outbox.add(tx, {
-        type: "price.updated",
+        type: "PRICE_CREATED"
         orgId,
         payload: {
           before: existing,
@@ -125,7 +145,7 @@ class PriceService {
       const deleted = await PriceRepository.delete(orgId, id, tx);
 
       await Outbox.add(tx, {
-        type: "price.deleted",
+        type: "PRICE_CREATED"
         orgId,
         payload: deleted,
       });
@@ -137,6 +157,8 @@ class PriceService {
   }
 }
 
-/* ---------------- INSTANCE EXPORT ---------------- */
+/* =========================================================
+   EXPORT
+========================================================= */
 
 export const priceService = new PriceService();
