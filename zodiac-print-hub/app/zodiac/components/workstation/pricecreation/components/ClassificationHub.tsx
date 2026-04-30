@@ -5,27 +5,27 @@ import { useDataStore } from "@store/core/useDataStore";
 import { MaterialServiceCatalog } from "./MaterialServiceCatalog";
 import { WorkstationStatus } from "../../../common/WorkstationStatus";
 import { shallow } from "zustand/shallow";
+import {
+  MaterialCalculationType,
+  ServiceCalculationType,
+} from "@prisma/client";
 
 export function ClassificationHub() {
   const { swapModal, closeModal } = useModalStore();
 
+  // --- STORE V2 ALIGNMENT ---
   const draft = useDataStore((s) => s.pricingDraft, shallow);
-
-  const mode = useDataStore((s) => s.mode);
-  const type = useDataStore((s) => s.type);
-
-  const setMode = useDataStore((s) => s.setMode);
-  const setType = useDataStore((s) => s.setType);
-  const setPricingDraft = useDataStore((s) => s.setPricingDraft);
-  const resetPricingDraft = useDataStore((s) => s.resetPricingDraft);
-
-  const createPrice = useDataStore((s) => s.createPrice);
+  const { mode, type, setMode, setType, resetPricingDraft, createPrice } =
+    useDataStore();
   const isSubmitting = useDataStore((s) => s.priceState.isSubmitting);
 
   const hasExistingProgress = draft?.name !== "" || (draft?.priceGHS ?? 0) > 0;
-
-  const isIdle = mode === "idle";
   const isSubmittingState = mode === "submitting";
+  const hasType = type !== null;
+
+  /* =========================================================
+     HANDLERS
+  ========================================================= */
 
   const handleStartNew = () => {
     resetPricingDraft();
@@ -34,11 +34,9 @@ export function ClassificationHub() {
   };
 
   const handleTypeSwitch = (nextType: "material" | "service") => {
-    setType(nextType); // internally sets mode -> creating (per store design)
+    setType(nextType);
     setMode("draft");
   };
-
-  const handleOpenCatalog = () => swapModal("DETAIL", MaterialServiceCatalog);
 
   const handleExit = () => closeModal("GLOBAL");
 
@@ -50,9 +48,14 @@ export function ClassificationHub() {
     swapModal("DETAIL", WorkstationStatus, { title, message, type });
   };
 
+  /**
+   * FINALIZE ITEM (The Junction Bridge)
+   * Restructures the draft into the Production Recipe
+   */
   const handleFinalize = async () => {
     setMode("submitting");
 
+    // 1. VALIDATION
     if (!draft.name || draft.name === "---") {
       setMode("draft");
       return triggerStatus(
@@ -71,40 +74,43 @@ export function ClassificationHub() {
       );
     }
 
-    if (!draft.unit) {
+    if (!draft.calcType) {
       setMode("draft");
       return triggerStatus(
-        "Unit Missing",
-        "Measurement basis required.",
+        "Logic Missing",
+        "Please select a Calculation Mode.",
         "warning",
       );
     }
 
     try {
-      await createPrice({
-        name: draft.name,
-        priceGHS: draft.priceGHS,
-        unit: draft.unit as any,
-        category: draft.category || "General",
-        isPhysical: type === "material",
-        stockRefId: draft.stockRefId,
-        unitCost: draft.costPrice,
-        width: draft.width,
-        height: draft.height,
-      });
+      // 2. CONSTRUCT PAYLOAD (Aligned with PriceList Junction)
+      const payload = {
+        displayName: draft.name,
+        salePrice: Number(draft.priceGHS),
+        type: type?.toUpperCase(), // "MATERIAL" or "SERVICE"
+
+        ...(type === "material"
+          ? {
+              materialCategory: draft.category,
+              mCalcType: draft.calcType as MaterialCalculationType,
+              purchasePrice: Number(draft.costPrice || 0),
+              unit: draft.unit,
+              lowStockThreshold: Number(draft.stockThreshold || 0),
+            }
+          : {
+              serviceCategory: draft.category,
+              sCalcType: draft.calcType as ServiceCalculationType,
+            }),
+      };
+
+      await createPrice(payload);
 
       setMode("review");
-
-      swapModal("DETAIL", WorkstationStatus, {
-        title: "Success",
-        message: `${draft.name} is now live.`,
-        type: "success",
-      });
+      triggerStatus("Success", `${draft.name} is now live.`, "success");
 
       setTimeout(() => {
-        resetPricingDraft();
-        setMode("idle");
-        setType(null);
+        handleStartNew();
         handleExit();
       }, 2000);
     } catch (err: any) {
@@ -113,27 +119,20 @@ export function ClassificationHub() {
     }
   };
 
-  const hasType = type !== null;
-
   return (
     <div className="inner-ui-content inner-ui-down modalOpen h-full flex flex-col text-center px-4">
-      {/* HEADER */}
+      {/* 1. HEADER & BREADCRUMB */}
       <div className="mt-2">
-        <h2 className="text-xl font-black italic tracking-tighter text-white leading-none">
-          {hasType
-            ? type === "material"
-              ? "MATERIAL PATH"
-              : "SERVICE PATH"
-            : "CLASSIFICATION"}
+        <h2 className="text-xl font-black italic tracking-tighter text-white leading-none uppercase">
+          {hasType ? `${type} PATH` : "CLASSIFICATION"}
         </h2>
-
         <p className="text-[6px] text-cyan-400 uppercase font-black tracking-[0.3em] mt-2 mb-6">
-          {hasType ? "Complete the preview card above" : "Define Entry Path"}
+          {hasType ? "Define the calculation logic below" : "Define Entry Path"}
         </p>
       </div>
 
       <div className="flex-1 flex flex-col gap-3">
-        {/* RESUME */}
+        {/* 2. RESUME DRAFT VIEW */}
         {!hasType && hasExistingProgress && (
           <div className="grid grid-cols-2 gap-2 mb-2 p-2 bg-white/5 rounded-3xl border border-white/10">
             <button
@@ -142,9 +141,8 @@ export function ClassificationHub() {
             >
               Start New
             </button>
-
             <button
-              onClick={() => handleTypeSwitch(type ?? "material")}
+              onClick={() => handleTypeSwitch("material")}
               className="py-4 bg-cyan-400 border border-cyan-400 rounded-2xl text-[8px] font-black uppercase text-black shadow-[0_0_20px_rgba(0,255,255,0.2)] animate-pulse"
             >
               Resume Draft
@@ -152,14 +150,15 @@ export function ClassificationHub() {
           </div>
         )}
 
+        {/* 3. PATH SELECTION (Initial State) */}
         {!hasType ? (
           <>
             <button
-              onClick={handleOpenCatalog}
-              className="glass-card w-full py-4 px-6 flex justify-between items-center"
+              onClick={() => swapModal("DETAIL", MaterialServiceCatalog)}
+              className="glass-card w-full py-4 px-6 flex justify-between items-center group active:scale-95 transition-all"
             >
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
-                Select Existing
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/60 group-hover:text-cyan-400">
+                Select Existing Resource
               </span>
               <span className="opacity-40 text-[10px]">🔍</span>
             </button>
@@ -167,34 +166,40 @@ export function ClassificationHub() {
             <div className="grid grid-cols-2 gap-2 mt-2">
               <button
                 onClick={() => handleTypeSwitch("material")}
-                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase"
+                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase hover:border-cyan-400/50 hover:text-white transition-all"
               >
-                Material
+                Physical Material
               </button>
-
               <button
                 onClick={() => handleTypeSwitch("service")}
-                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase"
+                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase hover:border-purple-400/50 hover:text-white transition-all"
               >
-                Service
+                Labor Service
               </button>
             </div>
           </>
         ) : (
-          <div className="flex flex-col gap-2">
+          /* 4. LOGIC CONFIGURATION (Active Path) */
+          <div className="flex flex-col gap-2 animate-in slide-in-from-bottom-2 duration-300">
             <div
-              className={`py-4 rounded-2xl border text-[10px] font-black uppercase tracking-[0.2em] ${
+              className={`py-4 rounded-2xl border text-[10px] font-black uppercase tracking-[0.2em] shadow-inner ${
                 type === "material"
                   ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                   : "bg-zodiac-primary border-white/20 text-white"
               }`}
             >
-              {type === "material" ? "✓ Physical Material" : "✓ Labor Service"}
+              {type === "material" ? "✓ Material Resource" : "✓ Service Effort"}
+            </div>
+
+            {/* Path-Specific Logic Picker (Summary) */}
+            <div className="text-[7px] text-white/40 uppercase font-black tracking-widest mt-2">
+              Logic: {draft.calcType || "Unselected"} • Unit:{" "}
+              {draft.unit || "N/A"}
             </div>
 
             <button
               onClick={handleStartNew}
-              className="py-2 text-[7px] text-white/20 uppercase font-black hover:text-red-400"
+              className="py-2 text-[7px] text-white/20 uppercase font-black hover:text-red-400 transition-colors"
             >
               Discard & Reset
             </button>
@@ -202,22 +207,22 @@ export function ClassificationHub() {
             <button
               onClick={handleFinalize}
               disabled={isSubmitting || isSubmittingState}
-              className={`w-full py-5 mt-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] ${
+              className={`w-full py-5 mt-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 ${
                 isSubmitting
                   ? "bg-white/10 text-white/20"
-                  : "bg-white text-black hover:bg-cyan-400"
+                  : "bg-white text-black hover:bg-cyan-400 shadow-xl"
               }`}
             >
-              {isSubmitting ? "Syncing..." : "Finalize Item →"}
+              {isSubmitting ? "Syncing to Engine..." : "Finalize Recipe →"}
             </button>
           </div>
         )}
       </div>
 
-      {/* EXIT */}
+      {/* 5. EXIT */}
       <button
         onClick={handleExit}
-        className="mt-auto pb-6 text-[8px] font-black text-white/10 uppercase tracking-[0.4em]"
+        className="mt-auto pb-6 text-[8px] font-black text-white/10 uppercase tracking-[0.4em] hover:text-white/40 transition-colors"
       >
         ✕ Close Workstation
       </button>

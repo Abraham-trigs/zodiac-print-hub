@@ -12,27 +12,31 @@ import {
 
 type EntryMode = "IDLE" | "WIDTH" | "HEIGHT" | "QUANTITY";
 
-const LARGE_FORMAT_UNITS = new Set(["sqft", "sqm", "Per Sq Meter", "Per Yard"]);
-
 export function JobEntryModal() {
   const [mode, setMode] = useState<EntryMode>("IDLE");
   const { setScreen } = useZodiac();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // --- DATA SOURCE ---
   const draft = useDataStore((s) => s.draftState?.draft, shallow);
-  const prices = useDataStore(selectPricesMap);
+  const prices = useDataStore(selectPricesMap); // Now contains PriceListFull (with material/service)
   const clients = useDataStore(selectClientsMap);
-  const setDraft = useDataStore((s) => s.setDraft);
-  const resetDraft = useDataStore((s) => s.resetDraft);
+  const { setDraft, resetDraft, createJob } = useDataStore();
+
+  // Uses the ProductionCalculator internally via selectors
   const total = useDataStore(selectLiveEstimate) ?? 0;
 
   const selectedService = draft?.serviceId
     ? prices[draft.serviceId]
     : undefined;
-
   const selectedClient = draft?.clientId ? clients[draft.clientId] : undefined;
 
-  const isLargeFormat = LARGE_FORMAT_UNITS.has(selectedService?.unit ?? "");
+  // 🔥 THE PRODUCTION LOGIC: Determine UI behavior based on "Recipe" Rules
+  const isDimensional =
+    selectedService?.material?.calcType === "DIMENSIONAL" ||
+    selectedService?.service?.calcType === "AREA_BASED";
+
+  const isLinear = selectedService?.material?.calcType === "LINEAR";
 
   const navigateToServiceSearch = () => setScreen("SERVICE_SEARCH");
   const navigateToClientSearch = () => setScreen("CLIENT_SEARCH" as any);
@@ -40,136 +44,141 @@ export function JobEntryModal() {
   if (isSubmitting) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  const canEditSize = isLargeFormat && selectedService;
-
   return (
     <div className="flex flex-col h-full w-full p-2 overflow-hidden">
-      {/* HUD */}
+      {/* 1. FINANCIAL HUD */}
       <div className="flex justify-between items-center px-2 mb-3">
         <div className="flex flex-col">
           <span className="text-[7px] font-black uppercase opacity-40 tracking-[0.2em]">
-            Estimate
+            Estimate Total
           </span>
           <div className="flex items-baseline gap-0.5">
             <span className="text-[10px] font-bold text-cyan-400">₵</span>
-            <span className="text-lg font-mono font-black">
+            <span className="text-xl font-mono font-black">
               {total.toFixed(2)}
             </span>
           </div>
         </div>
-
         {draft?.b2bPushId && (
-          <span className="text-[7px] px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400">
-            B2B
+          <span className="text-[7px] px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 font-black">
+            B2B SOURCE
           </span>
         )}
       </div>
 
-      {/* MAIN */}
+      {/* 2. MAIN INPUT AREA */}
       <div className="flex-1 flex flex-col justify-center">
         {mode === "IDLE" ? (
           <div className="flex flex-col gap-2">
-            {/* SERVICE (always single gate) */}
-            {!selectedService && (
+            {!selectedService ? (
               <button
                 onClick={navigateToServiceSearch}
-                className="w-full py-4 bg-cyan-400 text-black font-black uppercase text-[10px] rounded-xl"
+                className="w-full py-4 bg-cyan-400 text-black font-black uppercase text-[10px] rounded-xl shadow-lg active:scale-95 transition-all"
               >
-                Select Material
+                Select Product / Material
               </button>
-            )}
-
-            {selectedService && (
+            ) : (
               <>
-                {/* CLIENT (only if missing) */}
                 {!selectedClient && (
                   <button
                     onClick={navigateToClientSearch}
-                    className="w-full py-3 bg-emerald-500 text-black font-black uppercase text-[9px] rounded-xl"
+                    className="w-full py-3 bg-emerald-500 text-black font-black uppercase text-[9px] rounded-xl active:scale-95 transition-all"
                   >
                     Assign Customer
                   </button>
                 )}
 
-                {/* SIZE + QTY (ONLY ONE ENTRY CONTEXT ACTIVE) */}
                 <div className="grid grid-cols-2 gap-1.5">
-                  {canEditSize && (
+                  {/* DIMENSIONAL UI (Width & Height) */}
+                  {isDimensional && (
                     <>
-                      {!draft?.width && (
-                        <button
-                          onClick={() => setMode("WIDTH")}
-                          className="py-2 bg-white/5 rounded-lg flex flex-col items-center"
-                        >
-                          <span className="text-[6px] opacity-40 uppercase">
-                            Width
-                          </span>
-                          <span className="text-xs font-black">0ft</span>
-                        </button>
-                      )}
+                      <button
+                        onClick={() => setMode("WIDTH")}
+                        className="py-3 bg-white/5 rounded-lg flex flex-col items-center hover:bg-white/10"
+                      >
+                        <span className="text-[6px] opacity-40 uppercase">
+                          Width
+                        </span>
+                        <span className="text-sm font-black">
+                          {draft?.width ?? 0}
+                          {selectedService?.material?.unit ?? "ft"}
+                        </span>
+                      </button>
 
-                      {!draft?.height && (
-                        <button
-                          onClick={() => setMode("HEIGHT")}
-                          className="py-2 bg-white/5 rounded-lg flex flex-col items-center"
-                        >
-                          <span className="text-[6px] opacity-40 uppercase">
-                            Height
-                          </span>
-                          <span className="text-xs font-black">0ft</span>
-                        </button>
-                      )}
+                      <button
+                        onClick={() => setMode("HEIGHT")}
+                        className="py-3 bg-white/5 rounded-lg flex flex-col items-center hover:bg-white/10"
+                      >
+                        <span className="text-[6px] opacity-40 uppercase">
+                          Height
+                        </span>
+                        <span className="text-sm font-black">
+                          {draft?.height ?? 0}
+                          {selectedService?.material?.unit ?? "ft"}
+                        </span>
+                      </button>
                     </>
                   )}
 
-                  {/* QUANTITY always last single entry */}
-                  {!draft?.quantity || mode !== "QUANTITY" ? (
+                  {/* LINEAR UI (Length Only) */}
+                  {isLinear && (
                     <button
-                      onClick={() => setMode("QUANTITY")}
-                      className={`py-2 bg-white/5 rounded-lg flex flex-col items-center ${
-                        !canEditSize ? "col-span-2" : ""
-                      }`}
+                      onClick={() => setMode("WIDTH")}
+                      className="col-span-2 py-3 bg-white/5 rounded-lg flex flex-col items-center"
                     >
                       <span className="text-[6px] opacity-40 uppercase">
-                        Qty
+                        Length
                       </span>
-                      <span className="text-xs font-black">
-                        {draft?.quantity ?? 1}
+                      <span className="text-sm font-black">
+                        {draft?.width ?? 0}
+                        {selectedService?.material?.unit ?? "ft"}
                       </span>
                     </button>
-                  ) : null}
+                  )}
+
+                  {/* QUANTITY (Always available) */}
+                  <button
+                    onClick={() => setMode("QUANTITY")}
+                    className={`py-3 bg-white/5 rounded-lg flex flex-col items-center ${!isDimensional && !isLinear ? "col-span-2" : ""}`}
+                  >
+                    <span className="text-[6px] opacity-40 uppercase">
+                      Quantity
+                    </span>
+                    <span className="text-sm font-black">
+                      {draft?.quantity ?? 1}
+                    </span>
+                  </button>
                 </div>
               </>
             )}
           </div>
         ) : (
-          /* INPUT MODE (ONLY ONE ACTIVE FIELD AT A TIME) */
-          <div className="text-center">
-            <span className="text-[7px] font-black text-cyan-400 uppercase">
+          /* 3. ACTIVE INPUT MODE */
+          <div className="text-center animate-in zoom-in-95 duration-200">
+            <span className="text-[7px] font-black text-cyan-400 uppercase tracking-widest">
               {mode}
             </span>
-
             <input
               autoFocus
               type="number"
-              className="w-full bg-transparent text-center text-4xl font-black outline-none"
+              className="w-full bg-transparent text-center text-5xl font-black outline-none text-white selection:bg-cyan-400/30"
               value={
                 mode === "WIDTH"
-                  ? (draft?.width ?? 0)
+                  ? (draft?.width ?? "")
                   : mode === "HEIGHT"
-                    ? (draft?.height ?? 0)
-                    : (draft?.quantity ?? 0)
+                    ? (draft?.height ?? "")
+                    : (draft?.quantity ?? "")
               }
               onChange={(e) => {
-                const value = Number(e.target.value);
-
-                if (mode === "WIDTH") setDraft({ width: value });
-                if (mode === "HEIGHT") setDraft({ height: value });
-                if (mode === "QUANTITY") setDraft({ quantity: value });
+                const val = Number(e.target.value);
+                if (mode === "WIDTH") setDraft({ width: val });
+                if (mode === "HEIGHT") setDraft({ height: val });
+                if (mode === "QUANTITY") setDraft({ quantity: val });
               }}
               onBlur={() => setMode("IDLE")}
               onKeyDown={(e) => e.key === "Enter" && setMode("IDLE")}
@@ -178,24 +187,25 @@ export function JobEntryModal() {
         )}
       </div>
 
-      {/* ACTION */}
+      {/* 4. PRODUCTION PUSH */}
       {selectedService && selectedClient && mode === "IDLE" && (
         <button
           onClick={async () => {
             setIsSubmitting(true);
             try {
-              await useDataStore
-                .getState()
-                .createJob({ ...draft, service: selectedService } as any);
-
+              // Now uses the structured createJob action in the store
+              await createJob({ ...draft, priceListId: selectedService.id });
               resetDraft();
+              setScreen("IDLE"); // Or wherever you want to go after success
+            } catch (err) {
+              console.error("Push failed", err);
             } finally {
               setIsSubmitting(false);
             }
           }}
-          className="mt-3 w-full py-3 bg-white text-black font-black uppercase text-[10px] rounded-xl"
+          className="mt-3 w-full py-4 bg-white text-black font-black uppercase text-[10px] rounded-xl shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:bg-cyan-400 transition-all"
         >
-          Push to Production
+          Push to Production →
         </button>
       )}
     </div>
