@@ -1,6 +1,7 @@
+// src/lib/repositories/job.repository.ts
 import { prisma } from "@lib/prisma-client";
 import { DbClient } from "@lib/prisma-client";
-import { JobStatus, PaymentStatus } from "@prisma/client";
+import { JobStatus, PaymentStatus, ServiceUnit } from "@prisma/client";
 
 type TxOrDb = DbClient | undefined;
 
@@ -10,22 +11,26 @@ const getDb = (tx?: TxOrDb) => {
 };
 
 export class JobRepository {
+  /**
+   * CREATE: Saves the final Job snapshot
+   */
   static async create(
     data: {
       orgId: string;
       clientId: string;
-      serviceId: string;
-      serviceName: string;
+      priceListId: string; // Aligned: Now links to PriceList Master
+      serviceName: string; // Aligned: Snapshot of Display Name
       quantity: number;
       width?: number;
       height?: number;
-      unit?: string;
+      unit?: ServiceUnit; // Aligned with Enum
+      basePrice: number; // Snapshot of Sale Price
+      variableTotal?: number;
       totalPrice: number;
       costPrice?: number;
       profitMargin?: number;
       assignedStaffId?: string;
       notes?: string;
-      // 🔥 NEW: Link to B2B Negotiation
       b2bPushId?: string;
     },
     tx?: DbClient,
@@ -34,6 +39,9 @@ export class JobRepository {
     return db.job.create({ data });
   }
 
+  /**
+   * FIND BY ID: Includes CRM and Logistics relations
+   */
   static async findById(orgId: string, id: string, tx?: DbClient) {
     const db = getDb(tx);
 
@@ -42,12 +50,16 @@ export class JobRepository {
       include: {
         client: true,
         assignedStaff: true,
-        // 🔥 NEW: Include B2B details for the UI/Store
-        b2bPush: true,
+        variables: true, // Essential for the Job Ticket view
+        deliveries: true, // Essential for tracking
+        b2bPush: true, // Track B2B source
       },
     });
   }
 
+  /**
+   * LIST: Optimized for Dashboard/Table views
+   */
   static async list(
     orgId: string,
     params?: {
@@ -69,8 +81,8 @@ export class JobRepository {
         }),
       },
       include: {
-        client: true, // Often needed for list views
-        b2bPush: { select: { status: true } }, // Trace if it's a B2B job
+        client: { select: { name: true, phone: true, type: true } }, // Light fetch
+        b2bPush: { select: { status: true } },
       },
       orderBy: { createdAt: "desc" },
       take: params?.take ?? 50,
@@ -78,9 +90,9 @@ export class JobRepository {
     });
   }
 
-  // ... rest of methods (updateStatus, assignStaff, etc.) remain the same
-  // as they primarily target the ID and orgId for scoping.
-
+  /**
+   * UPDATE STATUS
+   */
   static async updateStatus(
     orgId: string,
     jobId: string,
@@ -91,10 +103,16 @@ export class JobRepository {
 
     return db.job.update({
       where: { id: jobId, orgId },
-      data: { status },
+      data: {
+        status,
+        ...(status === JobStatus.COMPLETED ? { completedAt: new Date() } : {}),
+      },
     });
   }
 
+  /**
+   * ASSIGN STAFF
+   */
   static async assignStaff(
     orgId: string,
     jobId: string,
@@ -109,6 +127,9 @@ export class JobRepository {
     });
   }
 
+  /**
+   * CONFIRM PAYMENT: Updates Job financial state
+   */
   static async confirmPayment(
     orgId: string,
     jobId: string,
@@ -127,6 +148,9 @@ export class JobRepository {
     });
   }
 
+  /**
+   * DELETE COMPLETED (Cleanup)
+   */
   static async deleteCompleted(orgId: string, tx?: DbClient) {
     const db = getDb(tx);
 

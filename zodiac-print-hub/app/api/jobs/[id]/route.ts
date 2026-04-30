@@ -1,20 +1,27 @@
-import { apiHandler } from "@lib/server/api/apiHandler";
+// src/app/api/jobs/[id]/route.ts
+import { apiHandler, ApiError } from "@lib/server/api/apiHandler";
 import { jobService } from "@lib/services/job.service";
 import { UpdateJobStatusSchema } from "@lib/schema/job.schema";
 
+/**
+ * UPDATE JOB STATUS
+ * PATCH /api/jobs/[id]
+ */
 export const PATCH = apiHandler<{ id: string }, { status: string }>(
   async ({ orgId, params, body }) => {
-    const { id } = await params; // 🔥 REQUIRED FIX (Next.js 15+)
+    // 🔥 NEXT.JS 15 COMPLIANCE: Dynamic route parameters must be awaited
+    const resolvedParams = await params;
+    const jobId = resolvedParams?.id;
 
-    if (!id) {
-      throw new Error("Missing job id in route params");
+    if (!jobId) {
+      throw new ApiError("Missing job ID in route", 400);
     }
 
     if (!body?.status) {
-      throw new Error("Missing status in request body");
+      throw new ApiError("Status update requires a status value", 400);
     }
 
-    return jobService.updateStatus(orgId, id, body.status);
+    return jobService.updateStatus(orgId, jobId, body.status);
   },
   {
     requireAuth: true,

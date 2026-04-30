@@ -15,12 +15,12 @@ export class JobService {
   async createJob(params: {
     orgId: string;
     clientId: string;
-    priceListId: string; // The Master Junction
+    priceListId: string;
     quantity: number;
     width?: number;
     height?: number;
     assignedStaffId?: string;
-    userId: string; // Person performing the action
+    userId: string;
     notes?: string;
     b2bPushId?: string;
   }) {
@@ -40,13 +40,10 @@ export class JobService {
     return UnitOfWork.run(async (tx) => {
       const now = new Date();
 
-      // 1. RESOLVE THE RECIPE (PriceList -> Material -> Service)
+      // 1. RESOLVE THE RECIPE
       const priceItem = await tx.priceList.findFirst({
         where: { id: priceListId, orgId },
-        include: {
-          material: { include: { stockItem: true } },
-          service: true,
-        },
+        include: { material: { include: { stockItem: true } }, service: true },
       });
 
       if (!priceItem) throw new ApiError("Price list item not found", 404);
@@ -60,7 +57,7 @@ export class JobService {
         if (b2bPush?.suggestedPrice) salePrice = b2bPush.suggestedPrice;
       }
 
-      // 3. CALCULATION ENGINE (Aligned with Enums)
+      // 3. CALCULATION ENGINE
       const calc = ProductionCalculator.calculate({
         quantity,
         width,
@@ -74,7 +71,7 @@ export class JobService {
 
       if (calc.error) throw new ApiError(calc.error, 400);
 
-      // 4. CREATE JOB (The Financial Snapshot)
+      // 4. CREATE JOB
       const job = await JobRepository.create(
         {
           orgId,
@@ -96,7 +93,7 @@ export class JobService {
         tx,
       );
 
-      // 5. CLIENT CRM UPDATE (Projections)
+      // 5. CLIENT CRM UPDATE
       await tx.client.update({
         where: { id: clientId },
         data: {
@@ -119,42 +116,130 @@ export class JobService {
             quantity: calc.deduction,
             referenceId: job.id,
             referenceType: "JOB",
-            note: `Auto deduction: ${calc.usageLabel} for ${job.serviceName}`,
             createdBy: userId,
             unitCost: priceItem.material.purchasePrice,
+            note: `Auto deduction: ${calc.usageLabel} for ${job.serviceName}`,
           },
           tx,
         );
       }
 
-      // 7. B2B WORKFLOW UPDATE
-      if (b2bPushId) {
+      if (b2bPushId)
         await tx.b2BPush.update({
           where: { id: b2bPushId },
           data: { status: "ACCEPTED" },
         });
-      }
 
-      // 8. TRANSACTIONAL OUTBOX
-      await Outbox.add(tx, {
-        type: "job.created",
-        orgId,
-        payload: job,
-      });
+      await Outbox.add(tx, { type: "job.created", orgId, payload: job });
 
       return job;
     });
   }
 
   /**
-   * STATUS UPDATES
+   * ADD VARIABLE (Add-on)
+   * Handles multi-service/material add-ons for an existing job.
    */
+  async addVariable(params: {
+    orgId: string;
+    jobId: string;
+    priceListId: string;
+    quantity: number;
+    width?: number;
+    height?: number;
+    userId: string;
+  }) {
+    const { orgId, jobId, priceListId, quantity, width, height, userId } =
+      params;
+
+    return UnitOfWork.run(async (tx) => {
+      // 1. Fetch Add-on Recipe
+      const priceItem = await tx.priceList.findFirst({
+        where: { id: priceListId, orgId },
+        include: { material: { include: { stockItem: true } }, service: true },
+      });
+
+      if (!priceItem) throw new ApiError("Variable service not found", 404);
+
+      // 2. Calculate Add-on Price/Stock
+      const calc = ProductionCalculator.calculate({
+        quantity,
+        width,
+        height,
+        unit: priceItem.material?.unit ?? "piece",
+        salePrice: priceItem.salePrice,
+        purchasePrice: priceItem.material?.purchasePrice ?? 0,
+        mCalcType: priceItem.material?.calcType,
+        sCalcType: priceItem.service?.calcType,
+      });
+
+      if (calc.error) throw new ApiError(calc.error, 400);
+
+      // 3. Create Variable Record
+      const variable = await tx.jobVariable.create({
+        data: {
+          orgId,
+          jobId,
+          priceListId: priceItem.id,
+          materialId: priceItem.materialId,
+          serviceId: priceItem.serviceId,
+          quantity,
+          width,
+          height,
+          unitPrice: priceItem.salePrice,
+          subtotal: calc.totalPrice,
+        },
+      });
+
+      // 4. Update Main Job Totals & Profitability
+      const updatedJob = await tx.job.update({
+        where: { id: jobId },
+        data: {
+          variableTotal: { increment: calc.totalPrice },
+          totalPrice: { increment: calc.totalPrice },
+          costPrice: { increment: calc.totalCost },
+          profitMargin: { increment: calc.totalPrice - calc.totalCost },
+        },
+      });
+
+      // 5. Handle Variable Stock Deduction
+      if (priceItem.material?.stockItemId) {
+        await stockService.createMovement(
+          {
+            orgId,
+            stockItemId: priceItem.material.stockItemId,
+            type: "DEDUCT",
+            quantity: calc.deduction,
+            referenceId: variable.id,
+            referenceType: "JOB_VARIABLE",
+            createdBy: userId,
+            unitCost: priceItem.material.purchasePrice,
+            note: `Variable add-on: ${priceItem.displayName} for Job #${jobId}`,
+          },
+          tx,
+        );
+      }
+
+      await Outbox.add(tx, {
+        type: "job.variable_added",
+        orgId,
+        payload: { jobId, variableId: variable.id },
+      });
+
+      return { variable, updatedJob };
+    });
+  }
+
   async updateStatus(orgId: string, jobId: string, status: any) {
     return UnitOfWork.run(async (tx) => {
       const job = await JobRepository.updateStatus(orgId, jobId, status, tx);
       await Outbox.add(tx, { type: "job.status_changed", orgId, payload: job });
       return job;
     });
+  }
+
+  async loadJobs(orgId: string) {
+    return JobRepository.list(orgId);
   }
 }
 
