@@ -357,9 +357,7 @@ export type PaymentStatus = "UNPAID" | "PARTIAL" | "PAID";
 
 export interface JobTicket {
   id: string;
-
   orgId: string;
-
   clientId: string;
 
   clientSnapshot: ClientSummary;

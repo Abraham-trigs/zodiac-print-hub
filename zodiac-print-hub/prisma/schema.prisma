@@ -517,26 +517,32 @@ model JobVariable {
   jobId String
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
-  // Direct mapping to the PriceList item added as a variable
   priceListId String
   priceList   PriceList @relation(fields: [priceListId], references: [id])
 
-  // Calculation Snapshot
+  // --- 🚀 Critical Update: Dimensions for Variables ---
+  // This allows "Finishing" services like lamination to calculate area
   quantity  Float
-  unitPrice Float // Price at time of creation
+  width     Float?
+  height    Float?
+  
+  unitPrice Float 
   subtotal  Float
 
-  createdAt  DateTime  @default(now())
+  // Relations to definitions for technical tracking
   material   Material? @relation(fields: [materialId], references: [id])
   materialId String?
   service    Service?  @relation(fields: [serviceId], references: [id])
   serviceId  String?
   
-  orgId   String
+  orgId      String
+  createdAt  DateTime  @default(now())
+
   @@index([orgId, jobId]) 
   @@index([jobId])
   @@index([priceListId])
 }
+
 
 //
 // ─────────────────────────────────────────────
@@ -704,7 +710,7 @@ model B2BPush {
   @@index([deadline])
 }
 
-//
+
 model AuditLog {
   id    String @id @default(cuid())
   orgId String

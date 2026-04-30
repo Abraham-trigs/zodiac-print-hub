@@ -1,30 +1,38 @@
-import { JobRepository } from "@lib/repositories/job.repository";
-import { stockService } from "@lib/services/stock.service";
-import type { PriceItem } from "@types/zodiac.types";
-import { UnitOfWork } from "@lib/db/unitOfWork";
-import { Outbox } from "@lib/db/outbox";
-import { MeasurementCalculator } from "@lib/utils/measurement-calculator";
+// src/lib/services/job.service.ts
+import { prisma } from "@/lib/prisma";
+import { UnitOfWork } from "@/lib/db/unitOfWork";
+import { Outbox } from "@/lib/db/outbox";
+import { JobRepository } from "@/lib/repositories/job.repository";
+import { stockService } from "@/lib/services/stock.service";
+import { ProductionCalculator } from "@/lib/utils/production-calculator";
+import { ApiError } from "@/lib/apiHandler";
 
 export class JobService {
+  /**
+   * CREATE JOB
+   * Orchestrates pricing, stock deduction, and CRM updates in one transaction.
+   */
   async createJob(params: {
     orgId: string;
     clientId: string;
-    service: PriceItem;
+    priceListId: string; // The Master Junction
     quantity: number;
     width?: number;
     height?: number;
     assignedStaffId?: string;
+    userId: string; // Person performing the action
     notes?: string;
     b2bPushId?: string;
   }) {
     const {
       orgId,
       clientId,
-      service,
+      priceListId,
       quantity,
       width,
       height,
       assignedStaffId,
+      userId,
       notes,
       b2bPushId,
     } = params;
@@ -32,56 +40,55 @@ export class JobService {
     return UnitOfWork.run(async (tx) => {
       const now = new Date();
 
-      // 1. PRICE RESOLUTION (B2B override only)
-      let priceToUse = service.priceGHS;
+      // 1. RESOLVE THE RECIPE (PriceList -> Material -> Service)
+      const priceItem = await tx.priceList.findFirst({
+        where: { id: priceListId, orgId },
+        include: {
+          material: { include: { stockItem: true } },
+          service: true,
+        },
+      });
 
+      if (!priceItem) throw new ApiError("Price list item not found", 404);
+
+      // 2. B2B PRICE OVERRIDE
+      let salePrice = priceItem.salePrice;
       if (b2bPushId) {
         const b2bPush = await tx.b2BPush.findUnique({
           where: { id: b2bPushId, orgId },
         });
-
-        if (!b2bPush) throw new Error("B2B Negotiation record not found");
-
-        if (b2bPush.suggestedPrice) {
-          priceToUse = b2bPush.suggestedPrice;
-        }
+        if (b2bPush?.suggestedPrice) salePrice = b2bPush.suggestedPrice;
       }
 
-      // 2. SINGLE SOURCE OF TRUTH: MEASUREMENT ENGINE
-      const calc = MeasurementCalculator.calculate({
-        jobWidth: width,
-        jobHeight: height,
-        jobQty: quantity,
-        appUnit: service.unit as any,
-        manualRate: priceToUse,
-        stockAnchor: undefined,
+      // 3. CALCULATION ENGINE (Aligned with Enums)
+      const calc = ProductionCalculator.calculate({
+        quantity,
+        width,
+        height,
+        unit: priceItem.material?.unit ?? "piece",
+        salePrice,
+        purchasePrice: priceItem.material?.purchasePrice ?? 0,
+        mCalcType: priceItem.material?.calcType,
+        sCalcType: priceItem.service?.calcType,
       });
 
-      if (calc.price === 0 && (calc as any).error) {
-        throw new Error((calc as any).error);
-      }
+      if (calc.error) throw new ApiError(calc.error, 400);
 
-      const totalPrice = calc.price;
-      const units = (calc as any).area ?? (calc as any).count ?? quantity;
-
-      // 3. COST + PROFIT
-      const unitCost = service.costPrice ?? 0;
-      const totalCost = units * unitCost;
-
-      // 4. CREATE JOB
+      // 4. CREATE JOB (The Financial Snapshot)
       const job = await JobRepository.create(
         {
           orgId,
           clientId,
-          serviceId: service.id,
-          serviceName: service.name,
+          priceListId: priceItem.id,
+          serviceName: priceItem.displayName,
           quantity,
           width,
           height,
-          unit: service.unit,
-          totalPrice,
-          costPrice: totalCost,
-          profitMargin: totalPrice - totalCost,
+          unit: priceItem.material?.unit,
+          basePrice: salePrice,
+          totalPrice: calc.totalPrice,
+          costPrice: calc.totalCost,
+          profitMargin: calc.totalPrice - calc.totalCost,
           assignedStaffId,
           notes,
           b2bPushId,
@@ -89,7 +96,7 @@ export class JobService {
         tx,
       );
 
-      // 5. CLIENT UPDATE
+      // 5. CLIENT CRM UPDATE (Projections)
       await tx.client.update({
         where: { id: clientId },
         data: {
@@ -98,29 +105,37 @@ export class JobService {
           isNew: false,
           totalJobs: { increment: 1 },
           recentStaffId: assignedStaffId ?? undefined,
-          mostPrintedServiceId: service.id,
+          mostPrintedServiceId: priceItem.id,
         },
       });
 
-      // 6. STOCK DEDUCTION (uses calc deduction)
-      if (service.stockRefId) {
+      // 6. ATOMIC STOCK DEDUCTION
+      if (priceItem.material?.stockItemId) {
         await stockService.createMovement(
           {
             orgId,
-            stockItemId: service.stockRefId,
+            stockItemId: priceItem.material.stockItemId,
             type: "DEDUCT",
-            quantity: (calc as any).deduction ?? units,
+            quantity: calc.deduction,
             referenceId: job.id,
             referenceType: "JOB",
-            note: `Auto deduction for job ${job.id}${b2bPushId ? " (B2B)" : ""}`,
-            createdBy: assignedStaffId ?? "system",
-            unitCost,
+            note: `Auto deduction: ${calc.usageLabel} for ${job.serviceName}`,
+            createdBy: userId,
+            unitCost: priceItem.material.purchasePrice,
           },
           tx,
         );
       }
 
-      // 7. OUTBOX
+      // 7. B2B WORKFLOW UPDATE
+      if (b2bPushId) {
+        await tx.b2BPush.update({
+          where: { id: b2bPushId },
+          data: { status: "ACCEPTED" },
+        });
+      }
+
+      // 8. TRANSACTIONAL OUTBOX
       await Outbox.add(tx, {
         type: "job.created",
         orgId,
@@ -131,50 +146,15 @@ export class JobService {
     });
   }
 
+  /**
+   * STATUS UPDATES
+   */
   async updateStatus(orgId: string, jobId: string, status: any) {
     return UnitOfWork.run(async (tx) => {
       const job = await JobRepository.updateStatus(orgId, jobId, status, tx);
-
-      await Outbox.add(tx, {
-        type: "job.updated",
-        orgId,
-        payload: job,
-      });
-
+      await Outbox.add(tx, { type: "job.status_changed", orgId, payload: job });
       return job;
     });
-  }
-
-  async assignStaff(orgId: string, jobId: string, staffId: string) {
-    return UnitOfWork.run(async (tx) => {
-      const job = await JobRepository.assignStaff(orgId, jobId, staffId, tx);
-
-      await Outbox.add(tx, {
-        type: "job.staff_assigned",
-        orgId,
-        payload: job,
-      });
-
-      return job;
-    });
-  }
-
-  async confirmPayment(orgId: string, jobId: string, ref: string) {
-    return UnitOfWork.run(async (tx) => {
-      const job = await JobRepository.confirmPayment(orgId, jobId, ref, tx);
-
-      await Outbox.add(tx, {
-        type: "job.paid",
-        orgId,
-        payload: job,
-      });
-
-      return job;
-    });
-  }
-
-  async loadJobs(orgId: string) {
-    return JobRepository.list(orgId);
   }
 }
 
