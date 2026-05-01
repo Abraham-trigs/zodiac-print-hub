@@ -1,51 +1,38 @@
 import { prisma } from "@lib/prisma-client";
 import { DbClient } from "@lib/prisma-client";
-import { StaffStatus } from "@/types/zodiac.types";
+import { StaffStatus } from "@prisma/client";
 
 export class StaffRepository {
   static async list(orgId: string, tx?: DbClient) {
     const db = tx ?? prisma;
-
     return db.staff.findMany({
-      where: { orgId },
+      where: { orgId, isActive: true },
+      include: {
+        user: { select: { name: true, email: true, image: true } },
+      },
       orderBy: { createdAt: "desc" },
     });
   }
 
   static async findById(orgId: string, id: string, tx?: DbClient) {
     const db = tx ?? prisma;
-
     return db.staff.findFirst({
       where: { id, orgId },
+      include: { user: true },
     });
   }
 
-  /**
-   * NOTE:
-   * Staff is NOT authoritative for job assignment.
-   * JobService owns assignment logic.
-   *
-   * This method should only reflect projected state if needed.
-   */
-  static async setAssignedJobSnapshot(
+  static async assignJob(
     orgId: string,
     staffId: string,
     jobId: string,
     tx?: DbClient,
   ) {
     const db = tx ?? prisma;
-
-    const staff = await db.staff.findFirst({
-      where: { id: staffId, orgId },
-    });
-
-    if (!staff) throw new Error("Staff not found");
-
     return db.staff.update({
-      where: { id: staffId },
-      data: {
-        currentJobId: jobId, // ❗ cache only (projection layer)
-      },
+      where: { id: staffId, orgId },
+      data: { currentJobId: jobId, status: StaffStatus.BUSY },
+      include: { user: { select: { name: true } } },
     });
   }
 
@@ -56,16 +43,10 @@ export class StaffRepository {
     tx?: DbClient,
   ) {
     const db = tx ?? prisma;
-
-    const staff = await db.staff.findFirst({
-      where: { id: staffId, orgId },
-    });
-
-    if (!staff) throw new Error("Staff not found");
-
     return db.staff.update({
-      where: { id: staffId },
+      where: { id: staffId, orgId },
       data: { status },
+      include: { user: { select: { name: true } } },
     });
   }
 }

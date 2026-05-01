@@ -1,7 +1,7 @@
 import { prisma } from "@lib/prisma-client";
 import { StaffRepository } from "@lib/repositories/staff.repository";
 import { Outbox } from "@lib/db/outbox";
-import { StaffStatus } from "@/types/zodiac.types";
+import { StaffStatus } from "@prisma/client";
 
 export class StaffService {
   static async list(orgId: string) {
@@ -13,18 +13,21 @@ export class StaffService {
     jobId: string;
     staffId: string;
   }) {
-    const { orgId, jobId, staffId } = params;
-
     return prisma.$transaction(async (tx) => {
-      const staff = await StaffRepository.assignJob(orgId, staffId, jobId, tx);
+      const staff = await StaffRepository.assignJob(
+        params.orgId,
+        params.staffId,
+        params.jobId,
+        tx,
+      );
 
       await Outbox.add(tx, {
         type: "staff.assigned",
-        orgId,
+        orgId: params.orgId,
         payload: {
-          staffId,
-          jobId,
-          status: "BUSY", // derived state for UI sync
+          staffId: params.staffId,
+          jobId: params.jobId,
+          status: StaffStatus.BUSY,
         },
       });
 
@@ -37,23 +40,18 @@ export class StaffService {
     staffId: string;
     status: StaffStatus;
   }) {
-    const { orgId, staffId, status } = params;
-
     return prisma.$transaction(async (tx) => {
       const staff = await StaffRepository.updateStatus(
-        orgId,
-        staffId,
-        status,
+        params.orgId,
+        params.staffId,
+        params.status,
         tx,
       );
 
       await Outbox.add(tx, {
         type: "staff.status.updated",
-        orgId,
-        payload: {
-          staffId,
-          status,
-        },
+        orgId: params.orgId,
+        payload: { staffId: params.staffId, status: params.status },
       });
 
       return staff;

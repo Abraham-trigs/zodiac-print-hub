@@ -19,8 +19,9 @@ const cache = {
   inventory: { map: null as any, array: EMPTY_ARRAY as any[] },
   delivery: { map: null as any, array: EMPTY_ARRAY as any[] },
   payment: { map: null as any, array: EMPTY_ARRAY as any[] },
-  // 🔥 FIXED: Added b2b key to the cache to support the b2b selector
   b2b: { map: null as any, array: EMPTY_ARRAY as any[] },
+  // 🔥 NEW: Added movements key to support Ledger Intelligence
+  movements: { map: null as any, array: EMPTY_ARRAY as any[] },
 };
 
 /* =========================================================
@@ -37,8 +38,17 @@ export const selectSelectedB2BId = (s: State) => s.b2bState?.selectedId;
 
 export const selectClientsMap = (s: State) =>
   s.clientState?.clients ?? EMPTY_MAP;
+
+/* ─────────────────────────────────────────────────────────────
+   INVENTORY DOMAIN
+   ───────────────────────────────────────────────────────────── */
 export const selectInventoryMap = (s: State) =>
   s.inventoryState?.inventory ?? EMPTY_MAP;
+
+// 🔥 NEW: Ledger Accessor for Intelligence & History
+export const selectMovementsMap = (s: State) =>
+  s.inventoryState?.movements ?? EMPTY_MAP;
+
 export const selectDeliveriesMap = (s: State) =>
   s.deliveryState?.deliveries ?? EMPTY_MAP;
 export const selectPaymentsMap = (s: State) =>
@@ -72,6 +82,10 @@ export const selectPaymentsArray = (s: State) =>
 export const selectB2BArray = (s: State) =>
   getMemoizedArray(selectB2BMap(s), "b2b");
 
+// 🔥 NEW: Memoized Movements Array for Intelligence
+export const selectMovementsArray = (s: State) =>
+  getMemoizedArray(selectMovementsMap(s), "movements");
+
 // RELATION CACHE
 let jobsWithRelationsCache: any[] = [];
 let jobsRef: any = null;
@@ -101,7 +115,7 @@ export const selectJobsWithRelations = (s: State) => {
 
   jobsWithRelationsCache = jobs.map((job) => ({
     ...job,
-    // 🔥 FIXED: Use priceListId junction for V2
+    // 🧠 V2 Handshake: Map priceList junction to 'service' key for UI compatibility
     service: prices[job.priceListId],
     client: clients[job.clientId],
     staff: job.assignedStaffId ? staff[job.assignedStaffId] : undefined,
@@ -109,6 +123,38 @@ export const selectJobsWithRelations = (s: State) => {
 
   return jobsWithRelationsCache;
 };
+
+/* =========================================================
+   PRODUCTION INTELLIGENCE
+========================================================= */
+
+export const selectMaterialIntelligence =
+  (materialId: string) => (s: State) => {
+    // Use the newly defined memoized array
+    const movements = selectMovementsArray(s).filter(
+      (m) => m.stockItemId === materialId,
+    );
+
+    const totalDeducted = movements
+      .filter((m) => m.type === "DEDUCT")
+      .reduce((sum, m) => sum + m.quantity, 0);
+
+    const totalWasted = movements
+      .filter((m) => m.type === "WASTE")
+      .reduce((sum, m) => sum + m.quantity, 0);
+
+    const totalOut = totalDeducted + totalWasted;
+    const efficiency = totalOut > 0 ? (totalDeducted / totalOut) * 100 : 100;
+
+    return {
+      jobUsage: totalDeducted,
+      wastage: totalWasted,
+      efficiency: efficiency.toFixed(1) + "%",
+      leakageCost:
+        totalWasted *
+        (s.inventoryState.inventory[materialId]?.material?.purchasePrice || 0),
+    };
+  };
 
 /* =========================================================
    🔁 BACKWARD COMPATIBILITY ALIASES

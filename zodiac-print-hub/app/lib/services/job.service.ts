@@ -6,11 +6,12 @@ import { JobRepository } from "@/lib/repositories/job.repository";
 import { stockService } from "@/lib/services/stock.service";
 import { ProductionCalculator } from "@/lib/utils/production-calculator";
 import { ApiError } from "@/lib/apiHandler";
+import { StockMovementType } from "@prisma/client";
 
 export class JobService {
   /**
    * CREATE JOB
-   * Orchestrates pricing, stock deduction, and CRM updates in one transaction.
+   * Orchestrates pricing, stock deduction, and CRM updates.
    */
   async createJob(params: {
     orgId: string;
@@ -40,7 +41,6 @@ export class JobService {
     return UnitOfWork.run(async (tx) => {
       const now = new Date();
 
-      // 1. RESOLVE THE RECIPE
       const priceItem = await tx.priceList.findFirst({
         where: { id: priceListId, orgId },
         include: { material: { include: { stockItem: true } }, service: true },
@@ -48,7 +48,6 @@ export class JobService {
 
       if (!priceItem) throw new ApiError("Price list item not found", 404);
 
-      // 2. B2B PRICE OVERRIDE
       let salePrice = priceItem.salePrice;
       if (b2bPushId) {
         const b2bPush = await tx.b2BPush.findUnique({
@@ -57,12 +56,11 @@ export class JobService {
         if (b2bPush?.suggestedPrice) salePrice = b2bPush.suggestedPrice;
       }
 
-      // 3. CALCULATION ENGINE
       const calc = ProductionCalculator.calculate({
         quantity,
         width,
         height,
-        unit: priceItem.material?.unit ?? "piece",
+        unit: (priceItem.material?.unit as any) ?? "piece",
         salePrice,
         purchasePrice: priceItem.material?.purchasePrice ?? 0,
         mCalcType: priceItem.material?.calcType,
@@ -71,7 +69,6 @@ export class JobService {
 
       if (calc.error) throw new ApiError(calc.error, 400);
 
-      // 4. CREATE JOB
       const job = await JobRepository.create(
         {
           orgId,
@@ -93,7 +90,6 @@ export class JobService {
         tx,
       );
 
-      // 5. CLIENT CRM UPDATE
       await tx.client.update({
         where: { id: clientId },
         data: {
@@ -106,19 +102,17 @@ export class JobService {
         },
       });
 
-      // 6. ATOMIC STOCK DEDUCTION
       if (priceItem.material?.stockItemId) {
         await stockService.createMovement(
           {
             orgId,
             stockItemId: priceItem.material.stockItemId,
-            type: "DEDUCT",
-            quantity: calc.deduction,
+            type: StockMovementType.DEDUCT,
+            quantity: calc.deduction!,
             referenceId: job.id,
             referenceType: "JOB",
             createdBy: userId,
-            unitCost: priceItem.material.purchasePrice,
-            note: `Auto deduction: ${calc.usageLabel} for ${job.serviceName}`,
+            note: `Production: ${calc.usageLabel} for ${job.serviceName}`,
           },
           tx,
         );
@@ -129,16 +123,75 @@ export class JobService {
           where: { id: b2bPushId },
           data: { status: "ACCEPTED" },
         });
-
       await Outbox.add(tx, { type: "job.created", orgId, payload: job });
-
       return job;
     });
   }
 
   /**
-   * ADD VARIABLE (Add-on)
-   * Handles multi-service/material add-ons for an existing job.
+   * RECORD WASTAGE (The Intelligence Leak Plug)
+   * Deducts stock and kills profit margin for a specific job.
+   */
+  async recordWastage(params: {
+    orgId: string;
+    jobId: string;
+    quantity: number; // The amount of material ruined
+    reason: string;
+    userId: string;
+  }) {
+    const { orgId, jobId, quantity, reason, userId } = params;
+
+    return UnitOfWork.run(async (tx) => {
+      // 1. Resolve Job and its associated Material
+      const job = await tx.job.findUnique({
+        where: { id: jobId, orgId },
+        include: { priceList: { include: { material: true } } },
+      });
+
+      if (!job || !job.priceList.material) {
+        throw new ApiError("Job material not found for wastage report", 404);
+      }
+
+      const material = job.priceList.material;
+      const lossValue = quantity * material.purchasePrice;
+
+      // 2. TRIGGER STOCK LEDGER (The Nervous System)
+      await stockService.createMovement(
+        {
+          orgId,
+          stockItemId: material.stockItemId!,
+          type: StockMovementType.WASTE,
+          quantity,
+          referenceId: job.id,
+          referenceType: "JOB_WASTE",
+          createdBy: userId,
+          note: `RUINED: ${reason} (${quantity}${material.unit})`,
+        },
+        tx,
+      );
+
+      // 3. UPDATE JOB FINANCIALS (Intelligence Impact)
+      // We increase the cost and decrease the margin of the job.
+      const updatedJob = await tx.job.update({
+        where: { id: jobId },
+        data: {
+          costPrice: { increment: lossValue },
+          profitMargin: { decrement: lossValue },
+        },
+      });
+
+      await Outbox.add(tx, {
+        type: "job.wastage_recorded",
+        orgId,
+        payload: { jobId, lossValue, quantity, reason },
+      });
+
+      return updatedJob;
+    });
+  }
+
+  /**
+   * ADD VARIABLE
    */
   async addVariable(params: {
     orgId: string;
@@ -153,7 +206,6 @@ export class JobService {
       params;
 
     return UnitOfWork.run(async (tx) => {
-      // 1. Fetch Add-on Recipe
       const priceItem = await tx.priceList.findFirst({
         where: { id: priceListId, orgId },
         include: { material: { include: { stockItem: true } }, service: true },
@@ -161,12 +213,11 @@ export class JobService {
 
       if (!priceItem) throw new ApiError("Variable service not found", 404);
 
-      // 2. Calculate Add-on Price/Stock
       const calc = ProductionCalculator.calculate({
         quantity,
         width,
         height,
-        unit: priceItem.material?.unit ?? "piece",
+        unit: (priceItem.material?.unit as any) ?? "piece",
         salePrice: priceItem.salePrice,
         purchasePrice: priceItem.material?.purchasePrice ?? 0,
         mCalcType: priceItem.material?.calcType,
@@ -175,7 +226,6 @@ export class JobService {
 
       if (calc.error) throw new ApiError(calc.error, 400);
 
-      // 3. Create Variable Record
       const variable = await tx.jobVariable.create({
         data: {
           orgId,
@@ -191,8 +241,7 @@ export class JobService {
         },
       });
 
-      // 4. Update Main Job Totals & Profitability
-      const updatedJob = await tx.job.update({
+      await tx.job.update({
         where: { id: jobId },
         data: {
           variableTotal: { increment: calc.totalPrice },
@@ -202,19 +251,17 @@ export class JobService {
         },
       });
 
-      // 5. Handle Variable Stock Deduction
       if (priceItem.material?.stockItemId) {
         await stockService.createMovement(
           {
             orgId,
             stockItemId: priceItem.material.stockItemId,
-            type: "DEDUCT",
-            quantity: calc.deduction,
+            type: StockMovementType.DEDUCT,
+            quantity: calc.deduction!,
             referenceId: variable.id,
             referenceType: "JOB_VARIABLE",
             createdBy: userId,
-            unitCost: priceItem.material.purchasePrice,
-            note: `Variable add-on: ${priceItem.displayName} for Job #${jobId}`,
+            note: `Add-on: ${priceItem.displayName} for Job #${jobId}`,
           },
           tx,
         );
@@ -225,8 +272,7 @@ export class JobService {
         orgId,
         payload: { jobId, variableId: variable.id },
       });
-
-      return { variable, updatedJob };
+      return { variable };
     });
   }
 

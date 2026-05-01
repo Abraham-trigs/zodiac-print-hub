@@ -2,22 +2,23 @@
 import { prisma } from "@lib/prisma-client";
 import { Outbox } from "@lib/db/outbox";
 import type { CreateStockMovementInput } from "@lib/schema/stock.schema";
+import { StockMovementType } from "@prisma/client";
+import { StockAlertService } from "./stock-alert.service"; // 🚀 Added Watchman
 
 /**
- * V2 STOCK ENGINE
- * Logic: Material = The Definition (Brain)
- *        StockItem = The Bucket (Tracking)
- *        StockMovement = The History (Ledger)
+ * V2 STOCK ENGINE (Industrial Ledger Edition)
+ * Principles:
+ * 1. StockItem = Snapshot (Current Balance)
+ * 2. StockMovement = Truth (The Audit Trail)
  */
 class StockService {
   /* =========================================================
      INITIAL STOCK REGISTRATION
-     🔥 UPDATED: Now links to a Material Resource
   ========================================================= */
   async registerInitialStock(
     orgId: string,
     data: {
-      materialId: string; // 🔥 FIXED: Links to the technical resource
+      materialId: string;
       quantity: number;
       purchasePrice?: number;
       lowStockThreshold?: number;
@@ -25,28 +26,24 @@ class StockService {
     },
     tx: any,
   ) {
-    // 1. Create the Bucket (Projection)
     const item = await tx.stockItem.create({
       data: {
         orgId,
-        materialId: data.materialId, // 🔥 Relational Link
+        materialId: data.materialId,
         totalRemaining: data.quantity || 0,
         lowStockThreshold: data.lowStockThreshold ?? 10,
-        // purchasePrice is stored at the Material level, but we track last cost in movement
       },
     });
 
-    // 2. Create the Ledger Entry (Source of Truth)
     const movement = await tx.stockMovement.create({
       data: {
         orgId,
         stockItemId: item.id,
-        type: "RESTOCK",
+        type: StockMovementType.RESTOCK,
         quantity: data.quantity || 0,
-        unitCost: data.purchasePrice || 0,
-        referenceType: "INITIAL_LOAD",
-        note: "System registration of physical material",
+        note: "Initial system registration of physical material",
         createdBy: data.createdBy || "SYSTEM",
+        referenceType: "INITIAL_LOAD",
       },
     });
 
@@ -61,7 +58,6 @@ class StockService {
 
   /* =========================================================
      STOCK MOVEMENT ENGINE
-     Strict Ledger-based math
   ========================================================= */
   async createMovement(params: CreateStockMovementInput, tx: any) {
     const {
@@ -69,7 +65,6 @@ class StockService {
       stockItemId,
       type,
       quantity,
-      unitCost,
       referenceId,
       referenceType,
       note,
@@ -78,7 +73,7 @@ class StockService {
 
     const item = await tx.stockItem.findFirst({
       where: { id: stockItemId, orgId },
-      include: { material: true }, // 🚀 Include specs for validation
+      include: { material: true },
     });
 
     if (!item) throw new Error("Stock item not found");
@@ -90,10 +85,10 @@ class StockService {
         break;
       case "DEDUCT":
       case "WASTE":
-        // In industrial production, we allow negative stock if config allows,
-        // but here we maintain strict integrity.
         if (item.totalRemaining < quantity) {
-          throw new Error(`Insufficient stock for ${item.material?.name}`);
+          throw new Error(
+            `Insufficient stock for ${item.material?.name}. Required: ${quantity}, Available: ${item.totalRemaining}`,
+          );
         }
         delta = -quantity;
         break;
@@ -101,25 +96,24 @@ class StockService {
         delta = quantity - item.totalRemaining;
         break;
       default:
-        throw new Error(`Unsupported stock movement type: ${type}`);
+        throw new Error(`Unsupported movement type: ${type}`);
     }
 
     const newQuantity = item.totalRemaining + delta;
 
-    // UPDATE PROJECTION
+    // 1. UPDATE PROJECTION (SNAPSHOT)
     const updated = await tx.stockItem.update({
       where: { id: stockItemId },
       data: { totalRemaining: newQuantity },
     });
 
-    // WRITE LEDGER
+    // 2. WRITE TO LEDGER (AUDIT TRAIL)
     const movement = await tx.stockMovement.create({
       data: {
         orgId,
         stockItemId,
         type,
-        quantity: Math.abs(delta),
-        unitCost: unitCost || 0,
+        quantity,
         referenceId,
         referenceType,
         note,
@@ -127,10 +121,32 @@ class StockService {
       },
     });
 
+    // 🚀 3. AUTOMATION: LOW STOCK CHECK
+    // If we just reduced stock, check if we need to alert the manager
+    if (
+      type === "DEDUCT" ||
+      type === "WASTE" ||
+      (type === "ADJUST" && delta < 0)
+    ) {
+      await StockAlertService.checkThreshold({
+        orgId,
+        stockItemId: item.id,
+        currentBalance: newQuantity,
+        threshold: item.lowStockThreshold,
+        materialName: item.material?.name || "Unknown Material",
+        tx,
+      });
+    }
+
+    // 4. BROADCAST FOR UI & INTELLIGENCE
     await Outbox.add(tx, {
       type: "stock.movement_created",
       orgId,
-      payload: { movement, after: updated },
+      payload: {
+        movement,
+        after: updated,
+        materialName: item.material?.name,
+      },
     });
 
     return updated;
@@ -142,9 +158,7 @@ class StockService {
   async list(orgId: string) {
     return prisma.stockItem.findMany({
       where: { orgId },
-      include: {
-        material: true, // 🚀 VITAL: Fetch specs (sqft/mm/name)
-      },
+      include: { material: true },
       orderBy: { updatedAt: "desc" },
     });
   }
@@ -152,7 +166,13 @@ class StockService {
   async findById(orgId: string, id: string) {
     return prisma.stockItem.findFirst({
       where: { id, orgId },
-      include: { material: true },
+      include: {
+        material: true,
+        movements: {
+          take: 20,
+          orderBy: { createdAt: "desc" },
+        },
+      },
     });
   }
 }

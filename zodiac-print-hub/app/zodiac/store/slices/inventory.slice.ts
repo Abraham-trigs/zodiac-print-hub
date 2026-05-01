@@ -1,20 +1,20 @@
-// src/store/slices/inventory.slice.ts
 import { StateCreator } from "zustand";
 import { StockItem, Material, StockMovement } from "@prisma/client";
 import { apiClient } from "@root/lib/api/client";
 
 /* =========================================================
-   TYPES (ALIGNED WITH MATERIAL ↔ STOCK LINK)
+   TYPES
 ========================================================= */
 
 export type StockItemFull = StockItem & {
   material?: Material | null;
-  movements?: StockMovement[]; // Optional: for the "Stock History" tab
+  movements?: StockMovement[];
 };
 
 export interface InventorySlice {
   inventoryState: {
     inventory: Record<string, StockItemFull>;
+    movements: Record<string, StockMovement>; // 🔥 NEW: Ledger cache for UI
     isLoading: boolean;
     error: string | null;
   };
@@ -22,7 +22,10 @@ export interface InventorySlice {
   setInventory: (data: StockItemFull[]) => void;
   loadInventory: (query?: { orgId?: string }) => Promise<void>;
 
-  // LEDGER ACTIONS
+  // 🔥 NEW: Fetch historic movements for the Ledger UI
+  loadMovements: (params: { stockItemId?: string }) => Promise<void>;
+
+  // LEDGER ACTIONS (Aligned with StockMovement model)
   restock: (payload: {
     stockItemId: string;
     quantity: number;
@@ -32,7 +35,7 @@ export interface InventorySlice {
 
   adjust: (payload: {
     stockItemId: string;
-    quantity: number; // Negative for loss, Positive for correction
+    quantity: number;
     type: "WASTE" | "ADJUST";
     note?: string;
   }) => Promise<void>;
@@ -48,6 +51,7 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
 ) => ({
   inventoryState: {
     inventory: {},
+    movements: {}, // 🔥 Initialized
     isLoading: false,
     error: null,
   },
@@ -57,21 +61,16 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
       inventoryState: {
         ...state.inventoryState,
         inventory: data.reduce(
-          (acc, item) => {
-            acc[item.id] = item;
-            return acc;
-          },
-          {} as Record<string, StockItemFull>,
+          (acc, item) => ({ ...acc, [item.id]: item }),
+          {},
         ),
       },
     })),
 
-  /* --- READ (Server Source of Truth) --- */
   loadInventory: async (query) => {
     set((s) => ({
       inventoryState: { ...s.inventoryState, isLoading: true, error: null },
     }));
-
     try {
       const res = await apiClient<{ data: StockItemFull[] }>("/api/stock", {
         query,
@@ -88,29 +87,63 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
     }
   },
 
-  /* --- RESTOCK (Adding Value) --- */
+  /**
+   * LOAD MOVEMENTS
+   * 🔥 NEW: Powers the StockLedgerScreen
+   */
+  loadMovements: async ({ stockItemId }) => {
+    try {
+      const res = await apiClient<{ data: StockMovement[] }>(
+        "/api/stock/movements",
+        {
+          query: stockItemId ? { stockItemId } : {},
+        },
+      );
+      const data = res?.data ?? [];
+
+      set((state) => ({
+        inventoryState: {
+          ...state.inventoryState,
+          movements: data.reduce(
+            (acc, m) => ({ ...acc, [m.id]: m }),
+            state.inventoryState.movements,
+          ),
+        },
+      }));
+    } catch (e) {
+      console.error("Ledger fetch failed", e);
+    }
+  },
+
   restock: async (payload) => {
     try {
-      await apiClient("/api/stock/movement", {
+      await apiClient("/api/stock", {
+        // 🚀 Updated path to match route.ts
         method: "POST",
-        body: { ...payload, type: "RESTOCK" },
+        body: {
+          ...payload,
+          type: "RESTOCK",
+          referenceType: "RESTOCK",
+          createdBy: (get() as any).authState?.user?.id || "SYSTEM", // 🚀 Attribution
+        },
       });
-
-      // Refresh to get the new totalRemaining and updated lastUnitCost
       await get().loadInventory();
     } catch (e: any) {
       console.error("Restock failed", e);
     }
   },
 
-  /* --- ADJUST / WASTE (Manual Corrections) --- */
   adjust: async (payload) => {
     try {
-      await apiClient("/api/stock/movement", {
+      await apiClient("/api/stock", {
+        // 🚀 Updated path
         method: "POST",
-        body: payload,
+        body: {
+          ...payload,
+          referenceType: payload.type === "WASTE" ? "WASTE" : "MANUAL",
+          createdBy: (get() as any).authState?.user?.id || "SYSTEM",
+        },
       });
-
       await get().loadInventory();
     } catch (e: any) {
       console.error("Adjustment failed", e);

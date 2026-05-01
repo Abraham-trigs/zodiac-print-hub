@@ -9,6 +9,18 @@
 //   - Add new types at the bottom of their section with a JSDoc comment.
 // =============================================================================
 
+export interface ProductionReport {
+  summary: {
+    revenue: number;
+    costs: number;
+    leakage: number;
+    netProfit: number;
+    margin: number;
+  };
+  wastageCount: number;
+  jobCount: number;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. ORGANISATION (Multi-tenant root)
 // ─────────────────────────────────────────────────────────────────────────────

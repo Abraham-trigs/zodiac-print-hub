@@ -4,6 +4,8 @@ import { useZodiac } from "../store/zodiac.store";
 import { useModalStore } from "../store/useModalStore";
 import { ZodiacScreen } from "../types/screen.types";
 import { SettingsPermissionsModal } from "../screens/modals/SettingsPermissionsModal";
+import { useDataStore } from "../store/core/useDataStore";
+import { selectProductionIntelligence } from "../store/selectors/data.selectors";
 
 export const HubMenuScreen: ZodiacScreen = {
   id: "HUB_MENU",
@@ -12,25 +14,23 @@ export const HubMenuScreen: ZodiacScreen = {
     const { setScreen } = useZodiac();
     const { openModal } = useModalStore();
 
-    /* =========================================================
-       NAVIGATION LOGIC (Synced with Screen Registry)
-    ========================================================= */
+    // 🧠 LIVE BRAIN: Pull the waste tip from actual shop data
+    const intel = useDataStore(selectProductionIntelligence);
+
     const handleMenuClick = (id: string) => {
       if (id === "SETTINGS") {
-        // Settings remains a modal for quick overlay access
         openModal("GLOBAL", SettingsPermissionsModal);
       } else {
-        // 🔥 FIXED: PRICE_ENTRY_CENTER is now a formal screen transition
         setScreen(id as any);
       }
     };
 
     const menuItems = [
       {
-        id: "ANALYTICS",
-        label: "Business Analytics",
-        icon: "📈",
-        desc: "Revenue & Waste",
+        id: "ANALYTICS", // 🚀 Points to ProductionIntelligenceHub
+        label: "Production Intel",
+        icon: "📊",
+        desc: "Margins & Leakage",
       },
       {
         id: "STAFF_MGMT",
@@ -39,33 +39,33 @@ export const HubMenuScreen: ZodiacScreen = {
         desc: "Load & Performance",
       },
       {
-        id: "PRICE_ENTRY_CENTER", // 🔥 UPDATED: Matches Registry Screen ID
+        id: "PRICE_ENTRY_CENTER",
         label: "Price Config",
         icon: "💰",
-        desc: "Market Benchmarks",
+        desc: "Workstation Entry",
       },
       {
-        id: "STOCK_MGMT",
+        id: "STOCK_MGMT", // 🚀 Leads to Ledger & Thresholds
         label: "Inventory Logic",
         icon: "📦",
-        desc: "Stock Thresholds",
+        desc: "Audit Trail & Levels",
       },
       {
         id: "SETTINGS",
-        label: "Settings & Permissions",
+        label: "Global Settings",
         icon: "🛡️",
-        desc: "Permissions & Global Keys",
+        desc: "Keys & Permissions",
       },
     ];
 
     return (
       <div className="flex flex-col h-full gap-8 animate-in fade-in zoom-in-95 duration-300">
         <header>
-          <h2 className="text-3xl font-black tracking-tighter">
+          <h2 className="text-3xl font-black tracking-tighter uppercase italic">
             Control Center
           </h2>
-          <p className="text-[10px] text-cyan-400 uppercase tracking-[0.3em] font-bold">
-            Insight & Configuration
+          <p className="text-[10px] text-cyan-400 uppercase tracking-[0.3em] font-black">
+            Systems Management Node
           </p>
         </header>
 
@@ -74,28 +74,43 @@ export const HubMenuScreen: ZodiacScreen = {
             <div
               key={item.id}
               onClick={() => handleMenuClick(item.id)}
-              className="glass-card p-5 flex items-center gap-5 border-white/5 hover:border-cyan-400/30 bg-white/5 transition-all cursor-pointer group active:scale-95"
+              className="glass-card p-5 flex items-center gap-5 border border-white/5 hover:border-cyan-400/30 bg-white/5 transition-all cursor-pointer group active:scale-[0.95]"
             >
-              <div className="text-3xl bg-blue-900/30 w-14 h-14 rounded-2xl flex items-center justify-center border border-white/5 group-hover:bg-cyan-400/10">
+              <div className="text-2xl bg-white/5 w-14 h-14 rounded-2xl flex items-center justify-center border border-white/5 group-hover:bg-cyan-400/10 group-hover:border-cyan-400/20 transition-all">
                 {item.icon}
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-black uppercase tracking-tight">
+                <span className="text-[11px] font-black uppercase tracking-widest text-white/80 group-hover:text-white">
                   {item.label}
                 </span>
-                <span className="text-[10px] opacity-40">{item.desc}</span>
+                <span className="text-[9px] opacity-30 font-bold uppercase tracking-tight group-hover:opacity-60">
+                  {item.desc}
+                </span>
               </div>
-              <span className="ml-auto opacity-20 group-hover:opacity-100 group-hover:text-cyan-400">
+              <span className="ml-auto opacity-10 group-hover:opacity-100 group-hover:text-cyan-400 transition-all font-black">
                 →
               </span>
             </div>
           ))}
         </div>
 
-        {/* Dynamic Management Insight */}
-        <div className="mt-auto p-4 bg-orange-500/10 border border-orange-500/20 rounded-3xl">
-          <p className="text-[9px] text-orange-200 leading-relaxed italic text-center uppercase font-bold tracking-tighter">
-            💡 Management Tip: Weekly material waste is at 4.2%.
+        {/* 🚀 DYNAMIC INTELLIGENCE TIP */}
+        <div
+          className={`mt-auto p-5 border rounded-[2rem] transition-all duration-1000 ${
+            intel.margin < 20
+              ? "bg-red-500/10 border-red-500/20"
+              : "bg-cyan-500/5 border-cyan-500/10"
+          }`}
+        >
+          <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-2">
+            Node Insight:
+          </p>
+          <p
+            className={`text-[11px] font-bold italic ${intel.margin < 20 ? "text-red-400" : "text-cyan-400"}`}
+          >
+            {intel.margin < 20
+              ? `⚠️ Low Margin Alert: Shop currently operating at ${intel.margin.toFixed(1)}% efficiency.`
+              : `✓ Shop health stable. Current production margin is ${intel.margin.toFixed(1)}%.`}
           </p>
         </div>
       </div>

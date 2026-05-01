@@ -1,98 +1,51 @@
 import { StateCreator } from "zustand";
-import type { PaymentRecord, PaymentRecordStatus } from "@/types/zodiac.types";
+import { Payment, PaymentMethod } from "@prisma/client";
 
 export interface PaymentSlice {
-  payments: Record<string, PaymentRecord[]>;
-  selectedPaymentId?: string;
+  paymentState: {
+    payments: Record<string, Payment[]>; // Keyed by JobID
+    isLoading: boolean;
+    error: string | null;
+  };
 
-  isLoading: boolean;
-  isSubmitting: boolean;
-  error?: string | null;
-
-  setPayments: (jobId: string, payments: PaymentRecord[]) => void;
-
-  addPaymentOptimistic: (jobId: string, payment: PaymentRecord) => void;
-
-  updatePaymentStatus: (
+  setPayments: (jobId: string, payments: Payment[]) => void;
+  applyPaymentConfirmed: (
     jobId: string,
-    paymentId: string,
-    status: PaymentRecordStatus,
+    payment: Payment,
+    newJobStatus: string,
   ) => void;
-
-  selectPayment: (paymentId?: string) => void;
-
-  removePayment: (jobId: string, paymentId: string) => void;
-
-  clearJobPayments: (jobId: string) => void;
-
-  setLoading: (value: boolean) => void;
-  setSubmitting: (value: boolean) => void;
-  setError: (error?: string | null) => void;
-
-  getJobPayments: (jobId: string) => PaymentRecord[];
-
-  getTotalPaid: (jobId: string) => number;
 }
 
-export const createPaymentSlice: StateCreator<PaymentSlice> = (set, get) => ({
-  payments: {},
-  selectedPaymentId: undefined,
-
-  isLoading: false,
-  isSubmitting: false,
-  error: null,
+export const createPaymentSlice: StateCreator<PaymentSlice> = (set) => ({
+  paymentState: {
+    payments: {},
+    isLoading: false,
+    error: null,
+  },
 
   setPayments: (jobId, payments) =>
     set((state) => ({
-      payments: {
-        ...state.payments,
-        [jobId]: payments,
+      paymentState: {
+        ...state.paymentState,
+        payments: { ...state.paymentState.payments, [jobId]: payments },
       },
     })),
 
-  addPaymentOptimistic: (jobId, payment) =>
-    set((state) => ({
-      payments: {
-        ...state.payments,
-        [jobId]: [payment, ...(state.payments[jobId] || [])],
-      },
-    })),
-
-  updatePaymentStatus: (jobId, paymentId, status) =>
-    set((state) => ({
-      payments: {
-        ...state.payments,
-        [jobId]: (state.payments[jobId] || []).map((p) =>
-          p.id === paymentId ? { ...p, status } : p,
-        ),
-      },
-    })),
-
-  selectPayment: (paymentId) => set({ selectedPaymentId: paymentId }),
-
-  removePayment: (jobId, paymentId) =>
-    set((state) => ({
-      payments: {
-        ...state.payments,
-        [jobId]: (state.payments[jobId] || []).filter(
-          (p) => p.id !== paymentId,
-        ),
-      },
-    })),
-
-  clearJobPayments: (jobId) =>
+  /**
+   * APPLY PAYMENT (Outbox/Socket Handshake)
+   * Logic: Appends to ledger and provides immediate UI feedback.
+   */
+  applyPaymentConfirmed: (jobId, payment) =>
     set((state) => {
-      const copy = { ...state.payments };
-      delete copy[jobId];
-      return { payments: copy };
+      const existing = state.paymentState.payments[jobId] || [];
+      return {
+        paymentState: {
+          ...state.paymentState,
+          payments: {
+            ...state.paymentState.payments,
+            [jobId]: [...existing, payment],
+          },
+        },
+      };
     }),
-
-  setLoading: (value) => set({ isLoading: value }),
-  setSubmitting: (value) => set({ isSubmitting: value }),
-  setError: (error) => set({ error }),
-
-  getJobPayments: (jobId) => get().payments[jobId] || [],
-
-  getTotalPaid: (jobId) =>
-    (get().payments[jobId] || []).reduce((sum, p) => sum + p.amount, 0),
 });

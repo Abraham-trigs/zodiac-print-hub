@@ -1,87 +1,75 @@
 import { StateCreator } from "zustand";
-import { StaffMember, StaffStatus } from "@/types/zodiac.types";
+import { Staff, StaffStatus } from "@prisma/client";
+import { apiClient } from "@root/lib/api/client";
+
+// Joined type for UI hydration
+export type StaffWithUser = Staff & {
+  user: { name: string; email: string; image?: string };
+};
 
 export interface StaffSlice {
-  staff: Record<string, StaffMember>;
-
-  setStaff: (data: StaffMember[]) => void;
-  addStaff: (staff: StaffMember) => void;
-  updateStaff: (id: string, patch: Partial<StaffMember>) => void;
-  setStaffStatus: (id: string, status: StaffStatus) => void;
-  assignCurrentJob: (id: string, jobId?: string) => void;
-
+  staffState: {
+    staff: Record<string, StaffWithUser>;
+    isLoading: boolean;
+    error: string | null;
+  };
+  loadStaff: (orgId: string) => Promise<void>;
   applyStaffAssigned: (staffId: string, jobId: string) => void;
   applyStaffStatus: (staffId: string, status: StaffStatus) => void;
 }
 
-export const createStaffSlice: StateCreator<StaffSlice> = (set) => ({
-  staff: {},
+export const createStaffSlice: StateCreator<StaffSlice> = (set, get) => ({
+  staffState: { staff: {}, isLoading: false, error: null },
 
-  setStaff: (data) =>
-    set(() => ({
-      staff: data.reduce(
-        (acc, s) => {
-          acc[s.id] = s;
-          return acc;
+  loadStaff: async (orgId) => {
+    set((s) => ({ staffState: { ...s.staffState, isLoading: true } }));
+    try {
+      const res = await apiClient<{ data: StaffWithUser[] }>("/api/staff");
+      const data = res?.data ?? [];
+      set((s) => ({
+        staffState: {
+          ...s.staffState,
+          staff: data.reduce((acc, st) => ({ ...acc, [st.id]: st }), {}),
         },
-        {} as Record<string, StaffMember>,
-      ),
-    })),
+      }));
+    } catch (err: any) {
+      set((s) => ({ staffState: { ...s.staffState, error: err.message } }));
+    } finally {
+      set((s) => ({ staffState: { ...s.staffState, isLoading: false } }));
+    }
+  },
 
-  addStaff: (staff) =>
-    set((state) => ({
-      staff: {
-        ...state.staff,
-        [staff.id]: staff,
-      },
-    })),
-
-  updateStaff: (id, patch) =>
+  applyStaffAssigned: (staffId, jobId) =>
     set((state) => {
-      const existing = state.staff[id];
+      const existing = state.staffState.staff[staffId];
       if (!existing) return state;
-
       return {
-        staff: {
-          ...state.staff,
-          [id]: { ...existing, ...patch },
+        staffState: {
+          ...state.staffState,
+          staff: {
+            ...state.staffState.staff,
+            [staffId]: {
+              ...existing,
+              currentJobId: jobId,
+              status: StaffStatus.BUSY,
+            },
+          },
         },
       };
     }),
 
-  setStaffStatus: (id, status) =>
-    set((state) => ({
-      staff: {
-        ...state.staff,
-        [id]: { ...state.staff[id], status },
-      },
-    })),
-
-  assignCurrentJob: (id, jobId) =>
-    set((state) => ({
-      staff: {
-        ...state.staff,
-        [id]: { ...state.staff[id], currentJobId: jobId },
-      },
-    })),
-
-  applyStaffAssigned: (staffId, jobId) =>
-    set((state) => ({
-      staff: {
-        ...state.staff,
-        [staffId]: {
-          ...state.staff[staffId],
-          currentJobId: jobId,
-          status: "BUSY",
-        },
-      },
-    })),
-
   applyStaffStatus: (staffId, status) =>
-    set((state) => ({
-      staff: {
-        ...state.staff,
-        [staffId]: { ...state.staff[staffId], status },
-      },
-    })),
+    set((state) => {
+      const existing = state.staffState.staff[staffId];
+      if (!existing) return state;
+      return {
+        staffState: {
+          ...state.staffState,
+          staff: {
+            ...state.staffState.staff,
+            [staffId]: { ...existing, status },
+          },
+        },
+      };
+    }),
 });
