@@ -1,5 +1,6 @@
 import { useDataStore } from "@store/core/useDataStore";
 import type { State } from "@store/core/useDataStore";
+import { ProductionCalculator } from "@lib/utils/production-calculator";
 
 /* =========================================================
    STABLE FALLBACKS (Prevents Infinite Loops)
@@ -47,14 +48,6 @@ export const selectPaymentsMap = (s: State) =>
    ARRAY / LIST VIEWS (MEMOIZED)
 ========================================================= */
 
-/**
- * Helper to ensure Object.values doesn't trigger infinite loops
- * by returning the exact same array reference if the map hasn't changed.
- */
-/* =========================================================
-   ARRAY / LIST VIEWS (MEMOIZED)
-========================================================= */
-
 const getMemoizedArray = (currentMap: any, cacheKey: keyof typeof cache) => {
   if (currentMap === cache[cacheKey].map) return cache[cacheKey].array;
   cache[cacheKey].map = currentMap;
@@ -76,10 +69,10 @@ export const selectDeliveriesArray = (s: State) =>
   getMemoizedArray(selectDeliveriesMap(s), "delivery");
 export const selectPaymentsArray = (s: State) =>
   getMemoizedArray(selectPaymentsMap(s), "payment");
-// ✅ SYNCED: Now has a cache entry to refer to
 export const selectB2BArray = (s: State) =>
   getMemoizedArray(selectB2BMap(s), "b2b");
 
+// RELATION CACHE
 let jobsWithRelationsCache: any[] = [];
 let jobsRef: any = null;
 let pricesRef: any = null;
@@ -108,7 +101,8 @@ export const selectJobsWithRelations = (s: State) => {
 
   jobsWithRelationsCache = jobs.map((job) => ({
     ...job,
-    service: prices[job.serviceId],
+    // 🔥 FIXED: Use priceListId junction for V2
+    service: prices[job.priceListId],
     client: clients[job.clientId],
     staff: job.assignedStaffId ? staff[job.assignedStaffId] : undefined,
   }));
@@ -119,7 +113,6 @@ export const selectJobsWithRelations = (s: State) => {
 /* =========================================================
    🔁 BACKWARD COMPATIBILITY ALIASES
 ========================================================= */
-
 export const selectAllJobs = selectJobsArray;
 export const selectAllStaff = selectStaffArray;
 export const selectAllClients = selectClientsArray;
@@ -131,7 +124,6 @@ export const selectAllPayments = selectPaymentsArray;
 /* =========================================================
    JOB DOMAIN COMPOSITES
 ========================================================= */
-
 export const selectJobById = (id: string) => (s: State) => selectJobsMap(s)[id];
 
 export const selectJobWithRelations = (id: string) => (s: State) => {
@@ -139,15 +131,14 @@ export const selectJobWithRelations = (id: string) => (s: State) => {
   if (!job) return undefined;
 
   const prices = selectPricesMap(s);
-  const b2bItems = selectB2BMap(s); // 🔥 Added to check for negotiations
+  const b2bItems = selectB2BMap(s);
 
   return {
     ...job,
-    service: prices[job.serviceId],
+    // 🔥 FIXED: Use priceListId junction for V2
+    service: prices[job.priceListId],
 
-    // 🔥 NEW: Link the negotiated push record if this was a B2B job
     b2bPush: job.b2bPushId ? b2bItems[job.b2bPushId] : undefined,
-
     client: selectClientsMap(s)[job.clientId],
     staff: job.assignedStaffId
       ? selectStaffMap(s)[job.assignedStaffId]
@@ -191,7 +182,7 @@ export const selectBusyStaff = (s: State) =>
   selectStaffArray(s).filter((st) => st.status === "BUSY");
 
 /* =========================================================
-   INVENTORY / JOB IMPACT
+   INVENTORY / JOB IMPACT (V2 ALIGNED)
 ========================================================= */
 
 export const selectLowStockItems =
@@ -204,19 +195,20 @@ export const selectStockForJob = (jobId: string) => (s: State) => {
   if (!job) return undefined;
 
   const prices = selectPricesMap(s);
-  const service = prices[job.serviceId];
 
-  // 🔥 FIXED: Trace the link from Job -> PriceList -> stockRefId
-  if (!service || !service.stockRefId) return undefined;
+  // 🔥 FIXED: Resolve via PriceList junction
+  const priceItem = prices[job.priceListId];
+
+  // 🔥 FIXED: Trace link PriceList -> materialId -> Stock
+  if (!priceItem || !priceItem.materialId) return undefined;
 
   const inventory = selectInventoryMap(s);
-  return inventory[service.stockRefId];
+  return inventory[priceItem.materialId];
 };
 
 /* =========================================================
-   DELIVERY PIPELINE
+   DELIVERY PIPELINE (CONFIRMED)
 ========================================================= */
-
 export const selectPendingDeliveries = (s: State) =>
   selectDeliveriesArray(s).filter((d) => d.status === "PENDING");
 
@@ -226,55 +218,54 @@ export const selectActiveDeliveries = (s: State) =>
   );
 
 /* =========================================================
-   DRAFT / ESTIMATION
+   DRAFT / ESTIMATION (THE V2 BRAIN)
 ========================================================= */
-
 export const selectLiveEstimate = (s: State) => {
-  // ✅ FIXED: Updated to match s.draftState.draft path
   const draft = s.draftState?.draft;
 
-  if (!draft || !draft.serviceId) return 0;
+  // 🔥 FIXED: Use priceListId instead of serviceId
+  if (!draft || !draft.priceListId) return 0;
 
   const prices = selectPricesMap(s);
-  const service = prices[draft.serviceId];
+  const priceItem = prices[draft.priceListId];
 
-  if (!service) return 0;
+  if (!priceItem) return 0;
 
-  // 🔥 NEW: B2B Price Hierarchy
-  // If there's a B2B deal linked, we fetch that price from b2bState
-  let basePrice = service.priceGHS;
+  // Resolve Base Price (B2B Priority)
+  let salePrice = priceItem.salePrice;
 
   if (draft.b2bPushId) {
     const b2bDeals = selectB2BMap(s);
     const deal = b2bDeals[draft.b2bPushId];
     if (deal?.suggestedPrice) {
-      basePrice = deal.suggestedPrice;
+      salePrice = deal.suggestedPrice;
     }
   }
 
-  const qty = draft.quantity || 1;
+  // 🔥 HANDSHAKE: Call the ProductionCalculator
+  // This replaces all the 'isArea' manual logic
+  const calc = ProductionCalculator.calculate({
+    quantity: draft.quantity || 1,
+    width: draft.width,
+    height: draft.height,
+    unit: (priceItem.material?.unit || "piece") as any,
+    salePrice,
+    mCalcType: priceItem.material?.calcType,
+    sCalcType: priceItem.service?.calcType,
+  });
 
-  // ✅ FIXED: Expanded to match Backend isLargeFormat units
-  const isArea = ["sqft", "sqm", "Per Sq Meter", "Per Yard"].includes(
-    service.unit,
-  );
-
-  const area = isArea ? (draft.width || 1) * (draft.height || 1) : 1;
-
-  return basePrice * qty * area;
+  return calc.error ? 0 : calc.totalPrice;
 };
 
 /* =========================================================
-   SEARCH HELPERS
+   SEARCH HELPERS (CONFIRMED)
 ========================================================= */
-
 export const selectSearchJobs = (query: string) => (s: State) => {
   const all = selectJobsArray(s);
   const q = query.toLowerCase().trim();
   if (!q) return all;
 
   return all.filter((j) => {
-    // 🔥 FIXED: Search by ID, Service Name, or Client Name (via relation)
     const client = selectClientsMap(s)[j.clientId];
     return (
       j.id.toLowerCase().includes(q) ||
@@ -291,7 +282,6 @@ export const selectSearchClients = (query: string) => (s: State) => {
 
   return all.filter(
     (c) =>
-      // 🔥 FIXED: Search by Name or Phone Number
       c.name.toLowerCase().includes(q) || c.phone?.toLowerCase().includes(q),
   );
 };
@@ -300,25 +290,29 @@ export const selectSearchClients = (query: string) => (s: State) => {
    HOOK WRAPPERS
 ========================================================= */
 
-// ✅ FIXED: Points to draftState grouping
+// ✅ SYNCED: Accesses the Job Shopping Cart
 export const useDraft = () => useDataStore((s: State) => s.draftState?.draft);
 
-// ✅ SYNCED: Points to priceState
-export const usePrices = () => useDataStore((s) => s.priceState?.prices);
+// ✅ SYNCED: Accesses the PriceList Master Dictionary
+export const usePrices = () => useDataStore((s: State) => s.priceState?.prices);
 
-export const useSelectedService = () =>
+/**
+ * useSelectedPriceItem
+ * 🔥 UPDATED: Replaces useSelectedService to align with Junction Architecture.
+ * Returns the full Recipe (Material/Service details) for the currently selected product.
+ */
+export const useSelectedPriceItem = () =>
   useDataStore((s: State) => {
-    // ✅ FIXED: Updated path
     const draft = s.draftState?.draft;
-    if (!draft?.serviceId) return undefined;
+    // 🔥 FIXED: Look up via priceListId junction
+    if (!draft?.priceListId) return undefined;
 
-    // ✅ SYNCED: Points to priceState
-    return s.priceState?.prices[draft.serviceId];
+    return s.priceState?.prices[draft.priceListId];
   });
 
-// ✅ SYNCED: Uses the updated B2B-aware estimate selector
+// ✅ SYNCED: Uses the ProductionCalculator-powered estimate
 export const useLiveEstimate = () =>
   useDataStore((s: State) => selectLiveEstimate(s));
 
-// ✅ NEW: Hook for the B2B negotiations
+// ✅ SYNCED: Accesses partner negotiation items
 export const useB2BItems = () => useDataStore((s: State) => s.b2bState?.items);
