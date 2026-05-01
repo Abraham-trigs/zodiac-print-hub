@@ -124,11 +124,13 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   id: 'id',
   name: 'name',
   slug: 'slug',
+  isActive: 'isActive',
   logoUrl: 'logoUrl',
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
   address: 'address',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.OutboxEventScalarFieldEnum = {
@@ -137,17 +139,33 @@ exports.Prisma.OutboxEventScalarFieldEnum = {
   payload: 'payload',
   orgId: 'orgId',
   status: 'status',
+  attempts: 'attempts',
+  lastError: 'lastError',
+  processedAt: 'processedAt',
+  nextAttemptAt: 'nextAttemptAt',
   createdAt: 'createdAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
-  name: 'name',
   email: 'email',
-  role: 'role',
+  name: 'name',
   avatarUrl: 'avatarUrl',
-  createdAt: 'createdAt'
+  role: 'role',
+  isActive: 'isActive',
+  lastLoginAt: 'lastLoginAt',
+  authThreshold: 'authThreshold',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  token: 'token',
+  expires: 'expires',
+  orgId: 'orgId'
 };
 
 exports.Prisma.StaffScalarFieldEnum = {
@@ -157,7 +175,10 @@ exports.Prisma.StaffScalarFieldEnum = {
   phone: 'phone',
   specialisation: 'specialisation',
   isActive: 'isActive',
-  createdAt: 'createdAt'
+  joinedAt: 'joinedAt',
+  baseSalary: 'baseSalary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ClientScalarFieldEnum = {
@@ -200,7 +221,8 @@ exports.Prisma.MaterialScalarFieldEnum = {
   calcType: 'calcType',
   unit: 'unit',
   purchasePrice: 'purchasePrice',
-  stockItemId: 'stockItemId'
+  stockItemId: 'stockItemId',
+  orgId: 'orgId'
 };
 
 exports.Prisma.ServiceScalarFieldEnum = {
@@ -209,7 +231,8 @@ exports.Prisma.ServiceScalarFieldEnum = {
   calcType: 'calcType',
   basePrice: 'basePrice',
   isActive: 'isActive',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  orgId: 'orgId'
 };
 
 exports.Prisma.StockItemScalarFieldEnum = {
@@ -265,11 +288,14 @@ exports.Prisma.JobVariableScalarFieldEnum = {
   jobId: 'jobId',
   priceListId: 'priceListId',
   quantity: 'quantity',
+  width: 'width',
+  height: 'height',
   unitPrice: 'unitPrice',
   subtotal: 'subtotal',
-  createdAt: 'createdAt',
   materialId: 'materialId',
-  serviceId: 'serviceId'
+  serviceId: 'serviceId',
+  orgId: 'orgId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.DeliveryScalarFieldEnum = {
@@ -355,12 +381,17 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.OutboxStatus = exports.$Enums.OutboxStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
-  OPERATOR: 'OPERATOR',
-  CASHIER: 'CASHIER',
-  GUEST: 'GUEST',
-  GRAPHIC_DESIGNER: 'GRAPHIC_DESIGNER'
+  STAFF: 'STAFF',
+  CUSTOMER: 'CUSTOMER'
 };
 
 exports.ClientType = exports.$Enums.ClientType = {
@@ -482,6 +513,7 @@ exports.Prisma.ModelName = {
   Organisation: 'Organisation',
   OutboxEvent: 'OutboxEvent',
   User: 'User',
+  VerificationToken: 'VerificationToken',
   Staff: 'Staff',
   Client: 'Client',
   PriceList: 'PriceList',

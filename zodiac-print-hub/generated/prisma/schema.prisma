@@ -16,9 +16,10 @@ datasource db {
 //
 
 model Organisation {
-  id   String @id @default(cuid())
-  name String
-  slug String @unique
+  id       String  @id @default(cuid())
+  name     String
+  slug     String  @unique
+  isActive Boolean @default(true) // 1. Added for SaaS management
 
   logoUrl      String?
   contactEmail String?
@@ -26,15 +27,19 @@ model Organisation {
   address      String?
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // 2. Added for audit/syncing
 
-  // ─────────────────────────────────────────────
-  // Core Relations (strict multi-tenant boundary)
-  // ─────────────────────────────────────────────
-  users          User[]
-  staff          Staff[]
-  clients        Client[]
-  jobs           Job[]
-  prices         PriceList[]
+  // Core Relations
+  users   User[]
+  staff   Staff[]
+  clients Client[]
+  jobs    Job[]
+  prices  PriceList[]
+
+  // Resources & Inventory (Aligned with our Brainstorm)
+  materials Material[] // 3. Added Material link
+  services  Service[] // 4. Added Service link
+
   stockItems     StockItem[]
   stockMovements StockMovement[]
   deliveries     Delivery[]
@@ -43,12 +48,10 @@ model Organisation {
   outboxEvents   OutboxEvent[]
   payments       Payment[]
 
-  // ─────────────────────────────────────────────
-  // Performance + SaaS scaling indexes
-  // ─────────────────────────────────────────────
   @@index([name])
   @@index([slug])
   @@index([createdAt])
+  @@index([isActive]) // 5. Index for fast SaaS status checks
 }
 
 //
@@ -63,39 +66,76 @@ model OutboxEvent {
   payload Json
   orgId   String
 
-  // Add this to link it properly
   organisation Organisation @relation(fields: [orgId], references: [id])
 
-  status    String   @default("PENDING")
+  status OutboxStatus @default(PENDING)
+
+  attempts    Int       @default(0)
+  lastError   String?
+  processedAt DateTime?
+
+  // 🚀 The "Smart Worker" Field
+  // If an email fails (e.g., SMTP down), the worker sets this to 
+  // +5 mins so it doesn't keep spamming the failing service.
+  nextAttemptAt DateTime? @default(now())
+
   createdAt DateTime @default(now())
 
-  // Add this index for performance
   @@index([orgId])
-  @@index([status])
+  @@index([status, nextAttemptAt]) // Updated: Worker only picks up events where nextAttemptAt <= Now
 }
 
+enum OutboxStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// Enum for user roles across system
 enum UserRole {
   ADMIN
-  OPERATOR
-  CASHIER
-  GUEST
-  GRAPHIC_DESIGNER
+  STAFF
+  CUSTOMER
 }
 
 model User {
-  id        String   @id @default(cuid())
-  orgId     String
-  name      String
-  email     String
-  role      UserRole
-  avatarUrl String?
-  createdAt DateTime @default(now())
-
+  id           String       @id @default(cuid())
+  orgId        String
   organisation Organisation @relation(fields: [orgId], references: [id])
+
+  email     String
+  name      String
+  avatarUrl String?
+  role      UserRole
+
+  // --- Passwordless Auth Fields ---
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+
+  // This is used for Magic Link / OTP verification
+  // Usually short-lived and cleared after use
+  authThreshold DateTime?
+
   staffProfile Staff?
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([orgId, email])
-  @@index([orgId])
+  @@index([email])
+  @@index([orgId, isActive])
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  identifier String // Typically the email
+  token      String   @unique
+  expires    DateTime
+  orgId      String
+
+  @@unique([identifier, token])
+  @@index([expires]) // For cleanup workers
 }
 
 //
@@ -110,20 +150,27 @@ model Staff {
 
   // Relation to identity
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Professional-only fields
   phone          String?
-  specialisation String?
+  specialisation String? // e.g., "Large Format", "Finishing", "Design"
   isActive       Boolean @default(true)
+
+  // 🚀 Production Addition: Efficiency Tracking
+  // Useful for reporting who finishes jobs fastest or handles the most volume
+  joinedAt   DateTime?
+  baseSalary Float? // Optional: for internal payroll tracking
 
   organisation Organisation @relation(fields: [orgId], references: [id])
   assignedJobs Job[]        @relation("StaffJobs")
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([orgId])
   @@index([orgId, isActive])
+  @@index([specialisation]) // Index for fast filtering when assigning jobs
 }
 
 //
@@ -294,7 +341,10 @@ model Material {
 
   priceListItems PriceList[]
   jobVariables   JobVariable[]
+  orgId          String
+  organisation   Organisation  @relation(fields: [orgId], references: [id])
 
+  @@unique([orgId, name])
   @@index([name])
 }
 
@@ -324,6 +374,10 @@ model Service {
 
   priceListItems PriceList[]
   jobVariables   JobVariable[]
+  orgId          String
+  organisation   Organisation  @relation(fields: [orgId], references: [id])
+
+  @@unique([orgId, name])
 }
 
 //
@@ -465,21 +519,28 @@ model JobVariable {
   jobId String
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
-  // Direct mapping to the PriceList item added as a variable
   priceListId String
   priceList   PriceList @relation(fields: [priceListId], references: [id])
 
-  // Calculation Snapshot
-  quantity  Float
-  unitPrice Float // Price at time of creation
+  // --- 🚀 Critical Update: Dimensions for Variables ---
+  // This allows "Finishing" services like lamination to calculate area
+  quantity Float
+  width    Float?
+  height   Float?
+
+  unitPrice Float
   subtotal  Float
 
-  createdAt  DateTime  @default(now())
+  // Relations to definitions for technical tracking
   material   Material? @relation(fields: [materialId], references: [id])
   materialId String?
   service    Service?  @relation(fields: [serviceId], references: [id])
   serviceId  String?
 
+  orgId     String
+  createdAt DateTime @default(now())
+
+  @@index([orgId, jobId])
   @@index([jobId])
   @@index([priceListId])
 }
@@ -650,7 +711,6 @@ model B2BPush {
   @@index([deadline])
 }
 
-//
 model AuditLog {
   id    String @id @default(cuid())
   orgId String

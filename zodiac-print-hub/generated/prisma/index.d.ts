@@ -29,6 +29,11 @@ export type OutboxEvent = $Result.DefaultSelection<Prisma.$OutboxEventPayload>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model VerificationToken
+ * 
+ */
+export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTokenPayload>
+/**
  * Model Staff
  * 
  */
@@ -98,12 +103,20 @@ export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
  * Enums
  */
 export namespace $Enums {
-  export const UserRole: {
+  export const OutboxStatus: {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type OutboxStatus = (typeof OutboxStatus)[keyof typeof OutboxStatus]
+
+
+export const UserRole: {
   ADMIN: 'ADMIN',
-  OPERATOR: 'OPERATOR',
-  CASHIER: 'CASHIER',
-  GUEST: 'GUEST',
-  GRAPHIC_DESIGNER: 'GRAPHIC_DESIGNER'
+  STAFF: 'STAFF',
+  CUSTOMER: 'CUSTOMER'
 };
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
@@ -280,6 +293,10 @@ export const B2BStatus: {
 export type B2BStatus = (typeof B2BStatus)[keyof typeof B2BStatus]
 
 }
+
+export type OutboxStatus = $Enums.OutboxStatus
+
+export const OutboxStatus: typeof $Enums.OutboxStatus
 
 export type UserRole = $Enums.UserRole
 
@@ -495,6 +512,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.verificationToken`: Exposes CRUD operations for the **VerificationToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more VerificationTokens
+    * const verificationTokens = await prisma.verificationToken.findMany()
+    * ```
+    */
+  get verificationToken(): Prisma.VerificationTokenDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.staff`: Exposes CRUD operations for the **Staff** model.
@@ -1062,6 +1089,7 @@ export namespace Prisma {
     Organisation: 'Organisation',
     OutboxEvent: 'OutboxEvent',
     User: 'User',
+    VerificationToken: 'VerificationToken',
     Staff: 'Staff',
     Client: 'Client',
     PriceList: 'PriceList',
@@ -1090,7 +1118,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organisation" | "outboxEvent" | "user" | "staff" | "client" | "priceList" | "material" | "service" | "stockItem" | "stockMovement" | "job" | "jobVariable" | "delivery" | "payment" | "b2BPush" | "auditLog"
+      modelProps: "organisation" | "outboxEvent" | "user" | "verificationToken" | "staff" | "client" | "priceList" | "material" | "service" | "stockItem" | "stockMovement" | "job" | "jobVariable" | "delivery" | "payment" | "b2BPush" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1313,6 +1341,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      VerificationToken: {
+        payload: Prisma.$VerificationTokenPayload<ExtArgs>
+        fields: Prisma.VerificationTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VerificationTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VerificationTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.VerificationTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VerificationTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
+          }
+          findMany: {
+            args: Prisma.VerificationTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>[]
+          }
+          create: {
+            args: Prisma.VerificationTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
+          }
+          createMany: {
+            args: Prisma.VerificationTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VerificationTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.VerificationTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
+          }
+          update: {
+            args: Prisma.VerificationTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.VerificationTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VerificationTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VerificationTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.VerificationTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.VerificationTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVerificationToken>
+          }
+          groupBy: {
+            args: Prisma.VerificationTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VerificationTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VerificationTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<VerificationTokenCountAggregateOutputType> | number
           }
         }
       }
@@ -2389,6 +2491,7 @@ export namespace Prisma {
     organisation?: OrganisationOmit
     outboxEvent?: OutboxEventOmit
     user?: UserOmit
+    verificationToken?: VerificationTokenOmit
     staff?: StaffOmit
     client?: ClientOmit
     priceList?: PriceListOmit
@@ -2487,6 +2590,8 @@ export namespace Prisma {
     clients: number
     jobs: number
     prices: number
+    materials: number
+    services: number
     stockItems: number
     stockMovements: number
     deliveries: number
@@ -2502,6 +2607,8 @@ export namespace Prisma {
     clients?: boolean | OrganisationCountOutputTypeCountClientsArgs
     jobs?: boolean | OrganisationCountOutputTypeCountJobsArgs
     prices?: boolean | OrganisationCountOutputTypeCountPricesArgs
+    materials?: boolean | OrganisationCountOutputTypeCountMaterialsArgs
+    services?: boolean | OrganisationCountOutputTypeCountServicesArgs
     stockItems?: boolean | OrganisationCountOutputTypeCountStockItemsArgs
     stockMovements?: boolean | OrganisationCountOutputTypeCountStockMovementsArgs
     deliveries?: boolean | OrganisationCountOutputTypeCountDeliveriesArgs
@@ -2555,6 +2662,20 @@ export namespace Prisma {
    */
   export type OrganisationCountOutputTypeCountPricesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PriceListWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountMaterialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MaterialWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountServicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServiceWhereInput
   }
 
   /**
@@ -2936,33 +3057,39 @@ export namespace Prisma {
     id: string | null
     name: string | null
     slug: string | null
+    isActive: boolean | null
     logoUrl: string | null
     contactEmail: string | null
     contactPhone: string | null
     address: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type OrganisationMaxAggregateOutputType = {
     id: string | null
     name: string | null
     slug: string | null
+    isActive: boolean | null
     logoUrl: string | null
     contactEmail: string | null
     contactPhone: string | null
     address: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type OrganisationCountAggregateOutputType = {
     id: number
     name: number
     slug: number
+    isActive: number
     logoUrl: number
     contactEmail: number
     contactPhone: number
     address: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -2971,33 +3098,39 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    isActive?: true
     logoUrl?: true
     contactEmail?: true
     contactPhone?: true
     address?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type OrganisationMaxAggregateInputType = {
     id?: true
     name?: true
     slug?: true
+    isActive?: true
     logoUrl?: true
     contactEmail?: true
     contactPhone?: true
     address?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type OrganisationCountAggregateInputType = {
     id?: true
     name?: true
     slug?: true
+    isActive?: true
     logoUrl?: true
     contactEmail?: true
     contactPhone?: true
     address?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -3077,11 +3210,13 @@ export namespace Prisma {
     id: string
     name: string
     slug: string
+    isActive: boolean
     logoUrl: string | null
     contactEmail: string | null
     contactPhone: string | null
     address: string | null
     createdAt: Date
+    updatedAt: Date
     _count: OrganisationCountAggregateOutputType | null
     _min: OrganisationMinAggregateOutputType | null
     _max: OrganisationMaxAggregateOutputType | null
@@ -3105,16 +3240,20 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    isActive?: boolean
     logoUrl?: boolean
     contactEmail?: boolean
     contactPhone?: boolean
     address?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     users?: boolean | Organisation$usersArgs<ExtArgs>
     staff?: boolean | Organisation$staffArgs<ExtArgs>
     clients?: boolean | Organisation$clientsArgs<ExtArgs>
     jobs?: boolean | Organisation$jobsArgs<ExtArgs>
     prices?: boolean | Organisation$pricesArgs<ExtArgs>
+    materials?: boolean | Organisation$materialsArgs<ExtArgs>
+    services?: boolean | Organisation$servicesArgs<ExtArgs>
     stockItems?: boolean | Organisation$stockItemsArgs<ExtArgs>
     stockMovements?: boolean | Organisation$stockMovementsArgs<ExtArgs>
     deliveries?: boolean | Organisation$deliveriesArgs<ExtArgs>
@@ -3129,42 +3268,50 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    isActive?: boolean
     logoUrl?: boolean
     contactEmail?: boolean
     contactPhone?: boolean
     address?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["organisation"]>
 
   export type OrganisationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     slug?: boolean
+    isActive?: boolean
     logoUrl?: boolean
     contactEmail?: boolean
     contactPhone?: boolean
     address?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["organisation"]>
 
   export type OrganisationSelectScalar = {
     id?: boolean
     name?: boolean
     slug?: boolean
+    isActive?: boolean
     logoUrl?: boolean
     contactEmail?: boolean
     contactPhone?: boolean
     address?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type OrganisationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "logoUrl" | "contactEmail" | "contactPhone" | "address" | "createdAt", ExtArgs["result"]["organisation"]>
+  export type OrganisationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "isActive" | "logoUrl" | "contactEmail" | "contactPhone" | "address" | "createdAt" | "updatedAt", ExtArgs["result"]["organisation"]>
   export type OrganisationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organisation$usersArgs<ExtArgs>
     staff?: boolean | Organisation$staffArgs<ExtArgs>
     clients?: boolean | Organisation$clientsArgs<ExtArgs>
     jobs?: boolean | Organisation$jobsArgs<ExtArgs>
     prices?: boolean | Organisation$pricesArgs<ExtArgs>
+    materials?: boolean | Organisation$materialsArgs<ExtArgs>
+    services?: boolean | Organisation$servicesArgs<ExtArgs>
     stockItems?: boolean | Organisation$stockItemsArgs<ExtArgs>
     stockMovements?: boolean | Organisation$stockMovementsArgs<ExtArgs>
     deliveries?: boolean | Organisation$deliveriesArgs<ExtArgs>
@@ -3185,6 +3332,8 @@ export namespace Prisma {
       clients: Prisma.$ClientPayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
       prices: Prisma.$PriceListPayload<ExtArgs>[]
+      materials: Prisma.$MaterialPayload<ExtArgs>[]
+      services: Prisma.$ServicePayload<ExtArgs>[]
       stockItems: Prisma.$StockItemPayload<ExtArgs>[]
       stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
       deliveries: Prisma.$DeliveryPayload<ExtArgs>[]
@@ -3197,11 +3346,13 @@ export namespace Prisma {
       id: string
       name: string
       slug: string
+      isActive: boolean
       logoUrl: string | null
       contactEmail: string | null
       contactPhone: string | null
       address: string | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["organisation"]>
     composites: {}
   }
@@ -3601,6 +3752,8 @@ export namespace Prisma {
     clients<T extends Organisation$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends Organisation$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     prices<T extends Organisation$pricesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$pricesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    materials<T extends Organisation$materialsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    services<T extends Organisation$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockItems<T extends Organisation$stockItemsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$stockItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     stockMovements<T extends Organisation$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     deliveries<T extends Organisation$deliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$deliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3640,11 +3793,13 @@ export namespace Prisma {
     readonly id: FieldRef<"Organisation", 'String'>
     readonly name: FieldRef<"Organisation", 'String'>
     readonly slug: FieldRef<"Organisation", 'String'>
+    readonly isActive: FieldRef<"Organisation", 'Boolean'>
     readonly logoUrl: FieldRef<"Organisation", 'String'>
     readonly contactEmail: FieldRef<"Organisation", 'String'>
     readonly contactPhone: FieldRef<"Organisation", 'String'>
     readonly address: FieldRef<"Organisation", 'String'>
     readonly createdAt: FieldRef<"Organisation", 'DateTime'>
+    readonly updatedAt: FieldRef<"Organisation", 'DateTime'>
   }
     
 
@@ -4158,6 +4313,54 @@ export namespace Prisma {
   }
 
   /**
+   * Organisation.materials
+   */
+  export type Organisation$materialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Material
+     */
+    select?: MaterialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Material
+     */
+    omit?: MaterialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialInclude<ExtArgs> | null
+    where?: MaterialWhereInput
+    orderBy?: MaterialOrderByWithRelationInput | MaterialOrderByWithRelationInput[]
+    cursor?: MaterialWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MaterialScalarFieldEnum | MaterialScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.services
+   */
+  export type Organisation$servicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Service
+     */
+    select?: ServiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Service
+     */
+    omit?: ServiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiceInclude<ExtArgs> | null
+    where?: ServiceWhereInput
+    orderBy?: ServiceOrderByWithRelationInput | ServiceOrderByWithRelationInput[]
+    cursor?: ServiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ServiceScalarFieldEnum | ServiceScalarFieldEnum[]
+  }
+
+  /**
    * Organisation.stockItems
    */
   export type Organisation$stockItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4350,15 +4553,29 @@ export namespace Prisma {
 
   export type AggregateOutboxEvent = {
     _count: OutboxEventCountAggregateOutputType | null
+    _avg: OutboxEventAvgAggregateOutputType | null
+    _sum: OutboxEventSumAggregateOutputType | null
     _min: OutboxEventMinAggregateOutputType | null
     _max: OutboxEventMaxAggregateOutputType | null
+  }
+
+  export type OutboxEventAvgAggregateOutputType = {
+    attempts: number | null
+  }
+
+  export type OutboxEventSumAggregateOutputType = {
+    attempts: number | null
   }
 
   export type OutboxEventMinAggregateOutputType = {
     id: string | null
     type: string | null
     orgId: string | null
-    status: string | null
+    status: $Enums.OutboxStatus | null
+    attempts: number | null
+    lastError: string | null
+    processedAt: Date | null
+    nextAttemptAt: Date | null
     createdAt: Date | null
   }
 
@@ -4366,7 +4583,11 @@ export namespace Prisma {
     id: string | null
     type: string | null
     orgId: string | null
-    status: string | null
+    status: $Enums.OutboxStatus | null
+    attempts: number | null
+    lastError: string | null
+    processedAt: Date | null
+    nextAttemptAt: Date | null
     createdAt: Date | null
   }
 
@@ -4376,16 +4597,32 @@ export namespace Prisma {
     payload: number
     orgId: number
     status: number
+    attempts: number
+    lastError: number
+    processedAt: number
+    nextAttemptAt: number
     createdAt: number
     _all: number
   }
 
+
+  export type OutboxEventAvgAggregateInputType = {
+    attempts?: true
+  }
+
+  export type OutboxEventSumAggregateInputType = {
+    attempts?: true
+  }
 
   export type OutboxEventMinAggregateInputType = {
     id?: true
     type?: true
     orgId?: true
     status?: true
+    attempts?: true
+    lastError?: true
+    processedAt?: true
+    nextAttemptAt?: true
     createdAt?: true
   }
 
@@ -4394,6 +4631,10 @@ export namespace Prisma {
     type?: true
     orgId?: true
     status?: true
+    attempts?: true
+    lastError?: true
+    processedAt?: true
+    nextAttemptAt?: true
     createdAt?: true
   }
 
@@ -4403,6 +4644,10 @@ export namespace Prisma {
     payload?: true
     orgId?: true
     status?: true
+    attempts?: true
+    lastError?: true
+    processedAt?: true
+    nextAttemptAt?: true
     createdAt?: true
     _all?: true
   }
@@ -4445,6 +4690,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: OutboxEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OutboxEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: OutboxEventMinAggregateInputType
@@ -4475,6 +4732,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: OutboxEventCountAggregateInputType | true
+    _avg?: OutboxEventAvgAggregateInputType
+    _sum?: OutboxEventSumAggregateInputType
     _min?: OutboxEventMinAggregateInputType
     _max?: OutboxEventMaxAggregateInputType
   }
@@ -4484,9 +4743,15 @@ export namespace Prisma {
     type: string
     payload: JsonValue
     orgId: string
-    status: string
+    status: $Enums.OutboxStatus
+    attempts: number
+    lastError: string | null
+    processedAt: Date | null
+    nextAttemptAt: Date | null
     createdAt: Date
     _count: OutboxEventCountAggregateOutputType | null
+    _avg: OutboxEventAvgAggregateOutputType | null
+    _sum: OutboxEventSumAggregateOutputType | null
     _min: OutboxEventMinAggregateOutputType | null
     _max: OutboxEventMaxAggregateOutputType | null
   }
@@ -4511,6 +4776,10 @@ export namespace Prisma {
     payload?: boolean
     orgId?: boolean
     status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    processedAt?: boolean
+    nextAttemptAt?: boolean
     createdAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outboxEvent"]>
@@ -4521,6 +4790,10 @@ export namespace Prisma {
     payload?: boolean
     orgId?: boolean
     status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    processedAt?: boolean
+    nextAttemptAt?: boolean
     createdAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outboxEvent"]>
@@ -4531,6 +4804,10 @@ export namespace Prisma {
     payload?: boolean
     orgId?: boolean
     status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    processedAt?: boolean
+    nextAttemptAt?: boolean
     createdAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["outboxEvent"]>
@@ -4541,10 +4818,14 @@ export namespace Prisma {
     payload?: boolean
     orgId?: boolean
     status?: boolean
+    attempts?: boolean
+    lastError?: boolean
+    processedAt?: boolean
+    nextAttemptAt?: boolean
     createdAt?: boolean
   }
 
-  export type OutboxEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "payload" | "orgId" | "status" | "createdAt", ExtArgs["result"]["outboxEvent"]>
+  export type OutboxEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "payload" | "orgId" | "status" | "attempts" | "lastError" | "processedAt" | "nextAttemptAt" | "createdAt", ExtArgs["result"]["outboxEvent"]>
   export type OutboxEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }
@@ -4565,7 +4846,11 @@ export namespace Prisma {
       type: string
       payload: Prisma.JsonValue
       orgId: string
-      status: string
+      status: $Enums.OutboxStatus
+      attempts: number
+      lastError: string | null
+      processedAt: Date | null
+      nextAttemptAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["outboxEvent"]>
     composites: {}
@@ -4995,7 +5280,11 @@ export namespace Prisma {
     readonly type: FieldRef<"OutboxEvent", 'String'>
     readonly payload: FieldRef<"OutboxEvent", 'Json'>
     readonly orgId: FieldRef<"OutboxEvent", 'String'>
-    readonly status: FieldRef<"OutboxEvent", 'String'>
+    readonly status: FieldRef<"OutboxEvent", 'OutboxStatus'>
+    readonly attempts: FieldRef<"OutboxEvent", 'Int'>
+    readonly lastError: FieldRef<"OutboxEvent", 'String'>
+    readonly processedAt: FieldRef<"OutboxEvent", 'DateTime'>
+    readonly nextAttemptAt: FieldRef<"OutboxEvent", 'DateTime'>
     readonly createdAt: FieldRef<"OutboxEvent", 'DateTime'>
   }
     
@@ -5429,31 +5718,43 @@ export namespace Prisma {
   export type UserMinAggregateOutputType = {
     id: string | null
     orgId: string | null
-    name: string | null
     email: string | null
-    role: $Enums.UserRole | null
+    name: string | null
     avatarUrl: string | null
+    role: $Enums.UserRole | null
+    isActive: boolean | null
+    lastLoginAt: Date | null
+    authThreshold: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
     orgId: string | null
-    name: string | null
     email: string | null
-    role: $Enums.UserRole | null
+    name: string | null
     avatarUrl: string | null
+    role: $Enums.UserRole | null
+    isActive: boolean | null
+    lastLoginAt: Date | null
+    authThreshold: Date | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     orgId: number
-    name: number
     email: number
-    role: number
+    name: number
     avatarUrl: number
+    role: number
+    isActive: number
+    lastLoginAt: number
+    authThreshold: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -5461,31 +5762,43 @@ export namespace Prisma {
   export type UserMinAggregateInputType = {
     id?: true
     orgId?: true
-    name?: true
     email?: true
-    role?: true
+    name?: true
     avatarUrl?: true
+    role?: true
+    isActive?: true
+    lastLoginAt?: true
+    authThreshold?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     orgId?: true
-    name?: true
     email?: true
-    role?: true
+    name?: true
     avatarUrl?: true
+    role?: true
+    isActive?: true
+    lastLoginAt?: true
+    authThreshold?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     orgId?: true
-    name?: true
     email?: true
-    role?: true
+    name?: true
     avatarUrl?: true
+    role?: true
+    isActive?: true
+    lastLoginAt?: true
+    authThreshold?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -5564,11 +5877,15 @@ export namespace Prisma {
   export type UserGroupByOutputType = {
     id: string
     orgId: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl: string | null
+    role: $Enums.UserRole
+    isActive: boolean
+    lastLoginAt: Date | null
+    authThreshold: Date | null
     createdAt: Date
+    updatedAt: Date
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -5591,11 +5908,15 @@ export namespace Prisma {
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     orgId?: boolean
-    name?: boolean
     email?: boolean
-    role?: boolean
+    name?: boolean
     avatarUrl?: boolean
+    role?: boolean
+    isActive?: boolean
+    lastLoginAt?: boolean
+    authThreshold?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     staffProfile?: boolean | User$staffProfileArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -5603,36 +5924,48 @@ export namespace Prisma {
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     orgId?: boolean
-    name?: boolean
     email?: boolean
-    role?: boolean
+    name?: boolean
     avatarUrl?: boolean
+    role?: boolean
+    isActive?: boolean
+    lastLoginAt?: boolean
+    authThreshold?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     orgId?: boolean
-    name?: boolean
     email?: boolean
-    role?: boolean
+    name?: boolean
     avatarUrl?: boolean
+    role?: boolean
+    isActive?: boolean
+    lastLoginAt?: boolean
+    authThreshold?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
     orgId?: boolean
-    name?: boolean
     email?: boolean
-    role?: boolean
+    name?: boolean
     avatarUrl?: boolean
+    role?: boolean
+    isActive?: boolean
+    lastLoginAt?: boolean
+    authThreshold?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "name" | "email" | "role" | "avatarUrl" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "email" | "name" | "avatarUrl" | "role" | "isActive" | "lastLoginAt" | "authThreshold" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     staffProfile?: boolean | User$staffProfileArgs<ExtArgs>
@@ -5653,11 +5986,15 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       orgId: string
-      name: string
       email: string
-      role: $Enums.UserRole
+      name: string
       avatarUrl: string | null
+      role: $Enums.UserRole
+      isActive: boolean
+      lastLoginAt: Date | null
+      authThreshold: Date | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -6085,11 +6422,15 @@ export namespace Prisma {
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
     readonly orgId: FieldRef<"User", 'String'>
-    readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'UserRole'>
+    readonly name: FieldRef<"User", 'String'>
     readonly avatarUrl: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'UserRole'>
+    readonly isActive: FieldRef<"User", 'Boolean'>
+    readonly lastLoginAt: FieldRef<"User", 'DateTime'>
+    readonly authThreshold: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -6529,13 +6870,1023 @@ export namespace Prisma {
 
 
   /**
+   * Model VerificationToken
+   */
+
+  export type AggregateVerificationToken = {
+    _count: VerificationTokenCountAggregateOutputType | null
+    _min: VerificationTokenMinAggregateOutputType | null
+    _max: VerificationTokenMaxAggregateOutputType | null
+  }
+
+  export type VerificationTokenMinAggregateOutputType = {
+    id: string | null
+    identifier: string | null
+    token: string | null
+    expires: Date | null
+    orgId: string | null
+  }
+
+  export type VerificationTokenMaxAggregateOutputType = {
+    id: string | null
+    identifier: string | null
+    token: string | null
+    expires: Date | null
+    orgId: string | null
+  }
+
+  export type VerificationTokenCountAggregateOutputType = {
+    id: number
+    identifier: number
+    token: number
+    expires: number
+    orgId: number
+    _all: number
+  }
+
+
+  export type VerificationTokenMinAggregateInputType = {
+    id?: true
+    identifier?: true
+    token?: true
+    expires?: true
+    orgId?: true
+  }
+
+  export type VerificationTokenMaxAggregateInputType = {
+    id?: true
+    identifier?: true
+    token?: true
+    expires?: true
+    orgId?: true
+  }
+
+  export type VerificationTokenCountAggregateInputType = {
+    id?: true
+    identifier?: true
+    token?: true
+    expires?: true
+    orgId?: true
+    _all?: true
+  }
+
+  export type VerificationTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VerificationToken to aggregate.
+     */
+    where?: VerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VerificationTokens to fetch.
+     */
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VerificationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned VerificationTokens
+    **/
+    _count?: true | VerificationTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VerificationTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VerificationTokenMaxAggregateInputType
+  }
+
+  export type GetVerificationTokenAggregateType<T extends VerificationTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateVerificationToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVerificationToken[P]>
+      : GetScalarType<T[P], AggregateVerificationToken[P]>
+  }
+
+
+
+
+  export type VerificationTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VerificationTokenWhereInput
+    orderBy?: VerificationTokenOrderByWithAggregationInput | VerificationTokenOrderByWithAggregationInput[]
+    by: VerificationTokenScalarFieldEnum[] | VerificationTokenScalarFieldEnum
+    having?: VerificationTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VerificationTokenCountAggregateInputType | true
+    _min?: VerificationTokenMinAggregateInputType
+    _max?: VerificationTokenMaxAggregateInputType
+  }
+
+  export type VerificationTokenGroupByOutputType = {
+    id: string
+    identifier: string
+    token: string
+    expires: Date
+    orgId: string
+    _count: VerificationTokenCountAggregateOutputType | null
+    _min: VerificationTokenMinAggregateOutputType | null
+    _max: VerificationTokenMaxAggregateOutputType | null
+  }
+
+  type GetVerificationTokenGroupByPayload<T extends VerificationTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VerificationTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VerificationTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VerificationTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], VerificationTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VerificationTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    identifier?: boolean
+    token?: boolean
+    expires?: boolean
+    orgId?: boolean
+  }, ExtArgs["result"]["verificationToken"]>
+
+  export type VerificationTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    identifier?: boolean
+    token?: boolean
+    expires?: boolean
+    orgId?: boolean
+  }, ExtArgs["result"]["verificationToken"]>
+
+  export type VerificationTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    identifier?: boolean
+    token?: boolean
+    expires?: boolean
+    orgId?: boolean
+  }, ExtArgs["result"]["verificationToken"]>
+
+  export type VerificationTokenSelectScalar = {
+    id?: boolean
+    identifier?: boolean
+    token?: boolean
+    expires?: boolean
+    orgId?: boolean
+  }
+
+  export type VerificationTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "identifier" | "token" | "expires" | "orgId", ExtArgs["result"]["verificationToken"]>
+
+  export type $VerificationTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "VerificationToken"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      identifier: string
+      token: string
+      expires: Date
+      orgId: string
+    }, ExtArgs["result"]["verificationToken"]>
+    composites: {}
+  }
+
+  type VerificationTokenGetPayload<S extends boolean | null | undefined | VerificationTokenDefaultArgs> = $Result.GetResult<Prisma.$VerificationTokenPayload, S>
+
+  type VerificationTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VerificationTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VerificationTokenCountAggregateInputType | true
+    }
+
+  export interface VerificationTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VerificationToken'], meta: { name: 'VerificationToken' } }
+    /**
+     * Find zero or one VerificationToken that matches the filter.
+     * @param {VerificationTokenFindUniqueArgs} args - Arguments to find a VerificationToken
+     * @example
+     * // Get one VerificationToken
+     * const verificationToken = await prisma.verificationToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VerificationTokenFindUniqueArgs>(args: SelectSubset<T, VerificationTokenFindUniqueArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one VerificationToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VerificationTokenFindUniqueOrThrowArgs} args - Arguments to find a VerificationToken
+     * @example
+     * // Get one VerificationToken
+     * const verificationToken = await prisma.verificationToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VerificationTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, VerificationTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VerificationToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VerificationTokenFindFirstArgs} args - Arguments to find a VerificationToken
+     * @example
+     * // Get one VerificationToken
+     * const verificationToken = await prisma.verificationToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VerificationTokenFindFirstArgs>(args?: SelectSubset<T, VerificationTokenFindFirstArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VerificationToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VerificationTokenFindFirstOrThrowArgs} args - Arguments to find a VerificationToken
+     * @example
+     * // Get one VerificationToken
+     * const verificationToken = await prisma.verificationToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VerificationTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, VerificationTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more VerificationTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VerificationTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VerificationTokens
+     * const verificationTokens = await prisma.verificationToken.findMany()
+     * 
+     * // Get first 10 VerificationTokens
+     * const verificationTokens = await prisma.verificationToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const verificationTokenWithIdOnly = await prisma.verificationToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VerificationTokenFindManyArgs>(args?: SelectSubset<T, VerificationTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a VerificationToken.
+     * @param {VerificationTokenCreateArgs} args - Arguments to create a VerificationToken.
+     * @example
+     * // Create one VerificationToken
+     * const VerificationToken = await prisma.verificationToken.create({
+     *   data: {
+     *     // ... data to create a VerificationToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends VerificationTokenCreateArgs>(args: SelectSubset<T, VerificationTokenCreateArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many VerificationTokens.
+     * @param {VerificationTokenCreateManyArgs} args - Arguments to create many VerificationTokens.
+     * @example
+     * // Create many VerificationTokens
+     * const verificationToken = await prisma.verificationToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VerificationTokenCreateManyArgs>(args?: SelectSubset<T, VerificationTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many VerificationTokens and returns the data saved in the database.
+     * @param {VerificationTokenCreateManyAndReturnArgs} args - Arguments to create many VerificationTokens.
+     * @example
+     * // Create many VerificationTokens
+     * const verificationToken = await prisma.verificationToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many VerificationTokens and only return the `id`
+     * const verificationTokenWithIdOnly = await prisma.verificationToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VerificationTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, VerificationTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a VerificationToken.
+     * @param {VerificationTokenDeleteArgs} args - Arguments to delete one VerificationToken.
+     * @example
+     * // Delete one VerificationToken
+     * const VerificationToken = await prisma.verificationToken.delete({
+     *   where: {
+     *     // ... filter to delete one VerificationToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VerificationTokenDeleteArgs>(args: SelectSubset<T, VerificationTokenDeleteArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one VerificationToken.
+     * @param {VerificationTokenUpdateArgs} args - Arguments to update one VerificationToken.
+     * @example
+     * // Update one VerificationToken
+     * const verificationToken = await prisma.verificationToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VerificationTokenUpdateArgs>(args: SelectSubset<T, VerificationTokenUpdateArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more VerificationTokens.
+     * @param {VerificationTokenDeleteManyArgs} args - Arguments to filter VerificationTokens to delete.
+     * @example
+     * // Delete a few VerificationTokens
+     * const { count } = await prisma.verificationToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VerificationTokenDeleteManyArgs>(args?: SelectSubset<T, VerificationTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VerificationTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VerificationTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VerificationTokens
+     * const verificationToken = await prisma.verificationToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VerificationTokenUpdateManyArgs>(args: SelectSubset<T, VerificationTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VerificationTokens and returns the data updated in the database.
+     * @param {VerificationTokenUpdateManyAndReturnArgs} args - Arguments to update many VerificationTokens.
+     * @example
+     * // Update many VerificationTokens
+     * const verificationToken = await prisma.verificationToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more VerificationTokens and only return the `id`
+     * const verificationTokenWithIdOnly = await prisma.verificationToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VerificationTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, VerificationTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one VerificationToken.
+     * @param {VerificationTokenUpsertArgs} args - Arguments to update or create a VerificationToken.
+     * @example
+     * // Update or create a VerificationToken
+     * const verificationToken = await prisma.verificationToken.upsert({
+     *   create: {
+     *     // ... data to create a VerificationToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VerificationToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VerificationTokenUpsertArgs>(args: SelectSubset<T, VerificationTokenUpsertArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of VerificationTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VerificationTokenCountArgs} args - Arguments to filter VerificationTokens to count.
+     * @example
+     * // Count the number of VerificationTokens
+     * const count = await prisma.verificationToken.count({
+     *   where: {
+     *     // ... the filter for the VerificationTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends VerificationTokenCountArgs>(
+      args?: Subset<T, VerificationTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VerificationTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a VerificationToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VerificationTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VerificationTokenAggregateArgs>(args: Subset<T, VerificationTokenAggregateArgs>): Prisma.PrismaPromise<GetVerificationTokenAggregateType<T>>
+
+    /**
+     * Group by VerificationToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VerificationTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VerificationTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VerificationTokenGroupByArgs['orderBy'] }
+        : { orderBy?: VerificationTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VerificationTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVerificationTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the VerificationToken model
+   */
+  readonly fields: VerificationTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for VerificationToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VerificationTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the VerificationToken model
+   */
+  interface VerificationTokenFieldRefs {
+    readonly id: FieldRef<"VerificationToken", 'String'>
+    readonly identifier: FieldRef<"VerificationToken", 'String'>
+    readonly token: FieldRef<"VerificationToken", 'String'>
+    readonly expires: FieldRef<"VerificationToken", 'DateTime'>
+    readonly orgId: FieldRef<"VerificationToken", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * VerificationToken findUnique
+   */
+  export type VerificationTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which VerificationToken to fetch.
+     */
+    where: VerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * VerificationToken findUniqueOrThrow
+   */
+  export type VerificationTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which VerificationToken to fetch.
+     */
+    where: VerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * VerificationToken findFirst
+   */
+  export type VerificationTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which VerificationToken to fetch.
+     */
+    where?: VerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VerificationTokens to fetch.
+     */
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VerificationTokens.
+     */
+    cursor?: VerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VerificationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VerificationTokens.
+     */
+    distinct?: VerificationTokenScalarFieldEnum | VerificationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * VerificationToken findFirstOrThrow
+   */
+  export type VerificationTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which VerificationToken to fetch.
+     */
+    where?: VerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VerificationTokens to fetch.
+     */
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VerificationTokens.
+     */
+    cursor?: VerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VerificationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VerificationTokens.
+     */
+    distinct?: VerificationTokenScalarFieldEnum | VerificationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * VerificationToken findMany
+   */
+  export type VerificationTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * Filter, which VerificationTokens to fetch.
+     */
+    where?: VerificationTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VerificationTokens to fetch.
+     */
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing VerificationTokens.
+     */
+    cursor?: VerificationTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VerificationTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VerificationTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VerificationTokens.
+     */
+    distinct?: VerificationTokenScalarFieldEnum | VerificationTokenScalarFieldEnum[]
+  }
+
+  /**
+   * VerificationToken create
+   */
+  export type VerificationTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to create a VerificationToken.
+     */
+    data: XOR<VerificationTokenCreateInput, VerificationTokenUncheckedCreateInput>
+  }
+
+  /**
+   * VerificationToken createMany
+   */
+  export type VerificationTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VerificationTokens.
+     */
+    data: VerificationTokenCreateManyInput | VerificationTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VerificationToken createManyAndReturn
+   */
+  export type VerificationTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many VerificationTokens.
+     */
+    data: VerificationTokenCreateManyInput | VerificationTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VerificationToken update
+   */
+  export type VerificationTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * The data needed to update a VerificationToken.
+     */
+    data: XOR<VerificationTokenUpdateInput, VerificationTokenUncheckedUpdateInput>
+    /**
+     * Choose, which VerificationToken to update.
+     */
+    where: VerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * VerificationToken updateMany
+   */
+  export type VerificationTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VerificationTokens.
+     */
+    data: XOR<VerificationTokenUpdateManyMutationInput, VerificationTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which VerificationTokens to update
+     */
+    where?: VerificationTokenWhereInput
+    /**
+     * Limit how many VerificationTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VerificationToken updateManyAndReturn
+   */
+  export type VerificationTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update VerificationTokens.
+     */
+    data: XOR<VerificationTokenUpdateManyMutationInput, VerificationTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which VerificationTokens to update
+     */
+    where?: VerificationTokenWhereInput
+    /**
+     * Limit how many VerificationTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VerificationToken upsert
+   */
+  export type VerificationTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * The filter to search for the VerificationToken to update in case it exists.
+     */
+    where: VerificationTokenWhereUniqueInput
+    /**
+     * In case the VerificationToken found by the `where` argument doesn't exist, create a new VerificationToken with this data.
+     */
+    create: XOR<VerificationTokenCreateInput, VerificationTokenUncheckedCreateInput>
+    /**
+     * In case the VerificationToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VerificationTokenUpdateInput, VerificationTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * VerificationToken delete
+   */
+  export type VerificationTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+    /**
+     * Filter which VerificationToken to delete.
+     */
+    where: VerificationTokenWhereUniqueInput
+  }
+
+  /**
+   * VerificationToken deleteMany
+   */
+  export type VerificationTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VerificationTokens to delete
+     */
+    where?: VerificationTokenWhereInput
+    /**
+     * Limit how many VerificationTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * VerificationToken without action
+   */
+  export type VerificationTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VerificationToken
+     */
+    select?: VerificationTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VerificationToken
+     */
+    omit?: VerificationTokenOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model Staff
    */
 
   export type AggregateStaff = {
     _count: StaffCountAggregateOutputType | null
+    _avg: StaffAvgAggregateOutputType | null
+    _sum: StaffSumAggregateOutputType | null
     _min: StaffMinAggregateOutputType | null
     _max: StaffMaxAggregateOutputType | null
+  }
+
+  export type StaffAvgAggregateOutputType = {
+    baseSalary: number | null
+  }
+
+  export type StaffSumAggregateOutputType = {
+    baseSalary: number | null
   }
 
   export type StaffMinAggregateOutputType = {
@@ -6545,7 +7896,10 @@ export namespace Prisma {
     phone: string | null
     specialisation: string | null
     isActive: boolean | null
+    joinedAt: Date | null
+    baseSalary: number | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type StaffMaxAggregateOutputType = {
@@ -6555,7 +7909,10 @@ export namespace Prisma {
     phone: string | null
     specialisation: string | null
     isActive: boolean | null
+    joinedAt: Date | null
+    baseSalary: number | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type StaffCountAggregateOutputType = {
@@ -6565,10 +7922,21 @@ export namespace Prisma {
     phone: number
     specialisation: number
     isActive: number
+    joinedAt: number
+    baseSalary: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
+
+  export type StaffAvgAggregateInputType = {
+    baseSalary?: true
+  }
+
+  export type StaffSumAggregateInputType = {
+    baseSalary?: true
+  }
 
   export type StaffMinAggregateInputType = {
     id?: true
@@ -6577,7 +7945,10 @@ export namespace Prisma {
     phone?: true
     specialisation?: true
     isActive?: true
+    joinedAt?: true
+    baseSalary?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type StaffMaxAggregateInputType = {
@@ -6587,7 +7958,10 @@ export namespace Prisma {
     phone?: true
     specialisation?: true
     isActive?: true
+    joinedAt?: true
+    baseSalary?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type StaffCountAggregateInputType = {
@@ -6597,7 +7971,10 @@ export namespace Prisma {
     phone?: true
     specialisation?: true
     isActive?: true
+    joinedAt?: true
+    baseSalary?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -6639,6 +8016,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: StaffAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StaffSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: StaffMinAggregateInputType
@@ -6669,6 +8058,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: StaffCountAggregateInputType | true
+    _avg?: StaffAvgAggregateInputType
+    _sum?: StaffSumAggregateInputType
     _min?: StaffMinAggregateInputType
     _max?: StaffMaxAggregateInputType
   }
@@ -6680,8 +8071,13 @@ export namespace Prisma {
     phone: string | null
     specialisation: string | null
     isActive: boolean
+    joinedAt: Date | null
+    baseSalary: number | null
     createdAt: Date
+    updatedAt: Date
     _count: StaffCountAggregateOutputType | null
+    _avg: StaffAvgAggregateOutputType | null
+    _sum: StaffSumAggregateOutputType | null
     _min: StaffMinAggregateOutputType | null
     _max: StaffMaxAggregateOutputType | null
   }
@@ -6707,7 +8103,10 @@ export namespace Prisma {
     phone?: boolean
     specialisation?: boolean
     isActive?: boolean
+    joinedAt?: boolean
+    baseSalary?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     assignedJobs?: boolean | Staff$assignedJobsArgs<ExtArgs>
@@ -6721,7 +8120,10 @@ export namespace Prisma {
     phone?: boolean
     specialisation?: boolean
     isActive?: boolean
+    joinedAt?: boolean
+    baseSalary?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["staff"]>
@@ -6733,7 +8135,10 @@ export namespace Prisma {
     phone?: boolean
     specialisation?: boolean
     isActive?: boolean
+    joinedAt?: boolean
+    baseSalary?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["staff"]>
@@ -6745,10 +8150,13 @@ export namespace Prisma {
     phone?: boolean
     specialisation?: boolean
     isActive?: boolean
+    joinedAt?: boolean
+    baseSalary?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type StaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "userId" | "phone" | "specialisation" | "isActive" | "createdAt", ExtArgs["result"]["staff"]>
+  export type StaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "userId" | "phone" | "specialisation" | "isActive" | "joinedAt" | "baseSalary" | "createdAt" | "updatedAt", ExtArgs["result"]["staff"]>
   export type StaffInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -6778,7 +8186,10 @@ export namespace Prisma {
       phone: string | null
       specialisation: string | null
       isActive: boolean
+      joinedAt: Date | null
+      baseSalary: number | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["staff"]>
     composites: {}
   }
@@ -7211,7 +8622,10 @@ export namespace Prisma {
     readonly phone: FieldRef<"Staff", 'String'>
     readonly specialisation: FieldRef<"Staff", 'String'>
     readonly isActive: FieldRef<"Staff", 'Boolean'>
+    readonly joinedAt: FieldRef<"Staff", 'DateTime'>
+    readonly baseSalary: FieldRef<"Staff", 'Float'>
     readonly createdAt: FieldRef<"Staff", 'DateTime'>
+    readonly updatedAt: FieldRef<"Staff", 'DateTime'>
   }
     
 
@@ -10280,6 +11694,7 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit | null
     purchasePrice: number | null
     stockItemId: string | null
+    orgId: string | null
   }
 
   export type MaterialMaxAggregateOutputType = {
@@ -10289,6 +11704,7 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit | null
     purchasePrice: number | null
     stockItemId: string | null
+    orgId: string | null
   }
 
   export type MaterialCountAggregateOutputType = {
@@ -10298,6 +11714,7 @@ export namespace Prisma {
     unit: number
     purchasePrice: number
     stockItemId: number
+    orgId: number
     _all: number
   }
 
@@ -10317,6 +11734,7 @@ export namespace Prisma {
     unit?: true
     purchasePrice?: true
     stockItemId?: true
+    orgId?: true
   }
 
   export type MaterialMaxAggregateInputType = {
@@ -10326,6 +11744,7 @@ export namespace Prisma {
     unit?: true
     purchasePrice?: true
     stockItemId?: true
+    orgId?: true
   }
 
   export type MaterialCountAggregateInputType = {
@@ -10335,6 +11754,7 @@ export namespace Prisma {
     unit?: true
     purchasePrice?: true
     stockItemId?: true
+    orgId?: true
     _all?: true
   }
 
@@ -10431,6 +11851,7 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit
     purchasePrice: number
     stockItemId: string | null
+    orgId: string
     _count: MaterialCountAggregateOutputType | null
     _avg: MaterialAvgAggregateOutputType | null
     _sum: MaterialSumAggregateOutputType | null
@@ -10459,9 +11880,11 @@ export namespace Prisma {
     unit?: boolean
     purchasePrice?: boolean
     stockItemId?: boolean
+    orgId?: boolean
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     priceListItems?: boolean | Material$priceListItemsArgs<ExtArgs>
     jobVariables?: boolean | Material$jobVariablesArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | MaterialCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["material"]>
 
@@ -10472,7 +11895,9 @@ export namespace Prisma {
     unit?: boolean
     purchasePrice?: boolean
     stockItemId?: boolean
+    orgId?: boolean
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["material"]>
 
   export type MaterialSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10482,7 +11907,9 @@ export namespace Prisma {
     unit?: boolean
     purchasePrice?: boolean
     stockItemId?: boolean
+    orgId?: boolean
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["material"]>
 
   export type MaterialSelectScalar = {
@@ -10492,20 +11919,24 @@ export namespace Prisma {
     unit?: boolean
     purchasePrice?: boolean
     stockItemId?: boolean
+    orgId?: boolean
   }
 
-  export type MaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "calcType" | "unit" | "purchasePrice" | "stockItemId", ExtArgs["result"]["material"]>
+  export type MaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "calcType" | "unit" | "purchasePrice" | "stockItemId" | "orgId", ExtArgs["result"]["material"]>
   export type MaterialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     priceListItems?: boolean | Material$priceListItemsArgs<ExtArgs>
     jobVariables?: boolean | Material$jobVariablesArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | MaterialCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MaterialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }
   export type MaterialIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }
 
   export type $MaterialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10514,6 +11945,7 @@ export namespace Prisma {
       stockItem: Prisma.$StockItemPayload<ExtArgs> | null
       priceListItems: Prisma.$PriceListPayload<ExtArgs>[]
       jobVariables: Prisma.$JobVariablePayload<ExtArgs>[]
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10522,6 +11954,7 @@ export namespace Prisma {
       unit: $Enums.ServiceUnit
       purchasePrice: number
       stockItemId: string | null
+      orgId: string
     }, ExtArgs["result"]["material"]>
     composites: {}
   }
@@ -10919,6 +12352,7 @@ export namespace Prisma {
     stockItem<T extends Material$stockItemArgs<ExtArgs> = {}>(args?: Subset<T, Material$stockItemArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     priceListItems<T extends Material$priceListItemsArgs<ExtArgs> = {}>(args?: Subset<T, Material$priceListItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobVariables<T extends Material$jobVariablesArgs<ExtArgs> = {}>(args?: Subset<T, Material$jobVariablesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobVariablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10954,6 +12388,7 @@ export namespace Prisma {
     readonly unit: FieldRef<"Material", 'ServiceUnit'>
     readonly purchasePrice: FieldRef<"Material", 'Float'>
     readonly stockItemId: FieldRef<"Material", 'String'>
+    readonly orgId: FieldRef<"Material", 'String'>
   }
     
 
@@ -11467,6 +12902,7 @@ export namespace Prisma {
     basePrice: number | null
     isActive: boolean | null
     createdAt: Date | null
+    orgId: string | null
   }
 
   export type ServiceMaxAggregateOutputType = {
@@ -11476,6 +12912,7 @@ export namespace Prisma {
     basePrice: number | null
     isActive: boolean | null
     createdAt: Date | null
+    orgId: string | null
   }
 
   export type ServiceCountAggregateOutputType = {
@@ -11485,6 +12922,7 @@ export namespace Prisma {
     basePrice: number
     isActive: number
     createdAt: number
+    orgId: number
     _all: number
   }
 
@@ -11504,6 +12942,7 @@ export namespace Prisma {
     basePrice?: true
     isActive?: true
     createdAt?: true
+    orgId?: true
   }
 
   export type ServiceMaxAggregateInputType = {
@@ -11513,6 +12952,7 @@ export namespace Prisma {
     basePrice?: true
     isActive?: true
     createdAt?: true
+    orgId?: true
   }
 
   export type ServiceCountAggregateInputType = {
@@ -11522,6 +12962,7 @@ export namespace Prisma {
     basePrice?: true
     isActive?: true
     createdAt?: true
+    orgId?: true
     _all?: true
   }
 
@@ -11618,6 +13059,7 @@ export namespace Prisma {
     basePrice: number
     isActive: boolean
     createdAt: Date
+    orgId: string
     _count: ServiceCountAggregateOutputType | null
     _avg: ServiceAvgAggregateOutputType | null
     _sum: ServiceSumAggregateOutputType | null
@@ -11646,8 +13088,10 @@ export namespace Prisma {
     basePrice?: boolean
     isActive?: boolean
     createdAt?: boolean
+    orgId?: boolean
     priceListItems?: boolean | Service$priceListItemsArgs<ExtArgs>
     jobVariables?: boolean | Service$jobVariablesArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | ServiceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["service"]>
 
@@ -11658,6 +13102,8 @@ export namespace Prisma {
     basePrice?: boolean
     isActive?: boolean
     createdAt?: boolean
+    orgId?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["service"]>
 
   export type ServiceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11667,6 +13113,8 @@ export namespace Prisma {
     basePrice?: boolean
     isActive?: boolean
     createdAt?: boolean
+    orgId?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["service"]>
 
   export type ServiceSelectScalar = {
@@ -11676,22 +13124,29 @@ export namespace Prisma {
     basePrice?: boolean
     isActive?: boolean
     createdAt?: boolean
+    orgId?: boolean
   }
 
-  export type ServiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "calcType" | "basePrice" | "isActive" | "createdAt", ExtArgs["result"]["service"]>
+  export type ServiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "calcType" | "basePrice" | "isActive" | "createdAt" | "orgId", ExtArgs["result"]["service"]>
   export type ServiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     priceListItems?: boolean | Service$priceListItemsArgs<ExtArgs>
     jobVariables?: boolean | Service$jobVariablesArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | ServiceCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type ServiceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type ServiceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ServiceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+  export type ServiceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
 
   export type $ServicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Service"
     objects: {
       priceListItems: Prisma.$PriceListPayload<ExtArgs>[]
       jobVariables: Prisma.$JobVariablePayload<ExtArgs>[]
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11700,6 +13155,7 @@ export namespace Prisma {
       basePrice: number
       isActive: boolean
       createdAt: Date
+      orgId: string
     }, ExtArgs["result"]["service"]>
     composites: {}
   }
@@ -12096,6 +13552,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     priceListItems<T extends Service$priceListItemsArgs<ExtArgs> = {}>(args?: Subset<T, Service$priceListItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobVariables<T extends Service$jobVariablesArgs<ExtArgs> = {}>(args?: Subset<T, Service$jobVariablesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobVariablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12131,6 +13588,7 @@ export namespace Prisma {
     readonly basePrice: FieldRef<"Service", 'Float'>
     readonly isActive: FieldRef<"Service", 'Boolean'>
     readonly createdAt: FieldRef<"Service", 'DateTime'>
+    readonly orgId: FieldRef<"Service", 'String'>
   }
     
 
@@ -12385,6 +13843,10 @@ export namespace Prisma {
      */
     data: ServiceCreateManyInput | ServiceCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiceIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -12455,6 +13917,10 @@ export namespace Prisma {
      * Limit how many Services to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServiceIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -16484,12 +17950,16 @@ export namespace Prisma {
 
   export type JobVariableAvgAggregateOutputType = {
     quantity: number | null
+    width: number | null
+    height: number | null
     unitPrice: number | null
     subtotal: number | null
   }
 
   export type JobVariableSumAggregateOutputType = {
     quantity: number | null
+    width: number | null
+    height: number | null
     unitPrice: number | null
     subtotal: number | null
   }
@@ -16499,11 +17969,14 @@ export namespace Prisma {
     jobId: string | null
     priceListId: string | null
     quantity: number | null
+    width: number | null
+    height: number | null
     unitPrice: number | null
     subtotal: number | null
-    createdAt: Date | null
     materialId: string | null
     serviceId: string | null
+    orgId: string | null
+    createdAt: Date | null
   }
 
   export type JobVariableMaxAggregateOutputType = {
@@ -16511,11 +17984,14 @@ export namespace Prisma {
     jobId: string | null
     priceListId: string | null
     quantity: number | null
+    width: number | null
+    height: number | null
     unitPrice: number | null
     subtotal: number | null
-    createdAt: Date | null
     materialId: string | null
     serviceId: string | null
+    orgId: string | null
+    createdAt: Date | null
   }
 
   export type JobVariableCountAggregateOutputType = {
@@ -16523,23 +17999,30 @@ export namespace Prisma {
     jobId: number
     priceListId: number
     quantity: number
+    width: number
+    height: number
     unitPrice: number
     subtotal: number
-    createdAt: number
     materialId: number
     serviceId: number
+    orgId: number
+    createdAt: number
     _all: number
   }
 
 
   export type JobVariableAvgAggregateInputType = {
     quantity?: true
+    width?: true
+    height?: true
     unitPrice?: true
     subtotal?: true
   }
 
   export type JobVariableSumAggregateInputType = {
     quantity?: true
+    width?: true
+    height?: true
     unitPrice?: true
     subtotal?: true
   }
@@ -16549,11 +18032,14 @@ export namespace Prisma {
     jobId?: true
     priceListId?: true
     quantity?: true
+    width?: true
+    height?: true
     unitPrice?: true
     subtotal?: true
-    createdAt?: true
     materialId?: true
     serviceId?: true
+    orgId?: true
+    createdAt?: true
   }
 
   export type JobVariableMaxAggregateInputType = {
@@ -16561,11 +18047,14 @@ export namespace Prisma {
     jobId?: true
     priceListId?: true
     quantity?: true
+    width?: true
+    height?: true
     unitPrice?: true
     subtotal?: true
-    createdAt?: true
     materialId?: true
     serviceId?: true
+    orgId?: true
+    createdAt?: true
   }
 
   export type JobVariableCountAggregateInputType = {
@@ -16573,11 +18062,14 @@ export namespace Prisma {
     jobId?: true
     priceListId?: true
     quantity?: true
+    width?: true
+    height?: true
     unitPrice?: true
     subtotal?: true
-    createdAt?: true
     materialId?: true
     serviceId?: true
+    orgId?: true
+    createdAt?: true
     _all?: true
   }
 
@@ -16672,11 +18164,14 @@ export namespace Prisma {
     jobId: string
     priceListId: string
     quantity: number
+    width: number | null
+    height: number | null
     unitPrice: number
     subtotal: number
-    createdAt: Date
     materialId: string | null
     serviceId: string | null
+    orgId: string
+    createdAt: Date
     _count: JobVariableCountAggregateOutputType | null
     _avg: JobVariableAvgAggregateOutputType | null
     _sum: JobVariableSumAggregateOutputType | null
@@ -16703,11 +18198,14 @@ export namespace Prisma {
     jobId?: boolean
     priceListId?: boolean
     quantity?: boolean
+    width?: boolean
+    height?: boolean
     unitPrice?: boolean
     subtotal?: boolean
-    createdAt?: boolean
     materialId?: boolean
     serviceId?: boolean
+    orgId?: boolean
+    createdAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
@@ -16719,11 +18217,14 @@ export namespace Prisma {
     jobId?: boolean
     priceListId?: boolean
     quantity?: boolean
+    width?: boolean
+    height?: boolean
     unitPrice?: boolean
     subtotal?: boolean
-    createdAt?: boolean
     materialId?: boolean
     serviceId?: boolean
+    orgId?: boolean
+    createdAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
@@ -16735,11 +18236,14 @@ export namespace Prisma {
     jobId?: boolean
     priceListId?: boolean
     quantity?: boolean
+    width?: boolean
+    height?: boolean
     unitPrice?: boolean
     subtotal?: boolean
-    createdAt?: boolean
     materialId?: boolean
     serviceId?: boolean
+    orgId?: boolean
+    createdAt?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
@@ -16751,14 +18255,17 @@ export namespace Prisma {
     jobId?: boolean
     priceListId?: boolean
     quantity?: boolean
+    width?: boolean
+    height?: boolean
     unitPrice?: boolean
     subtotal?: boolean
-    createdAt?: boolean
     materialId?: boolean
     serviceId?: boolean
+    orgId?: boolean
+    createdAt?: boolean
   }
 
-  export type JobVariableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "priceListId" | "quantity" | "unitPrice" | "subtotal" | "createdAt" | "materialId" | "serviceId", ExtArgs["result"]["jobVariable"]>
+  export type JobVariableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "priceListId" | "quantity" | "width" | "height" | "unitPrice" | "subtotal" | "materialId" | "serviceId" | "orgId" | "createdAt", ExtArgs["result"]["jobVariable"]>
   export type JobVariableInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
@@ -16791,11 +18298,14 @@ export namespace Prisma {
       jobId: string
       priceListId: string
       quantity: number
+      width: number | null
+      height: number | null
       unitPrice: number
       subtotal: number
-      createdAt: Date
       materialId: string | null
       serviceId: string | null
+      orgId: string
+      createdAt: Date
     }, ExtArgs["result"]["jobVariable"]>
     composites: {}
   }
@@ -17227,11 +18737,14 @@ export namespace Prisma {
     readonly jobId: FieldRef<"JobVariable", 'String'>
     readonly priceListId: FieldRef<"JobVariable", 'String'>
     readonly quantity: FieldRef<"JobVariable", 'Float'>
+    readonly width: FieldRef<"JobVariable", 'Float'>
+    readonly height: FieldRef<"JobVariable", 'Float'>
     readonly unitPrice: FieldRef<"JobVariable", 'Float'>
     readonly subtotal: FieldRef<"JobVariable", 'Float'>
-    readonly createdAt: FieldRef<"JobVariable", 'DateTime'>
     readonly materialId: FieldRef<"JobVariable", 'String'>
     readonly serviceId: FieldRef<"JobVariable", 'String'>
+    readonly orgId: FieldRef<"JobVariable", 'String'>
+    readonly createdAt: FieldRef<"JobVariable", 'DateTime'>
   }
     
 
@@ -22371,11 +23884,13 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     slug: 'slug',
+    isActive: 'isActive',
     logoUrl: 'logoUrl',
     contactEmail: 'contactEmail',
     contactPhone: 'contactPhone',
     address: 'address',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type OrganisationScalarFieldEnum = (typeof OrganisationScalarFieldEnum)[keyof typeof OrganisationScalarFieldEnum]
@@ -22387,6 +23902,10 @@ export namespace Prisma {
     payload: 'payload',
     orgId: 'orgId',
     status: 'status',
+    attempts: 'attempts',
+    lastError: 'lastError',
+    processedAt: 'processedAt',
+    nextAttemptAt: 'nextAttemptAt',
     createdAt: 'createdAt'
   };
 
@@ -22396,14 +23915,29 @@ export namespace Prisma {
   export const UserScalarFieldEnum: {
     id: 'id',
     orgId: 'orgId',
-    name: 'name',
     email: 'email',
-    role: 'role',
+    name: 'name',
     avatarUrl: 'avatarUrl',
-    createdAt: 'createdAt'
+    role: 'role',
+    isActive: 'isActive',
+    lastLoginAt: 'lastLoginAt',
+    authThreshold: 'authThreshold',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const VerificationTokenScalarFieldEnum: {
+    id: 'id',
+    identifier: 'identifier',
+    token: 'token',
+    expires: 'expires',
+    orgId: 'orgId'
+  };
+
+  export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
 
 
   export const StaffScalarFieldEnum: {
@@ -22413,7 +23947,10 @@ export namespace Prisma {
     phone: 'phone',
     specialisation: 'specialisation',
     isActive: 'isActive',
-    createdAt: 'createdAt'
+    joinedAt: 'joinedAt',
+    baseSalary: 'baseSalary',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type StaffScalarFieldEnum = (typeof StaffScalarFieldEnum)[keyof typeof StaffScalarFieldEnum]
@@ -22465,7 +24002,8 @@ export namespace Prisma {
     calcType: 'calcType',
     unit: 'unit',
     purchasePrice: 'purchasePrice',
-    stockItemId: 'stockItemId'
+    stockItemId: 'stockItemId',
+    orgId: 'orgId'
   };
 
   export type MaterialScalarFieldEnum = (typeof MaterialScalarFieldEnum)[keyof typeof MaterialScalarFieldEnum]
@@ -22477,7 +24015,8 @@ export namespace Prisma {
     calcType: 'calcType',
     basePrice: 'basePrice',
     isActive: 'isActive',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    orgId: 'orgId'
   };
 
   export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
@@ -22545,11 +24084,14 @@ export namespace Prisma {
     jobId: 'jobId',
     priceListId: 'priceListId',
     quantity: 'quantity',
+    width: 'width',
+    height: 'height',
     unitPrice: 'unitPrice',
     subtotal: 'subtotal',
-    createdAt: 'createdAt',
     materialId: 'materialId',
-    serviceId: 'serviceId'
+    serviceId: 'serviceId',
+    orgId: 'orgId',
+    createdAt: 'createdAt'
   };
 
   export type JobVariableScalarFieldEnum = (typeof JobVariableScalarFieldEnum)[keyof typeof JobVariableScalarFieldEnum]
@@ -22689,6 +24231,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -22717,37 +24266,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'UserRole'
+   * Reference to a field of type 'OutboxStatus'
    */
-  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+  export type EnumOutboxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxStatus'>
     
 
 
   /**
-   * Reference to a field of type 'UserRole[]'
+   * Reference to a field of type 'OutboxStatus[]'
    */
-  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
-   * Reference to a field of type 'ClientType'
-   */
-  export type EnumClientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientType'>
-    
-
-
-  /**
-   * Reference to a field of type 'ClientType[]'
-   */
-  export type ListEnumClientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientType[]'>
+  export type ListEnumOutboxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxStatus[]'>
     
 
 
@@ -22766,6 +24294,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'UserRole'
+   */
+  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'UserRole[]'
+   */
+  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -22776,6 +24318,20 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ClientType'
+   */
+  export type EnumClientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ClientType[]'
+   */
+  export type ListEnumClientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientType[]'>
     
 
 
@@ -22957,16 +24513,20 @@ export namespace Prisma {
     id?: StringFilter<"Organisation"> | string
     name?: StringFilter<"Organisation"> | string
     slug?: StringFilter<"Organisation"> | string
+    isActive?: BoolFilter<"Organisation"> | boolean
     logoUrl?: StringNullableFilter<"Organisation"> | string | null
     contactEmail?: StringNullableFilter<"Organisation"> | string | null
     contactPhone?: StringNullableFilter<"Organisation"> | string | null
     address?: StringNullableFilter<"Organisation"> | string | null
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
+    updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     users?: UserListRelationFilter
     staff?: StaffListRelationFilter
     clients?: ClientListRelationFilter
     jobs?: JobListRelationFilter
     prices?: PriceListListRelationFilter
+    materials?: MaterialListRelationFilter
+    services?: ServiceListRelationFilter
     stockItems?: StockItemListRelationFilter
     stockMovements?: StockMovementListRelationFilter
     deliveries?: DeliveryListRelationFilter
@@ -22980,16 +24540,20 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    isActive?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
     contactEmail?: SortOrderInput | SortOrder
     contactPhone?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     users?: UserOrderByRelationAggregateInput
     staff?: StaffOrderByRelationAggregateInput
     clients?: ClientOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
     prices?: PriceListOrderByRelationAggregateInput
+    materials?: MaterialOrderByRelationAggregateInput
+    services?: ServiceOrderByRelationAggregateInput
     stockItems?: StockItemOrderByRelationAggregateInput
     stockMovements?: StockMovementOrderByRelationAggregateInput
     deliveries?: DeliveryOrderByRelationAggregateInput
@@ -23006,16 +24570,20 @@ export namespace Prisma {
     OR?: OrganisationWhereInput[]
     NOT?: OrganisationWhereInput | OrganisationWhereInput[]
     name?: StringFilter<"Organisation"> | string
+    isActive?: BoolFilter<"Organisation"> | boolean
     logoUrl?: StringNullableFilter<"Organisation"> | string | null
     contactEmail?: StringNullableFilter<"Organisation"> | string | null
     contactPhone?: StringNullableFilter<"Organisation"> | string | null
     address?: StringNullableFilter<"Organisation"> | string | null
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
+    updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     users?: UserListRelationFilter
     staff?: StaffListRelationFilter
     clients?: ClientListRelationFilter
     jobs?: JobListRelationFilter
     prices?: PriceListListRelationFilter
+    materials?: MaterialListRelationFilter
+    services?: ServiceListRelationFilter
     stockItems?: StockItemListRelationFilter
     stockMovements?: StockMovementListRelationFilter
     deliveries?: DeliveryListRelationFilter
@@ -23029,11 +24597,13 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    isActive?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
     contactEmail?: SortOrderInput | SortOrder
     contactPhone?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: OrganisationCountOrderByAggregateInput
     _max?: OrganisationMaxOrderByAggregateInput
     _min?: OrganisationMinOrderByAggregateInput
@@ -23046,11 +24616,13 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Organisation"> | string
     name?: StringWithAggregatesFilter<"Organisation"> | string
     slug?: StringWithAggregatesFilter<"Organisation"> | string
+    isActive?: BoolWithAggregatesFilter<"Organisation"> | boolean
     logoUrl?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
     contactEmail?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
     contactPhone?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
     address?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
   }
 
   export type OutboxEventWhereInput = {
@@ -23061,7 +24633,11 @@ export namespace Prisma {
     type?: StringFilter<"OutboxEvent"> | string
     payload?: JsonFilter<"OutboxEvent">
     orgId?: StringFilter<"OutboxEvent"> | string
-    status?: StringFilter<"OutboxEvent"> | string
+    status?: EnumOutboxStatusFilter<"OutboxEvent"> | $Enums.OutboxStatus
+    attempts?: IntFilter<"OutboxEvent"> | number
+    lastError?: StringNullableFilter<"OutboxEvent"> | string | null
+    processedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    nextAttemptAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
     createdAt?: DateTimeFilter<"OutboxEvent"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }
@@ -23072,6 +24648,10 @@ export namespace Prisma {
     payload?: SortOrder
     orgId?: SortOrder
     status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    nextAttemptAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
   }
@@ -23084,7 +24664,11 @@ export namespace Prisma {
     type?: StringFilter<"OutboxEvent"> | string
     payload?: JsonFilter<"OutboxEvent">
     orgId?: StringFilter<"OutboxEvent"> | string
-    status?: StringFilter<"OutboxEvent"> | string
+    status?: EnumOutboxStatusFilter<"OutboxEvent"> | $Enums.OutboxStatus
+    attempts?: IntFilter<"OutboxEvent"> | number
+    lastError?: StringNullableFilter<"OutboxEvent"> | string | null
+    processedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    nextAttemptAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
     createdAt?: DateTimeFilter<"OutboxEvent"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }, "id">
@@ -23095,10 +24679,16 @@ export namespace Prisma {
     payload?: SortOrder
     orgId?: SortOrder
     status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    processedAt?: SortOrderInput | SortOrder
+    nextAttemptAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: OutboxEventCountOrderByAggregateInput
+    _avg?: OutboxEventAvgOrderByAggregateInput
     _max?: OutboxEventMaxOrderByAggregateInput
     _min?: OutboxEventMinOrderByAggregateInput
+    _sum?: OutboxEventSumOrderByAggregateInput
   }
 
   export type OutboxEventScalarWhereWithAggregatesInput = {
@@ -23109,7 +24699,11 @@ export namespace Prisma {
     type?: StringWithAggregatesFilter<"OutboxEvent"> | string
     payload?: JsonWithAggregatesFilter<"OutboxEvent">
     orgId?: StringWithAggregatesFilter<"OutboxEvent"> | string
-    status?: StringWithAggregatesFilter<"OutboxEvent"> | string
+    status?: EnumOutboxStatusWithAggregatesFilter<"OutboxEvent"> | $Enums.OutboxStatus
+    attempts?: IntWithAggregatesFilter<"OutboxEvent"> | number
+    lastError?: StringNullableWithAggregatesFilter<"OutboxEvent"> | string | null
+    processedAt?: DateTimeNullableWithAggregatesFilter<"OutboxEvent"> | Date | string | null
+    nextAttemptAt?: DateTimeNullableWithAggregatesFilter<"OutboxEvent"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"OutboxEvent"> | Date | string
   }
 
@@ -23119,11 +24713,15 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
     orgId?: StringFilter<"User"> | string
-    name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    name?: StringFilter<"User"> | string
     avatarUrl?: StringNullableFilter<"User"> | string | null
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    isActive?: BoolFilter<"User"> | boolean
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    authThreshold?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     staffProfile?: XOR<StaffNullableScalarRelationFilter, StaffWhereInput> | null
   }
@@ -23131,11 +24729,15 @@ export namespace Prisma {
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     orgId?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    role?: SortOrder
+    name?: SortOrder
     avatarUrl?: SortOrderInput | SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    authThreshold?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
     staffProfile?: StaffOrderByWithRelationInput
   }
@@ -23147,11 +24749,15 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     orgId?: StringFilter<"User"> | string
-    name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    name?: StringFilter<"User"> | string
     avatarUrl?: StringNullableFilter<"User"> | string | null
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    isActive?: BoolFilter<"User"> | boolean
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    authThreshold?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     staffProfile?: XOR<StaffNullableScalarRelationFilter, StaffWhereInput> | null
   }, "id" | "orgId_email">
@@ -23159,11 +24765,15 @@ export namespace Prisma {
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     orgId?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    role?: SortOrder
+    name?: SortOrder
     avatarUrl?: SortOrderInput | SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    authThreshold?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -23175,11 +24785,68 @@ export namespace Prisma {
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
     orgId?: StringWithAggregatesFilter<"User"> | string
-    name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
-    role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
+    name?: StringWithAggregatesFilter<"User"> | string
     avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
+    role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
+    isActive?: BoolWithAggregatesFilter<"User"> | boolean
+    lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    authThreshold?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type VerificationTokenWhereInput = {
+    AND?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
+    OR?: VerificationTokenWhereInput[]
+    NOT?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
+    id?: StringFilter<"VerificationToken"> | string
+    identifier?: StringFilter<"VerificationToken"> | string
+    token?: StringFilter<"VerificationToken"> | string
+    expires?: DateTimeFilter<"VerificationToken"> | Date | string
+    orgId?: StringFilter<"VerificationToken"> | string
+  }
+
+  export type VerificationTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    token?: SortOrder
+    expires?: SortOrder
+    orgId?: SortOrder
+  }
+
+  export type VerificationTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    identifier_token?: VerificationTokenIdentifierTokenCompoundUniqueInput
+    AND?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
+    OR?: VerificationTokenWhereInput[]
+    NOT?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
+    identifier?: StringFilter<"VerificationToken"> | string
+    expires?: DateTimeFilter<"VerificationToken"> | Date | string
+    orgId?: StringFilter<"VerificationToken"> | string
+  }, "id" | "token" | "identifier_token">
+
+  export type VerificationTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    token?: SortOrder
+    expires?: SortOrder
+    orgId?: SortOrder
+    _count?: VerificationTokenCountOrderByAggregateInput
+    _max?: VerificationTokenMaxOrderByAggregateInput
+    _min?: VerificationTokenMinOrderByAggregateInput
+  }
+
+  export type VerificationTokenScalarWhereWithAggregatesInput = {
+    AND?: VerificationTokenScalarWhereWithAggregatesInput | VerificationTokenScalarWhereWithAggregatesInput[]
+    OR?: VerificationTokenScalarWhereWithAggregatesInput[]
+    NOT?: VerificationTokenScalarWhereWithAggregatesInput | VerificationTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"VerificationToken"> | string
+    identifier?: StringWithAggregatesFilter<"VerificationToken"> | string
+    token?: StringWithAggregatesFilter<"VerificationToken"> | string
+    expires?: DateTimeWithAggregatesFilter<"VerificationToken"> | Date | string
+    orgId?: StringWithAggregatesFilter<"VerificationToken"> | string
   }
 
   export type StaffWhereInput = {
@@ -23192,7 +24859,10 @@ export namespace Prisma {
     phone?: StringNullableFilter<"Staff"> | string | null
     specialisation?: StringNullableFilter<"Staff"> | string | null
     isActive?: BoolFilter<"Staff"> | boolean
+    joinedAt?: DateTimeNullableFilter<"Staff"> | Date | string | null
+    baseSalary?: FloatNullableFilter<"Staff"> | number | null
     createdAt?: DateTimeFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeFilter<"Staff"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     assignedJobs?: JobListRelationFilter
@@ -23205,7 +24875,10 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     specialisation?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    joinedAt?: SortOrderInput | SortOrder
+    baseSalary?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     organisation?: OrganisationOrderByWithRelationInput
     assignedJobs?: JobOrderByRelationAggregateInput
@@ -23221,7 +24894,10 @@ export namespace Prisma {
     phone?: StringNullableFilter<"Staff"> | string | null
     specialisation?: StringNullableFilter<"Staff"> | string | null
     isActive?: BoolFilter<"Staff"> | boolean
+    joinedAt?: DateTimeNullableFilter<"Staff"> | Date | string | null
+    baseSalary?: FloatNullableFilter<"Staff"> | number | null
     createdAt?: DateTimeFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeFilter<"Staff"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     assignedJobs?: JobListRelationFilter
@@ -23234,10 +24910,15 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     specialisation?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    joinedAt?: SortOrderInput | SortOrder
+    baseSalary?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: StaffCountOrderByAggregateInput
+    _avg?: StaffAvgOrderByAggregateInput
     _max?: StaffMaxOrderByAggregateInput
     _min?: StaffMinOrderByAggregateInput
+    _sum?: StaffSumOrderByAggregateInput
   }
 
   export type StaffScalarWhereWithAggregatesInput = {
@@ -23250,7 +24931,10 @@ export namespace Prisma {
     phone?: StringNullableWithAggregatesFilter<"Staff"> | string | null
     specialisation?: StringNullableWithAggregatesFilter<"Staff"> | string | null
     isActive?: BoolWithAggregatesFilter<"Staff"> | boolean
+    joinedAt?: DateTimeNullableWithAggregatesFilter<"Staff"> | Date | string | null
+    baseSalary?: FloatNullableWithAggregatesFilter<"Staff"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
   }
 
   export type ClientWhereInput = {
@@ -23485,9 +25169,11 @@ export namespace Prisma {
     unit?: EnumServiceUnitFilter<"Material"> | $Enums.ServiceUnit
     purchasePrice?: FloatFilter<"Material"> | number
     stockItemId?: StringNullableFilter<"Material"> | string | null
+    orgId?: StringFilter<"Material"> | string
     stockItem?: XOR<StockItemNullableScalarRelationFilter, StockItemWhereInput> | null
     priceListItems?: PriceListListRelationFilter
     jobVariables?: JobVariableListRelationFilter
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }
 
   export type MaterialOrderByWithRelationInput = {
@@ -23497,14 +25183,17 @@ export namespace Prisma {
     unit?: SortOrder
     purchasePrice?: SortOrder
     stockItemId?: SortOrderInput | SortOrder
+    orgId?: SortOrder
     stockItem?: StockItemOrderByWithRelationInput
     priceListItems?: PriceListOrderByRelationAggregateInput
     jobVariables?: JobVariableOrderByRelationAggregateInput
+    organisation?: OrganisationOrderByWithRelationInput
   }
 
   export type MaterialWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     stockItemId?: string
+    orgId_name?: MaterialOrgIdNameCompoundUniqueInput
     AND?: MaterialWhereInput | MaterialWhereInput[]
     OR?: MaterialWhereInput[]
     NOT?: MaterialWhereInput | MaterialWhereInput[]
@@ -23512,10 +25201,12 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFilter<"Material"> | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFilter<"Material"> | $Enums.ServiceUnit
     purchasePrice?: FloatFilter<"Material"> | number
+    orgId?: StringFilter<"Material"> | string
     stockItem?: XOR<StockItemNullableScalarRelationFilter, StockItemWhereInput> | null
     priceListItems?: PriceListListRelationFilter
     jobVariables?: JobVariableListRelationFilter
-  }, "id" | "stockItemId">
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+  }, "id" | "stockItemId" | "orgId_name">
 
   export type MaterialOrderByWithAggregationInput = {
     id?: SortOrder
@@ -23524,6 +25215,7 @@ export namespace Prisma {
     unit?: SortOrder
     purchasePrice?: SortOrder
     stockItemId?: SortOrderInput | SortOrder
+    orgId?: SortOrder
     _count?: MaterialCountOrderByAggregateInput
     _avg?: MaterialAvgOrderByAggregateInput
     _max?: MaterialMaxOrderByAggregateInput
@@ -23541,6 +25233,7 @@ export namespace Prisma {
     unit?: EnumServiceUnitWithAggregatesFilter<"Material"> | $Enums.ServiceUnit
     purchasePrice?: FloatWithAggregatesFilter<"Material"> | number
     stockItemId?: StringNullableWithAggregatesFilter<"Material"> | string | null
+    orgId?: StringWithAggregatesFilter<"Material"> | string
   }
 
   export type ServiceWhereInput = {
@@ -23553,8 +25246,10 @@ export namespace Prisma {
     basePrice?: FloatFilter<"Service"> | number
     isActive?: BoolFilter<"Service"> | boolean
     createdAt?: DateTimeFilter<"Service"> | Date | string
+    orgId?: StringFilter<"Service"> | string
     priceListItems?: PriceListListRelationFilter
     jobVariables?: JobVariableListRelationFilter
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }
 
   export type ServiceOrderByWithRelationInput = {
@@ -23564,12 +25259,15 @@ export namespace Prisma {
     basePrice?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
+    orgId?: SortOrder
     priceListItems?: PriceListOrderByRelationAggregateInput
     jobVariables?: JobVariableOrderByRelationAggregateInput
+    organisation?: OrganisationOrderByWithRelationInput
   }
 
   export type ServiceWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    orgId_name?: ServiceOrgIdNameCompoundUniqueInput
     AND?: ServiceWhereInput | ServiceWhereInput[]
     OR?: ServiceWhereInput[]
     NOT?: ServiceWhereInput | ServiceWhereInput[]
@@ -23578,9 +25276,11 @@ export namespace Prisma {
     basePrice?: FloatFilter<"Service"> | number
     isActive?: BoolFilter<"Service"> | boolean
     createdAt?: DateTimeFilter<"Service"> | Date | string
+    orgId?: StringFilter<"Service"> | string
     priceListItems?: PriceListListRelationFilter
     jobVariables?: JobVariableListRelationFilter
-  }, "id">
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+  }, "id" | "orgId_name">
 
   export type ServiceOrderByWithAggregationInput = {
     id?: SortOrder
@@ -23589,6 +25289,7 @@ export namespace Prisma {
     basePrice?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
+    orgId?: SortOrder
     _count?: ServiceCountOrderByAggregateInput
     _avg?: ServiceAvgOrderByAggregateInput
     _max?: ServiceMaxOrderByAggregateInput
@@ -23606,6 +25307,7 @@ export namespace Prisma {
     basePrice?: FloatWithAggregatesFilter<"Service"> | number
     isActive?: BoolWithAggregatesFilter<"Service"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Service"> | Date | string
+    orgId?: StringWithAggregatesFilter<"Service"> | string
   }
 
   export type StockItemWhereInput = {
@@ -23940,11 +25642,14 @@ export namespace Prisma {
     jobId?: StringFilter<"JobVariable"> | string
     priceListId?: StringFilter<"JobVariable"> | string
     quantity?: FloatFilter<"JobVariable"> | number
+    width?: FloatNullableFilter<"JobVariable"> | number | null
+    height?: FloatNullableFilter<"JobVariable"> | number | null
     unitPrice?: FloatFilter<"JobVariable"> | number
     subtotal?: FloatFilter<"JobVariable"> | number
-    createdAt?: DateTimeFilter<"JobVariable"> | Date | string
     materialId?: StringNullableFilter<"JobVariable"> | string | null
     serviceId?: StringNullableFilter<"JobVariable"> | string | null
+    orgId?: StringFilter<"JobVariable"> | string
+    createdAt?: DateTimeFilter<"JobVariable"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     priceList?: XOR<PriceListScalarRelationFilter, PriceListWhereInput>
     material?: XOR<MaterialNullableScalarRelationFilter, MaterialWhereInput> | null
@@ -23956,11 +25661,14 @@ export namespace Prisma {
     jobId?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
+    width?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
-    createdAt?: SortOrder
     materialId?: SortOrderInput | SortOrder
     serviceId?: SortOrderInput | SortOrder
+    orgId?: SortOrder
+    createdAt?: SortOrder
     job?: JobOrderByWithRelationInput
     priceList?: PriceListOrderByWithRelationInput
     material?: MaterialOrderByWithRelationInput
@@ -23975,11 +25683,14 @@ export namespace Prisma {
     jobId?: StringFilter<"JobVariable"> | string
     priceListId?: StringFilter<"JobVariable"> | string
     quantity?: FloatFilter<"JobVariable"> | number
+    width?: FloatNullableFilter<"JobVariable"> | number | null
+    height?: FloatNullableFilter<"JobVariable"> | number | null
     unitPrice?: FloatFilter<"JobVariable"> | number
     subtotal?: FloatFilter<"JobVariable"> | number
-    createdAt?: DateTimeFilter<"JobVariable"> | Date | string
     materialId?: StringNullableFilter<"JobVariable"> | string | null
     serviceId?: StringNullableFilter<"JobVariable"> | string | null
+    orgId?: StringFilter<"JobVariable"> | string
+    createdAt?: DateTimeFilter<"JobVariable"> | Date | string
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
     priceList?: XOR<PriceListScalarRelationFilter, PriceListWhereInput>
     material?: XOR<MaterialNullableScalarRelationFilter, MaterialWhereInput> | null
@@ -23991,11 +25702,14 @@ export namespace Prisma {
     jobId?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
+    width?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
-    createdAt?: SortOrder
     materialId?: SortOrderInput | SortOrder
     serviceId?: SortOrderInput | SortOrder
+    orgId?: SortOrder
+    createdAt?: SortOrder
     _count?: JobVariableCountOrderByAggregateInput
     _avg?: JobVariableAvgOrderByAggregateInput
     _max?: JobVariableMaxOrderByAggregateInput
@@ -24011,11 +25725,14 @@ export namespace Prisma {
     jobId?: StringWithAggregatesFilter<"JobVariable"> | string
     priceListId?: StringWithAggregatesFilter<"JobVariable"> | string
     quantity?: FloatWithAggregatesFilter<"JobVariable"> | number
+    width?: FloatNullableWithAggregatesFilter<"JobVariable"> | number | null
+    height?: FloatNullableWithAggregatesFilter<"JobVariable"> | number | null
     unitPrice?: FloatWithAggregatesFilter<"JobVariable"> | number
     subtotal?: FloatWithAggregatesFilter<"JobVariable"> | number
-    createdAt?: DateTimeWithAggregatesFilter<"JobVariable"> | Date | string
     materialId?: StringNullableWithAggregatesFilter<"JobVariable"> | string | null
     serviceId?: StringNullableWithAggregatesFilter<"JobVariable"> | string | null
+    orgId?: StringWithAggregatesFilter<"JobVariable"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"JobVariable"> | Date | string
   }
 
   export type DeliveryWhereInput = {
@@ -24371,16 +26088,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -24394,16 +26115,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -24417,16 +26142,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -24440,16 +26169,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -24463,40 +26196,50 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type OrganisationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganisationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OutboxEventCreateInput = {
     id?: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
-    status?: string
+    status?: $Enums.OutboxStatus
+    attempts?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    nextAttemptAt?: Date | string | null
     createdAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutOutboxEventsInput
   }
@@ -24506,7 +26249,11 @@ export namespace Prisma {
     type: string
     payload: JsonNullValueInput | InputJsonValue
     orgId: string
-    status?: string
+    status?: $Enums.OutboxStatus
+    attempts?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    nextAttemptAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -24514,7 +26261,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutOutboxEventsNestedInput
   }
@@ -24524,7 +26275,11 @@ export namespace Prisma {
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
     orgId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24533,7 +26288,11 @@ export namespace Prisma {
     type: string
     payload: JsonNullValueInput | InputJsonValue
     orgId: string
-    status?: string
+    status?: $Enums.OutboxStatus
+    attempts?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    nextAttemptAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -24541,7 +26300,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -24550,17 +26313,25 @@ export namespace Prisma {
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
     orgId?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateInput = {
     id?: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutUsersInput
     staffProfile?: StaffCreateNestedOneWithoutUserInput
   }
@@ -24568,21 +26339,29 @@ export namespace Prisma {
   export type UserUncheckedCreateInput = {
     id?: string
     orgId: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     staffProfile?: StaffUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutUsersNestedInput
     staffProfile?: StaffUpdateOneWithoutUserNestedInput
   }
@@ -24590,41 +26369,113 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     staffProfile?: StaffUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: string
     orgId: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VerificationTokenCreateInput = {
+    id?: string
+    identifier: string
+    token: string
+    expires: Date | string
+    orgId: string
+  }
+
+  export type VerificationTokenUncheckedCreateInput = {
+    id?: string
+    identifier: string
+    token: string
+    expires: Date | string
+    orgId: string
+  }
+
+  export type VerificationTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type VerificationTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type VerificationTokenCreateManyInput = {
+    id?: string
+    identifier: string
+    token: string
+    expires: Date | string
+    orgId: string
+  }
+
+  export type VerificationTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type VerificationTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    identifier?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
   }
 
   export type StaffCreateInput = {
@@ -24632,7 +26483,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStaffProfileInput
     organisation: OrganisationCreateNestedOneWithoutStaffInput
     assignedJobs?: JobCreateNestedManyWithoutAssignedStaffInput
@@ -24645,7 +26499,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     assignedJobs?: JobUncheckedCreateNestedManyWithoutAssignedStaffInput
   }
 
@@ -24654,7 +26511,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStaffProfileNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutStaffNestedInput
     assignedJobs?: JobUpdateManyWithoutAssignedStaffNestedInput
@@ -24667,7 +26527,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedJobs?: JobUncheckedUpdateManyWithoutAssignedStaffNestedInput
   }
 
@@ -24678,7 +26541,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type StaffUpdateManyMutationInput = {
@@ -24686,7 +26552,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StaffUncheckedUpdateManyInput = {
@@ -24696,7 +26565,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientCreateInput = {
@@ -24958,6 +26830,7 @@ export namespace Prisma {
     stockItem?: StockItemCreateNestedOneWithoutMaterialInput
     priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
   export type MaterialUncheckedCreateInput = {
@@ -24967,6 +26840,7 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit
     purchasePrice: number
     stockItemId?: string | null
+    orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
   }
@@ -24980,6 +26854,7 @@ export namespace Prisma {
     stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
     priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
   export type MaterialUncheckedUpdateInput = {
@@ -24989,6 +26864,7 @@ export namespace Prisma {
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
   }
@@ -25000,6 +26876,7 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit
     purchasePrice: number
     stockItemId?: string | null
+    orgId: string
   }
 
   export type MaterialUpdateManyMutationInput = {
@@ -25017,6 +26894,7 @@ export namespace Prisma {
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ServiceCreateInput = {
@@ -25028,6 +26906,7 @@ export namespace Prisma {
     createdAt?: Date | string
     priceListItems?: PriceListCreateNestedManyWithoutServiceInput
     jobVariables?: JobVariableCreateNestedManyWithoutServiceInput
+    organisation: OrganisationCreateNestedOneWithoutServicesInput
   }
 
   export type ServiceUncheckedCreateInput = {
@@ -25037,6 +26916,7 @@ export namespace Prisma {
     basePrice: number
     isActive?: boolean
     createdAt?: Date | string
+    orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutServiceInput
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutServiceInput
   }
@@ -25050,6 +26930,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priceListItems?: PriceListUpdateManyWithoutServiceNestedInput
     jobVariables?: JobVariableUpdateManyWithoutServiceNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutServicesNestedInput
   }
 
   export type ServiceUncheckedUpdateInput = {
@@ -25059,6 +26940,7 @@ export namespace Prisma {
     basePrice?: FloatFieldUpdateOperationsInput | number
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutServiceNestedInput
     jobVariables?: JobVariableUncheckedUpdateManyWithoutServiceNestedInput
   }
@@ -25070,6 +26952,7 @@ export namespace Prisma {
     basePrice: number
     isActive?: boolean
     createdAt?: Date | string
+    orgId: string
   }
 
   export type ServiceUpdateManyMutationInput = {
@@ -25088,6 +26971,7 @@ export namespace Prisma {
     basePrice?: FloatFieldUpdateOperationsInput | number
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
   }
 
   export type StockItemCreateInput = {
@@ -25445,8 +27329,11 @@ export namespace Prisma {
   export type JobVariableCreateInput = {
     id?: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
+    orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
@@ -25459,18 +27346,24 @@ export namespace Prisma {
     jobId: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type JobVariableUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
@@ -25483,11 +27376,14 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobVariableCreateManyInput = {
@@ -25495,18 +27391,24 @@ export namespace Prisma {
     jobId: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type JobVariableUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -25515,11 +27417,14 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeliveryCreateInput = {
@@ -25911,6 +27816,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -25965,6 +27875,18 @@ export namespace Prisma {
     every?: PriceListWhereInput
     some?: PriceListWhereInput
     none?: PriceListWhereInput
+  }
+
+  export type MaterialListRelationFilter = {
+    every?: MaterialWhereInput
+    some?: MaterialWhereInput
+    none?: MaterialWhereInput
+  }
+
+  export type ServiceListRelationFilter = {
+    every?: ServiceWhereInput
+    some?: ServiceWhereInput
+    none?: ServiceWhereInput
   }
 
   export type StockItemListRelationFilter = {
@@ -26034,6 +27956,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type MaterialOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ServiceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type StockItemOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -26066,33 +27996,39 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    isActive?: SortOrder
     logoUrl?: SortOrder
     contactEmail?: SortOrder
     contactPhone?: SortOrder
     address?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type OrganisationMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    isActive?: SortOrder
     logoUrl?: SortOrder
     contactEmail?: SortOrder
     contactPhone?: SortOrder
     address?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type OrganisationMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    isActive?: SortOrder
     logoUrl?: SortOrder
     contactEmail?: SortOrder
     contactPhone?: SortOrder
     address?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -26111,6 +28047,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -26168,6 +28112,35 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type EnumOutboxStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusFilter<$PrismaModel> | $Enums.OutboxStatus
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type OrganisationScalarRelationFilter = {
     is?: OrganisationWhereInput
     isNot?: OrganisationWhereInput
@@ -26179,7 +28152,15 @@ export namespace Prisma {
     payload?: SortOrder
     orgId?: SortOrder
     status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    processedAt?: SortOrder
+    nextAttemptAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type OutboxEventAvgOrderByAggregateInput = {
+    attempts?: SortOrder
   }
 
   export type OutboxEventMaxOrderByAggregateInput = {
@@ -26187,6 +28168,10 @@ export namespace Prisma {
     type?: SortOrder
     orgId?: SortOrder
     status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    processedAt?: SortOrder
+    nextAttemptAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -26195,7 +28180,15 @@ export namespace Prisma {
     type?: SortOrder
     orgId?: SortOrder
     status?: SortOrder
+    attempts?: SortOrder
+    lastError?: SortOrder
+    processedAt?: SortOrder
+    nextAttemptAt?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type OutboxEventSumOrderByAggregateInput = {
+    attempts?: SortOrder
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -26224,6 +28217,46 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type EnumOutboxStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOutboxStatusFilter<$PrismaModel>
+    _max?: NestedEnumOutboxStatusFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type EnumUserRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
     in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
@@ -26244,31 +28277,43 @@ export namespace Prisma {
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     orgId?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    role?: SortOrder
+    name?: SortOrder
     avatarUrl?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    lastLoginAt?: SortOrder
+    authThreshold?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
     orgId?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    role?: SortOrder
+    name?: SortOrder
     avatarUrl?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    lastLoginAt?: SortOrder
+    authThreshold?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     orgId?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    role?: SortOrder
+    name?: SortOrder
     avatarUrl?: SortOrder
+    role?: SortOrder
+    isActive?: SortOrder
+    lastLoginAt?: SortOrder
+    authThreshold?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -26281,9 +28326,44 @@ export namespace Prisma {
     _max?: NestedEnumUserRoleFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type VerificationTokenIdentifierTokenCompoundUniqueInput = {
+    identifier: string
+    token: string
+  }
+
+  export type VerificationTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    token?: SortOrder
+    expires?: SortOrder
+    orgId?: SortOrder
+  }
+
+  export type VerificationTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    token?: SortOrder
+    expires?: SortOrder
+    orgId?: SortOrder
+  }
+
+  export type VerificationTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    identifier?: SortOrder
+    token?: SortOrder
+    expires?: SortOrder
+    orgId?: SortOrder
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type UserScalarRelationFilter = {
@@ -26298,7 +28378,14 @@ export namespace Prisma {
     phone?: SortOrder
     specialisation?: SortOrder
     isActive?: SortOrder
+    joinedAt?: SortOrder
+    baseSalary?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StaffAvgOrderByAggregateInput = {
+    baseSalary?: SortOrder
   }
 
   export type StaffMaxOrderByAggregateInput = {
@@ -26308,7 +28395,10 @@ export namespace Prisma {
     phone?: SortOrder
     specialisation?: SortOrder
     isActive?: SortOrder
+    joinedAt?: SortOrder
+    baseSalary?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type StaffMinOrderByAggregateInput = {
@@ -26318,15 +28408,30 @@ export namespace Prisma {
     phone?: SortOrder
     specialisation?: SortOrder
     isActive?: SortOrder
+    joinedAt?: SortOrder
+    baseSalary?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+  export type StaffSumOrderByAggregateInput = {
+    baseSalary?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type EnumClientTypeFilter<$PrismaModel = never> = {
@@ -26334,28 +28439,6 @@ export namespace Prisma {
     in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
     notIn?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumClientTypeFilter<$PrismaModel> | $Enums.ClientType
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type ClientCountOrderByAggregateInput = {
@@ -26434,36 +28517,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumClientTypeFilter<$PrismaModel>
     _max?: NestedEnumClientTypeFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -26616,6 +28669,11 @@ export namespace Prisma {
     isNot?: StockItemWhereInput | null
   }
 
+  export type MaterialOrgIdNameCompoundUniqueInput = {
+    orgId: string
+    name: string
+  }
+
   export type MaterialCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -26623,6 +28681,7 @@ export namespace Prisma {
     unit?: SortOrder
     purchasePrice?: SortOrder
     stockItemId?: SortOrder
+    orgId?: SortOrder
   }
 
   export type MaterialAvgOrderByAggregateInput = {
@@ -26636,6 +28695,7 @@ export namespace Prisma {
     unit?: SortOrder
     purchasePrice?: SortOrder
     stockItemId?: SortOrder
+    orgId?: SortOrder
   }
 
   export type MaterialMinOrderByAggregateInput = {
@@ -26645,6 +28705,7 @@ export namespace Prisma {
     unit?: SortOrder
     purchasePrice?: SortOrder
     stockItemId?: SortOrder
+    orgId?: SortOrder
   }
 
   export type MaterialSumOrderByAggregateInput = {
@@ -26678,6 +28739,11 @@ export namespace Prisma {
     not?: NestedEnumServiceCalculationTypeFilter<$PrismaModel> | $Enums.ServiceCalculationType
   }
 
+  export type ServiceOrgIdNameCompoundUniqueInput = {
+    orgId: string
+    name: string
+  }
+
   export type ServiceCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -26685,6 +28751,7 @@ export namespace Prisma {
     basePrice?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
+    orgId?: SortOrder
   }
 
   export type ServiceAvgOrderByAggregateInput = {
@@ -26698,6 +28765,7 @@ export namespace Prisma {
     basePrice?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
+    orgId?: SortOrder
   }
 
   export type ServiceMinOrderByAggregateInput = {
@@ -26707,6 +28775,7 @@ export namespace Prisma {
     basePrice?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
+    orgId?: SortOrder
   }
 
   export type ServiceSumOrderByAggregateInput = {
@@ -26827,17 +28896,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumStockMovementTypeFilter<$PrismaModel>
     _max?: NestedEnumStockMovementTypeFilter<$PrismaModel>
-  }
-
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type EnumServiceUnitNullableFilter<$PrismaModel = never> = {
@@ -26976,22 +29034,6 @@ export namespace Prisma {
     profitMargin?: SortOrder
   }
 
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
   export type EnumServiceUnitNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ServiceUnit | EnumServiceUnitFieldRefInput<$PrismaModel> | null
     in?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel> | null
@@ -27032,15 +29074,20 @@ export namespace Prisma {
     jobId?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
-    createdAt?: SortOrder
     materialId?: SortOrder
     serviceId?: SortOrder
+    orgId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type JobVariableAvgOrderByAggregateInput = {
     quantity?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
   }
@@ -27050,11 +29097,14 @@ export namespace Prisma {
     jobId?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
-    createdAt?: SortOrder
     materialId?: SortOrder
     serviceId?: SortOrder
+    orgId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type JobVariableMinOrderByAggregateInput = {
@@ -27062,15 +29112,20 @@ export namespace Prisma {
     jobId?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
-    createdAt?: SortOrder
     materialId?: SortOrder
     serviceId?: SortOrder
+    orgId?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type JobVariableSumOrderByAggregateInput = {
     quantity?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
   }
@@ -27403,6 +29458,20 @@ export namespace Prisma {
     connect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
   }
 
+  export type MaterialCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<MaterialCreateWithoutOrganisationInput, MaterialUncheckedCreateWithoutOrganisationInput> | MaterialCreateWithoutOrganisationInput[] | MaterialUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutOrganisationInput | MaterialCreateOrConnectWithoutOrganisationInput[]
+    createMany?: MaterialCreateManyOrganisationInputEnvelope
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+  }
+
+  export type ServiceCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<ServiceCreateWithoutOrganisationInput, ServiceUncheckedCreateWithoutOrganisationInput> | ServiceCreateWithoutOrganisationInput[] | ServiceUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ServiceCreateOrConnectWithoutOrganisationInput | ServiceCreateOrConnectWithoutOrganisationInput[]
+    createMany?: ServiceCreateManyOrganisationInputEnvelope
+    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+  }
+
   export type StockItemCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<StockItemCreateWithoutOrganisationInput, StockItemUncheckedCreateWithoutOrganisationInput> | StockItemCreateWithoutOrganisationInput[] | StockItemUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: StockItemCreateOrConnectWithoutOrganisationInput | StockItemCreateOrConnectWithoutOrganisationInput[]
@@ -27487,6 +29556,20 @@ export namespace Prisma {
     connect?: PriceListWhereUniqueInput | PriceListWhereUniqueInput[]
   }
 
+  export type MaterialUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<MaterialCreateWithoutOrganisationInput, MaterialUncheckedCreateWithoutOrganisationInput> | MaterialCreateWithoutOrganisationInput[] | MaterialUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutOrganisationInput | MaterialCreateOrConnectWithoutOrganisationInput[]
+    createMany?: MaterialCreateManyOrganisationInputEnvelope
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+  }
+
+  export type ServiceUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<ServiceCreateWithoutOrganisationInput, ServiceUncheckedCreateWithoutOrganisationInput> | ServiceCreateWithoutOrganisationInput[] | ServiceUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ServiceCreateOrConnectWithoutOrganisationInput | ServiceCreateOrConnectWithoutOrganisationInput[]
+    createMany?: ServiceCreateManyOrganisationInputEnvelope
+    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+  }
+
   export type StockItemUncheckedCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<StockItemCreateWithoutOrganisationInput, StockItemUncheckedCreateWithoutOrganisationInput> | StockItemCreateWithoutOrganisationInput[] | StockItemUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: StockItemCreateOrConnectWithoutOrganisationInput | StockItemCreateOrConnectWithoutOrganisationInput[]
@@ -27538,6 +29621,10 @@ export namespace Prisma {
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -27616,6 +29703,34 @@ export namespace Prisma {
     update?: PriceListUpdateWithWhereUniqueWithoutOrganisationInput | PriceListUpdateWithWhereUniqueWithoutOrganisationInput[]
     updateMany?: PriceListUpdateManyWithWhereWithoutOrganisationInput | PriceListUpdateManyWithWhereWithoutOrganisationInput[]
     deleteMany?: PriceListScalarWhereInput | PriceListScalarWhereInput[]
+  }
+
+  export type MaterialUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<MaterialCreateWithoutOrganisationInput, MaterialUncheckedCreateWithoutOrganisationInput> | MaterialCreateWithoutOrganisationInput[] | MaterialUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutOrganisationInput | MaterialCreateOrConnectWithoutOrganisationInput[]
+    upsert?: MaterialUpsertWithWhereUniqueWithoutOrganisationInput | MaterialUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: MaterialCreateManyOrganisationInputEnvelope
+    set?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    disconnect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    delete?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    update?: MaterialUpdateWithWhereUniqueWithoutOrganisationInput | MaterialUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: MaterialUpdateManyWithWhereWithoutOrganisationInput | MaterialUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: MaterialScalarWhereInput | MaterialScalarWhereInput[]
+  }
+
+  export type ServiceUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<ServiceCreateWithoutOrganisationInput, ServiceUncheckedCreateWithoutOrganisationInput> | ServiceCreateWithoutOrganisationInput[] | ServiceUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ServiceCreateOrConnectWithoutOrganisationInput | ServiceCreateOrConnectWithoutOrganisationInput[]
+    upsert?: ServiceUpsertWithWhereUniqueWithoutOrganisationInput | ServiceUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: ServiceCreateManyOrganisationInputEnvelope
+    set?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    disconnect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    delete?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    update?: ServiceUpdateWithWhereUniqueWithoutOrganisationInput | ServiceUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: ServiceUpdateManyWithWhereWithoutOrganisationInput | ServiceUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
   }
 
   export type StockItemUpdateManyWithoutOrganisationNestedInput = {
@@ -27786,6 +29901,34 @@ export namespace Prisma {
     deleteMany?: PriceListScalarWhereInput | PriceListScalarWhereInput[]
   }
 
+  export type MaterialUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<MaterialCreateWithoutOrganisationInput, MaterialUncheckedCreateWithoutOrganisationInput> | MaterialCreateWithoutOrganisationInput[] | MaterialUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutOrganisationInput | MaterialCreateOrConnectWithoutOrganisationInput[]
+    upsert?: MaterialUpsertWithWhereUniqueWithoutOrganisationInput | MaterialUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: MaterialCreateManyOrganisationInputEnvelope
+    set?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    disconnect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    delete?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    update?: MaterialUpdateWithWhereUniqueWithoutOrganisationInput | MaterialUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: MaterialUpdateManyWithWhereWithoutOrganisationInput | MaterialUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: MaterialScalarWhereInput | MaterialScalarWhereInput[]
+  }
+
+  export type ServiceUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<ServiceCreateWithoutOrganisationInput, ServiceUncheckedCreateWithoutOrganisationInput> | ServiceCreateWithoutOrganisationInput[] | ServiceUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ServiceCreateOrConnectWithoutOrganisationInput | ServiceCreateOrConnectWithoutOrganisationInput[]
+    upsert?: ServiceUpsertWithWhereUniqueWithoutOrganisationInput | ServiceUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: ServiceCreateManyOrganisationInputEnvelope
+    set?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    disconnect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    delete?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    connect?: ServiceWhereUniqueInput | ServiceWhereUniqueInput[]
+    update?: ServiceUpdateWithWhereUniqueWithoutOrganisationInput | ServiceUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: ServiceUpdateManyWithWhereWithoutOrganisationInput | ServiceUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
+  }
+
   export type StockItemUncheckedUpdateManyWithoutOrganisationNestedInput = {
     create?: XOR<StockItemCreateWithoutOrganisationInput, StockItemUncheckedCreateWithoutOrganisationInput> | StockItemCreateWithoutOrganisationInput[] | StockItemUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: StockItemCreateOrConnectWithoutOrganisationInput | StockItemCreateOrConnectWithoutOrganisationInput[]
@@ -27890,6 +30033,22 @@ export namespace Prisma {
     connect?: OrganisationWhereUniqueInput
   }
 
+  export type EnumOutboxStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OutboxStatus
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type OrganisationUpdateOneRequiredWithoutOutboxEventsNestedInput = {
     create?: XOR<OrganisationCreateWithoutOutboxEventsInput, OrganisationUncheckedCreateWithoutOutboxEventsInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutOutboxEventsInput
@@ -27974,8 +30133,12 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type UserUpdateOneRequiredWithoutStaffProfileNestedInput = {
@@ -28058,18 +30221,6 @@ export namespace Prisma {
 
   export type EnumClientTypeFieldUpdateOperationsInput = {
     set?: $Enums.ClientType
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type OrganisationUpdateOneRequiredWithoutClientsNestedInput = {
@@ -28302,6 +30453,12 @@ export namespace Prisma {
     connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
   }
 
+  export type OrganisationCreateNestedOneWithoutMaterialsInput = {
+    create?: XOR<OrganisationCreateWithoutMaterialsInput, OrganisationUncheckedCreateWithoutMaterialsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutMaterialsInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
   export type PriceListUncheckedCreateNestedManyWithoutMaterialInput = {
     create?: XOR<PriceListCreateWithoutMaterialInput, PriceListUncheckedCreateWithoutMaterialInput> | PriceListCreateWithoutMaterialInput[] | PriceListUncheckedCreateWithoutMaterialInput[]
     connectOrCreate?: PriceListCreateOrConnectWithoutMaterialInput | PriceListCreateOrConnectWithoutMaterialInput[]
@@ -28362,6 +30519,14 @@ export namespace Prisma {
     deleteMany?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
   }
 
+  export type OrganisationUpdateOneRequiredWithoutMaterialsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutMaterialsInput, OrganisationUncheckedCreateWithoutMaterialsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutMaterialsInput
+    upsert?: OrganisationUpsertWithoutMaterialsInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutMaterialsInput, OrganisationUpdateWithoutMaterialsInput>, OrganisationUncheckedUpdateWithoutMaterialsInput>
+  }
+
   export type PriceListUncheckedUpdateManyWithoutMaterialNestedInput = {
     create?: XOR<PriceListCreateWithoutMaterialInput, PriceListUncheckedCreateWithoutMaterialInput> | PriceListCreateWithoutMaterialInput[] | PriceListUncheckedCreateWithoutMaterialInput[]
     connectOrCreate?: PriceListCreateOrConnectWithoutMaterialInput | PriceListCreateOrConnectWithoutMaterialInput[]
@@ -28402,6 +30567,12 @@ export namespace Prisma {
     connectOrCreate?: JobVariableCreateOrConnectWithoutServiceInput | JobVariableCreateOrConnectWithoutServiceInput[]
     createMany?: JobVariableCreateManyServiceInputEnvelope
     connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+  }
+
+  export type OrganisationCreateNestedOneWithoutServicesInput = {
+    create?: XOR<OrganisationCreateWithoutServicesInput, OrganisationUncheckedCreateWithoutServicesInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutServicesInput
+    connect?: OrganisationWhereUniqueInput
   }
 
   export type PriceListUncheckedCreateNestedManyWithoutServiceInput = {
@@ -28448,6 +30619,14 @@ export namespace Prisma {
     update?: JobVariableUpdateWithWhereUniqueWithoutServiceInput | JobVariableUpdateWithWhereUniqueWithoutServiceInput[]
     updateMany?: JobVariableUpdateManyWithWhereWithoutServiceInput | JobVariableUpdateManyWithWhereWithoutServiceInput[]
     deleteMany?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutServicesNestedInput = {
+    create?: XOR<OrganisationCreateWithoutServicesInput, OrganisationUncheckedCreateWithoutServicesInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutServicesInput
+    upsert?: OrganisationUpsertWithoutServicesInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutServicesInput, OrganisationUpdateWithoutServicesInput>, OrganisationUncheckedUpdateWithoutServicesInput>
   }
 
   export type PriceListUncheckedUpdateManyWithoutServiceNestedInput = {
@@ -28682,14 +30861,6 @@ export namespace Prisma {
     connectOrCreate?: B2BPushCreateOrConnectWithoutOriginalJobInput | B2BPushCreateOrConnectWithoutOriginalJobInput[]
     createMany?: B2BPushCreateManyOriginalJobInputEnvelope
     connect?: B2BPushWhereUniqueInput | B2BPushWhereUniqueInput[]
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type NullableEnumServiceUnitFieldUpdateOperationsInput = {
@@ -29104,6 +31275,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -29157,6 +31333,14 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -29198,6 +31382,24 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
+
+  export type NestedEnumOutboxStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusFilter<$PrismaModel> | $Enums.OutboxStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -29222,76 +31424,14 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
-  }
-
-  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+  export type NestedEnumOutboxStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OutboxStatus | EnumOutboxStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OutboxStatus[] | ListEnumOutboxStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOutboxStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxStatus
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserRoleFilter<$PrismaModel>
-    _max?: NestedEnumUserRoleFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedEnumClientTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.ClientType | EnumClientTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumClientTypeFilter<$PrismaModel> | $Enums.ClientType
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedEnumClientTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ClientType | EnumClientTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumClientTypeWithAggregatesFilter<$PrismaModel> | $Enums.ClientType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumClientTypeFilter<$PrismaModel>
-    _max?: NestedEnumClientTypeFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    _min?: NestedEnumOutboxStatusFilter<$PrismaModel>
+    _max?: NestedEnumOutboxStatusFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -29319,6 +31459,81 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+  }
+
+  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserRoleFilter<$PrismaModel>
+    _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumClientTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClientType | EnumClientTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumClientTypeFilter<$PrismaModel> | $Enums.ClientType
+  }
+
+  export type NestedEnumClientTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClientType | EnumClientTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumClientTypeWithAggregatesFilter<$PrismaModel> | $Enums.ClientType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumClientTypeFilter<$PrismaModel>
+    _max?: NestedEnumClientTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumMaterialCategoryNullableFilter<$PrismaModel = never> = {
@@ -29439,17 +31654,6 @@ export namespace Prisma {
     _max?: NestedEnumStockMovementTypeFilter<$PrismaModel>
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedEnumServiceUnitNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.ServiceUnit | EnumServiceUnitFieldRefInput<$PrismaModel> | null
     in?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel> | null
@@ -29469,22 +31673,6 @@ export namespace Prisma {
     in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
-  }
-
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumServiceUnitNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -29610,21 +31798,29 @@ export namespace Prisma {
 
   export type UserCreateWithoutOrganisationInput = {
     id?: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     staffProfile?: StaffCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutOrganisationInput = {
     id?: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     staffProfile?: StaffUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -29643,7 +31839,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStaffProfileInput
     assignedJobs?: JobCreateNestedManyWithoutAssignedStaffInput
   }
@@ -29654,7 +31853,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     assignedJobs?: JobUncheckedCreateNestedManyWithoutAssignedStaffInput
   }
 
@@ -29825,6 +32027,70 @@ export namespace Prisma {
 
   export type PriceListCreateManyOrganisationInputEnvelope = {
     data: PriceListCreateManyOrganisationInput | PriceListCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MaterialCreateWithoutOrganisationInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    stockItem?: StockItemCreateNestedOneWithoutMaterialInput
+    priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+  }
+
+  export type MaterialUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    stockItemId?: string | null
+    priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+  }
+
+  export type MaterialCreateOrConnectWithoutOrganisationInput = {
+    where: MaterialWhereUniqueInput
+    create: XOR<MaterialCreateWithoutOrganisationInput, MaterialUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type MaterialCreateManyOrganisationInputEnvelope = {
+    data: MaterialCreateManyOrganisationInput | MaterialCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ServiceCreateWithoutOrganisationInput = {
+    id?: string
+    name: string
+    calcType: $Enums.ServiceCalculationType
+    basePrice: number
+    isActive?: boolean
+    createdAt?: Date | string
+    priceListItems?: PriceListCreateNestedManyWithoutServiceInput
+    jobVariables?: JobVariableCreateNestedManyWithoutServiceInput
+  }
+
+  export type ServiceUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    name: string
+    calcType: $Enums.ServiceCalculationType
+    basePrice: number
+    isActive?: boolean
+    createdAt?: Date | string
+    priceListItems?: PriceListUncheckedCreateNestedManyWithoutServiceInput
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutServiceInput
+  }
+
+  export type ServiceCreateOrConnectWithoutOrganisationInput = {
+    where: ServiceWhereUniqueInput
+    create: XOR<ServiceCreateWithoutOrganisationInput, ServiceUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type ServiceCreateManyOrganisationInputEnvelope = {
+    data: ServiceCreateManyOrganisationInput | ServiceCreateManyOrganisationInput[]
     skipDuplicates?: boolean
   }
 
@@ -30004,7 +32270,11 @@ export namespace Prisma {
     id?: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
-    status?: string
+    status?: $Enums.OutboxStatus
+    attempts?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    nextAttemptAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -30012,7 +32282,11 @@ export namespace Prisma {
     id?: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
-    status?: string
+    status?: $Enums.OutboxStatus
+    attempts?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    nextAttemptAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -30082,11 +32356,15 @@ export namespace Prisma {
     NOT?: UserScalarWhereInput | UserScalarWhereInput[]
     id?: StringFilter<"User"> | string
     orgId?: StringFilter<"User"> | string
-    name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    name?: StringFilter<"User"> | string
     avatarUrl?: StringNullableFilter<"User"> | string | null
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    isActive?: BoolFilter<"User"> | boolean
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    authThreshold?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
   }
 
   export type StaffUpsertWithWhereUniqueWithoutOrganisationInput = {
@@ -30115,7 +32393,10 @@ export namespace Prisma {
     phone?: StringNullableFilter<"Staff"> | string | null
     specialisation?: StringNullableFilter<"Staff"> | string | null
     isActive?: BoolFilter<"Staff"> | boolean
+    joinedAt?: DateTimeNullableFilter<"Staff"> | Date | string | null
+    baseSalary?: FloatNullableFilter<"Staff"> | number | null
     createdAt?: DateTimeFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeFilter<"Staff"> | Date | string
   }
 
   export type ClientUpsertWithWhereUniqueWithoutOrganisationInput = {
@@ -30233,6 +32514,64 @@ export namespace Prisma {
     isActive?: BoolFilter<"PriceList"> | boolean
     createdAt?: DateTimeFilter<"PriceList"> | Date | string
     updatedAt?: DateTimeFilter<"PriceList"> | Date | string
+  }
+
+  export type MaterialUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: MaterialWhereUniqueInput
+    update: XOR<MaterialUpdateWithoutOrganisationInput, MaterialUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<MaterialCreateWithoutOrganisationInput, MaterialUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type MaterialUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: MaterialWhereUniqueInput
+    data: XOR<MaterialUpdateWithoutOrganisationInput, MaterialUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type MaterialUpdateManyWithWhereWithoutOrganisationInput = {
+    where: MaterialScalarWhereInput
+    data: XOR<MaterialUpdateManyMutationInput, MaterialUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type MaterialScalarWhereInput = {
+    AND?: MaterialScalarWhereInput | MaterialScalarWhereInput[]
+    OR?: MaterialScalarWhereInput[]
+    NOT?: MaterialScalarWhereInput | MaterialScalarWhereInput[]
+    id?: StringFilter<"Material"> | string
+    name?: StringFilter<"Material"> | string
+    calcType?: EnumMaterialCalculationTypeFilter<"Material"> | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFilter<"Material"> | $Enums.ServiceUnit
+    purchasePrice?: FloatFilter<"Material"> | number
+    stockItemId?: StringNullableFilter<"Material"> | string | null
+    orgId?: StringFilter<"Material"> | string
+  }
+
+  export type ServiceUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: ServiceWhereUniqueInput
+    update: XOR<ServiceUpdateWithoutOrganisationInput, ServiceUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<ServiceCreateWithoutOrganisationInput, ServiceUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type ServiceUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: ServiceWhereUniqueInput
+    data: XOR<ServiceUpdateWithoutOrganisationInput, ServiceUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type ServiceUpdateManyWithWhereWithoutOrganisationInput = {
+    where: ServiceScalarWhereInput
+    data: XOR<ServiceUpdateManyMutationInput, ServiceUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type ServiceScalarWhereInput = {
+    AND?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
+    OR?: ServiceScalarWhereInput[]
+    NOT?: ServiceScalarWhereInput | ServiceScalarWhereInput[]
+    id?: StringFilter<"Service"> | string
+    name?: StringFilter<"Service"> | string
+    calcType?: EnumServiceCalculationTypeFilter<"Service"> | $Enums.ServiceCalculationType
+    basePrice?: FloatFilter<"Service"> | number
+    isActive?: BoolFilter<"Service"> | boolean
+    createdAt?: DateTimeFilter<"Service"> | Date | string
+    orgId?: StringFilter<"Service"> | string
   }
 
   export type StockItemUpsertWithWhereUniqueWithoutOrganisationInput = {
@@ -30417,7 +32756,11 @@ export namespace Prisma {
     type?: StringFilter<"OutboxEvent"> | string
     payload?: JsonFilter<"OutboxEvent">
     orgId?: StringFilter<"OutboxEvent"> | string
-    status?: StringFilter<"OutboxEvent"> | string
+    status?: EnumOutboxStatusFilter<"OutboxEvent"> | $Enums.OutboxStatus
+    attempts?: IntFilter<"OutboxEvent"> | number
+    lastError?: StringNullableFilter<"OutboxEvent"> | string | null
+    processedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    nextAttemptAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
     createdAt?: DateTimeFilter<"OutboxEvent"> | Date | string
   }
 
@@ -30457,16 +32800,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -30479,16 +32826,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -30517,16 +32868,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -30539,16 +32894,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -30561,15 +32920,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -30583,15 +32946,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -30611,7 +32978,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutStaffInput
     assignedJobs?: JobCreateNestedManyWithoutAssignedStaffInput
   }
@@ -30622,7 +32992,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     assignedJobs?: JobUncheckedCreateNestedManyWithoutAssignedStaffInput
   }
 
@@ -30646,15 +33019,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -30668,15 +33045,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -30702,7 +33083,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutStaffNestedInput
     assignedJobs?: JobUpdateManyWithoutAssignedStaffNestedInput
   }
@@ -30713,28 +33097,39 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedJobs?: JobUncheckedUpdateManyWithoutAssignedStaffNestedInput
   }
 
   export type UserCreateWithoutStaffProfileInput = {
     id?: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutStaffProfileInput = {
     id?: string
     orgId: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserCreateOrConnectWithoutStaffProfileInput = {
@@ -30746,15 +33141,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -30768,15 +33167,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -30872,22 +33275,30 @@ export namespace Prisma {
 
   export type UserUpdateWithoutStaffProfileInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStaffProfileInput = {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganisationUpsertWithoutStaffInput = {
@@ -30905,15 +33316,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -30927,15 +33342,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -30965,15 +33384,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -30987,15 +33410,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -31133,15 +33560,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -31155,15 +33586,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -31209,15 +33644,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -31231,15 +33670,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -31262,6 +33705,7 @@ export namespace Prisma {
     purchasePrice: number
     stockItem?: StockItemCreateNestedOneWithoutMaterialInput
     jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
   export type MaterialUncheckedCreateWithoutPriceListItemsInput = {
@@ -31271,6 +33715,7 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit
     purchasePrice: number
     stockItemId?: string | null
+    orgId: string
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
   }
 
@@ -31287,6 +33732,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     jobVariables?: JobVariableCreateNestedManyWithoutServiceInput
+    organisation: OrganisationCreateNestedOneWithoutServicesInput
   }
 
   export type ServiceUncheckedCreateWithoutPriceListItemsInput = {
@@ -31296,6 +33742,7 @@ export namespace Prisma {
     basePrice: number
     isActive?: boolean
     createdAt?: Date | string
+    orgId: string
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutServiceInput
   }
 
@@ -31375,8 +33822,11 @@ export namespace Prisma {
   export type JobVariableCreateWithoutPriceListInput = {
     id?: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
+    orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
     material?: MaterialCreateNestedOneWithoutJobVariablesInput
@@ -31387,11 +33837,14 @@ export namespace Prisma {
     id?: string
     jobId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type JobVariableCreateOrConnectWithoutPriceListInput = {
@@ -31419,15 +33872,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -31441,15 +33898,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -31478,6 +33939,7 @@ export namespace Prisma {
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
     jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
   export type MaterialUncheckedUpdateWithoutPriceListItemsInput = {
@@ -31487,6 +33949,7 @@ export namespace Prisma {
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
     jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
   }
 
@@ -31509,6 +33972,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobVariables?: JobVariableUpdateManyWithoutServiceNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutServicesNestedInput
   }
 
   export type ServiceUncheckedUpdateWithoutPriceListItemsInput = {
@@ -31518,6 +33982,7 @@ export namespace Prisma {
     basePrice?: FloatFieldUpdateOperationsInput | number
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
     jobVariables?: JobVariableUncheckedUpdateManyWithoutServiceNestedInput
   }
 
@@ -31561,11 +34026,14 @@ export namespace Prisma {
     jobId?: StringFilter<"JobVariable"> | string
     priceListId?: StringFilter<"JobVariable"> | string
     quantity?: FloatFilter<"JobVariable"> | number
+    width?: FloatNullableFilter<"JobVariable"> | number | null
+    height?: FloatNullableFilter<"JobVariable"> | number | null
     unitPrice?: FloatFilter<"JobVariable"> | number
     subtotal?: FloatFilter<"JobVariable"> | number
-    createdAt?: DateTimeFilter<"JobVariable"> | Date | string
     materialId?: StringNullableFilter<"JobVariable"> | string | null
     serviceId?: StringNullableFilter<"JobVariable"> | string | null
+    orgId?: StringFilter<"JobVariable"> | string
+    createdAt?: DateTimeFilter<"JobVariable"> | Date | string
   }
 
   export type StockItemCreateWithoutMaterialInput = {
@@ -31636,8 +34104,11 @@ export namespace Prisma {
   export type JobVariableCreateWithoutMaterialInput = {
     id?: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
+    orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
@@ -31649,10 +34120,13 @@ export namespace Prisma {
     jobId: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type JobVariableCreateOrConnectWithoutMaterialInput = {
@@ -31663,6 +34137,63 @@ export namespace Prisma {
   export type JobVariableCreateManyMaterialInputEnvelope = {
     data: JobVariableCreateManyMaterialInput | JobVariableCreateManyMaterialInput[]
     skipDuplicates?: boolean
+  }
+
+  export type OrganisationCreateWithoutMaterialsInput = {
+    id?: string
+    name: string
+    slug: string
+    isActive?: boolean
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    staff?: StaffCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    jobs?: JobCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
+    payments?: PaymentCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutMaterialsInput = {
+    id?: string
+    name: string
+    slug: string
+    isActive?: boolean
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutMaterialsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutMaterialsInput, OrganisationUncheckedCreateWithoutMaterialsInput>
   }
 
   export type StockItemUpsertWithoutMaterialInput = {
@@ -31728,6 +34259,69 @@ export namespace Prisma {
     data: XOR<JobVariableUpdateManyMutationInput, JobVariableUncheckedUpdateManyWithoutMaterialInput>
   }
 
+  export type OrganisationUpsertWithoutMaterialsInput = {
+    update: XOR<OrganisationUpdateWithoutMaterialsInput, OrganisationUncheckedUpdateWithoutMaterialsInput>
+    create: XOR<OrganisationCreateWithoutMaterialsInput, OrganisationUncheckedCreateWithoutMaterialsInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutMaterialsInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutMaterialsInput, OrganisationUncheckedUpdateWithoutMaterialsInput>
+  }
+
+  export type OrganisationUpdateWithoutMaterialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
+    payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutMaterialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
   export type PriceListCreateWithoutServiceInput = {
     id?: string
     displayName: string
@@ -31771,8 +34365,11 @@ export namespace Prisma {
   export type JobVariableCreateWithoutServiceInput = {
     id?: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
+    orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
@@ -31784,10 +34381,13 @@ export namespace Prisma {
     jobId: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type JobVariableCreateOrConnectWithoutServiceInput = {
@@ -31798,6 +34398,63 @@ export namespace Prisma {
   export type JobVariableCreateManyServiceInputEnvelope = {
     data: JobVariableCreateManyServiceInput | JobVariableCreateManyServiceInput[]
     skipDuplicates?: boolean
+  }
+
+  export type OrganisationCreateWithoutServicesInput = {
+    id?: string
+    name: string
+    slug: string
+    isActive?: boolean
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    staff?: StaffCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    jobs?: JobCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
+    payments?: PaymentCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutServicesInput = {
+    id?: string
+    name: string
+    slug: string
+    isActive?: boolean
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutServicesInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutServicesInput, OrganisationUncheckedCreateWithoutServicesInput>
   }
 
   export type PriceListUpsertWithWhereUniqueWithoutServiceInput = {
@@ -31832,20 +34489,87 @@ export namespace Prisma {
     data: XOR<JobVariableUpdateManyMutationInput, JobVariableUncheckedUpdateManyWithoutServiceInput>
   }
 
+  export type OrganisationUpsertWithoutServicesInput = {
+    update: XOR<OrganisationUpdateWithoutServicesInput, OrganisationUncheckedUpdateWithoutServicesInput>
+    create: XOR<OrganisationCreateWithoutServicesInput, OrganisationUncheckedCreateWithoutServicesInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutServicesInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutServicesInput, OrganisationUncheckedUpdateWithoutServicesInput>
+  }
+
+  export type OrganisationUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
+    payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutServicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
   export type OrganisationCreateWithoutStockItemsInput = {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -31858,16 +34582,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -31889,6 +34617,7 @@ export namespace Prisma {
     purchasePrice: number
     priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
   export type MaterialUncheckedCreateWithoutStockItemInput = {
@@ -31897,6 +34626,7 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
   }
@@ -31955,16 +34685,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -31977,16 +34711,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -32014,6 +34752,7 @@ export namespace Prisma {
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
   export type MaterialUncheckedUpdateWithoutStockItemInput = {
@@ -32022,6 +34761,7 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
   }
@@ -32046,16 +34786,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -32068,16 +34812,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -32131,16 +34879,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -32153,16 +34905,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -32206,15 +34962,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -32228,15 +34988,19 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -32336,8 +35100,11 @@ export namespace Prisma {
   export type JobVariableCreateWithoutJobInput = {
     id?: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
+    orgId: string
     createdAt?: Date | string
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
     material?: MaterialCreateNestedOneWithoutJobVariablesInput
@@ -32348,11 +35115,14 @@ export namespace Prisma {
     id?: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type JobVariableCreateOrConnectWithoutJobInput = {
@@ -32370,7 +35140,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStaffProfileInput
     organisation: OrganisationCreateNestedOneWithoutStaffInput
   }
@@ -32382,7 +35155,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type StaffCreateOrConnectWithoutAssignedJobsInput = {
@@ -32550,15 +35326,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -32572,15 +35352,19 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -32716,7 +35500,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStaffProfileNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutStaffNestedInput
   }
@@ -32728,7 +35515,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeliveryUpsertWithWhereUniqueWithoutJobInput = {
@@ -32924,6 +35714,7 @@ export namespace Prisma {
     purchasePrice: number
     stockItem?: StockItemCreateNestedOneWithoutMaterialInput
     priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
+    organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
   export type MaterialUncheckedCreateWithoutJobVariablesInput = {
@@ -32933,6 +35724,7 @@ export namespace Prisma {
     unit: $Enums.ServiceUnit
     purchasePrice: number
     stockItemId?: string | null
+    orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
   }
 
@@ -32949,6 +35741,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     priceListItems?: PriceListCreateNestedManyWithoutServiceInput
+    organisation: OrganisationCreateNestedOneWithoutServicesInput
   }
 
   export type ServiceUncheckedCreateWithoutJobVariablesInput = {
@@ -32958,6 +35751,7 @@ export namespace Prisma {
     basePrice: number
     isActive?: boolean
     createdAt?: Date | string
+    orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutServiceInput
   }
 
@@ -33095,6 +35889,7 @@ export namespace Prisma {
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
     priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
   export type MaterialUncheckedUpdateWithoutJobVariablesInput = {
@@ -33104,6 +35899,7 @@ export namespace Prisma {
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
   }
 
@@ -33126,6 +35922,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priceListItems?: PriceListUpdateManyWithoutServiceNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutServicesNestedInput
   }
 
   export type ServiceUncheckedUpdateWithoutJobVariablesInput = {
@@ -33135,6 +35932,7 @@ export namespace Prisma {
     basePrice?: FloatFieldUpdateOperationsInput | number
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutServiceNestedInput
   }
 
@@ -33142,16 +35940,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
@@ -33164,16 +35966,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
@@ -33312,16 +36118,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
@@ -33334,16 +36144,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -33478,16 +36292,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -33500,16 +36318,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -33601,16 +36423,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -33623,16 +36449,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -33714,16 +36544,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -33736,16 +36570,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -33905,16 +36743,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -33927,16 +36769,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -34034,16 +36880,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     staff?: StaffCreateNestedManyWithoutOrganisationInput
     clients?: ClientCreateNestedManyWithoutOrganisationInput
     jobs?: JobCreateNestedManyWithoutOrganisationInput
     prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
@@ -34056,16 +36906,20 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
+    isActive?: boolean
     logoUrl?: string | null
     contactEmail?: string | null
     contactPhone?: string | null
     address?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
     clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
     jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
     prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
     stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
@@ -34094,16 +36948,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
@@ -34116,16 +36974,20 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
     clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
     jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
     prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
     stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
@@ -34136,11 +36998,15 @@ export namespace Prisma {
 
   export type UserCreateManyOrganisationInput = {
     id?: string
-    name: string
     email: string
-    role: $Enums.UserRole
+    name: string
     avatarUrl?: string | null
+    role: $Enums.UserRole
+    isActive?: boolean
+    lastLoginAt?: Date | string | null
+    authThreshold?: Date | string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type StaffCreateManyOrganisationInput = {
@@ -34149,7 +37015,10 @@ export namespace Prisma {
     phone?: string | null
     specialisation?: string | null
     isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ClientCreateManyOrganisationInput = {
@@ -34207,6 +37076,24 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type MaterialCreateManyOrganisationInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    stockItemId?: string | null
+  }
+
+  export type ServiceCreateManyOrganisationInput = {
+    id?: string
+    name: string
+    calcType: $Enums.ServiceCalculationType
+    basePrice: number
+    isActive?: boolean
+    createdAt?: Date | string
   }
 
   export type StockItemCreateManyOrganisationInput = {
@@ -34271,7 +37158,11 @@ export namespace Prisma {
     id?: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
-    status?: string
+    status?: $Enums.OutboxStatus
+    attempts?: number
+    lastError?: string | null
+    processedAt?: Date | string | null
+    nextAttemptAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -34289,31 +37180,43 @@ export namespace Prisma {
 
   export type UserUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     staffProfile?: StaffUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     staffProfile?: StaffUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    name?: StringFieldUpdateOperationsInput | string
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    authThreshold?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StaffUpdateWithoutOrganisationInput = {
@@ -34321,7 +37224,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStaffProfileNestedInput
     assignedJobs?: JobUpdateManyWithoutAssignedStaffNestedInput
   }
@@ -34332,7 +37238,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedJobs?: JobUncheckedUpdateManyWithoutAssignedStaffNestedInput
   }
 
@@ -34342,7 +37251,10 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     specialisation?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientUpdateWithoutOrganisationInput = {
@@ -34532,6 +37444,68 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MaterialUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
+    priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+  }
+
+  export type MaterialUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+  }
+
+  export type MaterialUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ServiceUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumServiceCalculationTypeFieldUpdateOperationsInput | $Enums.ServiceCalculationType
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priceListItems?: PriceListUpdateManyWithoutServiceNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutServiceNestedInput
+  }
+
+  export type ServiceUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumServiceCalculationTypeFieldUpdateOperationsInput | $Enums.ServiceCalculationType
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    priceListItems?: PriceListUncheckedUpdateManyWithoutServiceNestedInput
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutServiceNestedInput
+  }
+
+  export type ServiceUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumServiceCalculationTypeFieldUpdateOperationsInput | $Enums.ServiceCalculationType
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StockItemUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     totalRemaining?: FloatFieldUpdateOperationsInput | number
@@ -34716,7 +37690,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -34724,7 +37702,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -34732,7 +37714,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumOutboxStatusFieldUpdateOperationsInput | $Enums.OutboxStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    processedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextAttemptAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -35077,11 +38063,14 @@ export namespace Prisma {
     id?: string
     jobId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type JobUpdateWithoutPriceListInput = {
@@ -35170,8 +38159,11 @@ export namespace Prisma {
   export type JobVariableUpdateWithoutPriceListInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
     material?: MaterialUpdateOneWithoutJobVariablesNestedInput
@@ -35182,22 +38174,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobVariableUncheckedUpdateManyWithoutPriceListInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PriceListCreateManyMaterialInput = {
@@ -35218,10 +38216,13 @@ export namespace Prisma {
     jobId: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type PriceListUpdateWithoutMaterialInput = {
@@ -35270,8 +38271,11 @@ export namespace Prisma {
   export type JobVariableUpdateWithoutMaterialInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
@@ -35283,10 +38287,13 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobVariableUncheckedUpdateManyWithoutMaterialInput = {
@@ -35294,10 +38301,13 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PriceListCreateManyServiceInput = {
@@ -35318,10 +38328,13 @@ export namespace Prisma {
     jobId: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type PriceListUpdateWithoutServiceInput = {
@@ -35370,8 +38383,11 @@ export namespace Prisma {
   export type JobVariableUpdateWithoutServiceInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
@@ -35383,10 +38399,13 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobVariableUncheckedUpdateManyWithoutServiceInput = {
@@ -35394,10 +38413,13 @@ export namespace Prisma {
     jobId?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StockMovementCreateManyStockItemInput = {
@@ -35452,11 +38474,14 @@ export namespace Prisma {
     id?: string
     priceListId: string
     quantity: number
+    width?: number | null
+    height?: number | null
     unitPrice: number
     subtotal: number
-    createdAt?: Date | string
     materialId?: string | null
     serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
   }
 
   export type DeliveryCreateManyJobInput = {
@@ -35502,8 +38527,11 @@ export namespace Prisma {
   export type JobVariableUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
     material?: MaterialUpdateOneWithoutJobVariablesNestedInput
@@ -35514,22 +38542,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobVariableUncheckedUpdateManyWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeliveryUpdateWithoutJobInput = {
