@@ -1,47 +1,87 @@
-// lib/services/b2b.service.ts
+// src/store/slices/b2b.slice.ts
+import { StateCreator } from "zustand";
+import type { B2BPush } from "@/types/zodiac.types";
+import { apiClient } from "@root/lib/api/client";
 
-import { B2BRepository } from "@/lib/repositories/b2b.repository";
-import { JobRepository } from "@/lib/repositories/job.repository";
-import { UnitOfWork } from "@/lib/db/unitOfWork";
-import { Outbox } from "@/lib/db/outbox";
+export interface B2BSlice {
+  b2bState: {
+    items: Record<string, B2BPush>;
+    selectedId?: string;
+    isLoading: boolean;
+    error: string | null;
+  };
 
-export class B2BService {
-  static async pushJob(params: {
-    orgId: string;
-    jobId: string;
-    specs: string;
-    deadline: Date;
-    suggestedPrice?: number;
-  }) {
-    return UnitOfWork.run(async (tx) => {
-      const job = await JobRepository.findById(params.orgId, params.jobId);
+  // ACTIONS
+  loadB2BPushes: (params: { orgId: string }) => Promise<void>;
+  setB2B: (items: B2BPush[]) => void;
+  updateB2BStatus: (id: string, status: string) => Promise<void>;
+  selectB2B: (id?: string) => void;
+}
 
-      if (!job) throw new Error("Job not found");
+export const createB2BSlice: StateCreator<B2BSlice> = (set, get) => ({
+  b2bState: {
+    items: {},
+    selectedId: undefined,
+    isLoading: false,
+    error: null,
+  },
 
-      const version = Date.now();
+  setB2B: (items) =>
+    set((state) => ({
+      b2bState: {
+        ...state.b2bState,
+        items: items.reduce(
+          (acc, b) => {
+            acc[b.id] = b;
+            return acc;
+          },
+          {} as Record<string, B2BPush>,
+        ),
+      },
+    })),
 
-      const b2b = await B2BRepository.create(
-        {
-          orgId: params.orgId,
-          originalJobId: job.id,
-          clientName: job.client.name,
-          serviceName: job.serviceName,
-          specs: params.specs,
-          deadline: params.deadline,
-          suggestedPrice: params.suggestedPrice,
-        },
-        tx,
-      );
+  /* =========================================================
+     LOAD B2B (API HANDSHAKE)
+  ========================================================= */
+  loadB2BPushes: async ({ orgId }) => {
+    set((s) => ({ b2bState: { ...s.b2bState, isLoading: true } }));
+    try {
+      const res = await apiClient<{ data: B2BPush[] }>("/api/b2b");
+      get().setB2B(res?.data ?? []);
+    } catch (err: any) {
+      set((s) => ({ b2bState: { ...s.b2bState, error: err.message } }));
+    } finally {
+      set((s) => ({ b2bState: { ...s.b2bState, isLoading: false } }));
+    }
+  },
 
-      await Outbox.add(tx, {
-        type: "b2b.pushed",
-        orgId: params.orgId,
-        entityId: b2b.id,
-        version,
-        payload: b2b,
+  /* =========================================================
+     UPDATE STATUS (e.g. ACCEPT/REJECT)
+  ========================================================= */
+  updateB2BStatus: async (id, status) => {
+    try {
+      await apiClient(`/api/b2b/${id}`, {
+        method: "PATCH",
+        body: { status },
       });
 
-      return b2b;
-    });
-  }
-}
+      // Optimistic update
+      set((state) => ({
+        b2bState: {
+          ...state.b2bState,
+          items: {
+            ...state.b2bState.items,
+            [id]: { ...state.b2bState.items[id], status: status as any },
+          },
+        },
+      }));
+    } catch (err) {
+      console.error("Failed to update B2B status", err);
+    }
+  },
+
+  selectB2B: (id) =>
+    set((state) => ({
+      b2bState: { ...state.b2bState, selectedId: id },
+    })),
+});

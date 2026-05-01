@@ -1,82 +1,107 @@
 import { StateCreator } from "zustand";
 import type { DeliveryRecord } from "@/types/zodiac.types";
+import { apiClient } from "@root/lib/api/client"; // Added for future API sync
 
 export interface DeliverySlice {
-  deliveries: Record<string, DeliveryRecord>;
-  selectedDeliveryId?: string;
-
-  isLoading: boolean;
-  isSubmitting: boolean;
-  error?: string | null;
+  // 🔥 ALIGNMENT: Grouped state for V2 consistency
+  deliveryState: {
+    deliveries: Record<string, DeliveryRecord>;
+    selectedDeliveryId?: string;
+    isLoading: boolean;
+    isSubmitting: boolean;
+    error?: string | null;
+  };
 
   setDeliveries: (deliveries: DeliveryRecord[]) => void;
   addDelivery: (delivery: DeliveryRecord) => void;
   updateDelivery: (id: string, data: Partial<DeliveryRecord>) => void;
   removeDelivery: (id: string) => void;
-
   selectDelivery: (id?: string) => void;
 
-  setLoading: (value: boolean) => void;
-  setSubmitting: (value: boolean) => void;
-  setError: (error?: string | null) => void;
+  // UI Helpers (Now internal to the state update)
+  setDeliveryLoading: (value: boolean) => void;
+  setDeliveryError: (error?: string | null) => void;
 }
 
 export const createDeliverySlice: StateCreator<DeliverySlice> = (set, get) => ({
-  deliveries: {},
-  selectedDeliveryId: undefined,
+  // 1. INITIAL STATE (Grouped)
+  deliveryState: {
+    deliveries: {},
+    selectedDeliveryId: undefined,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
 
-  isLoading: false,
-  isSubmitting: false,
-  error: null,
-
+  // 2. ACTIONS
   setDeliveries: (deliveries) =>
-    set(() => ({
-      deliveries: deliveries.reduce(
-        (acc, d) => {
-          acc[d.id] = d;
-          return acc;
-        },
-        {} as Record<string, DeliveryRecord>,
-      ),
+    set((state) => ({
+      deliveryState: {
+        ...state.deliveryState,
+        deliveries: deliveries.reduce(
+          (acc, d) => {
+            acc[d.id] = d;
+            return acc;
+          },
+          {} as Record<string, DeliveryRecord>,
+        ),
+      },
     })),
 
   addDelivery: (delivery) =>
     set((state) => ({
-      deliveries: {
-        ...state.deliveries,
-        [delivery.id]: delivery,
+      deliveryState: {
+        ...state.deliveryState,
+        deliveries: {
+          ...state.deliveryState.deliveries,
+          [delivery.id]: delivery,
+        },
       },
     })),
 
   updateDelivery: (id, data) =>
     set((state) => {
-      const existing = state.deliveries[id];
+      const existing = state.deliveryState.deliveries[id];
       if (!existing) return state;
 
       return {
-        deliveries: {
-          ...state.deliveries,
-          [id]: { ...existing, ...data },
+        deliveryState: {
+          ...state.deliveryState,
+          deliveries: {
+            ...state.deliveryState.deliveries,
+            [id]: { ...existing, ...data },
+          },
         },
       };
     }),
 
   removeDelivery: (id) =>
     set((state) => {
-      const { [id]: _, ...rest } = state.deliveries;
-
+      const { [id]: _, ...rest } = state.deliveryState.deliveries;
       return {
-        deliveries: rest,
-        selectedDeliveryId:
-          state.selectedDeliveryId === id
-            ? undefined
-            : state.selectedDeliveryId,
+        deliveryState: {
+          ...state.deliveryState,
+          deliveries: rest,
+          selectedDeliveryId:
+            state.deliveryState.selectedDeliveryId === id
+              ? undefined
+              : state.deliveryState.selectedDeliveryId,
+        },
       };
     }),
 
-  selectDelivery: (id) => set({ selectedDeliveryId: id }),
+  selectDelivery: (id) =>
+    set((state) => ({
+      deliveryState: { ...state.deliveryState, selectedDeliveryId: id },
+    })),
 
-  setLoading: (value) => set({ isLoading: value }),
-  setSubmitting: (value) => set({ isSubmitting: value }),
-  setError: (error) => set({ error }),
+  setDeliveryLoading: (value) =>
+    set((state) => ({
+      deliveryState: { ...state.deliveryState, isLoading: value },
+    })),
+
+  setDeliveryError: (error) =>
+    set((state) => ({
+      deliveryState: { ...state.deliveryState, error },
+    })),
 });
