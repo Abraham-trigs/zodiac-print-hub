@@ -344,7 +344,7 @@ model Material {
   @@index([name])
   orgId        String
 organisation Organisation @relation(fields: [orgId], references: [id])
-@@index([orgId])
+@@unique([orgId, name])
 }
 
 enum ServiceCalculationType {
@@ -375,7 +375,7 @@ model Service {
   jobVariables   JobVariable[]
   orgId        String
 organisation Organisation @relation(fields: [orgId], references: [id])
-@@index([orgId])
+@@unique([orgId, name])
 }
 
 //

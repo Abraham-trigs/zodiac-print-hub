@@ -1,3 +1,4 @@
+// src/lib/utils/production-calculator.ts
 import {
   ServiceUnit,
   MaterialCalculationType,
@@ -6,6 +7,7 @@ import {
 
 /* =========================================================
    UNIT CONVERSION REGISTRY (Normalised to Feet/Units)
+   Ensures math consistency across different measurement systems.
 ========================================================= */
 const UNIT_FACTORS: Partial<Record<ServiceUnit, number>> = {
   // Linear / Dimensions -> Normalized to Feet
@@ -20,9 +22,9 @@ const UNIT_FACTORS: Partial<Record<ServiceUnit, number>> = {
   sqft: 1,
   sqm: 10.7639,
   PER_SQ_METER: 10.7639,
-  PER_YARD: 9, // 1 yard length = 9sqft if 1yd wide
+  PER_YARD: 9, // Standard 1yd x 1yd area
   // Count / Discrete
-  PER_100: 100,
+  PER_100: 1, // Handled specifically in FLAT logic
   piece: 1,
   pack: 1,
   // Time
@@ -30,6 +32,10 @@ const UNIT_FACTORS: Partial<Record<ServiceUnit, number>> = {
 };
 
 export const ProductionCalculator = {
+  /**
+   * THE ENGINE
+   * Calculates Revenue, Cost, and Stock Deduction based on Recipe Logic.
+   */
   calculate(params: {
     quantity: number;
     width?: number;
@@ -37,8 +43,8 @@ export const ProductionCalculator = {
     unit: ServiceUnit;
     salePrice: number;
     purchasePrice?: number;
-    mCalcType?: MaterialCalculationType; // From Material model
-    sCalcType?: ServiceCalculationType; // From Service model
+    mCalcType?: MaterialCalculationType;
+    sCalcType?: ServiceCalculationType;
   }) {
     const {
       quantity,
@@ -55,8 +61,7 @@ export const ProductionCalculator = {
 
     /* ─────────────────────────────────────────────────────────────
        1. DIMENSIONAL / AREA_BASED LOGIC
-       Logic: (W * factor) * (H * factor) * Qty
-       Used for: Vinyl, Flex, Acrylic, Installation Labor
+       Math: (Width * Factor) * (Height * Factor) * Quantity
        ───────────────────────────────────────────────────────────── */
     if (mCalcType === "DIMENSIONAL" || sCalcType === "AREA_BASED") {
       if (!width || !height) return { error: "Dimensions (W & H) required" };
@@ -68,18 +73,17 @@ export const ProductionCalculator = {
       return {
         totalPrice: totalArea * salePrice,
         totalCost: totalArea * purchasePrice,
-        deduction: totalArea, // Deduct total area from stock
+        deduction: totalArea,
         usageLabel: `${totalArea.toFixed(2)} sqft`,
       };
     }
 
     /* ─────────────────────────────────────────────────────────────
        2. LINEAR LOGIC
-       Logic: (W * factor) * Qty
-       Used for: Framing, Binding Coils, Bordering
+       Math: (Width/Length * Factor) * Quantity
        ───────────────────────────────────────────────────────────── */
     if (mCalcType === "LINEAR") {
-      if (!width) return { error: "Length (Width) required" };
+      if (!width) return { error: "Length (Width field) required" };
 
       const totalLength = width * factor * quantity;
 
@@ -92,159 +96,24 @@ export const ProductionCalculator = {
     }
 
     /* ─────────────────────────────────────────────────────────────
-       3. FLAT / PER_UNIT / FIXED LOGIC
-       Logic: Qty * UnitFactor * Price
-       Used for: Business Cards, Design Fees, Eyelets, Pens
+       3. FLAT / FIXED / PER_UNIT / VOLUMETRIC LOGIC
+       Math: Quantity * Price (with specific Unit multipliers)
        ───────────────────────────────────────────────────────────── */
-    // Default to Flat/Fixed if no specific type is matched
-    const unitMultiplier = unit === "PER_100" ? 100 : 1;
-    const totalCount = quantity * unitMultiplier;
+    // Special handling for bulk units like "Per 100"
+    let effectiveQuantity = quantity;
+    if (unit === "PER_100") {
+      effectiveQuantity = quantity / 100;
+    }
+
+    // FIXED Service logic: One-time fee regardless of quantity
+    const isFixed = sCalcType === "FIXED";
+    const finalQuantity = isFixed ? 1 : effectiveQuantity;
 
     return {
-      totalPrice: totalCount * salePrice,
-      totalCost: totalCount * purchasePrice,
-      deduction: totalCount,
-      usageLabel: `${totalCount} units`,
+      totalPrice: finalQuantity * salePrice,
+      totalCost: finalQuantity * purchasePrice,
+      deduction: finalQuantity,
+      usageLabel: isFixed ? "Fixed Fee" : `${finalQuantity} units`,
     };
   },
 };
-
-// import type { ServiceUnit } from "@/types/zodiac.types";
-
-// /* =========================================================
-//    RESULT TYPES (STRICT CONTRACT)
-// ========================================================= */
-
-// export type MeasurementResult =
-//   | {
-//       price: number;
-//       area: number;
-//       deduction: number;
-//       error?: never;
-//       count?: never;
-//     }
-//   | {
-//       price: number;
-//       count: number;
-//       deduction: number;
-//       error?: never;
-//       area?: never;
-//     }
-//   | {
-//       price: number;
-//       deduction: number;
-//       error?: string;
-//       area?: never;
-//       count?: never;
-//     };
-
-// /* =========================================================
-//    UNIT SCALE REGISTRY
-// ========================================================= */
-
-// const SCALES = {
-//   inch: { factor: 1 / 12, category: "DIMENSION" },
-//   ft: { factor: 1, category: "DIMENSION" },
-//   yd: { factor: 3, category: "DIMENSION" },
-//   mm: { factor: 1 / 304.8, category: "DIMENSION" },
-//   cm: { factor: 1 / 30.48, category: "DIMENSION" },
-//   m: { factor: 3.28084, category: "DIMENSION" },
-//   meter: { factor: 3.28084, category: "DIMENSION" },
-
-//   sqft: { factor: 1, category: "AREA" },
-//   sqm: { factor: 10.7639, category: "AREA" },
-//   "Per Sq Meter": { factor: 10.7639, category: "AREA" },
-//   "Per Yard": { factor: 9, category: "AREA" },
-
-//   liter: { factor: 1, category: "VOLUME" },
-//   bottle: { factor: 1, category: "VOLUME" },
-
-//   piece: { factor: 1, category: "COUNT" },
-//   pack: { factor: 1, category: "COUNT" },
-//   box: { factor: 1, category: "COUNT" },
-//   ream: { factor: 1, category: "COUNT" },
-//   "Per 100": { factor: 100, category: "COUNT" },
-//   "Per Set": { factor: 1, category: "COUNT" },
-
-//   hour: { factor: 1, category: "TIME" },
-// } as const;
-
-// /* =========================================================
-//    ENGINE
-// ========================================================= */
-
-// export const MeasurementCalculator = {
-//   getCategory(unit: ServiceUnit) {
-//     return SCALES[unit as keyof typeof SCALES]?.category ?? "OTHER";
-//   },
-
-//   calculate(params: {
-//     jobWidth?: number;
-//     jobHeight?: number;
-//     jobQty: number;
-//     appUnit: ServiceUnit;
-//     manualRate: number;
-//     stockAnchor?: { width: number; height: number };
-//   }): MeasurementResult {
-//     const { jobWidth, jobHeight, jobQty, appUnit, manualRate, stockAnchor } =
-//       params;
-
-//     const unitData = SCALES[appUnit as keyof typeof SCALES];
-//     const category = unitData?.category ?? "OTHER";
-
-//     /* =====================================================
-//        DIMENSION / AREA
-//     ===================================================== */
-//     if (category === "DIMENSION" || category === "AREA") {
-//       if (!jobWidth || !jobHeight) {
-//         return {
-//           price: 0,
-//           deduction: 0,
-//           error: "Dimensions missing",
-//         };
-//       }
-
-//       const scale = unitData?.factor ?? 1;
-//       const w = jobWidth * scale;
-//       const h = jobHeight * scale;
-
-//       if (stockAnchor && w > stockAnchor.width) {
-//         return {
-//           price: 0,
-//           deduction: 0,
-//           error: `Too wide for ${stockAnchor.width} anchor`,
-//         };
-//       }
-
-//       const area = w * h * jobQty;
-
-//       return {
-//         price: area * manualRate,
-//         area,
-//         deduction: h * jobQty,
-//       };
-//     }
-
-//     /* =====================================================
-//        COUNT BASED
-//     ===================================================== */
-//     if (category === "COUNT") {
-//       const multiplier = unitData?.factor ?? 1;
-//       const count = jobQty * multiplier;
-
-//       return {
-//         price: count * manualRate,
-//         count,
-//         deduction: jobQty,
-//       };
-//     }
-
-//     /* =====================================================
-//        DEFAULT
-//     ===================================================== */
-//     return {
-//       price: jobQty * manualRate,
-//       deduction: jobQty,
-//     };
-//   },
-// };

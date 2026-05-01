@@ -1,6 +1,12 @@
+// src/store/slices/pricing-draft.slice.ts
 "use client";
 
 import { StateCreator } from "zustand";
+import {
+  MaterialCalculationType,
+  ServiceCalculationType,
+  ServiceUnit,
+} from "@prisma/client";
 
 export type PricingStep =
   | "idle"
@@ -8,115 +14,87 @@ export type PricingStep =
   | "draft"
   | "review"
   | "submitting";
-
 export type PricingType = "material" | "service";
 
 export interface PricingDraft {
-  name: string;
-  unit: string;
-  costPrice: number;
-  priceGHS: number;
+  name: string; // -> PriceList.displayName
+  category: string; // -> Category link
+
+  // --- FINANCIALS (The Triple-Price Logic) ---
+  salePrice: number; // What the customer pays (PriceList.salePrice)
+  purchasePrice: number; // What you pay for stock (Material.purchasePrice)
+  basePrice: number; // Your internal labor rate (Service.basePrice)
+
+  // --- LOGIC & SPECS ---
+  unit: ServiceUnit | "";
+  calcType: MaterialCalculationType | ServiceCalculationType | "";
+
+  // Dimensional Specs
   width: number;
   height: number;
+
+  // Inventory Meta
   stockRefId?: string;
-  category?: string;
+  stockThreshold: number;
 }
 
 export interface PricingDraftSlice {
-  // ======================
-  // FSM FLOW STATE
-  // ======================
-  step: PricingStep;
+  mode: PricingStep;
   type: PricingType | null;
-
-  // Optional UI interaction state (for quick edits)
   editingField: keyof PricingDraft | null;
-
-  // ======================
-  // DATA STATE
-  // ======================
   pricingDraft: PricingDraft;
 
-  // ======================
-  // ACTIONS (FLOW)
-  // ======================
-  setStep: (step: PricingStep) => void;
-  setType: (type: PricingType) => void;
+  // FLOW ACTIONS
+  setMode: (mode: PricingStep) => void;
+  setType: (type: PricingType | null) => void;
 
-  goToReview: () => void;
-  startSubmission: () => void;
-
-  // ======================
-  // ACTIONS (UI CONTEXT)
-  // ======================
+  // UI CONTEXT ACTIONS
   setEditingField: (field: keyof PricingDraft | null) => void;
 
-  // ======================
-  // ACTIONS (DATA)
-  // ======================
+  // DATA ACTIONS
   setPricingDraft: (patch: Partial<PricingDraft>) => void;
-
-  // ======================
-  // RESET
-  // ======================
   resetPricingDraft: () => void;
 }
 
 export const createPricingDraftSlice: StateCreator<PricingDraftSlice> = (
   set,
 ) => ({
-  // ======================
+  // =========================================================
   // INITIAL STATE
-  // ======================
-  step: "idle",
+  // =========================
+  mode: "idle",
   type: null,
   editingField: null,
 
   pricingDraft: {
     name: "",
+    category: "General",
+    salePrice: 0,
+    purchasePrice: 0,
+    basePrice: 0,
     unit: "sqft",
-    costPrice: 0,
-    priceGHS: 0,
+    calcType: "",
     width: 0,
     height: 0,
-    category: undefined,
+    stockThreshold: 10,
   },
 
-  // ======================
-  // FLOW CONTROL
-  // ======================
-  setStep: (step) =>
-    set(() => ({
-      step,
-    })),
+  // =========================================================
+  // FLOW & CONTEXT CONTROL
+  // =========================
+  setMode: (mode) => set(() => ({ mode })),
 
   setType: (type) =>
     set(() => ({
       type,
-      step: "draft",
+      mode: type ? "draft" : "idle",
     })),
 
-  goToReview: () =>
-    set(() => ({
-      step: "review",
-    })),
+  setEditingField: (field) => set(() => ({ editingField: field })),
 
-  startSubmission: () =>
-    set(() => ({
-      step: "submitting",
-    })),
-
-  // ======================
-  // UI CONTEXT (editing)
-  // ======================
-  setEditingField: (field) =>
-    set(() => ({
-      editingField: field,
-    })),
-
-  // ======================
-  // DATA PATCH
-  // ======================
+  // =========================================================
+  // DATA ACTIONS
+  // =========================
   setPricingDraft: (patch) =>
     set((state) => ({
       pricingDraft: {
@@ -125,22 +103,22 @@ export const createPricingDraftSlice: StateCreator<PricingDraftSlice> = (
       },
     })),
 
-  // ======================
-  // RESET ALL STATE
-  // ======================
   resetPricingDraft: () =>
     set(() => ({
-      step: "idle",
+      mode: "idle",
       type: null,
       editingField: null,
       pricingDraft: {
         name: "",
+        category: "General",
+        salePrice: 0,
+        purchasePrice: 0,
+        basePrice: 0,
         unit: "sqft",
-        costPrice: 0,
-        priceGHS: 0,
+        calcType: "",
         width: 0,
         height: 0,
-        category: undefined,
+        stockThreshold: 10,
       },
     })),
 });
