@@ -12,6 +12,10 @@ import {
 
 type EntryMode = "IDLE" | "WIDTH" | "HEIGHT" | "QUANTITY";
 
+/**
+ * JOB_ENTRY_MODAL (V2)
+ * Fully aligned with PriceList Junction & Production Calculator logic.
+ */
 export function JobEntryModal() {
   const [mode, setMode] = useState<EntryMode>("IDLE");
   const { setScreen } = useZodiac();
@@ -19,24 +23,26 @@ export function JobEntryModal() {
 
   // --- DATA SOURCE ---
   const draft = useDataStore((s) => s.draftState?.draft, shallow);
-  const prices = useDataStore(selectPricesMap); // Now contains PriceListFull (with material/service)
+  const prices = useDataStore(selectPricesMap); // Records of PriceListFull
   const clients = useDataStore(selectClientsMap);
   const { setDraft, resetDraft, createJob } = useDataStore();
 
-  // Uses the ProductionCalculator internally via selectors
+  // Real-time pricing from the store's selector (Uses ProductionCalculator)
   const total = useDataStore(selectLiveEstimate) ?? 0;
 
-  const selectedService = draft?.serviceId
-    ? prices[draft.serviceId]
+  // 🔥 ALIGNMENT: Resolve the master PriceList item
+  const selectedPriceItem = draft?.priceListId
+    ? prices[draft.priceListId]
     : undefined;
+
   const selectedClient = draft?.clientId ? clients[draft.clientId] : undefined;
 
-  // 🔥 THE PRODUCTION LOGIC: Determine UI behavior based on "Recipe" Rules
+  // 🔥 THE PRODUCTION LOGIC: Toggle UI fields based on the "Recipe" rules
   const isDimensional =
-    selectedService?.material?.calcType === "DIMENSIONAL" ||
-    selectedService?.service?.calcType === "AREA_BASED";
+    selectedPriceItem?.material?.calcType === "DIMENSIONAL" ||
+    selectedPriceItem?.service?.calcType === "AREA_BASED";
 
-  const isLinear = selectedService?.material?.calcType === "LINEAR";
+  const isLinear = selectedPriceItem?.material?.calcType === "LINEAR";
 
   const navigateToServiceSearch = () => setScreen("SERVICE_SEARCH");
   const navigateToClientSearch = () => setScreen("CLIENT_SEARCH" as any);
@@ -75,7 +81,7 @@ export function JobEntryModal() {
       <div className="flex-1 flex flex-col justify-center">
         {mode === "IDLE" ? (
           <div className="flex flex-col gap-2">
-            {!selectedService ? (
+            {!selectedPriceItem ? (
               <button
                 onClick={navigateToServiceSearch}
                 className="w-full py-4 bg-cyan-400 text-black font-black uppercase text-[10px] rounded-xl shadow-lg active:scale-95 transition-all"
@@ -106,7 +112,7 @@ export function JobEntryModal() {
                         </span>
                         <span className="text-sm font-black">
                           {draft?.width ?? 0}
-                          {selectedService?.material?.unit ?? "ft"}
+                          {selectedPriceItem?.material?.unit ?? "ft"}
                         </span>
                       </button>
 
@@ -119,7 +125,7 @@ export function JobEntryModal() {
                         </span>
                         <span className="text-sm font-black">
                           {draft?.height ?? 0}
-                          {selectedService?.material?.unit ?? "ft"}
+                          {selectedPriceItem?.material?.unit ?? "ft"}
                         </span>
                       </button>
                     </>
@@ -136,12 +142,12 @@ export function JobEntryModal() {
                       </span>
                       <span className="text-sm font-black">
                         {draft?.width ?? 0}
-                        {selectedService?.material?.unit ?? "ft"}
+                        {selectedPriceItem?.material?.unit ?? "ft"}
                       </span>
                     </button>
                   )}
 
-                  {/* QUANTITY (Always available) */}
+                  {/* QUANTITY (Standard) */}
                   <button
                     onClick={() => setMode("QUANTITY")}
                     className={`py-3 bg-white/5 rounded-lg flex flex-col items-center ${!isDimensional && !isLinear ? "col-span-2" : ""}`}
@@ -188,22 +194,22 @@ export function JobEntryModal() {
       </div>
 
       {/* 4. PRODUCTION PUSH */}
-      {selectedService && selectedClient && mode === "IDLE" && (
+      {selectedPriceItem && selectedClient && mode === "IDLE" && (
         <button
           onClick={async () => {
             setIsSubmitting(true);
             try {
-              // Now uses the structured createJob action in the store
-              await createJob({ ...draft, priceListId: selectedService.id });
+              // 🚀 PUSH: Uses priceListId to trigger the Junction Logic in the backend
+              await createJob({ ...draft, priceListId: selectedPriceItem.id });
               resetDraft();
-              setScreen("IDLE"); // Or wherever you want to go after success
+              setScreen("IDLE");
             } catch (err) {
-              console.error("Push failed", err);
+              console.error("Job Push Error:", err);
             } finally {
               setIsSubmitting(false);
             }
           }}
-          className="mt-3 w-full py-4 bg-white text-black font-black uppercase text-[10px] rounded-xl shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:bg-cyan-400 transition-all"
+          className="mt-3 w-full py-4 bg-white text-black font-black uppercase text-[10px] rounded-xl shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:bg-cyan-400 transition-all active:scale-95"
         >
           Push to Production →
         </button>

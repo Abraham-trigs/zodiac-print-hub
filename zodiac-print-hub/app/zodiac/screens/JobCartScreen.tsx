@@ -8,7 +8,8 @@ import { useModalStore } from "../store/useModalStore";
 import { ZodiacScreen } from "../types/screen.types";
 import { useDataStore } from "../store/core/useDataStore";
 
-import { JobCreationModal } from "./modals/JobCreationModal";
+// Aligned with new folder structure
+import { JobEntryModal } from "./modals/JobEntryModal";
 import { JobDetailsModal } from "./modals/JobDetailsModal";
 import { JobCardSkeleton } from "../components/common/skeleton/JobCardSkeleton";
 import { RefreshButton } from "../components/common/RefreshButton";
@@ -23,25 +24,17 @@ export const JobCartScreen: ZodiacScreen = {
     const { setScreen } = useZodiac();
     const { openModal, closeModal } = useModalStore();
 
-    /* =========================================================
-       STATE & ACTIONS (SYNCED TO FOLDERS)
-    ========================================================= */
-
-    // ✅ Keep selector exactly as is
+    // --- 1. DATA SOURCES (V2 ALIGNED) ---
     const jobs = useDataStore(selectJobsWithRelations, shallow);
-
-    // ✅ Point to the specific jobState folder for loading status
     const isLoading = useDataStore((s: any) => s.jobState.isLoading);
 
-    // ✅ Grab the global initData action
+    // 🔥 ALIGNMENT: Grab currentOrgId to ensure initData is scoped correctly
+    const currentOrgId = useDataStore((s: any) => s.currentOrgId);
     const initData = useDataStore((s: any) => s.initData);
 
     const [searchQuery, setSearchQuery] = useState("");
 
-    /* =========================================================
-       FILTER
-    ========================================================= */
-
+    // --- 2. FILTER LOGIC ---
     const filteredJobs = useMemo(() => {
       const q = searchQuery.toLowerCase().trim();
       if (!q) return jobs;
@@ -49,36 +42,41 @@ export const JobCartScreen: ZodiacScreen = {
       return jobs.filter(
         (job) =>
           job.id.toLowerCase().includes(q) ||
-          job.client?.name?.toLowerCase().includes(q),
+          job.client?.name?.toLowerCase().includes(q) ||
+          job.serviceName?.toLowerCase().includes(q), // 🔥 FIXED: Use serviceName snapshot
       );
     }, [jobs, searchQuery]);
 
     const handleOpenCreation = () => {
-      openModal("GLOBAL", () => <JobCreationModal onClose={closeModal} />);
+      // ✅ Using the Aligned Modal Name
+      openModal("GLOBAL", JobEntryModal);
     };
 
     const handleOpenDetails = (jobId: string) => {
-      openModal("GLOBAL", () => (
-        <JobDetailsModal jobId={jobId} onClose={closeModal} />
-      ));
+      openModal("GLOBAL", JobDetailsModal, { jobId });
     };
 
     return (
-      <div className="flex flex-col h-full gap-6">
+      <div className="flex flex-col h-full gap-6 animate-in fade-in duration-500">
         {/* HEADER */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center px-1">
           <div className="flex items-center gap-3">
             <div>
-              <h2 className="text-2xl font-bold">Job Manager</h2>
+              <h2 className="text-2xl font-black italic tracking-tighter uppercase">
+                Job Manager
+              </h2>
               <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-black">
                 {isLoading ? "Syncing..." : `${jobs.length} Active Records`}
               </p>
             </div>
-            <RefreshButton onRefresh={initData} isLoading={isLoading} />
+            <RefreshButton
+              onRefresh={() => initData(currentOrgId)} // 🔥 FIXED: Pass orgId to sync
+              isLoading={isLoading}
+            />
           </div>
 
           <button
-            className="w-12 h-12 rounded-full bg-orange-500 text-black flex items-center justify-center text-2xl font-bold shadow-lg shadow-orange-500/40 active:scale-90 transition-transform"
+            className="w-12 h-12 rounded-full bg-zodiac-orange text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-orange-500/20 active:scale-90 transition-all"
             onClick={handleOpenCreation}
           >
             +
@@ -89,12 +87,12 @@ export const JobCartScreen: ZodiacScreen = {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search Reference or Client..."
+            placeholder="Search Reference, Client, or Service..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-10 text-sm focus:border-cyan-400 outline-none transition-all placeholder:opacity-20"
+            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-12 text-sm focus:border-cyan-400 outline-none transition-all placeholder:opacity-20 font-bold"
           />
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 opacity-30 text-xs">
+          <span className="absolute left-5 top-1/2 -translate-y-1/2 opacity-30 text-xs">
             🔍
           </span>
         </div>
@@ -108,31 +106,32 @@ export const JobCartScreen: ZodiacScreen = {
               <div
                 key={job.id}
                 onClick={() => handleOpenDetails(job.id)}
-                className="glass-card p-4 flex items-center justify-between border border-white/5 hover:border-cyan-400/30 transition-all cursor-pointer group active:scale-[0.98]"
+                className="glass-card p-5 flex items-center justify-between border border-white/5 hover:border-cyan-400/30 transition-all cursor-pointer group active:scale-[0.98]"
               >
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
-                    <span className="bg-cyan-400/10 text-cyan-400 text-[10px] font-mono px-2 py-0.5 rounded border border-cyan-400/20">
+                    <span className="bg-white/5 text-white/40 text-[9px] font-black px-2 py-0.5 rounded border border-white/10 tracking-widest">
                       #{job.id}
                     </span>
-                    <span className="text-sm font-bold truncate max-w-[120px]">
-                      {job.service?.name || "Unknown Service"}
+                    <span className="text-sm font-black truncate max-w-[140px] uppercase tracking-tight">
+                      {job.serviceName}{" "}
+                      {/* 🔥 FIXED: Aligned with snapshot field */}
                     </span>
                   </div>
-                  <span className="text-xs opacity-50 font-medium">
-                    {job.client?.name || "Unknown Client"}
+                  <span className="text-[10px] opacity-40 font-black uppercase tracking-widest">
+                    {job.client?.name || "Anonymous Client"}
                   </span>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-orange-400 font-mono font-bold text-sm">
+                  <div className="text-cyan-400 font-mono font-black text-sm">
                     ₵{job.totalPrice.toFixed(2)}
                   </div>
                   <div
-                    className={`text-[9px] uppercase font-black tracking-tighter ${
+                    className={`text-[9px] uppercase font-black tracking-tighter mt-1 ${
                       job.status === "COMPLETED"
-                        ? "text-green-400"
-                        : "text-yellow-400"
+                        ? "text-emerald-400"
+                        : "text-amber-400"
                     }`}
                   >
                     ● {job.status}
@@ -143,7 +142,7 @@ export const JobCartScreen: ZodiacScreen = {
           ) : (
             <div className="flex flex-col items-center justify-center py-20 opacity-20">
               <span className="text-5xl mb-4">📂</span>
-              <p className="text-xs uppercase tracking-widest font-bold">
+              <p className="text-[10px] uppercase tracking-[0.4em] font-black">
                 No active jobs found
               </p>
             </div>
@@ -151,10 +150,10 @@ export const JobCartScreen: ZodiacScreen = {
         </div>
 
         {/* FOOTER */}
-        <div className="mt-auto pb-4">
+        <div className="mt-auto pb-6">
           <button
             onClick={() => setScreen("WELCOME")}
-            className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 text-[10px] uppercase font-black tracking-[0.3em] hover:text-cyan-400 hover:border-cyan-400/30 transition-all"
+            className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white/20 text-[10px] uppercase font-black tracking-[0.4em] hover:text-cyan-400 hover:border-cyan-400/30 transition-all"
           >
             ← Exit Workspace
           </button>
