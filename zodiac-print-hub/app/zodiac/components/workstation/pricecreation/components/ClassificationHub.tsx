@@ -3,12 +3,14 @@
 import { useModalStore } from "@store/useModalStore";
 import { useDataStore } from "@store/core/useDataStore";
 import { MaterialServiceCatalog } from "./MaterialServiceCatalog";
+import { ExcelImportVault } from "./ExcelImportVault"; // 🚀 Import the target
 import { WorkstationStatus } from "../../../common/WorkstationStatus";
 import { shallow } from "zustand/shallow";
 import {
   MaterialCalculationType,
   ServiceCalculationType,
 } from "@prisma/client";
+import { Database } from "lucide-react";
 
 export function ClassificationHub() {
   const { swapModal, closeModal } = useModalStore();
@@ -19,7 +21,7 @@ export function ClassificationHub() {
     useDataStore();
   const isSubmitting = useDataStore((s) => s.priceState.isSubmitting);
 
-  const hasExistingProgress = draft?.name !== "" || (draft?.priceGHS ?? 0) > 0;
+  const hasExistingProgress = draft?.name !== "" || (draft?.salePrice ?? 0) > 0;
   const isSubmittingState = mode === "submitting";
   const hasType = type !== null;
 
@@ -48,6 +50,10 @@ export function ClassificationHub() {
     swapModal("DETAIL", WorkstationStatus, { title, message, type });
   };
 
+  const handleOpenExcelVault = () => {
+    swapModal("DETAIL", ExcelImportVault);
+  };
+
   /**
    * FINALIZE ITEM (The Junction Bridge)
    * Restructures the draft into the Production Recipe
@@ -55,7 +61,6 @@ export function ClassificationHub() {
   const handleFinalize = async () => {
     setMode("submitting");
 
-    // 1. VALIDATION
     if (!draft.name || draft.name === "---") {
       setMode("draft");
       return triggerStatus(
@@ -65,7 +70,7 @@ export function ClassificationHub() {
       );
     }
 
-    if (draft.priceGHS <= 0) {
+    if (draft.salePrice <= 0) {
       setMode("draft");
       return triggerStatus(
         "Rate Required",
@@ -84,23 +89,24 @@ export function ClassificationHub() {
     }
 
     try {
-      // 2. CONSTRUCT PAYLOAD (Aligned with PriceList Junction)
+      // 2. CONSTRUCT PAYLOAD (Aligned with PriceList Junction & Triple-Price Logic)
       const payload = {
         displayName: draft.name,
-        salePrice: Number(draft.priceGHS),
-        type: type?.toUpperCase(), // "MATERIAL" or "SERVICE"
+        salePrice: Number(draft.salePrice),
+        type: type?.toUpperCase(),
 
         ...(type === "material"
           ? {
               materialCategory: draft.category,
               mCalcType: draft.calcType as MaterialCalculationType,
-              purchasePrice: Number(draft.costPrice || 0),
+              purchasePrice: Number(draft.purchasePrice || 0),
               unit: draft.unit,
               lowStockThreshold: Number(draft.stockThreshold || 0),
             }
           : {
               serviceCategory: draft.category,
               sCalcType: draft.calcType as ServiceCalculationType,
+              basePrice: Number(draft.basePrice || 0),
             }),
       };
 
@@ -121,7 +127,7 @@ export function ClassificationHub() {
 
   return (
     <div className="inner-ui-content inner-ui-down modalOpen h-full flex flex-col text-center px-4">
-      {/* 1. HEADER & BREADCRUMB */}
+      {/* 1. HEADER */}
       <div className="mt-2">
         <h2 className="text-xl font-black italic tracking-tighter text-white leading-none uppercase">
           {hasType ? `${type} PATH` : "CLASSIFICATION"}
@@ -150,9 +156,27 @@ export function ClassificationHub() {
           </div>
         )}
 
-        {/* 3. PATH SELECTION (Initial State) */}
         {!hasType ? (
           <>
+            {/* 🚀 EXCEL VAULT ENTRANCE (New Addition) */}
+            <button
+              onClick={handleOpenExcelVault}
+              className="w-full py-4 border-2 border-dashed border-zodiac-orange/20 rounded-2xl bg-zodiac-orange/5 flex items-center justify-center gap-3 group hover:border-zodiac-orange/50 transition-all mb-1"
+            >
+              <Database
+                size={16}
+                className="text-zodiac-orange animate-pulse"
+              />
+              <div className="flex flex-col items-start text-left">
+                <span className="text-[10px] font-black uppercase text-zodiac-orange">
+                  Bulk Ingestion
+                </span>
+                <span className="text-[6px] opacity-40 uppercase font-black tracking-widest text-white">
+                  Import spreadsheet data
+                </span>
+              </div>
+            </button>
+
             <button
               onClick={() => swapModal("DETAIL", MaterialServiceCatalog)}
               className="glass-card w-full py-4 px-6 flex justify-between items-center group active:scale-95 transition-all"
@@ -166,13 +190,13 @@ export function ClassificationHub() {
             <div className="grid grid-cols-2 gap-2 mt-2">
               <button
                 onClick={() => handleTypeSwitch("material")}
-                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase hover:border-cyan-400/50 hover:text-white transition-all"
+                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase hover:border-cyan-400 transition-all"
               >
                 Physical Material
               </button>
               <button
                 onClick={() => handleTypeSwitch("service")}
-                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase hover:border-purple-400/50 hover:text-white transition-all"
+                className="py-5 border border-white/10 bg-white/5 text-white/40 rounded-2xl text-[10px] font-black uppercase hover:border-purple-400 transition-all"
               >
                 Labor Service
               </button>
@@ -180,7 +204,7 @@ export function ClassificationHub() {
           </>
         ) : (
           /* 4. LOGIC CONFIGURATION (Active Path) */
-          <div className="flex flex-col gap-2 animate-in slide-in-from-bottom-2 duration-300">
+          <div className="flex flex-col gap-2">
             <div
               className={`py-4 rounded-2xl border text-[10px] font-black uppercase tracking-[0.2em] shadow-inner ${
                 type === "material"
@@ -191,7 +215,6 @@ export function ClassificationHub() {
               {type === "material" ? "✓ Material Resource" : "✓ Service Effort"}
             </div>
 
-            {/* Path-Specific Logic Picker (Summary) */}
             <div className="text-[7px] text-white/40 uppercase font-black tracking-widest mt-2">
               Logic: {draft.calcType || "Unselected"} • Unit:{" "}
               {draft.unit || "N/A"}
