@@ -342,7 +342,12 @@ model Material {
   // Ties this material to its primary source
   supplierId    String?
   supplier      Supplier?               @relation(fields: [supplierId], references: [id], onDelete: SetNull)
-
+   
+  // 🚚 LOGISTICS SPECS (Phase 4)
+  leadTimeDays   Int?      @default(3)      // Days from Order to Arrival
+  minOrderQty    Int?      @default(1)      // Smallest purchase unit
+  buyQuantity    Float?    @default(1)      // Units per pack (e.g., 150ft per roll)
+  buyUnit        String?   @default("roll") // "roll", "box", "pack"
   // 📦 PROCUREMENT SPECS (Phase 2 & 3)
   buyUnit       String?                 @default("roll") // "roll", "box", "pack"
   buyQuantity   Float?                  @default(1)      // e.g., 150 (if a roll is 150ft)

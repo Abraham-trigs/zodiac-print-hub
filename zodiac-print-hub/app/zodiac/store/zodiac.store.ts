@@ -3,6 +3,7 @@ import { SCREEN_MAP, ScreenID } from "../view/screen.registry";
 import { getCachedScreen } from "../view/screen.cache";
 import { screenPredictor } from "../view/screen.predictor";
 import { useModalStore } from "../store/useModalStore";
+import { useDataStore } from "@store/core/useDataStore"; // Added for Role Guard
 // ✅ Import the routing utility
 import { screenToPath } from "@view/screen.router";
 
@@ -33,6 +34,7 @@ interface ZodiacState {
   setScreen: (id: ScreenID, mode?: ViewMode) => void;
   goBack: () => void;
   goForward: () => void;
+  initializeRouting: (role: string) => void; // 🚀 Added Boot Logic Type
   setSharedAction: (action: ButtonAction | null) => void;
   executeSharedAction: () => void;
   preloadScreen: (id: ScreenID) => void;
@@ -49,21 +51,29 @@ export const useZodiac = create<ZodiacState>((set, get) => ({
   // ---------------- NAVIGATION ----------------
   setScreen: (id, mode) => {
     const state = get();
-    if (state.activeScreenId === id) return;
+    let targetId = id;
 
-    const target = SCREEN_MAP[id];
+    // 🚀 NEW: Industrial Role Guard
+    const user = useDataStore.getState().user;
+    if (user?.role === "SUPPLIER" && !targetId.startsWith("SUPPLIER_")) {
+      targetId = "SUPPLIER_DASHBOARD" as ScreenID;
+    }
+
+    if (state.activeScreenId === targetId) return;
+
+    const target = SCREEN_MAP[targetId];
     const resolvedMode = mode || target?.layoutMode || "SPLIT";
 
-    getCachedScreen(id);
-    screenPredictor.preload(id);
+    getCachedScreen(targetId);
+    screenPredictor.preload(targetId);
 
     // ✅ Sync URL with /zodiac prefix
     if (typeof window !== "undefined") {
-      window.history.pushState({}, "", screenToPath(id));
+      window.history.pushState({}, "", screenToPath(targetId));
     }
 
     set({
-      activeScreenId: id,
+      activeScreenId: targetId,
       viewMode: resolvedMode,
       history: [
         ...state.history,
@@ -113,6 +123,15 @@ export const useZodiac = create<ZodiacState>((set, get) => ({
       ],
       future: state.future.slice(1),
     });
+  },
+
+  // 🚀 NEW: Industrial Boot Logic
+  initializeRouting: (role: string) => {
+    if (role === "SUPPLIER") {
+      get().setScreen("SUPPLIER_DASHBOARD" as ScreenID, "DETAIL");
+    } else {
+      get().setScreen("WELCOME" as ScreenID, "SPLIT");
+    }
   },
 
   // ---------------- ACTION SYSTEM ----------------

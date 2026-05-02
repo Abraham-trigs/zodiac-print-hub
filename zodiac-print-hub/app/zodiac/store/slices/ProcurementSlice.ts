@@ -35,6 +35,9 @@ export interface ProcurementSlice {
 
   // --- PHASE 2: SHORTFALL CHECK ---
   checkJobShortfall: (jobId: string) => Promise<any>;
+
+  // --- PHASE 4: VELOCITY ANALYTICS ---
+  loadVelocityAnalytics: () => Promise<void>;
 }
 
 export const createProcurementSlice: StateCreator<ProcurementSlice> = (
@@ -186,6 +189,28 @@ export const createProcurementSlice: StateCreator<ProcurementSlice> = (
     } catch (e) {
       console.error("Shortfall check failed", e);
       return null;
+    }
+  },
+
+  /* --- PHASE 4: VELOCITY ANALYTICS --- */
+  loadVelocityAnalytics: async () => {
+    set((s) => ({
+      procurementState: { ...s.procurementState, isLoading: true },
+    }));
+    try {
+      const res = await apiClient<{ data: any[] }>(
+        "/api/procurement/analytics/velocity",
+      );
+      set((s) => ({
+        procurementState: {
+          ...s.procurementState,
+          suggestions: res?.data ?? [],
+        },
+      }));
+    } finally {
+      set((s) => ({
+        procurementState: { ...s.procurementState, isLoading: false },
+      }));
     }
   },
 });

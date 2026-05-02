@@ -19,6 +19,7 @@ import { SupplierRegistryScreen } from "../screens/procurement/SupplierRegistryS
 import { SupplierDetailScreen } from "../screens/procurement/SupplierDetailScreen";
 import { SupplyNodeScreen } from "../screens/procurement/SupplyNodeScreen";
 import { ReceivingNodeScreen } from "../screens/procurement/ReceivingNodeScreen";
+import { SupplierPortalDashboard } from "../screens/portal/SupplierPortalDashboard";
 
 /**
  * Central screen registry
@@ -45,6 +46,7 @@ export const SCREEN_MAP = {
   SUPPLIER_DETAIL: SupplierDetailScreen, // Phase 1: Identity & Materials
   SUPPLY_NODE: SupplyNodeScreen, // Phase 2: Shortfalls
   RECEIVING_NODE: ReceivingNodeScreen, // Phase 3: Check-in
+  SUPPLIER_PORTAL: SupplierPortalDashboard,
 } as const satisfies Record<string, ZodiacScreen>;
 
 export type ScreenID = keyof typeof SCREEN_MAP;
