@@ -330,23 +330,41 @@ enum MaterialStatus {
 
 model Material {
   id            String                  @id @default(cuid())
-  name          String // Internal/Technical name
+  name          String 
   calcType      MaterialCalculationType
   unit          ServiceUnit
-  purchasePrice Float // Base cost per unit
+  purchasePrice Float 
 
-  // 1-to-1 link to physical stock
-  stockItemId String?    @unique
-  stockItem   StockItem? @relation(fields: [stockItemId], references: [id], onDelete: SetNull)
+  // 📏 Physical Geometry (Existing V2)
+  rollWidth     Float?                  @default(0) 
+
+  // 🚚 PROCUREMENT LINKS (Phase 1)
+  // Ties this material to its primary source
+  supplierId    String?
+  supplier      Supplier?               @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+
+  // 📦 PROCUREMENT SPECS (Phase 2 & 3)
+  buyUnit       String?                 @default("roll") // "roll", "box", "pack"
+  buyQuantity   Float?                  @default(1)      // e.g., 150 (if a roll is 150ft)
+  minOrderQty   Int?                    @default(1)
+  
+  // 🛰️ RELATIONS
+  stockItemId   String?                 @unique
+  stockItem     StockItem?              @relation(fields: [stockItemId], references: [id], onDelete: SetNull)
 
   priceListItems PriceList[]
   jobVariables   JobVariable[]
+  printLayouts   MaterialPrintLayout[]
+  purchaseItems  StockPurchaseItem[]    // History of purchases for this material
+
   orgId          String
-  organisation   Organisation  @relation(fields: [orgId], references: [id])
+  organisation   Organisation           @relation(fields: [orgId], references: [id])
 
   @@unique([orgId, name])
   @@index([name])
+  @@index([supplierId])
 }
+
 
 enum ServiceCalculationType {
   FIXED // A one-time fee regardless of size (e.g., Design Fee, Setup Fee)
@@ -435,6 +453,76 @@ enum StockMovementType {
   DEDUCT
   WASTE
   ADJUST
+}
+
+model Supplier {
+  id            String    @id @default(cuid())
+  orgId         String
+  name          String
+  email         String?
+  phone         String?
+  address       String?
+  
+  // 🏷️ Categorization (This is where you specify "Stock" vs "Service")
+  category      String?   // e.g., "SUBSTRATES", "HARDWARE", "UTILITIES"
+  
+  // 🏢 B2B BRIDGE
+  linkedUserId  String?   @unique 
+  
+  // 🛰️ RELATIONS
+  materials      Material[]
+  purchaseOrders StockPurchaseOrder[]
+
+  organisation  Organisation @relation(fields: [orgId], references: [id])
+  createdAt     DateTime     @default(now())
+
+  @@index([orgId])
+  @@unique([orgId, name]) // A shop can't have two suppliers with the same name
+}
+model StockPurchaseOrder {
+  id              String        @id @default(cuid())
+  orgId           String
+  
+  supplierId      String
+  supplier        Supplier      @relation(fields: [supplierId], references: [id])
+
+  status          POStatus      @default(DRAFT)
+  
+  // 🔗 LINK: The specific Job that triggered this (Phase 2)
+  relatedJobId    String?
+  
+  totalCost       Float         @default(0)
+  items           StockPurchaseItem[]
+
+  // 🚚 LOGISTICS
+  expectedArrival DateTime?
+  receivedAt      DateTime?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([orgId])
+  @@index([status])
+}
+
+model StockPurchaseItem {
+  id               String             @id @default(cuid())
+  purchaseOrderId  String
+  purchaseOrder    StockPurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  materialId       String
+  material         Material           @relation(fields: [materialId], references: [id])
+
+  quantity         Float              // How many you are buying (e.g., 10)
+  buyUnit          String             // e.g., "Roll"
+  unitPrice        Float              // Snapshot of price per Roll
+}
+
+enum POStatus {
+  DRAFT
+  ORDERED     // Sent to Supplier (Stock is "In-Transit")
+  RECEIVED    // Physical Goods arrived (StockMovement Triggered)
+  CANCELLED
 }
 
 enum JobStatus {

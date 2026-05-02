@@ -1,4 +1,3 @@
-// src/store/useDataStore.ts
 "use client";
 
 import { create } from "zustand";
@@ -16,6 +15,9 @@ import { createPaymentSlice } from "./slices/payment.slice";
 import { createDeliverySlice } from "./slices/delivery.slice";
 import { createB2BSlice } from "./slices/b2b.slice";
 import { createClientSlice } from "./slices/client.slice";
+// 🚀 NEW V2 PRODUCTION & LOGISTICS SLICES
+import { createPrintLayoutSlice } from "./slices/PrintLayoutSlice";
+import { createProcurementSlice } from "./slices/procurement.slice";
 
 /**
  * MASTER DATA STORE (V2)
@@ -35,21 +37,23 @@ export const useDataStore = create<any>()(
       ...createB2BSlice(set, get, api),
       ...createDeliverySlice(set, get, api),
       ...createClientSlice(set, get, api),
+      // 🚀 Injecting Production & Supply Chain Intelligence
+      ...createPrintLayoutSlice(set, get, api),
+      ...createProcurementSlice(set, get, api),
 
       // 2. GLOBAL APP STATE
       currentOrgId: null,
 
       /**
        * INIT DATA (Parallel Sync)
-       * Use this in your Layout or Dashboard to boot the shop.
-       * It ensures strict multi-tenant isolation by requiring orgId.
+       * Orchestrates a multi-tenant bootstrap of all shop modules.
        */
       initData: async (orgId: string) => {
         if (!orgId) return;
 
         set({ currentOrgId: orgId });
 
-        console.log(`[ZODIAC] Syncing Shop: ${orgId}...`);
+        console.log(`[ZODIAC] Syncing Node: ${orgId}...`);
 
         try {
           await Promise.all([
@@ -59,34 +63,39 @@ export const useDataStore = create<any>()(
             get().loadStaff?.(orgId),
             get().loadClients?.(orgId),
             get().loadB2BPushes?.(orgId),
+            // 🚀 Logistics Boot: Load Suppliers for Procurement Node
+            get().loadSuppliers?.(),
+            // 🚀 Production Boot: Load active Purchase Orders
+            get().loadPurchaseOrders?.(),
           ]);
-          console.log("[ZODIAC] Sync Complete.");
+          console.log("[ZODIAC] System Sync Complete.");
         } catch (err) {
-          console.error("[ZODIAC] Sync Failed:", err);
+          console.error("[ZODIAC] Node Sync Failed:", err);
         }
       },
 
       /**
        * RESET STORE
-       * Used for logging out or switching organisations.
        */
       resetStore: () => {
-        get().resetDraft();
-        get().resetPricingDraft();
+        get().resetDraft?.();
+        get().resetPricingDraft?.();
+        get().resetLayout?.(); // 🚀 Clear layout workbench
         set({ currentOrgId: null });
       },
     }),
     {
-      name: "zodiac-store-v2", // Structural Change Versioning
+      name: "zodiac-store-v2",
       partialize: (state: any) => ({
-        // PERSISTENCE MAP: Only keep what's essential for UX
+        // PERSISTENCE MAP
         draft: state.draft,
         pricingDraft: state.pricingDraft,
         currentOrgId: state.currentOrgId,
+        // Optional: Persist active layout if you want to resume after refresh
+        activeLayout: state.layoutState?.activeLayout,
       }),
     },
   ),
 );
 
-// Exporting shallow hook for performance optimization
 export { shallow };

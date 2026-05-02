@@ -20,8 +20,9 @@ const cache = {
   delivery: { map: null as any, array: EMPTY_ARRAY as any[] },
   payment: { map: null as any, array: EMPTY_ARRAY as any[] },
   b2b: { map: null as any, array: EMPTY_ARRAY as any[] },
-  // 🔥 NEW: Added movements key to support Ledger Intelligence
   movements: { map: null as any, array: EMPTY_ARRAY as any[] },
+  // 🔥 NEW: Cache for Procurement Node
+  suppliers: { map: null as any, array: EMPTY_ARRAY as any[] },
 };
 
 /* =========================================================
@@ -31,6 +32,14 @@ const cache = {
 export const selectJobsMap = (s: State) => s.jobState?.jobs ?? EMPTY_MAP;
 export const selectPricesMap = (s: State) => s.priceState?.prices ?? EMPTY_MAP;
 export const selectStaffMap = (s: State) => s.staffState?.staff ?? EMPTY_MAP;
+
+// ✅ SYNCED: Points to paymentState records
+export const selectPaymentsMap = (s: State) =>
+  s.paymentState?.payments ?? EMPTY_MAP;
+
+// 🚀 FIXED: Points to procurementState (lowercase) and handles fallback
+export const selectSuppliersMap = (s: State) =>
+  s.procurementState?.suppliers ?? EMPTY_MAP;
 
 // ✅ SYNCED: Points to b2bState grouping
 export const selectB2BMap = (s: State) => s.b2bState?.items ?? EMPTY_MAP;
@@ -53,7 +62,6 @@ export const selectDeliveriesMap = (s: State) =>
   s.deliveryState?.deliveries ?? EMPTY_MAP;
 export const selectPaymentsMap = (s: State) =>
   s.paymentState?.payments ?? EMPTY_MAP;
-
 /* =========================================================
    ARRAY / LIST VIEWS (MEMOIZED)
 ========================================================= */
@@ -81,10 +89,12 @@ export const selectPaymentsArray = (s: State) =>
   getMemoizedArray(selectPaymentsMap(s), "payment");
 export const selectB2BArray = (s: State) =>
   getMemoizedArray(selectB2BMap(s), "b2b");
-
-// 🔥 NEW: Memoized Movements Array for Intelligence
 export const selectMovementsArray = (s: State) =>
   getMemoizedArray(selectMovementsMap(s), "movements");
+
+// 🔥 NEW: Memoized Suppliers Array for the Registry
+export const selectSuppliersArray = (s: State) =>
+  getMemoizedArray(selectSuppliersMap(s), "suppliers");
 
 // RELATION CACHE
 let jobsWithRelationsCache: any[] = [];
@@ -166,6 +176,10 @@ export const selectAllPrices = selectPricesArray;
 export const selectAllInventory = selectInventoryArray;
 export const selectAllDeliveries = selectDeliveriesArray;
 export const selectAllPayments = selectPaymentsArray;
+
+// 🔥 NEW: Aligned with Procurement Node
+export const selectAllSuppliers = selectSuppliersArray;
+export const selectAllMovements = selectMovementsArray;
 
 /* =========================================================
    JOB DOMAIN COMPOSITES
@@ -304,16 +318,21 @@ export const selectLiveEstimate = (s: State) => {
 };
 
 /* =========================================================
-   SEARCH HELPERS (CONFIRMED)
+   SEARCH HELPERS (V2 ALIGNED)
 ========================================================= */
+
 export const selectSearchJobs = (query: string) => (s: State) => {
   const all = selectJobsArray(s);
   const q = query.toLowerCase().trim();
   if (!q) return all;
 
+  const clients = selectClientsMap(s);
+
   return all.filter((j) => {
-    const client = selectClientsMap(s)[j.clientId];
+    const client = clients[j.clientId];
     return (
+      // 🚀 NEW: Search by 4-char ShortRef (Fastest for printer operators)
+      (j.shortRef && j.shortRef.toLowerCase().includes(q)) ||
       j.id.toLowerCase().includes(q) ||
       j.serviceName.toLowerCase().includes(q) ||
       client?.name.toLowerCase().includes(q)
@@ -329,6 +348,19 @@ export const selectSearchClients = (query: string) => (s: State) => {
   return all.filter(
     (c) =>
       c.name.toLowerCase().includes(q) || c.phone?.toLowerCase().includes(q),
+  );
+};
+
+// 🔥 NEW: Supplier Search for Procurement Node
+export const selectSearchSuppliers = (query: string) => (s: State) => {
+  const all = selectSuppliersArray(s);
+  const q = query.toLowerCase().trim();
+  if (!q) return all;
+
+  return all.filter(
+    (sup) =>
+      sup.name.toLowerCase().includes(q) ||
+      sup.category?.toLowerCase().includes(q),
   );
 };
 
@@ -362,3 +394,7 @@ export const useLiveEstimate = () =>
 
 // ✅ SYNCED: Accesses partner negotiation items
 export const useB2BItems = () => useDataStore((s: State) => s.b2bState?.items);
+
+// 🔥 NEW: Aligned with Procurement Node Phase 1
+export const useSuppliers = () =>
+  useDataStore((s: State) => s.procurementState?.suppliers ?? EMPTY_MAP);

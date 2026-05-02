@@ -14,6 +14,12 @@ import { UnitVaultScreen } from "../screens/UnitVaultScreen";
 import { PriceStockDetailScreen } from "../screens/PriceStockDetailScreen";
 import { PriceEntryCenter } from "../screens/PriceEntryCenter";
 
+// 🚀 NEW: Supply Chain Node Screens
+import { SupplierRegistryScreen } from "../screens/procurement/SupplierRegistryScreen";
+import { SupplierDetailScreen } from "../screens/procurement/SupplierDetailScreen";
+import { SupplyNodeScreen } from "../screens/procurement/SupplyNodeScreen";
+import { ReceivingNodeScreen } from "../screens/procurement/ReceivingNodeScreen";
+
 /**
  * Central screen registry
  * Cleaned of workstation components to prevent circular dependency loops.
@@ -33,6 +39,12 @@ export const SCREEN_MAP = {
   UNIT_VAULT: UnitVaultScreen,
   PRICE_STOCK_DETAIL: PriceStockDetailScreen,
   PRICE_ENTRY_CENTER: PriceEntryCenter,
+
+  // 🛰️ Procurement & Logistics Node
+  SUPPLIER_REGISTRY: SupplierRegistryScreen, // Phase 1: Vault
+  SUPPLIER_DETAIL: SupplierDetailScreen, // Phase 1: Identity & Materials
+  SUPPLY_NODE: SupplyNodeScreen, // Phase 2: Shortfalls
+  RECEIVING_NODE: ReceivingNodeScreen, // Phase 3: Check-in
 } as const satisfies Record<string, ZodiacScreen>;
 
 export type ScreenID = keyof typeof SCREEN_MAP;

@@ -17,7 +17,7 @@ export const PriceStockDetailScreen: ZodiacScreen = {
     const { goBack } = useZodiac();
     const [activeTab, setActiveTab] = useState<DetailTab>("INTELLIGENCE");
 
-    // 🔥 V2 ALIGNMENT: We resolve everything via the priceListId junction
+    // 🔥 V2 ALIGNMENT: Resolve everything via the priceListId junction
     const draft = useDataStore((s) => s.draftState.draft, shallow);
 
     const priceEntry = useDataStore((s) =>
@@ -26,7 +26,8 @@ export const PriceStockDetailScreen: ZodiacScreen = {
 
     // Physical data is now nested inside the price entry
     const material = priceEntry?.material;
-    // We check inventory specifically for the linked materialId
+
+    // Check inventory specifically for the linked materialId
     const stock = useDataStore((s) =>
       material?.id ? s.inventoryState.inventory[material.id] : null,
     );
@@ -98,7 +99,7 @@ export const PriceStockDetailScreen: ZodiacScreen = {
           ))}
         </div>
 
-        {/* 4. CONTENT */}
+        {/* 4. CONTENT AREA */}
         <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
           {activeTab === "INTELLIGENCE" && (
             <div className="grid grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4">
@@ -162,7 +163,6 @@ export const PriceStockDetailScreen: ZodiacScreen = {
 
           {activeTab === "LEDGER" && (
             <div className="bg-black/20 rounded-[3rem] border border-white/5 p-8 animate-in slide-in-from-bottom-4">
-              {/* This would eventually map through stock.movements in your Inventory Store */}
               <div className="flex items-center justify-between py-6 border-b border-white/5">
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] font-bold text-white uppercase">
@@ -173,11 +173,12 @@ export const PriceStockDetailScreen: ZodiacScreen = {
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-sm font-black text-emerald-400">
-                    {stock?.totalRemaining || 0}
+                  <span className="text-sm font-black text-emerald-400 font-mono">
+                    {stock?.totalRemaining || 0} {material?.unit}
                   </span>
                 </div>
               </div>
+              {/* Note: This is where we will map through actual movements soon */}
             </div>
           )}
 
@@ -203,4 +204,5 @@ export const PriceStockDetailScreen: ZodiacScreen = {
       </div>
     );
   },
+  DownComponent: undefined,
 };

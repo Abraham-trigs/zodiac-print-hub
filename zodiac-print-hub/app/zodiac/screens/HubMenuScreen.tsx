@@ -4,6 +4,7 @@ import { useZodiac } from "../store/zodiac.store";
 import { useModalStore } from "../store/useModalStore";
 import { ZodiacScreen } from "../types/screen.types";
 import { SettingsPermissionsModal } from "../screens/modals/SettingsPermissionsModal";
+import { PrintLayoutConfigModal } from "../components/workstation/production/PrintLayoutConfigModal"; // 🚀 Added
 import { useDataStore } from "../store/core/useDataStore";
 import { selectProductionIntelligence } from "../store/selectors/data.selectors";
 
@@ -18,11 +19,16 @@ export const HubMenuScreen: ZodiacScreen = {
     const intel = useDataStore(selectProductionIntelligence);
 
     const handleMenuClick = (id: string) => {
+      // 1. GLOBAL MODALS (Non-navigation actions)
       if (id === "SETTINGS") {
-        openModal("GLOBAL", SettingsPermissionsModal);
-      } else {
-        setScreen(id as any);
+        return openModal("GLOBAL", SettingsPermissionsModal);
       }
+      if (id === "SHOOTER_CONFIG") {
+        return openModal("GLOBAL", PrintLayoutConfigModal);
+      }
+
+      // 2. SCREEN NAVIGATION (Must match keys in SCREEN_MAP)
+      setScreen(id as any);
     };
 
     const menuItems = [
@@ -42,10 +48,28 @@ export const HubMenuScreen: ZodiacScreen = {
         id: "STOCK_MGMT",
         label: "Inventory Logic",
         icon: "📦",
-        desc: "Audit Trail & Levels",
+        desc: "Audit Trail & Ledger",
       },
       {
-        id: "SHOOTER_CONFIG", // 🚀 NEW: The physical "Print Rules" setup
+        id: "SUPPLY_NODE", // 🚀 Phase 2 Entry
+        label: "Supply Node",
+        icon: "🛒",
+        desc: "Shortfalls & Reorders",
+      },
+      {
+        id: "SUPPLIER_REGISTRY", // 🚀 Phase 1 Entry
+        label: "Supplier Vault",
+        icon: "🏢",
+        desc: "Verified Providers",
+      },
+      {
+        id: "RECEIVING_NODE", // 🚀 Phase 3 Entry
+        label: "Receiving Port",
+        icon: "🚚",
+        desc: "Check-in Shipments",
+      },
+      {
+        id: "SHOOTER_CONFIG",
         label: "Machine & Layout",
         icon: "🖨️",
         desc: "Bleeds & Roll Margins",

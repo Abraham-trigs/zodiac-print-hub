@@ -137,9 +137,11 @@ export function StockLedgerScreen({ stockItemId }: Props) {
                         {m.type}
                       </span>
                       <span className="w-1 h-1 rounded-full bg-white/10" />
-                      <span className="text-[9px] font-bold text-white/40 uppercase">
+                      <span
+                        className={`text-[9px] font-bold uppercase ${m.referenceType === "PURCHASE_ORDER" ? "text-cyan-400" : "text-white/40"}`}
+                      >
                         {m.referenceType || "MANUAL"}
-                      </span>
+                      </span>{" "}
                     </div>
                     <div className="flex items-center gap-2 opacity-30">
                       <User size={10} />
