@@ -562,6 +562,20 @@ model Job {
   // Connects this job to its specific position on a MaterialPrintLayout.
   layoutItem   PrintLayoutItem?
 
+    // 🎨 PROOFING & APPROVAL
+  proofUrl      String?     // URL to the uploaded design/proof
+  proofStatus   ProofStatus @default(PENDING)
+  customerNote  String?     // Feedback from the customer
+  approvalToken String?     @unique @default(cuid()) // Secure link token
+  approvedAt    DateTime?
+
+  enum ProofStatus {
+  PENDING       // No proof uploaded yet
+  AWAITING      // Staff uploaded, waiting for customer
+  REVISION      // Customer requested changes
+  APPROVED      // Customer said yes
+}
+
   // --- Core Reference ---
   priceListId String
   priceList   PriceList @relation(fields: [priceListId], references: [id])
