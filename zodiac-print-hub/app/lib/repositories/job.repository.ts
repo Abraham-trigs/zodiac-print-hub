@@ -12,19 +12,20 @@ const getDb = (tx?: TxOrDb) => {
 
 export class JobRepository {
   /**
-   * CREATE: Saves the final Job snapshot
+   * CREATE: Saves the final Job snapshot with 4-char ShortRef
    */
   static async create(
     data: {
       orgId: string;
       clientId: string;
-      priceListId: string; // Aligned: Now links to PriceList Master
-      serviceName: string; // Aligned: Snapshot of Display Name
+      priceListId: string;
+      shortRef: string; // 🚀 REQUIRED: For visual layout boxes
+      serviceName: string;
       quantity: number;
       width?: number;
       height?: number;
-      unit?: ServiceUnit; // Aligned with Enum
-      basePrice: number; // Snapshot of Sale Price
+      unit?: ServiceUnit;
+      basePrice: number;
       variableTotal?: number;
       totalPrice: number;
       costPrice?: number;
@@ -40,7 +41,7 @@ export class JobRepository {
   }
 
   /**
-   * FIND BY ID: Includes CRM and Logistics relations
+   * FIND BY ID: Includes CRM, Logistics, and Layout Tracing
    */
   static async findById(orgId: string, id: string, tx?: DbClient) {
     const db = getDb(tx);
@@ -50,15 +51,20 @@ export class JobRepository {
       include: {
         client: true,
         assignedStaff: true,
-        variables: true, // Essential for the Job Ticket view
-        deliveries: true, // Essential for tracking
-        b2bPush: true, // Track B2B source
+        variables: {
+          include: { layoutItem: { include: { layout: true } } }, // 🚀 NEW: Trace Variable Nesting
+        },
+        deliveries: true,
+        b2bPush: true,
+        layoutItem: {
+          include: { layout: true }, // 🚀 NEW: Trace Main Job Nesting
+        },
       },
     });
   }
 
   /**
-   * LIST: Optimized for Dashboard/Table views
+   * LIST: Optimized for Dashboard with Layout Awareness
    */
   static async list(
     orgId: string,
@@ -67,6 +73,7 @@ export class JobRepository {
       paymentStatus?: PaymentStatus;
       take?: number;
       skip?: number;
+      shortRef?: string; // 🚀 NEW: Fast search by 4-char ID
     },
     tx?: DbClient,
   ) {
@@ -76,13 +83,15 @@ export class JobRepository {
       where: {
         orgId,
         ...(params?.status && { status: params.status }),
-        ...(params?.paymentStatus && {
-          paymentStatus: params.paymentStatus,
+        ...(params?.paymentStatus && { paymentStatus: params.paymentStatus }),
+        ...(params?.shortRef && {
+          shortRef: { contains: params.shortRef, mode: "insensitive" },
         }),
       },
       include: {
-        client: { select: { name: true, phone: true, type: true } }, // Light fetch
+        client: { select: { name: true, phone: true, type: true } },
         b2bPush: { select: { status: true } },
+        layoutItem: { select: { layoutId: true } }, // 🛰️ Visual indicator if job is already nested
       },
       orderBy: { createdAt: "desc" },
       take: params?.take ?? 50,
@@ -128,7 +137,7 @@ export class JobRepository {
   }
 
   /**
-   * CONFIRM PAYMENT: Updates Job financial state
+   * CONFIRM PAYMENT
    */
   static async confirmPayment(
     orgId: string,

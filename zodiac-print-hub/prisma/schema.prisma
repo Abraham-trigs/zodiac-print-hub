@@ -461,12 +461,18 @@ model Job {
   clientId String
   client   Client @relation(fields: [clientId], references: [id])
 
+  // 🏷️ PRODUCTION IDENTIFIER (V2 Addition)
+  // The 4-character code (e.g., "7x2a") written inside layout boxes.
+  shortRef     String?      @unique
+
+  // 🔗 LAYOUT ENGINE LINK (V2 Addition)
+  // Connects this job to its specific position on a MaterialPrintLayout.
+  layoutItem   PrintLayoutItem?
+
   // --- Core Reference ---
   priceListId String
   priceList   PriceList @relation(fields: [priceListId], references: [id])
 
-  // We keep serviceName as a snapshot of PriceList.displayName 
-  // so the invoice doesn't change if you rename the PriceList item later.
   serviceName String
 
   // --- Multi-Service Support ---
@@ -476,15 +482,15 @@ model Job {
   quantity Float
   width    Float?
   height   Float?
-  unit     ServiceUnit? // Pulled from the linked Material
+  unit     ServiceUnit? 
 
-  // --- Financial Snapshots (Critical for Production) ---
-  basePrice     Float // Snapshot of PriceList.salePrice at time of order
+  // --- Financial Snapshots ---
+  basePrice     Float 
   variableTotal Float @default(0)
-  totalPrice    Float // (basePrice * quantity/area) + variableTotal
+  totalPrice    Float 
 
-  costPrice    Float? // Sum of Material.purchasePrice * usage
-  profitMargin Float? // totalPrice - costPrice
+  costPrice    Float? 
+  profitMargin Float? 
 
   // --- Payment & Status ---
   paymentStatus PaymentStatus @default(UNPAID)
@@ -511,19 +517,28 @@ model Job {
   @@index([orgId, paymentStatus])
   @@index([clientId])
   @@index([priceListId])
+  @@index([shortRef]) // 🚀 Added for fast lookup in the PrintLayoutBuilder
   @@index([createdAt(sort: Desc)])
 }
+
 
 model JobVariable {
   id    String @id @default(cuid())
   jobId String
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
+  // 🏷️ VISUAL IDENTIFIER (V2 Sync)
+  // We use a sub-ref so the printer knows this is an add-on (e.g., "7x2a-V1")
+  shortRef     String?      @unique 
+
+  // 🔗 LAYOUT ENGINE LINK
+  // Allows the "Lamination" or "Backing" to be nested on its own material run
+  layoutItem   PrintLayoutItem?
+
   priceListId String
   priceList   PriceList @relation(fields: [priceListId], references: [id])
 
-  // --- 🚀 Critical Update: Dimensions for Variables ---
-  // This allows "Finishing" services like lamination to calculate area
+  // --- Dimensions for Variables ---
   quantity Float
   width    Float?
   height   Float?
@@ -531,7 +546,6 @@ model JobVariable {
   unitPrice Float
   subtotal  Float
 
-  // Relations to definitions for technical tracking
   material   Material? @relation(fields: [materialId], references: [id])
   materialId String?
   service    Service?  @relation(fields: [serviceId], references: [id])
@@ -542,10 +556,50 @@ model JobVariable {
 
   @@index([orgId, jobId])
   @@index([jobId])
+  @@index([shortRef])
   @@index([priceListId])
 }
 
-//
+
+// --- NEW: THE MAP (MaterialPrintLayout) ---
+model MaterialPrintLayout {
+  id              String         @id @default(cuid())
+  orgId           String
+  materialId      String
+  material        Material       @relation(fields: [materialId], references: [id])
+  
+  rollWidth       Float          // Snapshot of roll width
+  cutLineHeight   Float          // Where the straight cut happens
+  efficiency      Float          // Area Used / Total Canvas Area
+  totalWastedArea Float          // Shaded "Big Margin" area
+  
+  items           PrintLayoutItem[]
+  status          LayoutStatus   @default(DRAFT)
+  createdAt       DateTime       @default(now())
+
+  @@index([orgId])
+}
+
+// --- NEW: THE BOXES (PrintLayoutItem) ---
+model PrintLayoutItem {
+  id            String               @id @default(cuid())
+  layoutId      String
+  layout        MaterialPrintLayout  @relation(fields: [layoutId], references: [id], onDelete: Cascade)
+  
+  jobId         String               @unique
+  job           Job                  @relation(fields: [jobId], references: [id])
+
+  posX          Float
+  posY          Float
+  isRotated     Boolean              @default(false)
+  width         Float
+  height        Float
+}
+
+enum LayoutStatus { DRAFT; LOCKED; COMPLETED; CANCELLED }
+
+
+// watse
 // ─────────────────────────────────────────────
 // 8. DELIVERY
 // ─────────────────────────────────────────────

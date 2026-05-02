@@ -7,6 +7,7 @@ import { stockService } from "@/lib/services/stock.service";
 import { ProductionCalculator } from "@/lib/utils/production-calculator";
 import { ApiError } from "@/lib/apiHandler";
 import { StockMovementType } from "@prisma/client";
+import { generateShortRef } from "@/store/shared/generateRef";
 
 export class JobService {
   /**
@@ -40,6 +41,7 @@ export class JobService {
 
     return UnitOfWork.run(async (tx) => {
       const now = new Date();
+      const shortRef = generateShortRef(); // 🚀 4-char ID for the layout boxes
 
       const priceItem = await tx.priceList.findFirst({
         where: { id: priceListId, orgId },
@@ -75,6 +77,7 @@ export class JobService {
           clientId,
           priceListId: priceItem.id,
           serviceName: priceItem.displayName,
+          shortRef, // 🔗 Injected for PrintLayoutItem identification
           quantity,
           width,
           height,
@@ -129,33 +132,29 @@ export class JobService {
   }
 
   /**
-   * RECORD WASTAGE (The Intelligence Leak Plug)
-   * Deducts stock and kills profit margin for a specific job.
+   * RECORD WASTAGE
    */
   async recordWastage(params: {
     orgId: string;
     jobId: string;
-    quantity: number; // The amount of material ruined
+    quantity: number;
     reason: string;
     userId: string;
   }) {
     const { orgId, jobId, quantity, reason, userId } = params;
 
     return UnitOfWork.run(async (tx) => {
-      // 1. Resolve Job and its associated Material
       const job = await tx.job.findUnique({
         where: { id: jobId, orgId },
         include: { priceList: { include: { material: true } } },
       });
 
-      if (!job || !job.priceList.material) {
-        throw new ApiError("Job material not found for wastage report", 404);
-      }
+      if (!job || !job.priceList.material)
+        throw new ApiError("Job material not found", 404);
 
       const material = job.priceList.material;
       const lossValue = quantity * material.purchasePrice;
 
-      // 2. TRIGGER STOCK LEDGER (The Nervous System)
       await stockService.createMovement(
         {
           orgId,
@@ -170,8 +169,6 @@ export class JobService {
         tx,
       );
 
-      // 3. UPDATE JOB FINANCIALS (Intelligence Impact)
-      // We increase the cost and decrease the margin of the job.
       const updatedJob = await tx.job.update({
         where: { id: jobId },
         data: {
@@ -185,13 +182,13 @@ export class JobService {
         orgId,
         payload: { jobId, lossValue, quantity, reason },
       });
-
       return updatedJob;
     });
   }
 
   /**
    * ADD VARIABLE
+   * 🔥 FIXED: Now generates a sub-ref for visual layout identification.
    */
   async addVariable(params: {
     orgId: string;
@@ -206,6 +203,13 @@ export class JobService {
       params;
 
     return UnitOfWork.run(async (tx) => {
+      // 🚀 NEW: Link variable identity to parent job
+      const mainJob = await tx.job.findUnique({
+        where: { id: jobId },
+        select: { shortRef: true },
+      });
+      const variableShortRef = `${mainJob?.shortRef || "v"}-${generateShortRef().slice(0, 2)}`;
+
       const priceItem = await tx.priceList.findFirst({
         where: { id: priceListId, orgId },
         include: { material: { include: { stockItem: true } }, service: true },
@@ -232,6 +236,7 @@ export class JobService {
           jobId,
           priceListId: priceItem.id,
           materialId: priceItem.materialId,
+          shortRef: variableShortRef, // 🔗 Injected for Layout Builder visibility
           serviceId: priceItem.serviceId,
           quantity,
           width,
@@ -261,7 +266,7 @@ export class JobService {
             referenceId: variable.id,
             referenceType: "JOB_VARIABLE",
             createdBy: userId,
-            note: `Add-on: ${priceItem.displayName} for Job #${jobId}`,
+            note: `Variable add-on: ${priceItem.displayName} for Job #${jobId}`,
           },
           tx,
         );

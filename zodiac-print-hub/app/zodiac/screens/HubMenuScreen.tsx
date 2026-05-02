@@ -27,16 +27,10 @@ export const HubMenuScreen: ZodiacScreen = {
 
     const menuItems = [
       {
-        id: "ANALYTICS", // 🚀 Points to ProductionIntelligenceHub
+        id: "ANALYTICS",
         label: "Production Intel",
         icon: "📊",
         desc: "Margins & Leakage",
-      },
-      {
-        id: "STAFF_MGMT",
-        label: "Staff Oversight",
-        icon: "👥",
-        desc: "Load & Performance",
       },
       {
         id: "PRICE_ENTRY_CENTER",
@@ -45,10 +39,22 @@ export const HubMenuScreen: ZodiacScreen = {
         desc: "Workstation Entry",
       },
       {
-        id: "STOCK_MGMT", // 🚀 Leads to Ledger & Thresholds
+        id: "STOCK_MGMT",
         label: "Inventory Logic",
         icon: "📦",
         desc: "Audit Trail & Levels",
+      },
+      {
+        id: "SHOOTER_CONFIG", // 🚀 NEW: The physical "Print Rules" setup
+        label: "Machine & Layout",
+        icon: "🖨️",
+        desc: "Bleeds & Roll Margins",
+      },
+      {
+        id: "STAFF_MGMT",
+        label: "Staff Oversight",
+        icon: "👥",
+        desc: "Load & Performance",
       },
       {
         id: "SETTINGS",
