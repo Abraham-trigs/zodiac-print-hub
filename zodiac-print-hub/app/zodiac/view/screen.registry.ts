@@ -20,7 +20,7 @@ import { SupplierDetailScreen } from "../screens/procurement/SupplierDetailScree
 import { SupplyNodeScreen } from "../screens/procurement/SupplyNodeScreen";
 import { ReceivingNodeScreen } from "../screens/procurement/ReceivingNodeScreen";
 import { SupplierPortalDashboard } from "../screens/portal/SupplierPortalDashboard";
-
+import { StaffOversightScreen } from "@/screens/StaffOversightScreen";
 /**
  * Central screen registry
  * Cleaned of workstation components to prevent circular dependency loops.
@@ -40,6 +40,7 @@ export const SCREEN_MAP = {
   UNIT_VAULT: UnitVaultScreen,
   PRICE_STOCK_DETAIL: PriceStockDetailScreen,
   PRICE_ENTRY_CENTER: PriceEntryCenter,
+  STAFF_OVERSIGHT: StaffOversightScreen,
 
   // 🛰️ Procurement & Logistics Node
   SUPPLIER_REGISTRY: SupplierRegistryScreen, // Phase 1: Vault

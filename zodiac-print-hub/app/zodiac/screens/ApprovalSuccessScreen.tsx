@@ -1,27 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  CheckCircle2,
-  Printer,
-  Clock,
-  ArrowRight,
-  ExternalLink,
-  Download,
-  Share2,
-} from "lucide-react";
-import confetti from "canvas-confetti"; // Optional: npm install canvas-confetti
+import { CheckCircle2, Printer, Clock, Download, Share2 } from "lucide-react";
+import confetti from "canvas-confetti";
+import { JobReceipt } from "@components/print/JobReceipt"; // Assuming this is the path
 
 export function ApprovalSuccessScreen({ token }: { token: string }) {
   const [job, setJob] = useState<any>(null);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   useEffect(() => {
-    // 1. Fetch the updated job status (Verify it moved from DRAFT to PENDING)
     fetch(`/api/public/approve/${token}`)
       .then((res) => res.json())
       .then((data) => {
         setJob(data);
-        // 2. Celebration effect for the customer
         confetti({
           particleCount: 150,
           spread: 70,
@@ -32,6 +24,11 @@ export function ApprovalSuccessScreen({ token }: { token: string }) {
   }, [token]);
 
   if (!job) return null;
+
+  // 🚀 Logic to swap view to the printable Receipt
+  if (showReceipt) {
+    return <JobReceipt job={job} payments={job.payments || []} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center p-6 text-center overflow-hidden relative">
@@ -104,7 +101,10 @@ export function ApprovalSuccessScreen({ token }: { token: string }) {
 
         {/* --- NEXT STEPS HUD --- */}
         <div className="grid grid-cols-2 gap-3 mb-10">
-          <button className="flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white hover:text-black transition-all group">
+          <button
+            onClick={() => setShowReceipt(true)}
+            className="flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white hover:text-black transition-all group"
+          >
             <Download
               size={14}
               className="opacity-40 group-hover:opacity-100"

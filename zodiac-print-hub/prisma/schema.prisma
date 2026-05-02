@@ -173,6 +173,21 @@ model Staff {
   @@index([specialisation]) // Index for fast filtering when assigning jobs
 }
 
+model StaffPerformance {
+  id           String   @id @default(cuid())
+  staffId      String
+  staff        Staff    @relation(fields: [staffId], references: [id])
+  orgId        String
+
+  metricType   String   // "DESIGN_SPEED", "PRINT_EFFICIENCY", "WASTE_SCORE"
+  value        Float    // Time in minutes or efficiency %
+  jobId        String?  // Reference to the specific job
+  
+  createdAt    DateTime @default(now())
+
+  @@index([staffId, createdAt])
+}
+
 //
 // ─────────────────────────────────────────────
 // 4. CLIENTS
