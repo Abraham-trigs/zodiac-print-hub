@@ -1,60 +1,134 @@
 @import "tailwindcss";
 
-:root {
-  /* 3-AMS-CELMS brand colors — unchanged */
-  --color-background: #f2f2f2; /* Light background */
-  --color-primary: #014987;
-  --color-primary-hover: #236aa9;
-  --color-secondary: #990a58;
-  --color-secondary-hover: #660033;
-  --color-text-primary: #1f2937; /* Tailwind gray-900 */
-  --color-text-secondary: #4b5563; /* Tailwind gray-700 */
+/* --- 1. THEME DEFINITION (Tailwind v4 Standard) --- */
+@theme {
+  --color-zodiac-cyan: #22d3ee;
+  --color-zodiac-purple: #9333ea;
+  --color-zodiac-blue: #2563eb;
+  --color-zodiac-orange: #f97316;
 
-  /* Font stack for corporate/business site */
-  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-mono: "Fira Code", monospace;
-}
-
-/* Optional theme mapping (inline theme support) */
-@theme inline {
-  --background: var(--color-background);
-  --foreground: var(--color-text-primary);
-  --font-sans: var(--font-sans);
+  --font-inter: var(--font-inter);
   --font-mono: var(--font-mono);
 }
 
-/* Dark mode support — colors unchanged except text for readability */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #f2f2f2;
-    --color-primary: #236aa9;
-    --color-primary-hover: #014987;
-    --color-secondary: #660033;
-    --color-secondary-hover: #990a58;
-    --color-text-primary: #ededed;
-    /* --color-text-secondary: #d1d5db; */
+/* --- 2. BASE LAYER --- */
+@layer base {
+  /* 
+     🔥 FIX: Instead of @apply on '*', use standard CSS. 
+     This resolves the "unknown utility border-white/5" error in v4.
+  */
+  * {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  body {
+    @apply antialiased bg-[#020617] text-white selection:bg-cyan-500/30 overflow-x-hidden;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+
+    /* THE NEBULA BACKGROUND EFFECT */
+    background:
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(147, 51, 234, 0.15) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 20% 80%,
+        rgba(34, 211, 238, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 50% 50%,
+        rgba(37, 99, 235, 0.05) 0%,
+        transparent 60%
+      ),
+      #020617;
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 }
 
-@keyframes blink {
+/* --- 3. COMPONENT LAYER --- */
+@layer components {
+  /* THE INDUSTRIAL "GLASS-CARD" */
+  .glass-card {
+    @apply backdrop-blur-[12px] bg-white/[0.03] border border-white/[0.08] shadow-2xl;
+  }
+
+  /* SELECTION PILL (Replicating "Plain Paper" look from image) */
+  .selection-pill {
+    @apply bg-white text-black font-black uppercase rounded-2xl transition-all duration-300 scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.1)];
+  }
+
+  /* SCANLINE ANIMATION OVERLAY */
+  .scanline {
+    position: relative;
+  }
+  .scanline::before {
+    content: " ";
+    @apply absolute inset-0 pointer-events-none opacity-10;
+    background:
+      linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+      linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 0, 255, 0.03)
+      );
+    background-size:
+      100% 2px,
+      3px 100%;
+    z-index: 100;
+  }
+
+  /* CUSTOM SCROLLBAR (Mobile Optimized) */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-cyan-400/40 transition-colors;
+  }
+}
+
+/* --- 4. UTILITY LAYER --- */
+@layer utilities {
+  .text-glow-cyan {
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+  }
+
+  .icon-badge {
+    @apply absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border-2 border-[#020617] animate-bounce;
+  }
+
+  /* RADIAL BUTTON GLOW */
+  .btn-glow {
+    position: relative;
+    z-index: 1;
+  }
+  .btn-glow::after {
+    content: "";
+    @apply absolute -inset-[2px] -z-10 blur-[8px] opacity-0 transition-opacity duration-300 rounded-[inherit];
+    background: linear-gradient(45deg, #22d3ee, #9333ea, #22d3ee);
+  }
+  .btn-glow:hover::after {
+    @apply opacity-40;
+  }
+}
+
+/* --- 5. KEYFRAMES --- */
+@keyframes pulse-cyan {
   0%,
-  50%,
   100% {
-    opacity: 1;
+    box-shadow: 0 0 5px rgba(34, 211, 238, 0.2);
   }
-  25%,
-  75% {
-    opacity: 0;
+  50% {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
   }
 }
 
-.animate-blink {
-  animation: blink 1s step-start infinite;
-}
-
-body {
-  background: var(--color-background);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  line-height: 1.5;
+.animate-pulse-cyan {
+  animation: pulse-cyan 3s infinite;
 }

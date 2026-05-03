@@ -1,4 +1,4 @@
-import { apiHandler, ApiError } from "@lib/server/api/apiHandler";
+import { apiHandler, ApiError } from "@root/server/api/apiHandler";
 import { StaffService } from "@lib/services/staff.service";
 
 // 3. UPDATE (Edit / Assign)

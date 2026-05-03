@@ -1,4 +1,4 @@
-import { apiHandler } from "@lib/server/api/apiHandler";
+import { apiHandler } from "@root/server/api/apiHandler";
 import { clientService } from "@lib/services/client.service";
 
 // GET

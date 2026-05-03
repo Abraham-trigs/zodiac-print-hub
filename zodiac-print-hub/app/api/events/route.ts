@@ -1,4 +1,4 @@
-import { eventBus } from "@lib/server/events/eventBus";
+import { eventBus } from "@root/server/events/eventBus";
 
 export const dynamic = "force-dynamic";
 

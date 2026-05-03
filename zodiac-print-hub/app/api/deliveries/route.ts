@@ -1,4 +1,4 @@
-import { apiHandler } from "@lib/server/api/apiHandler";
+import { apiHandler } from "@root/server/api/apiHandler";
 import { deliveryService } from "@lib/services/delivery.service";
 
 export const GET = apiHandler(async ({ orgId }) => {

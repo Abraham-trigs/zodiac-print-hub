@@ -1,5 +1,5 @@
 // src/app/api/jobs/route.ts
-import { apiHandler } from "@lib/server/api/apiHandler";
+import { apiHandler } from "@root/server/api/apiHandler";
 import { jobService } from "@lib/services/job.service";
 import { CreateJobSchema } from "@lib/schema/job.schema";
 

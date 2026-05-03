@@ -1,4 +1,4 @@
-import { apiHandler } from "@lib/server/api/apiHandler";
+import { apiHandler } from "@root/server/api/apiHandler";
 import { PaymentService } from "@lib/services/payment.service";
 import { PaymentMethod } from "@prisma/client";
 

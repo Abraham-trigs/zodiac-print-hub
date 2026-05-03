@@ -1,5 +1,5 @@
 import { eventToQueueBridge } from "./event-to-queue.bridge";
-import { eventBus } from "@lib/server/events/eventBus";
+import { eventBus } from "@root/server/events/eventBus";
 
 export class EventDispatcher {
   constructor(

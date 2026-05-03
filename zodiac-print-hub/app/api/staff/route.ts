@@ -1,4 +1,4 @@
-import { apiHandler } from "@lib/server/api/apiHandler";
+import { apiHandler } from "@root/server/api/apiHandler";
 import { StaffService } from "@lib/services/staff.service";
 
 // 1. READ ALL (List)

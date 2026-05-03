@@ -1,4 +1,4 @@
-import { apiHandler } from "@lib/server/api/apiHandler";
+import { apiHandler } from "@root/server/api/apiHandler";
 import { stockService } from "@lib/services/stock.service";
 import { CreateStockMovementSchema } from "@lib/schema/stock.schema";
 import { UnitOfWork } from "@lib/db/unitOfWork";
