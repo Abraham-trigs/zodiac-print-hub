@@ -22,14 +22,14 @@
 
       "@api/*": ["app/api/*"],
 
-      "@components/*": ["app/zodiac/components/*"],
-      "@core/*": ["app/zodiac/core/*"],
-      "@screens/*": ["app/zodiac/screens/*"],
+      "@components/*": ["app/components/*"],
+      "@core/*": ["app/components/core/*"],
+      "@screens/*": ["app/components/screens/*"],
       "@store/*": ["app/zodiac/store/*"],
       "@ui/*": ["app/zodiac/ui/*"],
       "@view/*": ["app/zodiac/view/*"],
-      "@types/*": ["app/zodiac/types/*"],
-      "@process/*": ["app/zodiac/process/*"],
+      "@types/*": ["app/types/*"],
+      "@process/*": ["app/components/modals/process/*"],
       "@schema/*": ["app/zodiac/schema/*"],
 
       "@lib/*": ["app/lib/*"],

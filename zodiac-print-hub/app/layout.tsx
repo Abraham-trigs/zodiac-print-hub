@@ -1,60 +1,66 @@
-// File: app/layout.tsx
-// Purpose: Root layout for 3-AMS-CELMS using Tailwind, CSS variables, and TopBar
-
 import "./globals.css";
-import Header from "@/app/components/home/Header";
-import Footer from "@/app/components/home/Footer";
-import TopBar from "@/app/components/home/TopBar";
-import React, { ReactNode } from "react";
-import { Inter } from "next/font/google"; // ✅ fixed import
-import YearTag from "./components/home/YearTag";
+import { Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { WebModalContainer } from "@/components/web/WebModalContainer";
+import type { Metadata } from "next";
 
-// Load Inter font
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
 
-interface RootLayoutProps {
-  children: ReactNode;
-}
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export const metadata: Metadata = {
+  title: "Zodiac Node | Industrial Operating System",
+  description:
+    "Eliminate material leakage and automate high-velocity print production.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body
-        className="flex flex-col min-h-screen font-sans"
-        style={{ backgroundColor: "var(--color-background)" }}
-      >
-        {/* Top thin bar with contact info and social icons */}
-        {/* <TopBar /> */}
+    <html
+      lang="en"
+      className={`${inter.variable} ${mono.variable} scroll-smooth`}
+    >
+      <body className="bg-[#020617] font-sans text-white antialiased selection:bg-cyan-500/30 overflow-x-hidden">
+        {/* --- 🌌 NEBULA ATMOSPHERE (Root Level) --- */}
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+          {/* Top Right Purple Glow */}
+          <div className="absolute top-[-10%] right-[-5%] w-[80vw] h-[80vw] bg-purple-600/10 blur-[150px] rounded-full opacity-60" />
 
-        {/* Main header/navigation */}
-        {/* <Header /> */}
+          {/* Bottom Left Cyan Glow */}
+          <div className="absolute bottom-[0%] left-[-10%] w-[60vw] h-[60vw] bg-cyan-500/10 blur-[150px] rounded-full opacity-40" />
 
-        {/* Page content */}
-        <main className="flex-1 w-full">{children}</main>
+          {/* Industrial Grid Mask */}
+          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black_100%)] opacity-[0.03]" />
 
-        {/* Footer */}
-        {/* <Footer />
-        <YearTag /> */}
+          {/* Global Scanline Utility */}
+          <div className="scanline absolute inset-0 opacity-[0.05]" />
+        </div>
+
+        {/* --- 🛰️ MAIN VIEWPORT NODE --- */}
+        <main className="relative z-10 min-h-screen flex flex-col">
+          {children}
+        </main>
+
+        {/* --- 🧪 GLOBAL OVERLAY LAYER --- */}
+        {/* This container listens to webModalStore and slides over everything */}
+        <WebModalContainer />
+
+        {/* --- 🛠️ DEVELOPMENT TOOLS (Optional) --- */}
+        {/* Add Vercel Analytics, Speed Insights, etc here */}
       </body>
     </html>
   );
 }
-
-/*
-Design reasoning
-- Inter chosen for corporate readability and modern clean look.
-- Applied globally via Tailwind `font-sans` and CSS variable --font-sans.
-- Ensures consistent typography across TopBar, Header, content, Footer.
-
-Structure
-- <html lang="en" className={inter.variable}> → applies font CSS variable globally.
-- <body className="font-sans"> → all text inherits Inter.
-
-Implementation guidance
-- Tailwind classes like `font-sans` now map to Inter.
-- Easy to swap corporate fonts by changing Next.js font import and CSS variable.
-
-Scalability insight
-- Adding other fonts for headings/monospace remains simple using same Next.js font loader.
-- Supports dynamic theme switching without breaking typography consistency.
-*/

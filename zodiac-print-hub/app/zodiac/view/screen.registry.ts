@@ -1,26 +1,26 @@
-import { WelcomeScreen } from "../screens/WelcomeScreen";
-import { UserProfileScreen } from "../screens/UserProfileScreen";
-import { SubscriptionScreen } from "../screens/subscription/SubscriptionScreen";
-import { JobCartScreen } from "../screens/JobCartScreen";
-import { AnalyticsDashboard } from "../screens/AnalyticsDashboard";
-import { HubMenuScreen } from "../screens/HubMenuScreen";
-import { StaffManagementScreen } from "../screens/StaffManagementScreen";
-import { StaffProfileScreen } from "../screens/StaffProfileScreen";
-import { JobIntakeScreen } from "../screens/JobIntakeScreen";
+import { WelcomeScreen } from "../../components/screens/WelcomeScreen";
+import { UserProfileScreen } from "../../components/screens/UserProfileScreen";
+import { SubscriptionScreen } from "../../components/screens/subscription/SubscriptionScreen";
+import { JobCartScreen } from "../../components/screens/JobCartScreen";
+import { AnalyticsDashboard } from "../../components/screens/AnalyticsDashboard";
+import { HubMenuScreen } from "../../components/screens/HubMenuScreen";
+import { StaffManagementScreen } from "../../components/screens/StaffManagementScreen";
+import { StaffProfileScreen } from "../../components/screens/StaffProfileScreen";
+import { JobIntakeScreen } from "../../components/screens/JobIntakeScreen";
 import { ZodiacScreen } from "../types/screen.types";
-import { ServiceSearchScreen } from "../screens/ServiceSearchScreen";
-import { ClientSearchScreen } from "../screens/ClientSearchScreen";
-import { UnitVaultScreen } from "../screens/UnitVaultScreen";
-import { PriceStockDetailScreen } from "../screens/PriceStockDetailScreen";
-import { PriceEntryCenter } from "../screens/PriceEntryCenter";
+import { ServiceSearchScreen } from "../../components/screens/ServiceSearchScreen";
+import { ClientSearchScreen } from "../../components/screens/ClientSearchScreen";
+import { UnitVaultScreen } from "../../components/screens/UnitVaultScreen";
+import { PriceStockDetailScreen } from "../../components/screens/PriceStockDetailScreen";
+import { PriceEntryCenter } from "../../components/screens/PriceEntryCenter";
 
 // 🚀 NEW: Supply Chain Node Screens
-import { SupplierRegistryScreen } from "../screens/procurement/SupplierRegistryScreen";
-import { SupplierDetailScreen } from "../screens/procurement/SupplierDetailScreen";
-import { SupplyNodeScreen } from "../screens/procurement/SupplyNodeScreen";
-import { ReceivingNodeScreen } from "../screens/procurement/ReceivingNodeScreen";
-import { SupplierPortalDashboard } from "../screens/portal/SupplierPortalDashboard";
-import { StaffOversightScreen } from "@/screens/StaffOversightScreen";
+import { SupplierRegistryScreen } from "../../components/screens/procurement/SupplierRegistryScreen";
+import { SupplierDetailScreen } from "../../components/screens/procurement/SupplierDetailScreen";
+import { SupplyNodeScreen } from "../../components/screens/procurement/SupplyNodeScreen";
+import { ReceivingNodeScreen } from "../../components/screens/procurement/ReceivingNodeScreen";
+import { SupplierPortalDashboard } from "../../components/screens/portal/SupplierPortalDashboard";
+import { StaffOversightScreen } from "@root/components/screens/StaffOversightScreen";
 /**
  * Central screen registry
  * Cleaned of workstation components to prevent circular dependency loops.
