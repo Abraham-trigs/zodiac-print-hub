@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { WebModalContainer } from "./components/web/WebModalContainer";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next"; // ✅ Added Viewport type
 
 const inter = Inter_Tight({
   subsets: ["latin"],
@@ -16,11 +16,19 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
+// ✅ Correct: Metadata only contains SEO data
 export const metadata: Metadata = {
   title: "Zodiac Node | Industrial Operating System",
   description:
     "Eliminate material leakage and automate high-velocity print production.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+};
+
+// ✅ Correct: New required export for Next.js Viewport API
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#020617", // Matches your body bg
 };
 
 export default function RootLayout({
@@ -55,11 +63,7 @@ export default function RootLayout({
         </main>
 
         {/* --- 🧪 GLOBAL OVERLAY LAYER --- */}
-        {/* This container listens to webModalStore and slides over everything */}
         <WebModalContainer />
-
-        {/* --- 🛠️ DEVELOPMENT TOOLS (Optional) --- */}
-        {/* Add Vercel Analytics, Speed Insights, etc here */}
       </body>
     </html>
   );
