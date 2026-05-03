@@ -39,6 +39,11 @@ export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTok
  */
 export type Staff = $Result.DefaultSelection<Prisma.$StaffPayload>
 /**
+ * Model StaffPerformance
+ * 
+ */
+export type StaffPerformance = $Result.DefaultSelection<Prisma.$StaffPerformancePayload>
+/**
  * Model Client
  * 
  */
@@ -69,6 +74,21 @@ export type StockItem = $Result.DefaultSelection<Prisma.$StockItemPayload>
  */
 export type StockMovement = $Result.DefaultSelection<Prisma.$StockMovementPayload>
 /**
+ * Model Supplier
+ * 
+ */
+export type Supplier = $Result.DefaultSelection<Prisma.$SupplierPayload>
+/**
+ * Model StockPurchaseOrder
+ * 
+ */
+export type StockPurchaseOrder = $Result.DefaultSelection<Prisma.$StockPurchaseOrderPayload>
+/**
+ * Model StockPurchaseItem
+ * 
+ */
+export type StockPurchaseItem = $Result.DefaultSelection<Prisma.$StockPurchaseItemPayload>
+/**
  * Model Job
  * 
  */
@@ -78,6 +98,16 @@ export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
  * 
  */
 export type JobVariable = $Result.DefaultSelection<Prisma.$JobVariablePayload>
+/**
+ * Model MaterialPrintLayout
+ * 
+ */
+export type MaterialPrintLayout = $Result.DefaultSelection<Prisma.$MaterialPrintLayoutPayload>
+/**
+ * Model PrintLayoutItem
+ * 
+ */
+export type PrintLayoutItem = $Result.DefaultSelection<Prisma.$PrintLayoutItemPayload>
 /**
  * Model Delivery
  * 
@@ -228,6 +258,16 @@ export const StockMovementType: {
 export type StockMovementType = (typeof StockMovementType)[keyof typeof StockMovementType]
 
 
+export const POStatus: {
+  DRAFT: 'DRAFT',
+  ORDERED: 'ORDERED',
+  RECEIVED: 'RECEIVED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type POStatus = (typeof POStatus)[keyof typeof POStatus]
+
+
 export const JobStatus: {
   PENDING: 'PENDING',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -250,10 +290,30 @@ export const PaymentStatus: {
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
 
+export const ProofStatus: {
+  PENDING: 'PENDING',
+  AWAITING: 'AWAITING',
+  REVISION: 'REVISION',
+  APPROVED: 'APPROVED'
+};
+
+export type ProofStatus = (typeof ProofStatus)[keyof typeof ProofStatus]
+
+
+export const LayoutStatus: {
+  DRAFT: 'DRAFT',
+  LOCKED: 'LOCKED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type LayoutStatus = (typeof LayoutStatus)[keyof typeof LayoutStatus]
+
+
 export const DeliveryType: {
   PHYSICAL_PICKUP: 'PHYSICAL_PICKUP',
-  PRINTER_DELIVERY: 'PRINTER_DELIVERY',
-  CLIENT_COURIER: 'CLIENT_COURIER'
+  COURIER: 'COURIER',
+  DIGITAL: 'DIGITAL'
 };
 
 export type DeliveryType = (typeof DeliveryType)[keyof typeof DeliveryType]
@@ -338,6 +398,10 @@ export type StockMovementType = $Enums.StockMovementType
 
 export const StockMovementType: typeof $Enums.StockMovementType
 
+export type POStatus = $Enums.POStatus
+
+export const POStatus: typeof $Enums.POStatus
+
 export type JobStatus = $Enums.JobStatus
 
 export const JobStatus: typeof $Enums.JobStatus
@@ -345,6 +409,14 @@ export const JobStatus: typeof $Enums.JobStatus
 export type PaymentStatus = $Enums.PaymentStatus
 
 export const PaymentStatus: typeof $Enums.PaymentStatus
+
+export type ProofStatus = $Enums.ProofStatus
+
+export const ProofStatus: typeof $Enums.ProofStatus
+
+export type LayoutStatus = $Enums.LayoutStatus
+
+export const LayoutStatus: typeof $Enums.LayoutStatus
 
 export type DeliveryType = $Enums.DeliveryType
 
@@ -534,6 +606,16 @@ export class PrismaClient<
   get staff(): Prisma.StaffDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.staffPerformance`: Exposes CRUD operations for the **StaffPerformance** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StaffPerformances
+    * const staffPerformances = await prisma.staffPerformance.findMany()
+    * ```
+    */
+  get staffPerformance(): Prisma.StaffPerformanceDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.client`: Exposes CRUD operations for the **Client** model.
     * Example usage:
     * ```ts
@@ -594,6 +676,36 @@ export class PrismaClient<
   get stockMovement(): Prisma.StockMovementDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.supplier`: Exposes CRUD operations for the **Supplier** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Suppliers
+    * const suppliers = await prisma.supplier.findMany()
+    * ```
+    */
+  get supplier(): Prisma.SupplierDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stockPurchaseOrder`: Exposes CRUD operations for the **StockPurchaseOrder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StockPurchaseOrders
+    * const stockPurchaseOrders = await prisma.stockPurchaseOrder.findMany()
+    * ```
+    */
+  get stockPurchaseOrder(): Prisma.StockPurchaseOrderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stockPurchaseItem`: Exposes CRUD operations for the **StockPurchaseItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StockPurchaseItems
+    * const stockPurchaseItems = await prisma.stockPurchaseItem.findMany()
+    * ```
+    */
+  get stockPurchaseItem(): Prisma.StockPurchaseItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.job`: Exposes CRUD operations for the **Job** model.
     * Example usage:
     * ```ts
@@ -612,6 +724,26 @@ export class PrismaClient<
     * ```
     */
   get jobVariable(): Prisma.JobVariableDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.materialPrintLayout`: Exposes CRUD operations for the **MaterialPrintLayout** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MaterialPrintLayouts
+    * const materialPrintLayouts = await prisma.materialPrintLayout.findMany()
+    * ```
+    */
+  get materialPrintLayout(): Prisma.MaterialPrintLayoutDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.printLayoutItem`: Exposes CRUD operations for the **PrintLayoutItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PrintLayoutItems
+    * const printLayoutItems = await prisma.printLayoutItem.findMany()
+    * ```
+    */
+  get printLayoutItem(): Prisma.PrintLayoutItemDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.delivery`: Exposes CRUD operations for the **Delivery** model.
@@ -1091,14 +1223,20 @@ export namespace Prisma {
     User: 'User',
     VerificationToken: 'VerificationToken',
     Staff: 'Staff',
+    StaffPerformance: 'StaffPerformance',
     Client: 'Client',
     PriceList: 'PriceList',
     Material: 'Material',
     Service: 'Service',
     StockItem: 'StockItem',
     StockMovement: 'StockMovement',
+    Supplier: 'Supplier',
+    StockPurchaseOrder: 'StockPurchaseOrder',
+    StockPurchaseItem: 'StockPurchaseItem',
     Job: 'Job',
     JobVariable: 'JobVariable',
+    MaterialPrintLayout: 'MaterialPrintLayout',
+    PrintLayoutItem: 'PrintLayoutItem',
     Delivery: 'Delivery',
     Payment: 'Payment',
     B2BPush: 'B2BPush',
@@ -1118,7 +1256,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "organisation" | "outboxEvent" | "user" | "verificationToken" | "staff" | "client" | "priceList" | "material" | "service" | "stockItem" | "stockMovement" | "job" | "jobVariable" | "delivery" | "payment" | "b2BPush" | "auditLog"
+      modelProps: "organisation" | "outboxEvent" | "user" | "verificationToken" | "staff" | "staffPerformance" | "client" | "priceList" | "material" | "service" | "stockItem" | "stockMovement" | "supplier" | "stockPurchaseOrder" | "stockPurchaseItem" | "job" | "jobVariable" | "materialPrintLayout" | "printLayoutItem" | "delivery" | "payment" | "b2BPush" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1489,6 +1627,80 @@ export namespace Prisma {
           count: {
             args: Prisma.StaffCountArgs<ExtArgs>
             result: $Utils.Optional<StaffCountAggregateOutputType> | number
+          }
+        }
+      }
+      StaffPerformance: {
+        payload: Prisma.$StaffPerformancePayload<ExtArgs>
+        fields: Prisma.StaffPerformanceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StaffPerformanceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StaffPerformanceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>
+          }
+          findFirst: {
+            args: Prisma.StaffPerformanceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StaffPerformanceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>
+          }
+          findMany: {
+            args: Prisma.StaffPerformanceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>[]
+          }
+          create: {
+            args: Prisma.StaffPerformanceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>
+          }
+          createMany: {
+            args: Prisma.StaffPerformanceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StaffPerformanceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>[]
+          }
+          delete: {
+            args: Prisma.StaffPerformanceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>
+          }
+          update: {
+            args: Prisma.StaffPerformanceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>
+          }
+          deleteMany: {
+            args: Prisma.StaffPerformanceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StaffPerformanceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StaffPerformanceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>[]
+          }
+          upsert: {
+            args: Prisma.StaffPerformanceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPerformancePayload>
+          }
+          aggregate: {
+            args: Prisma.StaffPerformanceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStaffPerformance>
+          }
+          groupBy: {
+            args: Prisma.StaffPerformanceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StaffPerformanceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StaffPerformanceCountArgs<ExtArgs>
+            result: $Utils.Optional<StaffPerformanceCountAggregateOutputType> | number
           }
         }
       }
@@ -1936,6 +2148,228 @@ export namespace Prisma {
           }
         }
       }
+      Supplier: {
+        payload: Prisma.$SupplierPayload<ExtArgs>
+        fields: Prisma.SupplierFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SupplierFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SupplierFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>
+          }
+          findFirst: {
+            args: Prisma.SupplierFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SupplierFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>
+          }
+          findMany: {
+            args: Prisma.SupplierFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>[]
+          }
+          create: {
+            args: Prisma.SupplierCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>
+          }
+          createMany: {
+            args: Prisma.SupplierCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SupplierCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>[]
+          }
+          delete: {
+            args: Prisma.SupplierDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>
+          }
+          update: {
+            args: Prisma.SupplierUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>
+          }
+          deleteMany: {
+            args: Prisma.SupplierDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SupplierUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SupplierUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>[]
+          }
+          upsert: {
+            args: Prisma.SupplierUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupplierPayload>
+          }
+          aggregate: {
+            args: Prisma.SupplierAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSupplier>
+          }
+          groupBy: {
+            args: Prisma.SupplierGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SupplierGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SupplierCountArgs<ExtArgs>
+            result: $Utils.Optional<SupplierCountAggregateOutputType> | number
+          }
+        }
+      }
+      StockPurchaseOrder: {
+        payload: Prisma.$StockPurchaseOrderPayload<ExtArgs>
+        fields: Prisma.StockPurchaseOrderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StockPurchaseOrderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StockPurchaseOrderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>
+          }
+          findFirst: {
+            args: Prisma.StockPurchaseOrderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StockPurchaseOrderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>
+          }
+          findMany: {
+            args: Prisma.StockPurchaseOrderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>[]
+          }
+          create: {
+            args: Prisma.StockPurchaseOrderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>
+          }
+          createMany: {
+            args: Prisma.StockPurchaseOrderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StockPurchaseOrderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>[]
+          }
+          delete: {
+            args: Prisma.StockPurchaseOrderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>
+          }
+          update: {
+            args: Prisma.StockPurchaseOrderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>
+          }
+          deleteMany: {
+            args: Prisma.StockPurchaseOrderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StockPurchaseOrderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StockPurchaseOrderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>[]
+          }
+          upsert: {
+            args: Prisma.StockPurchaseOrderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseOrderPayload>
+          }
+          aggregate: {
+            args: Prisma.StockPurchaseOrderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStockPurchaseOrder>
+          }
+          groupBy: {
+            args: Prisma.StockPurchaseOrderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StockPurchaseOrderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StockPurchaseOrderCountArgs<ExtArgs>
+            result: $Utils.Optional<StockPurchaseOrderCountAggregateOutputType> | number
+          }
+        }
+      }
+      StockPurchaseItem: {
+        payload: Prisma.$StockPurchaseItemPayload<ExtArgs>
+        fields: Prisma.StockPurchaseItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StockPurchaseItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StockPurchaseItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>
+          }
+          findFirst: {
+            args: Prisma.StockPurchaseItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StockPurchaseItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>
+          }
+          findMany: {
+            args: Prisma.StockPurchaseItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>[]
+          }
+          create: {
+            args: Prisma.StockPurchaseItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>
+          }
+          createMany: {
+            args: Prisma.StockPurchaseItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StockPurchaseItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>[]
+          }
+          delete: {
+            args: Prisma.StockPurchaseItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>
+          }
+          update: {
+            args: Prisma.StockPurchaseItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.StockPurchaseItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StockPurchaseItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StockPurchaseItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.StockPurchaseItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockPurchaseItemPayload>
+          }
+          aggregate: {
+            args: Prisma.StockPurchaseItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStockPurchaseItem>
+          }
+          groupBy: {
+            args: Prisma.StockPurchaseItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StockPurchaseItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StockPurchaseItemCountArgs<ExtArgs>
+            result: $Utils.Optional<StockPurchaseItemCountAggregateOutputType> | number
+          }
+        }
+      }
       Job: {
         payload: Prisma.$JobPayload<ExtArgs>
         fields: Prisma.JobFieldRefs
@@ -2081,6 +2515,154 @@ export namespace Prisma {
           count: {
             args: Prisma.JobVariableCountArgs<ExtArgs>
             result: $Utils.Optional<JobVariableCountAggregateOutputType> | number
+          }
+        }
+      }
+      MaterialPrintLayout: {
+        payload: Prisma.$MaterialPrintLayoutPayload<ExtArgs>
+        fields: Prisma.MaterialPrintLayoutFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MaterialPrintLayoutFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MaterialPrintLayoutFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>
+          }
+          findFirst: {
+            args: Prisma.MaterialPrintLayoutFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MaterialPrintLayoutFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>
+          }
+          findMany: {
+            args: Prisma.MaterialPrintLayoutFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>[]
+          }
+          create: {
+            args: Prisma.MaterialPrintLayoutCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>
+          }
+          createMany: {
+            args: Prisma.MaterialPrintLayoutCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MaterialPrintLayoutCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>[]
+          }
+          delete: {
+            args: Prisma.MaterialPrintLayoutDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>
+          }
+          update: {
+            args: Prisma.MaterialPrintLayoutUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>
+          }
+          deleteMany: {
+            args: Prisma.MaterialPrintLayoutDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MaterialPrintLayoutUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MaterialPrintLayoutUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>[]
+          }
+          upsert: {
+            args: Prisma.MaterialPrintLayoutUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MaterialPrintLayoutPayload>
+          }
+          aggregate: {
+            args: Prisma.MaterialPrintLayoutAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMaterialPrintLayout>
+          }
+          groupBy: {
+            args: Prisma.MaterialPrintLayoutGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MaterialPrintLayoutGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MaterialPrintLayoutCountArgs<ExtArgs>
+            result: $Utils.Optional<MaterialPrintLayoutCountAggregateOutputType> | number
+          }
+        }
+      }
+      PrintLayoutItem: {
+        payload: Prisma.$PrintLayoutItemPayload<ExtArgs>
+        fields: Prisma.PrintLayoutItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PrintLayoutItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PrintLayoutItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>
+          }
+          findFirst: {
+            args: Prisma.PrintLayoutItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PrintLayoutItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>
+          }
+          findMany: {
+            args: Prisma.PrintLayoutItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>[]
+          }
+          create: {
+            args: Prisma.PrintLayoutItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>
+          }
+          createMany: {
+            args: Prisma.PrintLayoutItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PrintLayoutItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>[]
+          }
+          delete: {
+            args: Prisma.PrintLayoutItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>
+          }
+          update: {
+            args: Prisma.PrintLayoutItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.PrintLayoutItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PrintLayoutItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PrintLayoutItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.PrintLayoutItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PrintLayoutItemPayload>
+          }
+          aggregate: {
+            args: Prisma.PrintLayoutItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePrintLayoutItem>
+          }
+          groupBy: {
+            args: Prisma.PrintLayoutItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PrintLayoutItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PrintLayoutItemCountArgs<ExtArgs>
+            result: $Utils.Optional<PrintLayoutItemCountAggregateOutputType> | number
           }
         }
       }
@@ -2493,14 +3075,20 @@ export namespace Prisma {
     user?: UserOmit
     verificationToken?: VerificationTokenOmit
     staff?: StaffOmit
+    staffPerformance?: StaffPerformanceOmit
     client?: ClientOmit
     priceList?: PriceListOmit
     material?: MaterialOmit
     service?: ServiceOmit
     stockItem?: StockItemOmit
     stockMovement?: StockMovementOmit
+    supplier?: SupplierOmit
+    stockPurchaseOrder?: StockPurchaseOrderOmit
+    stockPurchaseItem?: StockPurchaseItemOmit
     job?: JobOmit
     jobVariable?: JobVariableOmit
+    materialPrintLayout?: MaterialPrintLayoutOmit
+    printLayoutItem?: PrintLayoutItemOmit
     delivery?: DeliveryOmit
     payment?: PaymentOmit
     b2BPush?: B2BPushOmit
@@ -2599,6 +3187,7 @@ export namespace Prisma {
     auditLogs: number
     outboxEvents: number
     payments: number
+    suppliers: number
   }
 
   export type OrganisationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2616,6 +3205,7 @@ export namespace Prisma {
     auditLogs?: boolean | OrganisationCountOutputTypeCountAuditLogsArgs
     outboxEvents?: boolean | OrganisationCountOutputTypeCountOutboxEventsArgs
     payments?: boolean | OrganisationCountOutputTypeCountPaymentsArgs
+    suppliers?: boolean | OrganisationCountOutputTypeCountSuppliersArgs
   }
 
   // Custom InputTypes
@@ -2727,6 +3317,13 @@ export namespace Prisma {
     where?: PaymentWhereInput
   }
 
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountSuppliersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupplierWhereInput
+  }
+
 
   /**
    * Count Type StaffCountOutputType
@@ -2734,10 +3331,12 @@ export namespace Prisma {
 
   export type StaffCountOutputType = {
     assignedJobs: number
+    staffPerformances: number
   }
 
   export type StaffCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     assignedJobs?: boolean | StaffCountOutputTypeCountAssignedJobsArgs
+    staffPerformances?: boolean | StaffCountOutputTypeCountStaffPerformancesArgs
   }
 
   // Custom InputTypes
@@ -2756,6 +3355,13 @@ export namespace Prisma {
    */
   export type StaffCountOutputTypeCountAssignedJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobWhereInput
+  }
+
+  /**
+   * StaffCountOutputType without action
+   */
+  export type StaffCountOutputTypeCountStaffPerformancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StaffPerformanceWhereInput
   }
 
 
@@ -2846,11 +3452,15 @@ export namespace Prisma {
   export type MaterialCountOutputType = {
     priceListItems: number
     jobVariables: number
+    printLayouts: number
+    purchaseItems: number
   }
 
   export type MaterialCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     priceListItems?: boolean | MaterialCountOutputTypeCountPriceListItemsArgs
     jobVariables?: boolean | MaterialCountOutputTypeCountJobVariablesArgs
+    printLayouts?: boolean | MaterialCountOutputTypeCountPrintLayoutsArgs
+    purchaseItems?: boolean | MaterialCountOutputTypeCountPurchaseItemsArgs
   }
 
   // Custom InputTypes
@@ -2876,6 +3486,20 @@ export namespace Prisma {
    */
   export type MaterialCountOutputTypeCountJobVariablesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobVariableWhereInput
+  }
+
+  /**
+   * MaterialCountOutputType without action
+   */
+  export type MaterialCountOutputTypeCountPrintLayoutsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MaterialPrintLayoutWhereInput
+  }
+
+  /**
+   * MaterialCountOutputType without action
+   */
+  export type MaterialCountOutputTypeCountPurchaseItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockPurchaseItemWhereInput
   }
 
 
@@ -2951,6 +3575,77 @@ export namespace Prisma {
 
 
   /**
+   * Count Type SupplierCountOutputType
+   */
+
+  export type SupplierCountOutputType = {
+    materials: number
+    purchaseOrders: number
+  }
+
+  export type SupplierCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    materials?: boolean | SupplierCountOutputTypeCountMaterialsArgs
+    purchaseOrders?: boolean | SupplierCountOutputTypeCountPurchaseOrdersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SupplierCountOutputType without action
+   */
+  export type SupplierCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupplierCountOutputType
+     */
+    select?: SupplierCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SupplierCountOutputType without action
+   */
+  export type SupplierCountOutputTypeCountMaterialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MaterialWhereInput
+  }
+
+  /**
+   * SupplierCountOutputType without action
+   */
+  export type SupplierCountOutputTypeCountPurchaseOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockPurchaseOrderWhereInput
+  }
+
+
+  /**
+   * Count Type StockPurchaseOrderCountOutputType
+   */
+
+  export type StockPurchaseOrderCountOutputType = {
+    items: number
+  }
+
+  export type StockPurchaseOrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | StockPurchaseOrderCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StockPurchaseOrderCountOutputType without action
+   */
+  export type StockPurchaseOrderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrderCountOutputType
+     */
+    select?: StockPurchaseOrderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StockPurchaseOrderCountOutputType without action
+   */
+  export type StockPurchaseOrderCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockPurchaseItemWhereInput
+  }
+
+
+  /**
    * Count Type JobCountOutputType
    */
 
@@ -3005,6 +3700,68 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountB2bSourceForArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: B2BPushWhereInput
+  }
+
+
+  /**
+   * Count Type MaterialPrintLayoutCountOutputType
+   */
+
+  export type MaterialPrintLayoutCountOutputType = {
+    items: number
+  }
+
+  export type MaterialPrintLayoutCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | MaterialPrintLayoutCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * MaterialPrintLayoutCountOutputType without action
+   */
+  export type MaterialPrintLayoutCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayoutCountOutputType
+     */
+    select?: MaterialPrintLayoutCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MaterialPrintLayoutCountOutputType without action
+   */
+  export type MaterialPrintLayoutCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PrintLayoutItemWhereInput
+  }
+
+
+  /**
+   * Count Type PrintLayoutItemCountOutputType
+   */
+
+  export type PrintLayoutItemCountOutputType = {
+    jobVariables: number
+  }
+
+  export type PrintLayoutItemCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    jobVariables?: boolean | PrintLayoutItemCountOutputTypeCountJobVariablesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PrintLayoutItemCountOutputType without action
+   */
+  export type PrintLayoutItemCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItemCountOutputType
+     */
+    select?: PrintLayoutItemCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PrintLayoutItemCountOutputType without action
+   */
+  export type PrintLayoutItemCountOutputTypeCountJobVariablesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobVariableWhereInput
   }
 
 
@@ -3261,6 +4018,7 @@ export namespace Prisma {
     auditLogs?: boolean | Organisation$auditLogsArgs<ExtArgs>
     outboxEvents?: boolean | Organisation$outboxEventsArgs<ExtArgs>
     payments?: boolean | Organisation$paymentsArgs<ExtArgs>
+    suppliers?: boolean | Organisation$suppliersArgs<ExtArgs>
     _count?: boolean | OrganisationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organisation"]>
 
@@ -3319,6 +4077,7 @@ export namespace Prisma {
     auditLogs?: boolean | Organisation$auditLogsArgs<ExtArgs>
     outboxEvents?: boolean | Organisation$outboxEventsArgs<ExtArgs>
     payments?: boolean | Organisation$paymentsArgs<ExtArgs>
+    suppliers?: boolean | Organisation$suppliersArgs<ExtArgs>
     _count?: boolean | OrganisationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganisationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3341,6 +4100,7 @@ export namespace Prisma {
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
       outboxEvents: Prisma.$OutboxEventPayload<ExtArgs>[]
       payments: Prisma.$PaymentPayload<ExtArgs>[]
+      suppliers: Prisma.$SupplierPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3761,6 +4521,7 @@ export namespace Prisma {
     auditLogs<T extends Organisation$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     outboxEvents<T extends Organisation$outboxEventsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$outboxEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends Organisation$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    suppliers<T extends Organisation$suppliersArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$suppliersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4526,6 +5287,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PaymentScalarFieldEnum | PaymentScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.suppliers
+   */
+  export type Organisation$suppliersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    where?: SupplierWhereInput
+    orderBy?: SupplierOrderByWithRelationInput | SupplierOrderByWithRelationInput[]
+    cursor?: SupplierWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SupplierScalarFieldEnum | SupplierScalarFieldEnum[]
   }
 
   /**
@@ -8110,6 +8895,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     assignedJobs?: boolean | Staff$assignedJobsArgs<ExtArgs>
+    staffPerformances?: boolean | Staff$staffPerformancesArgs<ExtArgs>
     _count?: boolean | StaffCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["staff"]>
 
@@ -8161,6 +8947,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     assignedJobs?: boolean | Staff$assignedJobsArgs<ExtArgs>
+    staffPerformances?: boolean | Staff$staffPerformancesArgs<ExtArgs>
     _count?: boolean | StaffCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StaffIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8178,6 +8965,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       organisation: Prisma.$OrganisationPayload<ExtArgs>
       assignedJobs: Prisma.$JobPayload<ExtArgs>[]
+      staffPerformances: Prisma.$StaffPerformancePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8587,6 +9375,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     assignedJobs<T extends Staff$assignedJobsArgs<ExtArgs> = {}>(args?: Subset<T, Staff$assignedJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    staffPerformances<T extends Staff$staffPerformancesArgs<ExtArgs> = {}>(args?: Subset<T, Staff$staffPerformancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9051,6 +9840,30 @@ export namespace Prisma {
   }
 
   /**
+   * Staff.staffPerformances
+   */
+  export type Staff$staffPerformancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    where?: StaffPerformanceWhereInput
+    orderBy?: StaffPerformanceOrderByWithRelationInput | StaffPerformanceOrderByWithRelationInput[]
+    cursor?: StaffPerformanceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StaffPerformanceScalarFieldEnum | StaffPerformanceScalarFieldEnum[]
+  }
+
+  /**
    * Staff without action
    */
   export type StaffDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9066,6 +9879,1129 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: StaffInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StaffPerformance
+   */
+
+  export type AggregateStaffPerformance = {
+    _count: StaffPerformanceCountAggregateOutputType | null
+    _avg: StaffPerformanceAvgAggregateOutputType | null
+    _sum: StaffPerformanceSumAggregateOutputType | null
+    _min: StaffPerformanceMinAggregateOutputType | null
+    _max: StaffPerformanceMaxAggregateOutputType | null
+  }
+
+  export type StaffPerformanceAvgAggregateOutputType = {
+    value: number | null
+  }
+
+  export type StaffPerformanceSumAggregateOutputType = {
+    value: number | null
+  }
+
+  export type StaffPerformanceMinAggregateOutputType = {
+    id: string | null
+    staffId: string | null
+    orgId: string | null
+    metricType: string | null
+    value: number | null
+    jobId: string | null
+    createdAt: Date | null
+  }
+
+  export type StaffPerformanceMaxAggregateOutputType = {
+    id: string | null
+    staffId: string | null
+    orgId: string | null
+    metricType: string | null
+    value: number | null
+    jobId: string | null
+    createdAt: Date | null
+  }
+
+  export type StaffPerformanceCountAggregateOutputType = {
+    id: number
+    staffId: number
+    orgId: number
+    metricType: number
+    value: number
+    jobId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type StaffPerformanceAvgAggregateInputType = {
+    value?: true
+  }
+
+  export type StaffPerformanceSumAggregateInputType = {
+    value?: true
+  }
+
+  export type StaffPerformanceMinAggregateInputType = {
+    id?: true
+    staffId?: true
+    orgId?: true
+    metricType?: true
+    value?: true
+    jobId?: true
+    createdAt?: true
+  }
+
+  export type StaffPerformanceMaxAggregateInputType = {
+    id?: true
+    staffId?: true
+    orgId?: true
+    metricType?: true
+    value?: true
+    jobId?: true
+    createdAt?: true
+  }
+
+  export type StaffPerformanceCountAggregateInputType = {
+    id?: true
+    staffId?: true
+    orgId?: true
+    metricType?: true
+    value?: true
+    jobId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type StaffPerformanceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StaffPerformance to aggregate.
+     */
+    where?: StaffPerformanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StaffPerformances to fetch.
+     */
+    orderBy?: StaffPerformanceOrderByWithRelationInput | StaffPerformanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StaffPerformanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StaffPerformances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StaffPerformances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StaffPerformances
+    **/
+    _count?: true | StaffPerformanceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StaffPerformanceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StaffPerformanceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StaffPerformanceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StaffPerformanceMaxAggregateInputType
+  }
+
+  export type GetStaffPerformanceAggregateType<T extends StaffPerformanceAggregateArgs> = {
+        [P in keyof T & keyof AggregateStaffPerformance]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStaffPerformance[P]>
+      : GetScalarType<T[P], AggregateStaffPerformance[P]>
+  }
+
+
+
+
+  export type StaffPerformanceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StaffPerformanceWhereInput
+    orderBy?: StaffPerformanceOrderByWithAggregationInput | StaffPerformanceOrderByWithAggregationInput[]
+    by: StaffPerformanceScalarFieldEnum[] | StaffPerformanceScalarFieldEnum
+    having?: StaffPerformanceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StaffPerformanceCountAggregateInputType | true
+    _avg?: StaffPerformanceAvgAggregateInputType
+    _sum?: StaffPerformanceSumAggregateInputType
+    _min?: StaffPerformanceMinAggregateInputType
+    _max?: StaffPerformanceMaxAggregateInputType
+  }
+
+  export type StaffPerformanceGroupByOutputType = {
+    id: string
+    staffId: string
+    orgId: string
+    metricType: string
+    value: number
+    jobId: string | null
+    createdAt: Date
+    _count: StaffPerformanceCountAggregateOutputType | null
+    _avg: StaffPerformanceAvgAggregateOutputType | null
+    _sum: StaffPerformanceSumAggregateOutputType | null
+    _min: StaffPerformanceMinAggregateOutputType | null
+    _max: StaffPerformanceMaxAggregateOutputType | null
+  }
+
+  type GetStaffPerformanceGroupByPayload<T extends StaffPerformanceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StaffPerformanceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StaffPerformanceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StaffPerformanceGroupByOutputType[P]>
+            : GetScalarType<T[P], StaffPerformanceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StaffPerformanceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    staffId?: boolean
+    orgId?: boolean
+    metricType?: boolean
+    value?: boolean
+    jobId?: boolean
+    createdAt?: boolean
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["staffPerformance"]>
+
+  export type StaffPerformanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    staffId?: boolean
+    orgId?: boolean
+    metricType?: boolean
+    value?: boolean
+    jobId?: boolean
+    createdAt?: boolean
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["staffPerformance"]>
+
+  export type StaffPerformanceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    staffId?: boolean
+    orgId?: boolean
+    metricType?: boolean
+    value?: boolean
+    jobId?: boolean
+    createdAt?: boolean
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["staffPerformance"]>
+
+  export type StaffPerformanceSelectScalar = {
+    id?: boolean
+    staffId?: boolean
+    orgId?: boolean
+    metricType?: boolean
+    value?: boolean
+    jobId?: boolean
+    createdAt?: boolean
+  }
+
+  export type StaffPerformanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "staffId" | "orgId" | "metricType" | "value" | "jobId" | "createdAt", ExtArgs["result"]["staffPerformance"]>
+  export type StaffPerformanceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }
+  export type StaffPerformanceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }
+  export type StaffPerformanceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }
+
+  export type $StaffPerformancePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StaffPerformance"
+    objects: {
+      staff: Prisma.$StaffPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      staffId: string
+      orgId: string
+      metricType: string
+      value: number
+      jobId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["staffPerformance"]>
+    composites: {}
+  }
+
+  type StaffPerformanceGetPayload<S extends boolean | null | undefined | StaffPerformanceDefaultArgs> = $Result.GetResult<Prisma.$StaffPerformancePayload, S>
+
+  type StaffPerformanceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StaffPerformanceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StaffPerformanceCountAggregateInputType | true
+    }
+
+  export interface StaffPerformanceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StaffPerformance'], meta: { name: 'StaffPerformance' } }
+    /**
+     * Find zero or one StaffPerformance that matches the filter.
+     * @param {StaffPerformanceFindUniqueArgs} args - Arguments to find a StaffPerformance
+     * @example
+     * // Get one StaffPerformance
+     * const staffPerformance = await prisma.staffPerformance.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StaffPerformanceFindUniqueArgs>(args: SelectSubset<T, StaffPerformanceFindUniqueArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StaffPerformance that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StaffPerformanceFindUniqueOrThrowArgs} args - Arguments to find a StaffPerformance
+     * @example
+     * // Get one StaffPerformance
+     * const staffPerformance = await prisma.staffPerformance.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StaffPerformanceFindUniqueOrThrowArgs>(args: SelectSubset<T, StaffPerformanceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StaffPerformance that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffPerformanceFindFirstArgs} args - Arguments to find a StaffPerformance
+     * @example
+     * // Get one StaffPerformance
+     * const staffPerformance = await prisma.staffPerformance.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StaffPerformanceFindFirstArgs>(args?: SelectSubset<T, StaffPerformanceFindFirstArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StaffPerformance that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffPerformanceFindFirstOrThrowArgs} args - Arguments to find a StaffPerformance
+     * @example
+     * // Get one StaffPerformance
+     * const staffPerformance = await prisma.staffPerformance.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StaffPerformanceFindFirstOrThrowArgs>(args?: SelectSubset<T, StaffPerformanceFindFirstOrThrowArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StaffPerformances that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffPerformanceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StaffPerformances
+     * const staffPerformances = await prisma.staffPerformance.findMany()
+     * 
+     * // Get first 10 StaffPerformances
+     * const staffPerformances = await prisma.staffPerformance.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const staffPerformanceWithIdOnly = await prisma.staffPerformance.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StaffPerformanceFindManyArgs>(args?: SelectSubset<T, StaffPerformanceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StaffPerformance.
+     * @param {StaffPerformanceCreateArgs} args - Arguments to create a StaffPerformance.
+     * @example
+     * // Create one StaffPerformance
+     * const StaffPerformance = await prisma.staffPerformance.create({
+     *   data: {
+     *     // ... data to create a StaffPerformance
+     *   }
+     * })
+     * 
+     */
+    create<T extends StaffPerformanceCreateArgs>(args: SelectSubset<T, StaffPerformanceCreateArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StaffPerformances.
+     * @param {StaffPerformanceCreateManyArgs} args - Arguments to create many StaffPerformances.
+     * @example
+     * // Create many StaffPerformances
+     * const staffPerformance = await prisma.staffPerformance.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StaffPerformanceCreateManyArgs>(args?: SelectSubset<T, StaffPerformanceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StaffPerformances and returns the data saved in the database.
+     * @param {StaffPerformanceCreateManyAndReturnArgs} args - Arguments to create many StaffPerformances.
+     * @example
+     * // Create many StaffPerformances
+     * const staffPerformance = await prisma.staffPerformance.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StaffPerformances and only return the `id`
+     * const staffPerformanceWithIdOnly = await prisma.staffPerformance.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StaffPerformanceCreateManyAndReturnArgs>(args?: SelectSubset<T, StaffPerformanceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StaffPerformance.
+     * @param {StaffPerformanceDeleteArgs} args - Arguments to delete one StaffPerformance.
+     * @example
+     * // Delete one StaffPerformance
+     * const StaffPerformance = await prisma.staffPerformance.delete({
+     *   where: {
+     *     // ... filter to delete one StaffPerformance
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StaffPerformanceDeleteArgs>(args: SelectSubset<T, StaffPerformanceDeleteArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StaffPerformance.
+     * @param {StaffPerformanceUpdateArgs} args - Arguments to update one StaffPerformance.
+     * @example
+     * // Update one StaffPerformance
+     * const staffPerformance = await prisma.staffPerformance.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StaffPerformanceUpdateArgs>(args: SelectSubset<T, StaffPerformanceUpdateArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StaffPerformances.
+     * @param {StaffPerformanceDeleteManyArgs} args - Arguments to filter StaffPerformances to delete.
+     * @example
+     * // Delete a few StaffPerformances
+     * const { count } = await prisma.staffPerformance.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StaffPerformanceDeleteManyArgs>(args?: SelectSubset<T, StaffPerformanceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StaffPerformances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffPerformanceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StaffPerformances
+     * const staffPerformance = await prisma.staffPerformance.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StaffPerformanceUpdateManyArgs>(args: SelectSubset<T, StaffPerformanceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StaffPerformances and returns the data updated in the database.
+     * @param {StaffPerformanceUpdateManyAndReturnArgs} args - Arguments to update many StaffPerformances.
+     * @example
+     * // Update many StaffPerformances
+     * const staffPerformance = await prisma.staffPerformance.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StaffPerformances and only return the `id`
+     * const staffPerformanceWithIdOnly = await prisma.staffPerformance.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StaffPerformanceUpdateManyAndReturnArgs>(args: SelectSubset<T, StaffPerformanceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StaffPerformance.
+     * @param {StaffPerformanceUpsertArgs} args - Arguments to update or create a StaffPerformance.
+     * @example
+     * // Update or create a StaffPerformance
+     * const staffPerformance = await prisma.staffPerformance.upsert({
+     *   create: {
+     *     // ... data to create a StaffPerformance
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StaffPerformance we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StaffPerformanceUpsertArgs>(args: SelectSubset<T, StaffPerformanceUpsertArgs<ExtArgs>>): Prisma__StaffPerformanceClient<$Result.GetResult<Prisma.$StaffPerformancePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StaffPerformances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffPerformanceCountArgs} args - Arguments to filter StaffPerformances to count.
+     * @example
+     * // Count the number of StaffPerformances
+     * const count = await prisma.staffPerformance.count({
+     *   where: {
+     *     // ... the filter for the StaffPerformances we want to count
+     *   }
+     * })
+    **/
+    count<T extends StaffPerformanceCountArgs>(
+      args?: Subset<T, StaffPerformanceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StaffPerformanceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StaffPerformance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffPerformanceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StaffPerformanceAggregateArgs>(args: Subset<T, StaffPerformanceAggregateArgs>): Prisma.PrismaPromise<GetStaffPerformanceAggregateType<T>>
+
+    /**
+     * Group by StaffPerformance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffPerformanceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StaffPerformanceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StaffPerformanceGroupByArgs['orderBy'] }
+        : { orderBy?: StaffPerformanceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StaffPerformanceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStaffPerformanceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StaffPerformance model
+   */
+  readonly fields: StaffPerformanceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StaffPerformance.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StaffPerformanceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    staff<T extends StaffDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StaffDefaultArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StaffPerformance model
+   */
+  interface StaffPerformanceFieldRefs {
+    readonly id: FieldRef<"StaffPerformance", 'String'>
+    readonly staffId: FieldRef<"StaffPerformance", 'String'>
+    readonly orgId: FieldRef<"StaffPerformance", 'String'>
+    readonly metricType: FieldRef<"StaffPerformance", 'String'>
+    readonly value: FieldRef<"StaffPerformance", 'Float'>
+    readonly jobId: FieldRef<"StaffPerformance", 'String'>
+    readonly createdAt: FieldRef<"StaffPerformance", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StaffPerformance findUnique
+   */
+  export type StaffPerformanceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * Filter, which StaffPerformance to fetch.
+     */
+    where: StaffPerformanceWhereUniqueInput
+  }
+
+  /**
+   * StaffPerformance findUniqueOrThrow
+   */
+  export type StaffPerformanceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * Filter, which StaffPerformance to fetch.
+     */
+    where: StaffPerformanceWhereUniqueInput
+  }
+
+  /**
+   * StaffPerformance findFirst
+   */
+  export type StaffPerformanceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * Filter, which StaffPerformance to fetch.
+     */
+    where?: StaffPerformanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StaffPerformances to fetch.
+     */
+    orderBy?: StaffPerformanceOrderByWithRelationInput | StaffPerformanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StaffPerformances.
+     */
+    cursor?: StaffPerformanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StaffPerformances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StaffPerformances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StaffPerformances.
+     */
+    distinct?: StaffPerformanceScalarFieldEnum | StaffPerformanceScalarFieldEnum[]
+  }
+
+  /**
+   * StaffPerformance findFirstOrThrow
+   */
+  export type StaffPerformanceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * Filter, which StaffPerformance to fetch.
+     */
+    where?: StaffPerformanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StaffPerformances to fetch.
+     */
+    orderBy?: StaffPerformanceOrderByWithRelationInput | StaffPerformanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StaffPerformances.
+     */
+    cursor?: StaffPerformanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StaffPerformances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StaffPerformances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StaffPerformances.
+     */
+    distinct?: StaffPerformanceScalarFieldEnum | StaffPerformanceScalarFieldEnum[]
+  }
+
+  /**
+   * StaffPerformance findMany
+   */
+  export type StaffPerformanceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * Filter, which StaffPerformances to fetch.
+     */
+    where?: StaffPerformanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StaffPerformances to fetch.
+     */
+    orderBy?: StaffPerformanceOrderByWithRelationInput | StaffPerformanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StaffPerformances.
+     */
+    cursor?: StaffPerformanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StaffPerformances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StaffPerformances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StaffPerformances.
+     */
+    distinct?: StaffPerformanceScalarFieldEnum | StaffPerformanceScalarFieldEnum[]
+  }
+
+  /**
+   * StaffPerformance create
+   */
+  export type StaffPerformanceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StaffPerformance.
+     */
+    data: XOR<StaffPerformanceCreateInput, StaffPerformanceUncheckedCreateInput>
+  }
+
+  /**
+   * StaffPerformance createMany
+   */
+  export type StaffPerformanceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StaffPerformances.
+     */
+    data: StaffPerformanceCreateManyInput | StaffPerformanceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StaffPerformance createManyAndReturn
+   */
+  export type StaffPerformanceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * The data used to create many StaffPerformances.
+     */
+    data: StaffPerformanceCreateManyInput | StaffPerformanceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StaffPerformance update
+   */
+  export type StaffPerformanceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StaffPerformance.
+     */
+    data: XOR<StaffPerformanceUpdateInput, StaffPerformanceUncheckedUpdateInput>
+    /**
+     * Choose, which StaffPerformance to update.
+     */
+    where: StaffPerformanceWhereUniqueInput
+  }
+
+  /**
+   * StaffPerformance updateMany
+   */
+  export type StaffPerformanceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StaffPerformances.
+     */
+    data: XOR<StaffPerformanceUpdateManyMutationInput, StaffPerformanceUncheckedUpdateManyInput>
+    /**
+     * Filter which StaffPerformances to update
+     */
+    where?: StaffPerformanceWhereInput
+    /**
+     * Limit how many StaffPerformances to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StaffPerformance updateManyAndReturn
+   */
+  export type StaffPerformanceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * The data used to update StaffPerformances.
+     */
+    data: XOR<StaffPerformanceUpdateManyMutationInput, StaffPerformanceUncheckedUpdateManyInput>
+    /**
+     * Filter which StaffPerformances to update
+     */
+    where?: StaffPerformanceWhereInput
+    /**
+     * Limit how many StaffPerformances to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StaffPerformance upsert
+   */
+  export type StaffPerformanceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StaffPerformance to update in case it exists.
+     */
+    where: StaffPerformanceWhereUniqueInput
+    /**
+     * In case the StaffPerformance found by the `where` argument doesn't exist, create a new StaffPerformance with this data.
+     */
+    create: XOR<StaffPerformanceCreateInput, StaffPerformanceUncheckedCreateInput>
+    /**
+     * In case the StaffPerformance was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StaffPerformanceUpdateInput, StaffPerformanceUncheckedUpdateInput>
+  }
+
+  /**
+   * StaffPerformance delete
+   */
+  export type StaffPerformanceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
+    /**
+     * Filter which StaffPerformance to delete.
+     */
+    where: StaffPerformanceWhereUniqueInput
+  }
+
+  /**
+   * StaffPerformance deleteMany
+   */
+  export type StaffPerformanceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StaffPerformances to delete
+     */
+    where?: StaffPerformanceWhereInput
+    /**
+     * Limit how many StaffPerformances to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StaffPerformance without action
+   */
+  export type StaffPerformanceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffPerformance
+     */
+    select?: StaffPerformanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StaffPerformance
+     */
+    omit?: StaffPerformanceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffPerformanceInclude<ExtArgs> | null
   }
 
 
@@ -11681,10 +13617,18 @@ export namespace Prisma {
 
   export type MaterialAvgAggregateOutputType = {
     purchasePrice: number | null
+    rollWidth: number | null
+    leadTimeDays: number | null
+    minOrderQty: number | null
+    buyQuantity: number | null
   }
 
   export type MaterialSumAggregateOutputType = {
     purchasePrice: number | null
+    rollWidth: number | null
+    leadTimeDays: number | null
+    minOrderQty: number | null
+    buyQuantity: number | null
   }
 
   export type MaterialMinAggregateOutputType = {
@@ -11693,6 +13637,12 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType | null
     unit: $Enums.ServiceUnit | null
     purchasePrice: number | null
+    rollWidth: number | null
+    supplierId: string | null
+    leadTimeDays: number | null
+    minOrderQty: number | null
+    buyQuantity: number | null
+    buyUnit: string | null
     stockItemId: string | null
     orgId: string | null
   }
@@ -11703,6 +13653,12 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType | null
     unit: $Enums.ServiceUnit | null
     purchasePrice: number | null
+    rollWidth: number | null
+    supplierId: string | null
+    leadTimeDays: number | null
+    minOrderQty: number | null
+    buyQuantity: number | null
+    buyUnit: string | null
     stockItemId: string | null
     orgId: string | null
   }
@@ -11713,6 +13669,12 @@ export namespace Prisma {
     calcType: number
     unit: number
     purchasePrice: number
+    rollWidth: number
+    supplierId: number
+    leadTimeDays: number
+    minOrderQty: number
+    buyQuantity: number
+    buyUnit: number
     stockItemId: number
     orgId: number
     _all: number
@@ -11721,10 +13683,18 @@ export namespace Prisma {
 
   export type MaterialAvgAggregateInputType = {
     purchasePrice?: true
+    rollWidth?: true
+    leadTimeDays?: true
+    minOrderQty?: true
+    buyQuantity?: true
   }
 
   export type MaterialSumAggregateInputType = {
     purchasePrice?: true
+    rollWidth?: true
+    leadTimeDays?: true
+    minOrderQty?: true
+    buyQuantity?: true
   }
 
   export type MaterialMinAggregateInputType = {
@@ -11733,6 +13703,12 @@ export namespace Prisma {
     calcType?: true
     unit?: true
     purchasePrice?: true
+    rollWidth?: true
+    supplierId?: true
+    leadTimeDays?: true
+    minOrderQty?: true
+    buyQuantity?: true
+    buyUnit?: true
     stockItemId?: true
     orgId?: true
   }
@@ -11743,6 +13719,12 @@ export namespace Prisma {
     calcType?: true
     unit?: true
     purchasePrice?: true
+    rollWidth?: true
+    supplierId?: true
+    leadTimeDays?: true
+    minOrderQty?: true
+    buyQuantity?: true
+    buyUnit?: true
     stockItemId?: true
     orgId?: true
   }
@@ -11753,6 +13735,12 @@ export namespace Prisma {
     calcType?: true
     unit?: true
     purchasePrice?: true
+    rollWidth?: true
+    supplierId?: true
+    leadTimeDays?: true
+    minOrderQty?: true
+    buyQuantity?: true
+    buyUnit?: true
     stockItemId?: true
     orgId?: true
     _all?: true
@@ -11850,6 +13838,12 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth: number | null
+    supplierId: string | null
+    leadTimeDays: number | null
+    minOrderQty: number | null
+    buyQuantity: number | null
+    buyUnit: string | null
     stockItemId: string | null
     orgId: string
     _count: MaterialCountAggregateOutputType | null
@@ -11879,11 +13873,20 @@ export namespace Prisma {
     calcType?: boolean
     unit?: boolean
     purchasePrice?: boolean
+    rollWidth?: boolean
+    supplierId?: boolean
+    leadTimeDays?: boolean
+    minOrderQty?: boolean
+    buyQuantity?: boolean
+    buyUnit?: boolean
     stockItemId?: boolean
     orgId?: boolean
+    supplier?: boolean | Material$supplierArgs<ExtArgs>
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     priceListItems?: boolean | Material$priceListItemsArgs<ExtArgs>
     jobVariables?: boolean | Material$jobVariablesArgs<ExtArgs>
+    printLayouts?: boolean | Material$printLayoutsArgs<ExtArgs>
+    purchaseItems?: boolean | Material$purchaseItemsArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | MaterialCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["material"]>
@@ -11894,8 +13897,15 @@ export namespace Prisma {
     calcType?: boolean
     unit?: boolean
     purchasePrice?: boolean
+    rollWidth?: boolean
+    supplierId?: boolean
+    leadTimeDays?: boolean
+    minOrderQty?: boolean
+    buyQuantity?: boolean
+    buyUnit?: boolean
     stockItemId?: boolean
     orgId?: boolean
+    supplier?: boolean | Material$supplierArgs<ExtArgs>
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["material"]>
@@ -11906,8 +13916,15 @@ export namespace Prisma {
     calcType?: boolean
     unit?: boolean
     purchasePrice?: boolean
+    rollWidth?: boolean
+    supplierId?: boolean
+    leadTimeDays?: boolean
+    minOrderQty?: boolean
+    buyQuantity?: boolean
+    buyUnit?: boolean
     stockItemId?: boolean
     orgId?: boolean
+    supplier?: boolean | Material$supplierArgs<ExtArgs>
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["material"]>
@@ -11918,23 +13935,34 @@ export namespace Prisma {
     calcType?: boolean
     unit?: boolean
     purchasePrice?: boolean
+    rollWidth?: boolean
+    supplierId?: boolean
+    leadTimeDays?: boolean
+    minOrderQty?: boolean
+    buyQuantity?: boolean
+    buyUnit?: boolean
     stockItemId?: boolean
     orgId?: boolean
   }
 
-  export type MaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "calcType" | "unit" | "purchasePrice" | "stockItemId" | "orgId", ExtArgs["result"]["material"]>
+  export type MaterialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "calcType" | "unit" | "purchasePrice" | "rollWidth" | "supplierId" | "leadTimeDays" | "minOrderQty" | "buyQuantity" | "buyUnit" | "stockItemId" | "orgId", ExtArgs["result"]["material"]>
   export type MaterialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | Material$supplierArgs<ExtArgs>
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     priceListItems?: boolean | Material$priceListItemsArgs<ExtArgs>
     jobVariables?: boolean | Material$jobVariablesArgs<ExtArgs>
+    printLayouts?: boolean | Material$printLayoutsArgs<ExtArgs>
+    purchaseItems?: boolean | Material$purchaseItemsArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     _count?: boolean | MaterialCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MaterialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | Material$supplierArgs<ExtArgs>
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }
   export type MaterialIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | Material$supplierArgs<ExtArgs>
     stockItem?: boolean | Material$stockItemArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }
@@ -11942,9 +13970,12 @@ export namespace Prisma {
   export type $MaterialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Material"
     objects: {
+      supplier: Prisma.$SupplierPayload<ExtArgs> | null
       stockItem: Prisma.$StockItemPayload<ExtArgs> | null
       priceListItems: Prisma.$PriceListPayload<ExtArgs>[]
       jobVariables: Prisma.$JobVariablePayload<ExtArgs>[]
+      printLayouts: Prisma.$MaterialPrintLayoutPayload<ExtArgs>[]
+      purchaseItems: Prisma.$StockPurchaseItemPayload<ExtArgs>[]
       organisation: Prisma.$OrganisationPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -11953,6 +13984,12 @@ export namespace Prisma {
       calcType: $Enums.MaterialCalculationType
       unit: $Enums.ServiceUnit
       purchasePrice: number
+      rollWidth: number | null
+      supplierId: string | null
+      leadTimeDays: number | null
+      minOrderQty: number | null
+      buyQuantity: number | null
+      buyUnit: string | null
       stockItemId: string | null
       orgId: string
     }, ExtArgs["result"]["material"]>
@@ -12349,9 +14386,12 @@ export namespace Prisma {
    */
   export interface Prisma__MaterialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    supplier<T extends Material$supplierArgs<ExtArgs> = {}>(args?: Subset<T, Material$supplierArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     stockItem<T extends Material$stockItemArgs<ExtArgs> = {}>(args?: Subset<T, Material$stockItemArgs<ExtArgs>>): Prisma__StockItemClient<$Result.GetResult<Prisma.$StockItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     priceListItems<T extends Material$priceListItemsArgs<ExtArgs> = {}>(args?: Subset<T, Material$priceListItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobVariables<T extends Material$jobVariablesArgs<ExtArgs> = {}>(args?: Subset<T, Material$jobVariablesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobVariablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    printLayouts<T extends Material$printLayoutsArgs<ExtArgs> = {}>(args?: Subset<T, Material$printLayoutsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    purchaseItems<T extends Material$purchaseItemsArgs<ExtArgs> = {}>(args?: Subset<T, Material$purchaseItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -12387,6 +14427,12 @@ export namespace Prisma {
     readonly calcType: FieldRef<"Material", 'MaterialCalculationType'>
     readonly unit: FieldRef<"Material", 'ServiceUnit'>
     readonly purchasePrice: FieldRef<"Material", 'Float'>
+    readonly rollWidth: FieldRef<"Material", 'Float'>
+    readonly supplierId: FieldRef<"Material", 'String'>
+    readonly leadTimeDays: FieldRef<"Material", 'Int'>
+    readonly minOrderQty: FieldRef<"Material", 'Int'>
+    readonly buyQuantity: FieldRef<"Material", 'Float'>
+    readonly buyUnit: FieldRef<"Material", 'String'>
     readonly stockItemId: FieldRef<"Material", 'String'>
     readonly orgId: FieldRef<"Material", 'String'>
   }
@@ -12790,6 +14836,25 @@ export namespace Prisma {
   }
 
   /**
+   * Material.supplier
+   */
+  export type Material$supplierArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    where?: SupplierWhereInput
+  }
+
+  /**
    * Material.stockItem
    */
   export type Material$stockItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12854,6 +14919,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobVariableScalarFieldEnum | JobVariableScalarFieldEnum[]
+  }
+
+  /**
+   * Material.printLayouts
+   */
+  export type Material$printLayoutsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    where?: MaterialPrintLayoutWhereInput
+    orderBy?: MaterialPrintLayoutOrderByWithRelationInput | MaterialPrintLayoutOrderByWithRelationInput[]
+    cursor?: MaterialPrintLayoutWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MaterialPrintLayoutScalarFieldEnum | MaterialPrintLayoutScalarFieldEnum[]
+  }
+
+  /**
+   * Material.purchaseItems
+   */
+  export type Material$purchaseItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    where?: StockPurchaseItemWhereInput
+    orderBy?: StockPurchaseItemOrderByWithRelationInput | StockPurchaseItemOrderByWithRelationInput[]
+    cursor?: StockPurchaseItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockPurchaseItemScalarFieldEnum | StockPurchaseItemScalarFieldEnum[]
   }
 
   /**
@@ -16394,6 +18507,3493 @@ export namespace Prisma {
 
 
   /**
+   * Model Supplier
+   */
+
+  export type AggregateSupplier = {
+    _count: SupplierCountAggregateOutputType | null
+    _min: SupplierMinAggregateOutputType | null
+    _max: SupplierMaxAggregateOutputType | null
+  }
+
+  export type SupplierMinAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    category: string | null
+    linkedUserId: string | null
+    createdAt: Date | null
+  }
+
+  export type SupplierMaxAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    name: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    category: string | null
+    linkedUserId: string | null
+    createdAt: Date | null
+  }
+
+  export type SupplierCountAggregateOutputType = {
+    id: number
+    orgId: number
+    name: number
+    email: number
+    phone: number
+    address: number
+    category: number
+    linkedUserId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SupplierMinAggregateInputType = {
+    id?: true
+    orgId?: true
+    name?: true
+    email?: true
+    phone?: true
+    address?: true
+    category?: true
+    linkedUserId?: true
+    createdAt?: true
+  }
+
+  export type SupplierMaxAggregateInputType = {
+    id?: true
+    orgId?: true
+    name?: true
+    email?: true
+    phone?: true
+    address?: true
+    category?: true
+    linkedUserId?: true
+    createdAt?: true
+  }
+
+  export type SupplierCountAggregateInputType = {
+    id?: true
+    orgId?: true
+    name?: true
+    email?: true
+    phone?: true
+    address?: true
+    category?: true
+    linkedUserId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SupplierAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Supplier to aggregate.
+     */
+    where?: SupplierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suppliers to fetch.
+     */
+    orderBy?: SupplierOrderByWithRelationInput | SupplierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SupplierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suppliers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suppliers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Suppliers
+    **/
+    _count?: true | SupplierCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SupplierMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SupplierMaxAggregateInputType
+  }
+
+  export type GetSupplierAggregateType<T extends SupplierAggregateArgs> = {
+        [P in keyof T & keyof AggregateSupplier]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSupplier[P]>
+      : GetScalarType<T[P], AggregateSupplier[P]>
+  }
+
+
+
+
+  export type SupplierGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupplierWhereInput
+    orderBy?: SupplierOrderByWithAggregationInput | SupplierOrderByWithAggregationInput[]
+    by: SupplierScalarFieldEnum[] | SupplierScalarFieldEnum
+    having?: SupplierScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SupplierCountAggregateInputType | true
+    _min?: SupplierMinAggregateInputType
+    _max?: SupplierMaxAggregateInputType
+  }
+
+  export type SupplierGroupByOutputType = {
+    id: string
+    orgId: string
+    name: string
+    email: string | null
+    phone: string | null
+    address: string | null
+    category: string | null
+    linkedUserId: string | null
+    createdAt: Date
+    _count: SupplierCountAggregateOutputType | null
+    _min: SupplierMinAggregateOutputType | null
+    _max: SupplierMaxAggregateOutputType | null
+  }
+
+  type GetSupplierGroupByPayload<T extends SupplierGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SupplierGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SupplierGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SupplierGroupByOutputType[P]>
+            : GetScalarType<T[P], SupplierGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SupplierSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    category?: boolean
+    linkedUserId?: boolean
+    createdAt?: boolean
+    materials?: boolean | Supplier$materialsArgs<ExtArgs>
+    purchaseOrders?: boolean | Supplier$purchaseOrdersArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    _count?: boolean | SupplierCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supplier"]>
+
+  export type SupplierSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    category?: boolean
+    linkedUserId?: boolean
+    createdAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supplier"]>
+
+  export type SupplierSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    category?: boolean
+    linkedUserId?: boolean
+    createdAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supplier"]>
+
+  export type SupplierSelectScalar = {
+    id?: boolean
+    orgId?: boolean
+    name?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    category?: boolean
+    linkedUserId?: boolean
+    createdAt?: boolean
+  }
+
+  export type SupplierOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "name" | "email" | "phone" | "address" | "category" | "linkedUserId" | "createdAt", ExtArgs["result"]["supplier"]>
+  export type SupplierInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    materials?: boolean | Supplier$materialsArgs<ExtArgs>
+    purchaseOrders?: boolean | Supplier$purchaseOrdersArgs<ExtArgs>
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    _count?: boolean | SupplierCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SupplierIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+  export type SupplierIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+
+  export type $SupplierPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Supplier"
+    objects: {
+      materials: Prisma.$MaterialPayload<ExtArgs>[]
+      purchaseOrders: Prisma.$StockPurchaseOrderPayload<ExtArgs>[]
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orgId: string
+      name: string
+      email: string | null
+      phone: string | null
+      address: string | null
+      category: string | null
+      linkedUserId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["supplier"]>
+    composites: {}
+  }
+
+  type SupplierGetPayload<S extends boolean | null | undefined | SupplierDefaultArgs> = $Result.GetResult<Prisma.$SupplierPayload, S>
+
+  type SupplierCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SupplierFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SupplierCountAggregateInputType | true
+    }
+
+  export interface SupplierDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Supplier'], meta: { name: 'Supplier' } }
+    /**
+     * Find zero or one Supplier that matches the filter.
+     * @param {SupplierFindUniqueArgs} args - Arguments to find a Supplier
+     * @example
+     * // Get one Supplier
+     * const supplier = await prisma.supplier.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SupplierFindUniqueArgs>(args: SelectSubset<T, SupplierFindUniqueArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Supplier that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SupplierFindUniqueOrThrowArgs} args - Arguments to find a Supplier
+     * @example
+     * // Get one Supplier
+     * const supplier = await prisma.supplier.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SupplierFindUniqueOrThrowArgs>(args: SelectSubset<T, SupplierFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Supplier that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupplierFindFirstArgs} args - Arguments to find a Supplier
+     * @example
+     * // Get one Supplier
+     * const supplier = await prisma.supplier.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SupplierFindFirstArgs>(args?: SelectSubset<T, SupplierFindFirstArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Supplier that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupplierFindFirstOrThrowArgs} args - Arguments to find a Supplier
+     * @example
+     * // Get one Supplier
+     * const supplier = await prisma.supplier.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SupplierFindFirstOrThrowArgs>(args?: SelectSubset<T, SupplierFindFirstOrThrowArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Suppliers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupplierFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Suppliers
+     * const suppliers = await prisma.supplier.findMany()
+     * 
+     * // Get first 10 Suppliers
+     * const suppliers = await prisma.supplier.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const supplierWithIdOnly = await prisma.supplier.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SupplierFindManyArgs>(args?: SelectSubset<T, SupplierFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Supplier.
+     * @param {SupplierCreateArgs} args - Arguments to create a Supplier.
+     * @example
+     * // Create one Supplier
+     * const Supplier = await prisma.supplier.create({
+     *   data: {
+     *     // ... data to create a Supplier
+     *   }
+     * })
+     * 
+     */
+    create<T extends SupplierCreateArgs>(args: SelectSubset<T, SupplierCreateArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Suppliers.
+     * @param {SupplierCreateManyArgs} args - Arguments to create many Suppliers.
+     * @example
+     * // Create many Suppliers
+     * const supplier = await prisma.supplier.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SupplierCreateManyArgs>(args?: SelectSubset<T, SupplierCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Suppliers and returns the data saved in the database.
+     * @param {SupplierCreateManyAndReturnArgs} args - Arguments to create many Suppliers.
+     * @example
+     * // Create many Suppliers
+     * const supplier = await prisma.supplier.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Suppliers and only return the `id`
+     * const supplierWithIdOnly = await prisma.supplier.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SupplierCreateManyAndReturnArgs>(args?: SelectSubset<T, SupplierCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Supplier.
+     * @param {SupplierDeleteArgs} args - Arguments to delete one Supplier.
+     * @example
+     * // Delete one Supplier
+     * const Supplier = await prisma.supplier.delete({
+     *   where: {
+     *     // ... filter to delete one Supplier
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SupplierDeleteArgs>(args: SelectSubset<T, SupplierDeleteArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Supplier.
+     * @param {SupplierUpdateArgs} args - Arguments to update one Supplier.
+     * @example
+     * // Update one Supplier
+     * const supplier = await prisma.supplier.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SupplierUpdateArgs>(args: SelectSubset<T, SupplierUpdateArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Suppliers.
+     * @param {SupplierDeleteManyArgs} args - Arguments to filter Suppliers to delete.
+     * @example
+     * // Delete a few Suppliers
+     * const { count } = await prisma.supplier.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SupplierDeleteManyArgs>(args?: SelectSubset<T, SupplierDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Suppliers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupplierUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Suppliers
+     * const supplier = await prisma.supplier.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SupplierUpdateManyArgs>(args: SelectSubset<T, SupplierUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Suppliers and returns the data updated in the database.
+     * @param {SupplierUpdateManyAndReturnArgs} args - Arguments to update many Suppliers.
+     * @example
+     * // Update many Suppliers
+     * const supplier = await prisma.supplier.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Suppliers and only return the `id`
+     * const supplierWithIdOnly = await prisma.supplier.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SupplierUpdateManyAndReturnArgs>(args: SelectSubset<T, SupplierUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Supplier.
+     * @param {SupplierUpsertArgs} args - Arguments to update or create a Supplier.
+     * @example
+     * // Update or create a Supplier
+     * const supplier = await prisma.supplier.upsert({
+     *   create: {
+     *     // ... data to create a Supplier
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Supplier we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SupplierUpsertArgs>(args: SelectSubset<T, SupplierUpsertArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Suppliers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupplierCountArgs} args - Arguments to filter Suppliers to count.
+     * @example
+     * // Count the number of Suppliers
+     * const count = await prisma.supplier.count({
+     *   where: {
+     *     // ... the filter for the Suppliers we want to count
+     *   }
+     * })
+    **/
+    count<T extends SupplierCountArgs>(
+      args?: Subset<T, SupplierCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SupplierCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Supplier.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupplierAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SupplierAggregateArgs>(args: Subset<T, SupplierAggregateArgs>): Prisma.PrismaPromise<GetSupplierAggregateType<T>>
+
+    /**
+     * Group by Supplier.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupplierGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SupplierGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SupplierGroupByArgs['orderBy'] }
+        : { orderBy?: SupplierGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SupplierGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSupplierGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Supplier model
+   */
+  readonly fields: SupplierFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Supplier.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SupplierClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    materials<T extends Supplier$materialsArgs<ExtArgs> = {}>(args?: Subset<T, Supplier$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    purchaseOrders<T extends Supplier$purchaseOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Supplier$purchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Supplier model
+   */
+  interface SupplierFieldRefs {
+    readonly id: FieldRef<"Supplier", 'String'>
+    readonly orgId: FieldRef<"Supplier", 'String'>
+    readonly name: FieldRef<"Supplier", 'String'>
+    readonly email: FieldRef<"Supplier", 'String'>
+    readonly phone: FieldRef<"Supplier", 'String'>
+    readonly address: FieldRef<"Supplier", 'String'>
+    readonly category: FieldRef<"Supplier", 'String'>
+    readonly linkedUserId: FieldRef<"Supplier", 'String'>
+    readonly createdAt: FieldRef<"Supplier", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Supplier findUnique
+   */
+  export type SupplierFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * Filter, which Supplier to fetch.
+     */
+    where: SupplierWhereUniqueInput
+  }
+
+  /**
+   * Supplier findUniqueOrThrow
+   */
+  export type SupplierFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * Filter, which Supplier to fetch.
+     */
+    where: SupplierWhereUniqueInput
+  }
+
+  /**
+   * Supplier findFirst
+   */
+  export type SupplierFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * Filter, which Supplier to fetch.
+     */
+    where?: SupplierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suppliers to fetch.
+     */
+    orderBy?: SupplierOrderByWithRelationInput | SupplierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Suppliers.
+     */
+    cursor?: SupplierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suppliers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suppliers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Suppliers.
+     */
+    distinct?: SupplierScalarFieldEnum | SupplierScalarFieldEnum[]
+  }
+
+  /**
+   * Supplier findFirstOrThrow
+   */
+  export type SupplierFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * Filter, which Supplier to fetch.
+     */
+    where?: SupplierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suppliers to fetch.
+     */
+    orderBy?: SupplierOrderByWithRelationInput | SupplierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Suppliers.
+     */
+    cursor?: SupplierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suppliers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suppliers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Suppliers.
+     */
+    distinct?: SupplierScalarFieldEnum | SupplierScalarFieldEnum[]
+  }
+
+  /**
+   * Supplier findMany
+   */
+  export type SupplierFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * Filter, which Suppliers to fetch.
+     */
+    where?: SupplierWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Suppliers to fetch.
+     */
+    orderBy?: SupplierOrderByWithRelationInput | SupplierOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Suppliers.
+     */
+    cursor?: SupplierWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Suppliers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Suppliers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Suppliers.
+     */
+    distinct?: SupplierScalarFieldEnum | SupplierScalarFieldEnum[]
+  }
+
+  /**
+   * Supplier create
+   */
+  export type SupplierCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Supplier.
+     */
+    data: XOR<SupplierCreateInput, SupplierUncheckedCreateInput>
+  }
+
+  /**
+   * Supplier createMany
+   */
+  export type SupplierCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Suppliers.
+     */
+    data: SupplierCreateManyInput | SupplierCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Supplier createManyAndReturn
+   */
+  export type SupplierCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * The data used to create many Suppliers.
+     */
+    data: SupplierCreateManyInput | SupplierCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Supplier update
+   */
+  export type SupplierUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Supplier.
+     */
+    data: XOR<SupplierUpdateInput, SupplierUncheckedUpdateInput>
+    /**
+     * Choose, which Supplier to update.
+     */
+    where: SupplierWhereUniqueInput
+  }
+
+  /**
+   * Supplier updateMany
+   */
+  export type SupplierUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Suppliers.
+     */
+    data: XOR<SupplierUpdateManyMutationInput, SupplierUncheckedUpdateManyInput>
+    /**
+     * Filter which Suppliers to update
+     */
+    where?: SupplierWhereInput
+    /**
+     * Limit how many Suppliers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Supplier updateManyAndReturn
+   */
+  export type SupplierUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * The data used to update Suppliers.
+     */
+    data: XOR<SupplierUpdateManyMutationInput, SupplierUncheckedUpdateManyInput>
+    /**
+     * Filter which Suppliers to update
+     */
+    where?: SupplierWhereInput
+    /**
+     * Limit how many Suppliers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Supplier upsert
+   */
+  export type SupplierUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Supplier to update in case it exists.
+     */
+    where: SupplierWhereUniqueInput
+    /**
+     * In case the Supplier found by the `where` argument doesn't exist, create a new Supplier with this data.
+     */
+    create: XOR<SupplierCreateInput, SupplierUncheckedCreateInput>
+    /**
+     * In case the Supplier was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SupplierUpdateInput, SupplierUncheckedUpdateInput>
+  }
+
+  /**
+   * Supplier delete
+   */
+  export type SupplierDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+    /**
+     * Filter which Supplier to delete.
+     */
+    where: SupplierWhereUniqueInput
+  }
+
+  /**
+   * Supplier deleteMany
+   */
+  export type SupplierDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Suppliers to delete
+     */
+    where?: SupplierWhereInput
+    /**
+     * Limit how many Suppliers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Supplier.materials
+   */
+  export type Supplier$materialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Material
+     */
+    select?: MaterialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Material
+     */
+    omit?: MaterialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialInclude<ExtArgs> | null
+    where?: MaterialWhereInput
+    orderBy?: MaterialOrderByWithRelationInput | MaterialOrderByWithRelationInput[]
+    cursor?: MaterialWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MaterialScalarFieldEnum | MaterialScalarFieldEnum[]
+  }
+
+  /**
+   * Supplier.purchaseOrders
+   */
+  export type Supplier$purchaseOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    where?: StockPurchaseOrderWhereInput
+    orderBy?: StockPurchaseOrderOrderByWithRelationInput | StockPurchaseOrderOrderByWithRelationInput[]
+    cursor?: StockPurchaseOrderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockPurchaseOrderScalarFieldEnum | StockPurchaseOrderScalarFieldEnum[]
+  }
+
+  /**
+   * Supplier without action
+   */
+  export type SupplierDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Supplier
+     */
+    select?: SupplierSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Supplier
+     */
+    omit?: SupplierOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupplierInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StockPurchaseOrder
+   */
+
+  export type AggregateStockPurchaseOrder = {
+    _count: StockPurchaseOrderCountAggregateOutputType | null
+    _avg: StockPurchaseOrderAvgAggregateOutputType | null
+    _sum: StockPurchaseOrderSumAggregateOutputType | null
+    _min: StockPurchaseOrderMinAggregateOutputType | null
+    _max: StockPurchaseOrderMaxAggregateOutputType | null
+  }
+
+  export type StockPurchaseOrderAvgAggregateOutputType = {
+    totalCost: number | null
+  }
+
+  export type StockPurchaseOrderSumAggregateOutputType = {
+    totalCost: number | null
+  }
+
+  export type StockPurchaseOrderMinAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    supplierId: string | null
+    status: $Enums.POStatus | null
+    relatedJobId: string | null
+    totalCost: number | null
+    expectedArrival: Date | null
+    receivedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StockPurchaseOrderMaxAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    supplierId: string | null
+    status: $Enums.POStatus | null
+    relatedJobId: string | null
+    totalCost: number | null
+    expectedArrival: Date | null
+    receivedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StockPurchaseOrderCountAggregateOutputType = {
+    id: number
+    orgId: number
+    supplierId: number
+    status: number
+    relatedJobId: number
+    totalCost: number
+    expectedArrival: number
+    receivedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StockPurchaseOrderAvgAggregateInputType = {
+    totalCost?: true
+  }
+
+  export type StockPurchaseOrderSumAggregateInputType = {
+    totalCost?: true
+  }
+
+  export type StockPurchaseOrderMinAggregateInputType = {
+    id?: true
+    orgId?: true
+    supplierId?: true
+    status?: true
+    relatedJobId?: true
+    totalCost?: true
+    expectedArrival?: true
+    receivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StockPurchaseOrderMaxAggregateInputType = {
+    id?: true
+    orgId?: true
+    supplierId?: true
+    status?: true
+    relatedJobId?: true
+    totalCost?: true
+    expectedArrival?: true
+    receivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StockPurchaseOrderCountAggregateInputType = {
+    id?: true
+    orgId?: true
+    supplierId?: true
+    status?: true
+    relatedJobId?: true
+    totalCost?: true
+    expectedArrival?: true
+    receivedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StockPurchaseOrderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockPurchaseOrder to aggregate.
+     */
+    where?: StockPurchaseOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseOrders to fetch.
+     */
+    orderBy?: StockPurchaseOrderOrderByWithRelationInput | StockPurchaseOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StockPurchaseOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StockPurchaseOrders
+    **/
+    _count?: true | StockPurchaseOrderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StockPurchaseOrderAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StockPurchaseOrderSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StockPurchaseOrderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StockPurchaseOrderMaxAggregateInputType
+  }
+
+  export type GetStockPurchaseOrderAggregateType<T extends StockPurchaseOrderAggregateArgs> = {
+        [P in keyof T & keyof AggregateStockPurchaseOrder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStockPurchaseOrder[P]>
+      : GetScalarType<T[P], AggregateStockPurchaseOrder[P]>
+  }
+
+
+
+
+  export type StockPurchaseOrderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockPurchaseOrderWhereInput
+    orderBy?: StockPurchaseOrderOrderByWithAggregationInput | StockPurchaseOrderOrderByWithAggregationInput[]
+    by: StockPurchaseOrderScalarFieldEnum[] | StockPurchaseOrderScalarFieldEnum
+    having?: StockPurchaseOrderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StockPurchaseOrderCountAggregateInputType | true
+    _avg?: StockPurchaseOrderAvgAggregateInputType
+    _sum?: StockPurchaseOrderSumAggregateInputType
+    _min?: StockPurchaseOrderMinAggregateInputType
+    _max?: StockPurchaseOrderMaxAggregateInputType
+  }
+
+  export type StockPurchaseOrderGroupByOutputType = {
+    id: string
+    orgId: string
+    supplierId: string
+    status: $Enums.POStatus
+    relatedJobId: string | null
+    totalCost: number
+    expectedArrival: Date | null
+    receivedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: StockPurchaseOrderCountAggregateOutputType | null
+    _avg: StockPurchaseOrderAvgAggregateOutputType | null
+    _sum: StockPurchaseOrderSumAggregateOutputType | null
+    _min: StockPurchaseOrderMinAggregateOutputType | null
+    _max: StockPurchaseOrderMaxAggregateOutputType | null
+  }
+
+  type GetStockPurchaseOrderGroupByPayload<T extends StockPurchaseOrderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StockPurchaseOrderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StockPurchaseOrderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StockPurchaseOrderGroupByOutputType[P]>
+            : GetScalarType<T[P], StockPurchaseOrderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StockPurchaseOrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    supplierId?: boolean
+    status?: boolean
+    relatedJobId?: boolean
+    totalCost?: boolean
+    expectedArrival?: boolean
+    receivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+    items?: boolean | StockPurchaseOrder$itemsArgs<ExtArgs>
+    _count?: boolean | StockPurchaseOrderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockPurchaseOrder"]>
+
+  export type StockPurchaseOrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    supplierId?: boolean
+    status?: boolean
+    relatedJobId?: boolean
+    totalCost?: boolean
+    expectedArrival?: boolean
+    receivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockPurchaseOrder"]>
+
+  export type StockPurchaseOrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    supplierId?: boolean
+    status?: boolean
+    relatedJobId?: boolean
+    totalCost?: boolean
+    expectedArrival?: boolean
+    receivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockPurchaseOrder"]>
+
+  export type StockPurchaseOrderSelectScalar = {
+    id?: boolean
+    orgId?: boolean
+    supplierId?: boolean
+    status?: boolean
+    relatedJobId?: boolean
+    totalCost?: boolean
+    expectedArrival?: boolean
+    receivedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StockPurchaseOrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "supplierId" | "status" | "relatedJobId" | "totalCost" | "expectedArrival" | "receivedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["stockPurchaseOrder"]>
+  export type StockPurchaseOrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+    items?: boolean | StockPurchaseOrder$itemsArgs<ExtArgs>
+    _count?: boolean | StockPurchaseOrderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StockPurchaseOrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }
+  export type StockPurchaseOrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    supplier?: boolean | SupplierDefaultArgs<ExtArgs>
+  }
+
+  export type $StockPurchaseOrderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StockPurchaseOrder"
+    objects: {
+      supplier: Prisma.$SupplierPayload<ExtArgs>
+      items: Prisma.$StockPurchaseItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orgId: string
+      supplierId: string
+      status: $Enums.POStatus
+      relatedJobId: string | null
+      totalCost: number
+      expectedArrival: Date | null
+      receivedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["stockPurchaseOrder"]>
+    composites: {}
+  }
+
+  type StockPurchaseOrderGetPayload<S extends boolean | null | undefined | StockPurchaseOrderDefaultArgs> = $Result.GetResult<Prisma.$StockPurchaseOrderPayload, S>
+
+  type StockPurchaseOrderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StockPurchaseOrderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StockPurchaseOrderCountAggregateInputType | true
+    }
+
+  export interface StockPurchaseOrderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockPurchaseOrder'], meta: { name: 'StockPurchaseOrder' } }
+    /**
+     * Find zero or one StockPurchaseOrder that matches the filter.
+     * @param {StockPurchaseOrderFindUniqueArgs} args - Arguments to find a StockPurchaseOrder
+     * @example
+     * // Get one StockPurchaseOrder
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StockPurchaseOrderFindUniqueArgs>(args: SelectSubset<T, StockPurchaseOrderFindUniqueArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StockPurchaseOrder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StockPurchaseOrderFindUniqueOrThrowArgs} args - Arguments to find a StockPurchaseOrder
+     * @example
+     * // Get one StockPurchaseOrder
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StockPurchaseOrderFindUniqueOrThrowArgs>(args: SelectSubset<T, StockPurchaseOrderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockPurchaseOrder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseOrderFindFirstArgs} args - Arguments to find a StockPurchaseOrder
+     * @example
+     * // Get one StockPurchaseOrder
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StockPurchaseOrderFindFirstArgs>(args?: SelectSubset<T, StockPurchaseOrderFindFirstArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockPurchaseOrder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseOrderFindFirstOrThrowArgs} args - Arguments to find a StockPurchaseOrder
+     * @example
+     * // Get one StockPurchaseOrder
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StockPurchaseOrderFindFirstOrThrowArgs>(args?: SelectSubset<T, StockPurchaseOrderFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StockPurchaseOrders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseOrderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StockPurchaseOrders
+     * const stockPurchaseOrders = await prisma.stockPurchaseOrder.findMany()
+     * 
+     * // Get first 10 StockPurchaseOrders
+     * const stockPurchaseOrders = await prisma.stockPurchaseOrder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stockPurchaseOrderWithIdOnly = await prisma.stockPurchaseOrder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StockPurchaseOrderFindManyArgs>(args?: SelectSubset<T, StockPurchaseOrderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StockPurchaseOrder.
+     * @param {StockPurchaseOrderCreateArgs} args - Arguments to create a StockPurchaseOrder.
+     * @example
+     * // Create one StockPurchaseOrder
+     * const StockPurchaseOrder = await prisma.stockPurchaseOrder.create({
+     *   data: {
+     *     // ... data to create a StockPurchaseOrder
+     *   }
+     * })
+     * 
+     */
+    create<T extends StockPurchaseOrderCreateArgs>(args: SelectSubset<T, StockPurchaseOrderCreateArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StockPurchaseOrders.
+     * @param {StockPurchaseOrderCreateManyArgs} args - Arguments to create many StockPurchaseOrders.
+     * @example
+     * // Create many StockPurchaseOrders
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StockPurchaseOrderCreateManyArgs>(args?: SelectSubset<T, StockPurchaseOrderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StockPurchaseOrders and returns the data saved in the database.
+     * @param {StockPurchaseOrderCreateManyAndReturnArgs} args - Arguments to create many StockPurchaseOrders.
+     * @example
+     * // Create many StockPurchaseOrders
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StockPurchaseOrders and only return the `id`
+     * const stockPurchaseOrderWithIdOnly = await prisma.stockPurchaseOrder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StockPurchaseOrderCreateManyAndReturnArgs>(args?: SelectSubset<T, StockPurchaseOrderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StockPurchaseOrder.
+     * @param {StockPurchaseOrderDeleteArgs} args - Arguments to delete one StockPurchaseOrder.
+     * @example
+     * // Delete one StockPurchaseOrder
+     * const StockPurchaseOrder = await prisma.stockPurchaseOrder.delete({
+     *   where: {
+     *     // ... filter to delete one StockPurchaseOrder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StockPurchaseOrderDeleteArgs>(args: SelectSubset<T, StockPurchaseOrderDeleteArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StockPurchaseOrder.
+     * @param {StockPurchaseOrderUpdateArgs} args - Arguments to update one StockPurchaseOrder.
+     * @example
+     * // Update one StockPurchaseOrder
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StockPurchaseOrderUpdateArgs>(args: SelectSubset<T, StockPurchaseOrderUpdateArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StockPurchaseOrders.
+     * @param {StockPurchaseOrderDeleteManyArgs} args - Arguments to filter StockPurchaseOrders to delete.
+     * @example
+     * // Delete a few StockPurchaseOrders
+     * const { count } = await prisma.stockPurchaseOrder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StockPurchaseOrderDeleteManyArgs>(args?: SelectSubset<T, StockPurchaseOrderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockPurchaseOrders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseOrderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StockPurchaseOrders
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StockPurchaseOrderUpdateManyArgs>(args: SelectSubset<T, StockPurchaseOrderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockPurchaseOrders and returns the data updated in the database.
+     * @param {StockPurchaseOrderUpdateManyAndReturnArgs} args - Arguments to update many StockPurchaseOrders.
+     * @example
+     * // Update many StockPurchaseOrders
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StockPurchaseOrders and only return the `id`
+     * const stockPurchaseOrderWithIdOnly = await prisma.stockPurchaseOrder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StockPurchaseOrderUpdateManyAndReturnArgs>(args: SelectSubset<T, StockPurchaseOrderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StockPurchaseOrder.
+     * @param {StockPurchaseOrderUpsertArgs} args - Arguments to update or create a StockPurchaseOrder.
+     * @example
+     * // Update or create a StockPurchaseOrder
+     * const stockPurchaseOrder = await prisma.stockPurchaseOrder.upsert({
+     *   create: {
+     *     // ... data to create a StockPurchaseOrder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StockPurchaseOrder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StockPurchaseOrderUpsertArgs>(args: SelectSubset<T, StockPurchaseOrderUpsertArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StockPurchaseOrders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseOrderCountArgs} args - Arguments to filter StockPurchaseOrders to count.
+     * @example
+     * // Count the number of StockPurchaseOrders
+     * const count = await prisma.stockPurchaseOrder.count({
+     *   where: {
+     *     // ... the filter for the StockPurchaseOrders we want to count
+     *   }
+     * })
+    **/
+    count<T extends StockPurchaseOrderCountArgs>(
+      args?: Subset<T, StockPurchaseOrderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StockPurchaseOrderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StockPurchaseOrder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseOrderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StockPurchaseOrderAggregateArgs>(args: Subset<T, StockPurchaseOrderAggregateArgs>): Prisma.PrismaPromise<GetStockPurchaseOrderAggregateType<T>>
+
+    /**
+     * Group by StockPurchaseOrder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseOrderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StockPurchaseOrderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StockPurchaseOrderGroupByArgs['orderBy'] }
+        : { orderBy?: StockPurchaseOrderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StockPurchaseOrderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockPurchaseOrderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StockPurchaseOrder model
+   */
+  readonly fields: StockPurchaseOrderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StockPurchaseOrder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StockPurchaseOrderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    supplier<T extends SupplierDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SupplierDefaultArgs<ExtArgs>>): Prisma__SupplierClient<$Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    items<T extends StockPurchaseOrder$itemsArgs<ExtArgs> = {}>(args?: Subset<T, StockPurchaseOrder$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StockPurchaseOrder model
+   */
+  interface StockPurchaseOrderFieldRefs {
+    readonly id: FieldRef<"StockPurchaseOrder", 'String'>
+    readonly orgId: FieldRef<"StockPurchaseOrder", 'String'>
+    readonly supplierId: FieldRef<"StockPurchaseOrder", 'String'>
+    readonly status: FieldRef<"StockPurchaseOrder", 'POStatus'>
+    readonly relatedJobId: FieldRef<"StockPurchaseOrder", 'String'>
+    readonly totalCost: FieldRef<"StockPurchaseOrder", 'Float'>
+    readonly expectedArrival: FieldRef<"StockPurchaseOrder", 'DateTime'>
+    readonly receivedAt: FieldRef<"StockPurchaseOrder", 'DateTime'>
+    readonly createdAt: FieldRef<"StockPurchaseOrder", 'DateTime'>
+    readonly updatedAt: FieldRef<"StockPurchaseOrder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StockPurchaseOrder findUnique
+   */
+  export type StockPurchaseOrderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseOrder to fetch.
+     */
+    where: StockPurchaseOrderWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseOrder findUniqueOrThrow
+   */
+  export type StockPurchaseOrderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseOrder to fetch.
+     */
+    where: StockPurchaseOrderWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseOrder findFirst
+   */
+  export type StockPurchaseOrderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseOrder to fetch.
+     */
+    where?: StockPurchaseOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseOrders to fetch.
+     */
+    orderBy?: StockPurchaseOrderOrderByWithRelationInput | StockPurchaseOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockPurchaseOrders.
+     */
+    cursor?: StockPurchaseOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockPurchaseOrders.
+     */
+    distinct?: StockPurchaseOrderScalarFieldEnum | StockPurchaseOrderScalarFieldEnum[]
+  }
+
+  /**
+   * StockPurchaseOrder findFirstOrThrow
+   */
+  export type StockPurchaseOrderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseOrder to fetch.
+     */
+    where?: StockPurchaseOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseOrders to fetch.
+     */
+    orderBy?: StockPurchaseOrderOrderByWithRelationInput | StockPurchaseOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockPurchaseOrders.
+     */
+    cursor?: StockPurchaseOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockPurchaseOrders.
+     */
+    distinct?: StockPurchaseOrderScalarFieldEnum | StockPurchaseOrderScalarFieldEnum[]
+  }
+
+  /**
+   * StockPurchaseOrder findMany
+   */
+  export type StockPurchaseOrderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseOrders to fetch.
+     */
+    where?: StockPurchaseOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseOrders to fetch.
+     */
+    orderBy?: StockPurchaseOrderOrderByWithRelationInput | StockPurchaseOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StockPurchaseOrders.
+     */
+    cursor?: StockPurchaseOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockPurchaseOrders.
+     */
+    distinct?: StockPurchaseOrderScalarFieldEnum | StockPurchaseOrderScalarFieldEnum[]
+  }
+
+  /**
+   * StockPurchaseOrder create
+   */
+  export type StockPurchaseOrderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StockPurchaseOrder.
+     */
+    data: XOR<StockPurchaseOrderCreateInput, StockPurchaseOrderUncheckedCreateInput>
+  }
+
+  /**
+   * StockPurchaseOrder createMany
+   */
+  export type StockPurchaseOrderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StockPurchaseOrders.
+     */
+    data: StockPurchaseOrderCreateManyInput | StockPurchaseOrderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockPurchaseOrder createManyAndReturn
+   */
+  export type StockPurchaseOrderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * The data used to create many StockPurchaseOrders.
+     */
+    data: StockPurchaseOrderCreateManyInput | StockPurchaseOrderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockPurchaseOrder update
+   */
+  export type StockPurchaseOrderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StockPurchaseOrder.
+     */
+    data: XOR<StockPurchaseOrderUpdateInput, StockPurchaseOrderUncheckedUpdateInput>
+    /**
+     * Choose, which StockPurchaseOrder to update.
+     */
+    where: StockPurchaseOrderWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseOrder updateMany
+   */
+  export type StockPurchaseOrderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StockPurchaseOrders.
+     */
+    data: XOR<StockPurchaseOrderUpdateManyMutationInput, StockPurchaseOrderUncheckedUpdateManyInput>
+    /**
+     * Filter which StockPurchaseOrders to update
+     */
+    where?: StockPurchaseOrderWhereInput
+    /**
+     * Limit how many StockPurchaseOrders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockPurchaseOrder updateManyAndReturn
+   */
+  export type StockPurchaseOrderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * The data used to update StockPurchaseOrders.
+     */
+    data: XOR<StockPurchaseOrderUpdateManyMutationInput, StockPurchaseOrderUncheckedUpdateManyInput>
+    /**
+     * Filter which StockPurchaseOrders to update
+     */
+    where?: StockPurchaseOrderWhereInput
+    /**
+     * Limit how many StockPurchaseOrders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockPurchaseOrder upsert
+   */
+  export type StockPurchaseOrderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StockPurchaseOrder to update in case it exists.
+     */
+    where: StockPurchaseOrderWhereUniqueInput
+    /**
+     * In case the StockPurchaseOrder found by the `where` argument doesn't exist, create a new StockPurchaseOrder with this data.
+     */
+    create: XOR<StockPurchaseOrderCreateInput, StockPurchaseOrderUncheckedCreateInput>
+    /**
+     * In case the StockPurchaseOrder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StockPurchaseOrderUpdateInput, StockPurchaseOrderUncheckedUpdateInput>
+  }
+
+  /**
+   * StockPurchaseOrder delete
+   */
+  export type StockPurchaseOrderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+    /**
+     * Filter which StockPurchaseOrder to delete.
+     */
+    where: StockPurchaseOrderWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseOrder deleteMany
+   */
+  export type StockPurchaseOrderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockPurchaseOrders to delete
+     */
+    where?: StockPurchaseOrderWhereInput
+    /**
+     * Limit how many StockPurchaseOrders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockPurchaseOrder.items
+   */
+  export type StockPurchaseOrder$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    where?: StockPurchaseItemWhereInput
+    orderBy?: StockPurchaseItemOrderByWithRelationInput | StockPurchaseItemOrderByWithRelationInput[]
+    cursor?: StockPurchaseItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockPurchaseItemScalarFieldEnum | StockPurchaseItemScalarFieldEnum[]
+  }
+
+  /**
+   * StockPurchaseOrder without action
+   */
+  export type StockPurchaseOrderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseOrder
+     */
+    select?: StockPurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseOrder
+     */
+    omit?: StockPurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseOrderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StockPurchaseItem
+   */
+
+  export type AggregateStockPurchaseItem = {
+    _count: StockPurchaseItemCountAggregateOutputType | null
+    _avg: StockPurchaseItemAvgAggregateOutputType | null
+    _sum: StockPurchaseItemSumAggregateOutputType | null
+    _min: StockPurchaseItemMinAggregateOutputType | null
+    _max: StockPurchaseItemMaxAggregateOutputType | null
+  }
+
+  export type StockPurchaseItemAvgAggregateOutputType = {
+    quantity: number | null
+    unitPrice: number | null
+  }
+
+  export type StockPurchaseItemSumAggregateOutputType = {
+    quantity: number | null
+    unitPrice: number | null
+  }
+
+  export type StockPurchaseItemMinAggregateOutputType = {
+    id: string | null
+    purchaseOrderId: string | null
+    materialId: string | null
+    quantity: number | null
+    buyUnit: string | null
+    unitPrice: number | null
+  }
+
+  export type StockPurchaseItemMaxAggregateOutputType = {
+    id: string | null
+    purchaseOrderId: string | null
+    materialId: string | null
+    quantity: number | null
+    buyUnit: string | null
+    unitPrice: number | null
+  }
+
+  export type StockPurchaseItemCountAggregateOutputType = {
+    id: number
+    purchaseOrderId: number
+    materialId: number
+    quantity: number
+    buyUnit: number
+    unitPrice: number
+    _all: number
+  }
+
+
+  export type StockPurchaseItemAvgAggregateInputType = {
+    quantity?: true
+    unitPrice?: true
+  }
+
+  export type StockPurchaseItemSumAggregateInputType = {
+    quantity?: true
+    unitPrice?: true
+  }
+
+  export type StockPurchaseItemMinAggregateInputType = {
+    id?: true
+    purchaseOrderId?: true
+    materialId?: true
+    quantity?: true
+    buyUnit?: true
+    unitPrice?: true
+  }
+
+  export type StockPurchaseItemMaxAggregateInputType = {
+    id?: true
+    purchaseOrderId?: true
+    materialId?: true
+    quantity?: true
+    buyUnit?: true
+    unitPrice?: true
+  }
+
+  export type StockPurchaseItemCountAggregateInputType = {
+    id?: true
+    purchaseOrderId?: true
+    materialId?: true
+    quantity?: true
+    buyUnit?: true
+    unitPrice?: true
+    _all?: true
+  }
+
+  export type StockPurchaseItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockPurchaseItem to aggregate.
+     */
+    where?: StockPurchaseItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseItems to fetch.
+     */
+    orderBy?: StockPurchaseItemOrderByWithRelationInput | StockPurchaseItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StockPurchaseItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StockPurchaseItems
+    **/
+    _count?: true | StockPurchaseItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StockPurchaseItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StockPurchaseItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StockPurchaseItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StockPurchaseItemMaxAggregateInputType
+  }
+
+  export type GetStockPurchaseItemAggregateType<T extends StockPurchaseItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateStockPurchaseItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStockPurchaseItem[P]>
+      : GetScalarType<T[P], AggregateStockPurchaseItem[P]>
+  }
+
+
+
+
+  export type StockPurchaseItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockPurchaseItemWhereInput
+    orderBy?: StockPurchaseItemOrderByWithAggregationInput | StockPurchaseItemOrderByWithAggregationInput[]
+    by: StockPurchaseItemScalarFieldEnum[] | StockPurchaseItemScalarFieldEnum
+    having?: StockPurchaseItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StockPurchaseItemCountAggregateInputType | true
+    _avg?: StockPurchaseItemAvgAggregateInputType
+    _sum?: StockPurchaseItemSumAggregateInputType
+    _min?: StockPurchaseItemMinAggregateInputType
+    _max?: StockPurchaseItemMaxAggregateInputType
+  }
+
+  export type StockPurchaseItemGroupByOutputType = {
+    id: string
+    purchaseOrderId: string
+    materialId: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+    _count: StockPurchaseItemCountAggregateOutputType | null
+    _avg: StockPurchaseItemAvgAggregateOutputType | null
+    _sum: StockPurchaseItemSumAggregateOutputType | null
+    _min: StockPurchaseItemMinAggregateOutputType | null
+    _max: StockPurchaseItemMaxAggregateOutputType | null
+  }
+
+  type GetStockPurchaseItemGroupByPayload<T extends StockPurchaseItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StockPurchaseItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StockPurchaseItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StockPurchaseItemGroupByOutputType[P]>
+            : GetScalarType<T[P], StockPurchaseItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StockPurchaseItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    purchaseOrderId?: boolean
+    materialId?: boolean
+    quantity?: boolean
+    buyUnit?: boolean
+    unitPrice?: boolean
+    purchaseOrder?: boolean | StockPurchaseOrderDefaultArgs<ExtArgs>
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockPurchaseItem"]>
+
+  export type StockPurchaseItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    purchaseOrderId?: boolean
+    materialId?: boolean
+    quantity?: boolean
+    buyUnit?: boolean
+    unitPrice?: boolean
+    purchaseOrder?: boolean | StockPurchaseOrderDefaultArgs<ExtArgs>
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockPurchaseItem"]>
+
+  export type StockPurchaseItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    purchaseOrderId?: boolean
+    materialId?: boolean
+    quantity?: boolean
+    buyUnit?: boolean
+    unitPrice?: boolean
+    purchaseOrder?: boolean | StockPurchaseOrderDefaultArgs<ExtArgs>
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["stockPurchaseItem"]>
+
+  export type StockPurchaseItemSelectScalar = {
+    id?: boolean
+    purchaseOrderId?: boolean
+    materialId?: boolean
+    quantity?: boolean
+    buyUnit?: boolean
+    unitPrice?: boolean
+  }
+
+  export type StockPurchaseItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "purchaseOrderId" | "materialId" | "quantity" | "buyUnit" | "unitPrice", ExtArgs["result"]["stockPurchaseItem"]>
+  export type StockPurchaseItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    purchaseOrder?: boolean | StockPurchaseOrderDefaultArgs<ExtArgs>
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }
+  export type StockPurchaseItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    purchaseOrder?: boolean | StockPurchaseOrderDefaultArgs<ExtArgs>
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }
+  export type StockPurchaseItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    purchaseOrder?: boolean | StockPurchaseOrderDefaultArgs<ExtArgs>
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }
+
+  export type $StockPurchaseItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StockPurchaseItem"
+    objects: {
+      purchaseOrder: Prisma.$StockPurchaseOrderPayload<ExtArgs>
+      material: Prisma.$MaterialPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      purchaseOrderId: string
+      materialId: string
+      quantity: number
+      buyUnit: string
+      unitPrice: number
+    }, ExtArgs["result"]["stockPurchaseItem"]>
+    composites: {}
+  }
+
+  type StockPurchaseItemGetPayload<S extends boolean | null | undefined | StockPurchaseItemDefaultArgs> = $Result.GetResult<Prisma.$StockPurchaseItemPayload, S>
+
+  type StockPurchaseItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StockPurchaseItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StockPurchaseItemCountAggregateInputType | true
+    }
+
+  export interface StockPurchaseItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockPurchaseItem'], meta: { name: 'StockPurchaseItem' } }
+    /**
+     * Find zero or one StockPurchaseItem that matches the filter.
+     * @param {StockPurchaseItemFindUniqueArgs} args - Arguments to find a StockPurchaseItem
+     * @example
+     * // Get one StockPurchaseItem
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StockPurchaseItemFindUniqueArgs>(args: SelectSubset<T, StockPurchaseItemFindUniqueArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StockPurchaseItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StockPurchaseItemFindUniqueOrThrowArgs} args - Arguments to find a StockPurchaseItem
+     * @example
+     * // Get one StockPurchaseItem
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StockPurchaseItemFindUniqueOrThrowArgs>(args: SelectSubset<T, StockPurchaseItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockPurchaseItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseItemFindFirstArgs} args - Arguments to find a StockPurchaseItem
+     * @example
+     * // Get one StockPurchaseItem
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StockPurchaseItemFindFirstArgs>(args?: SelectSubset<T, StockPurchaseItemFindFirstArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockPurchaseItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseItemFindFirstOrThrowArgs} args - Arguments to find a StockPurchaseItem
+     * @example
+     * // Get one StockPurchaseItem
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StockPurchaseItemFindFirstOrThrowArgs>(args?: SelectSubset<T, StockPurchaseItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StockPurchaseItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StockPurchaseItems
+     * const stockPurchaseItems = await prisma.stockPurchaseItem.findMany()
+     * 
+     * // Get first 10 StockPurchaseItems
+     * const stockPurchaseItems = await prisma.stockPurchaseItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stockPurchaseItemWithIdOnly = await prisma.stockPurchaseItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StockPurchaseItemFindManyArgs>(args?: SelectSubset<T, StockPurchaseItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StockPurchaseItem.
+     * @param {StockPurchaseItemCreateArgs} args - Arguments to create a StockPurchaseItem.
+     * @example
+     * // Create one StockPurchaseItem
+     * const StockPurchaseItem = await prisma.stockPurchaseItem.create({
+     *   data: {
+     *     // ... data to create a StockPurchaseItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends StockPurchaseItemCreateArgs>(args: SelectSubset<T, StockPurchaseItemCreateArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StockPurchaseItems.
+     * @param {StockPurchaseItemCreateManyArgs} args - Arguments to create many StockPurchaseItems.
+     * @example
+     * // Create many StockPurchaseItems
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StockPurchaseItemCreateManyArgs>(args?: SelectSubset<T, StockPurchaseItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StockPurchaseItems and returns the data saved in the database.
+     * @param {StockPurchaseItemCreateManyAndReturnArgs} args - Arguments to create many StockPurchaseItems.
+     * @example
+     * // Create many StockPurchaseItems
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StockPurchaseItems and only return the `id`
+     * const stockPurchaseItemWithIdOnly = await prisma.stockPurchaseItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StockPurchaseItemCreateManyAndReturnArgs>(args?: SelectSubset<T, StockPurchaseItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StockPurchaseItem.
+     * @param {StockPurchaseItemDeleteArgs} args - Arguments to delete one StockPurchaseItem.
+     * @example
+     * // Delete one StockPurchaseItem
+     * const StockPurchaseItem = await prisma.stockPurchaseItem.delete({
+     *   where: {
+     *     // ... filter to delete one StockPurchaseItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StockPurchaseItemDeleteArgs>(args: SelectSubset<T, StockPurchaseItemDeleteArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StockPurchaseItem.
+     * @param {StockPurchaseItemUpdateArgs} args - Arguments to update one StockPurchaseItem.
+     * @example
+     * // Update one StockPurchaseItem
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StockPurchaseItemUpdateArgs>(args: SelectSubset<T, StockPurchaseItemUpdateArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StockPurchaseItems.
+     * @param {StockPurchaseItemDeleteManyArgs} args - Arguments to filter StockPurchaseItems to delete.
+     * @example
+     * // Delete a few StockPurchaseItems
+     * const { count } = await prisma.stockPurchaseItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StockPurchaseItemDeleteManyArgs>(args?: SelectSubset<T, StockPurchaseItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockPurchaseItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StockPurchaseItems
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StockPurchaseItemUpdateManyArgs>(args: SelectSubset<T, StockPurchaseItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockPurchaseItems and returns the data updated in the database.
+     * @param {StockPurchaseItemUpdateManyAndReturnArgs} args - Arguments to update many StockPurchaseItems.
+     * @example
+     * // Update many StockPurchaseItems
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StockPurchaseItems and only return the `id`
+     * const stockPurchaseItemWithIdOnly = await prisma.stockPurchaseItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StockPurchaseItemUpdateManyAndReturnArgs>(args: SelectSubset<T, StockPurchaseItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StockPurchaseItem.
+     * @param {StockPurchaseItemUpsertArgs} args - Arguments to update or create a StockPurchaseItem.
+     * @example
+     * // Update or create a StockPurchaseItem
+     * const stockPurchaseItem = await prisma.stockPurchaseItem.upsert({
+     *   create: {
+     *     // ... data to create a StockPurchaseItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StockPurchaseItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StockPurchaseItemUpsertArgs>(args: SelectSubset<T, StockPurchaseItemUpsertArgs<ExtArgs>>): Prisma__StockPurchaseItemClient<$Result.GetResult<Prisma.$StockPurchaseItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StockPurchaseItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseItemCountArgs} args - Arguments to filter StockPurchaseItems to count.
+     * @example
+     * // Count the number of StockPurchaseItems
+     * const count = await prisma.stockPurchaseItem.count({
+     *   where: {
+     *     // ... the filter for the StockPurchaseItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends StockPurchaseItemCountArgs>(
+      args?: Subset<T, StockPurchaseItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StockPurchaseItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StockPurchaseItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StockPurchaseItemAggregateArgs>(args: Subset<T, StockPurchaseItemAggregateArgs>): Prisma.PrismaPromise<GetStockPurchaseItemAggregateType<T>>
+
+    /**
+     * Group by StockPurchaseItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockPurchaseItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StockPurchaseItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StockPurchaseItemGroupByArgs['orderBy'] }
+        : { orderBy?: StockPurchaseItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StockPurchaseItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockPurchaseItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StockPurchaseItem model
+   */
+  readonly fields: StockPurchaseItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StockPurchaseItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StockPurchaseItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    purchaseOrder<T extends StockPurchaseOrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockPurchaseOrderDefaultArgs<ExtArgs>>): Prisma__StockPurchaseOrderClient<$Result.GetResult<Prisma.$StockPurchaseOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    material<T extends MaterialDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MaterialDefaultArgs<ExtArgs>>): Prisma__MaterialClient<$Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StockPurchaseItem model
+   */
+  interface StockPurchaseItemFieldRefs {
+    readonly id: FieldRef<"StockPurchaseItem", 'String'>
+    readonly purchaseOrderId: FieldRef<"StockPurchaseItem", 'String'>
+    readonly materialId: FieldRef<"StockPurchaseItem", 'String'>
+    readonly quantity: FieldRef<"StockPurchaseItem", 'Float'>
+    readonly buyUnit: FieldRef<"StockPurchaseItem", 'String'>
+    readonly unitPrice: FieldRef<"StockPurchaseItem", 'Float'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StockPurchaseItem findUnique
+   */
+  export type StockPurchaseItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseItem to fetch.
+     */
+    where: StockPurchaseItemWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseItem findUniqueOrThrow
+   */
+  export type StockPurchaseItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseItem to fetch.
+     */
+    where: StockPurchaseItemWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseItem findFirst
+   */
+  export type StockPurchaseItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseItem to fetch.
+     */
+    where?: StockPurchaseItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseItems to fetch.
+     */
+    orderBy?: StockPurchaseItemOrderByWithRelationInput | StockPurchaseItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockPurchaseItems.
+     */
+    cursor?: StockPurchaseItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockPurchaseItems.
+     */
+    distinct?: StockPurchaseItemScalarFieldEnum | StockPurchaseItemScalarFieldEnum[]
+  }
+
+  /**
+   * StockPurchaseItem findFirstOrThrow
+   */
+  export type StockPurchaseItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseItem to fetch.
+     */
+    where?: StockPurchaseItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseItems to fetch.
+     */
+    orderBy?: StockPurchaseItemOrderByWithRelationInput | StockPurchaseItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockPurchaseItems.
+     */
+    cursor?: StockPurchaseItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockPurchaseItems.
+     */
+    distinct?: StockPurchaseItemScalarFieldEnum | StockPurchaseItemScalarFieldEnum[]
+  }
+
+  /**
+   * StockPurchaseItem findMany
+   */
+  export type StockPurchaseItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * Filter, which StockPurchaseItems to fetch.
+     */
+    where?: StockPurchaseItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockPurchaseItems to fetch.
+     */
+    orderBy?: StockPurchaseItemOrderByWithRelationInput | StockPurchaseItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StockPurchaseItems.
+     */
+    cursor?: StockPurchaseItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockPurchaseItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockPurchaseItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockPurchaseItems.
+     */
+    distinct?: StockPurchaseItemScalarFieldEnum | StockPurchaseItemScalarFieldEnum[]
+  }
+
+  /**
+   * StockPurchaseItem create
+   */
+  export type StockPurchaseItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a StockPurchaseItem.
+     */
+    data: XOR<StockPurchaseItemCreateInput, StockPurchaseItemUncheckedCreateInput>
+  }
+
+  /**
+   * StockPurchaseItem createMany
+   */
+  export type StockPurchaseItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StockPurchaseItems.
+     */
+    data: StockPurchaseItemCreateManyInput | StockPurchaseItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockPurchaseItem createManyAndReturn
+   */
+  export type StockPurchaseItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many StockPurchaseItems.
+     */
+    data: StockPurchaseItemCreateManyInput | StockPurchaseItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockPurchaseItem update
+   */
+  export type StockPurchaseItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a StockPurchaseItem.
+     */
+    data: XOR<StockPurchaseItemUpdateInput, StockPurchaseItemUncheckedUpdateInput>
+    /**
+     * Choose, which StockPurchaseItem to update.
+     */
+    where: StockPurchaseItemWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseItem updateMany
+   */
+  export type StockPurchaseItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StockPurchaseItems.
+     */
+    data: XOR<StockPurchaseItemUpdateManyMutationInput, StockPurchaseItemUncheckedUpdateManyInput>
+    /**
+     * Filter which StockPurchaseItems to update
+     */
+    where?: StockPurchaseItemWhereInput
+    /**
+     * Limit how many StockPurchaseItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockPurchaseItem updateManyAndReturn
+   */
+  export type StockPurchaseItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * The data used to update StockPurchaseItems.
+     */
+    data: XOR<StockPurchaseItemUpdateManyMutationInput, StockPurchaseItemUncheckedUpdateManyInput>
+    /**
+     * Filter which StockPurchaseItems to update
+     */
+    where?: StockPurchaseItemWhereInput
+    /**
+     * Limit how many StockPurchaseItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * StockPurchaseItem upsert
+   */
+  export type StockPurchaseItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the StockPurchaseItem to update in case it exists.
+     */
+    where: StockPurchaseItemWhereUniqueInput
+    /**
+     * In case the StockPurchaseItem found by the `where` argument doesn't exist, create a new StockPurchaseItem with this data.
+     */
+    create: XOR<StockPurchaseItemCreateInput, StockPurchaseItemUncheckedCreateInput>
+    /**
+     * In case the StockPurchaseItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StockPurchaseItemUpdateInput, StockPurchaseItemUncheckedUpdateInput>
+  }
+
+  /**
+   * StockPurchaseItem delete
+   */
+  export type StockPurchaseItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+    /**
+     * Filter which StockPurchaseItem to delete.
+     */
+    where: StockPurchaseItemWhereUniqueInput
+  }
+
+  /**
+   * StockPurchaseItem deleteMany
+   */
+  export type StockPurchaseItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockPurchaseItems to delete
+     */
+    where?: StockPurchaseItemWhereInput
+    /**
+     * Limit how many StockPurchaseItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockPurchaseItem without action
+   */
+  export type StockPurchaseItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockPurchaseItem
+     */
+    select?: StockPurchaseItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockPurchaseItem
+     */
+    omit?: StockPurchaseItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockPurchaseItemInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Job
    */
 
@@ -16431,6 +22031,12 @@ export namespace Prisma {
     id: string | null
     orgId: string | null
     clientId: string | null
+    shortRef: string | null
+    proofUrl: string | null
+    proofStatus: $Enums.ProofStatus | null
+    customerNote: string | null
+    approvalToken: string | null
+    approvedAt: Date | null
     priceListId: string | null
     serviceName: string | null
     quantity: number | null
@@ -16457,6 +22063,12 @@ export namespace Prisma {
     id: string | null
     orgId: string | null
     clientId: string | null
+    shortRef: string | null
+    proofUrl: string | null
+    proofStatus: $Enums.ProofStatus | null
+    customerNote: string | null
+    approvalToken: string | null
+    approvedAt: Date | null
     priceListId: string | null
     serviceName: string | null
     quantity: number | null
@@ -16483,6 +22095,12 @@ export namespace Prisma {
     id: number
     orgId: number
     clientId: number
+    shortRef: number
+    proofUrl: number
+    proofStatus: number
+    customerNote: number
+    approvalToken: number
+    approvedAt: number
     priceListId: number
     serviceName: number
     quantity: number
@@ -16533,6 +22151,12 @@ export namespace Prisma {
     id?: true
     orgId?: true
     clientId?: true
+    shortRef?: true
+    proofUrl?: true
+    proofStatus?: true
+    customerNote?: true
+    approvalToken?: true
+    approvedAt?: true
     priceListId?: true
     serviceName?: true
     quantity?: true
@@ -16559,6 +22183,12 @@ export namespace Prisma {
     id?: true
     orgId?: true
     clientId?: true
+    shortRef?: true
+    proofUrl?: true
+    proofStatus?: true
+    customerNote?: true
+    approvalToken?: true
+    approvedAt?: true
     priceListId?: true
     serviceName?: true
     quantity?: true
@@ -16585,6 +22215,12 @@ export namespace Prisma {
     id?: true
     orgId?: true
     clientId?: true
+    shortRef?: true
+    proofUrl?: true
+    proofStatus?: true
+    customerNote?: true
+    approvalToken?: true
+    approvedAt?: true
     priceListId?: true
     serviceName?: true
     quantity?: true
@@ -16698,6 +22334,12 @@ export namespace Prisma {
     id: string
     orgId: string
     clientId: string
+    shortRef: string | null
+    proofUrl: string | null
+    proofStatus: $Enums.ProofStatus
+    customerNote: string | null
+    approvalToken: string | null
+    approvedAt: Date | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -16743,6 +22385,12 @@ export namespace Prisma {
     id?: boolean
     orgId?: boolean
     clientId?: boolean
+    shortRef?: boolean
+    proofUrl?: boolean
+    proofStatus?: boolean
+    customerNote?: boolean
+    approvalToken?: boolean
+    approvedAt?: boolean
     priceListId?: boolean
     serviceName?: boolean
     quantity?: boolean
@@ -16765,6 +22413,7 @@ export namespace Prisma {
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    layoutItem?: boolean | Job$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     variables?: boolean | Job$variablesArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
@@ -16779,6 +22428,12 @@ export namespace Prisma {
     id?: boolean
     orgId?: boolean
     clientId?: boolean
+    shortRef?: boolean
+    proofUrl?: boolean
+    proofStatus?: boolean
+    customerNote?: boolean
+    approvalToken?: boolean
+    approvedAt?: boolean
     priceListId?: boolean
     serviceName?: boolean
     quantity?: boolean
@@ -16810,6 +22465,12 @@ export namespace Prisma {
     id?: boolean
     orgId?: boolean
     clientId?: boolean
+    shortRef?: boolean
+    proofUrl?: boolean
+    proofStatus?: boolean
+    customerNote?: boolean
+    approvalToken?: boolean
+    approvedAt?: boolean
     priceListId?: boolean
     serviceName?: boolean
     quantity?: boolean
@@ -16841,6 +22502,12 @@ export namespace Prisma {
     id?: boolean
     orgId?: boolean
     clientId?: boolean
+    shortRef?: boolean
+    proofUrl?: boolean
+    proofStatus?: boolean
+    customerNote?: boolean
+    approvalToken?: boolean
+    approvedAt?: boolean
     priceListId?: boolean
     serviceName?: boolean
     quantity?: boolean
@@ -16863,10 +22530,11 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "clientId" | "priceListId" | "serviceName" | "quantity" | "width" | "height" | "unit" | "basePrice" | "variableTotal" | "totalPrice" | "costPrice" | "profitMargin" | "paymentStatus" | "isPaid" | "status" | "assignedStaffId" | "b2bPushId" | "notes" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "clientId" | "shortRef" | "proofUrl" | "proofStatus" | "customerNote" | "approvalToken" | "approvedAt" | "priceListId" | "serviceName" | "quantity" | "width" | "height" | "unit" | "basePrice" | "variableTotal" | "totalPrice" | "costPrice" | "profitMargin" | "paymentStatus" | "isPaid" | "status" | "assignedStaffId" | "b2bPushId" | "notes" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    layoutItem?: boolean | Job$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     variables?: boolean | Job$variablesArgs<ExtArgs>
     assignedStaff?: boolean | Job$assignedStaffArgs<ExtArgs>
@@ -16896,6 +22564,7 @@ export namespace Prisma {
     objects: {
       organisation: Prisma.$OrganisationPayload<ExtArgs>
       client: Prisma.$ClientPayload<ExtArgs>
+      layoutItem: Prisma.$PrintLayoutItemPayload<ExtArgs> | null
       priceList: Prisma.$PriceListPayload<ExtArgs>
       variables: Prisma.$JobVariablePayload<ExtArgs>[]
       assignedStaff: Prisma.$StaffPayload<ExtArgs> | null
@@ -16908,6 +22577,12 @@ export namespace Prisma {
       id: string
       orgId: string
       clientId: string
+      shortRef: string | null
+      proofUrl: string | null
+      proofStatus: $Enums.ProofStatus
+      customerNote: string | null
+      approvalToken: string | null
+      approvedAt: Date | null
       priceListId: string
       serviceName: string
       quantity: number
@@ -17324,6 +22999,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    layoutItem<T extends Job$layoutItemArgs<ExtArgs> = {}>(args?: Subset<T, Job$layoutItemArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     priceList<T extends PriceListDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PriceListDefaultArgs<ExtArgs>>): Prisma__PriceListClient<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     variables<T extends Job$variablesArgs<ExtArgs> = {}>(args?: Subset<T, Job$variablesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobVariablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedStaff<T extends Job$assignedStaffArgs<ExtArgs> = {}>(args?: Subset<T, Job$assignedStaffArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -17363,6 +23039,12 @@ export namespace Prisma {
     readonly id: FieldRef<"Job", 'String'>
     readonly orgId: FieldRef<"Job", 'String'>
     readonly clientId: FieldRef<"Job", 'String'>
+    readonly shortRef: FieldRef<"Job", 'String'>
+    readonly proofUrl: FieldRef<"Job", 'String'>
+    readonly proofStatus: FieldRef<"Job", 'ProofStatus'>
+    readonly customerNote: FieldRef<"Job", 'String'>
+    readonly approvalToken: FieldRef<"Job", 'String'>
+    readonly approvedAt: FieldRef<"Job", 'DateTime'>
     readonly priceListId: FieldRef<"Job", 'String'>
     readonly serviceName: FieldRef<"Job", 'String'>
     readonly quantity: FieldRef<"Job", 'Float'>
@@ -17784,6 +23466,25 @@ export namespace Prisma {
   }
 
   /**
+   * Job.layoutItem
+   */
+  export type Job$layoutItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    where?: PrintLayoutItemWhereInput
+  }
+
+  /**
    * Job.variables
    */
   export type Job$variablesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17967,6 +23668,7 @@ export namespace Prisma {
   export type JobVariableMinAggregateOutputType = {
     id: string | null
     jobId: string | null
+    shortRef: string | null
     priceListId: string | null
     quantity: number | null
     width: number | null
@@ -17977,11 +23679,13 @@ export namespace Prisma {
     serviceId: string | null
     orgId: string | null
     createdAt: Date | null
+    printLayoutItemId: string | null
   }
 
   export type JobVariableMaxAggregateOutputType = {
     id: string | null
     jobId: string | null
+    shortRef: string | null
     priceListId: string | null
     quantity: number | null
     width: number | null
@@ -17992,11 +23696,13 @@ export namespace Prisma {
     serviceId: string | null
     orgId: string | null
     createdAt: Date | null
+    printLayoutItemId: string | null
   }
 
   export type JobVariableCountAggregateOutputType = {
     id: number
     jobId: number
+    shortRef: number
     priceListId: number
     quantity: number
     width: number
@@ -18007,6 +23713,7 @@ export namespace Prisma {
     serviceId: number
     orgId: number
     createdAt: number
+    printLayoutItemId: number
     _all: number
   }
 
@@ -18030,6 +23737,7 @@ export namespace Prisma {
   export type JobVariableMinAggregateInputType = {
     id?: true
     jobId?: true
+    shortRef?: true
     priceListId?: true
     quantity?: true
     width?: true
@@ -18040,11 +23748,13 @@ export namespace Prisma {
     serviceId?: true
     orgId?: true
     createdAt?: true
+    printLayoutItemId?: true
   }
 
   export type JobVariableMaxAggregateInputType = {
     id?: true
     jobId?: true
+    shortRef?: true
     priceListId?: true
     quantity?: true
     width?: true
@@ -18055,11 +23765,13 @@ export namespace Prisma {
     serviceId?: true
     orgId?: true
     createdAt?: true
+    printLayoutItemId?: true
   }
 
   export type JobVariableCountAggregateInputType = {
     id?: true
     jobId?: true
+    shortRef?: true
     priceListId?: true
     quantity?: true
     width?: true
@@ -18070,6 +23782,7 @@ export namespace Prisma {
     serviceId?: true
     orgId?: true
     createdAt?: true
+    printLayoutItemId?: true
     _all?: true
   }
 
@@ -18162,6 +23875,7 @@ export namespace Prisma {
   export type JobVariableGroupByOutputType = {
     id: string
     jobId: string
+    shortRef: string | null
     priceListId: string
     quantity: number
     width: number | null
@@ -18172,6 +23886,7 @@ export namespace Prisma {
     serviceId: string | null
     orgId: string
     createdAt: Date
+    printLayoutItemId: string | null
     _count: JobVariableCountAggregateOutputType | null
     _avg: JobVariableAvgAggregateOutputType | null
     _sum: JobVariableSumAggregateOutputType | null
@@ -18196,6 +23911,7 @@ export namespace Prisma {
   export type JobVariableSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     jobId?: boolean
+    shortRef?: boolean
     priceListId?: boolean
     quantity?: boolean
     width?: boolean
@@ -18206,7 +23922,9 @@ export namespace Prisma {
     serviceId?: boolean
     orgId?: boolean
     createdAt?: boolean
+    printLayoutItemId?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
+    layoutItem?: boolean | JobVariable$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
     service?: boolean | JobVariable$serviceArgs<ExtArgs>
@@ -18215,6 +23933,7 @@ export namespace Prisma {
   export type JobVariableSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     jobId?: boolean
+    shortRef?: boolean
     priceListId?: boolean
     quantity?: boolean
     width?: boolean
@@ -18225,7 +23944,9 @@ export namespace Prisma {
     serviceId?: boolean
     orgId?: boolean
     createdAt?: boolean
+    printLayoutItemId?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
+    layoutItem?: boolean | JobVariable$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
     service?: boolean | JobVariable$serviceArgs<ExtArgs>
@@ -18234,6 +23955,7 @@ export namespace Prisma {
   export type JobVariableSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     jobId?: boolean
+    shortRef?: boolean
     priceListId?: boolean
     quantity?: boolean
     width?: boolean
@@ -18244,7 +23966,9 @@ export namespace Prisma {
     serviceId?: boolean
     orgId?: boolean
     createdAt?: boolean
+    printLayoutItemId?: boolean
     job?: boolean | JobDefaultArgs<ExtArgs>
+    layoutItem?: boolean | JobVariable$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
     service?: boolean | JobVariable$serviceArgs<ExtArgs>
@@ -18253,6 +23977,7 @@ export namespace Prisma {
   export type JobVariableSelectScalar = {
     id?: boolean
     jobId?: boolean
+    shortRef?: boolean
     priceListId?: boolean
     quantity?: boolean
     width?: boolean
@@ -18263,23 +23988,27 @@ export namespace Prisma {
     serviceId?: boolean
     orgId?: boolean
     createdAt?: boolean
+    printLayoutItemId?: boolean
   }
 
-  export type JobVariableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "priceListId" | "quantity" | "width" | "height" | "unitPrice" | "subtotal" | "materialId" | "serviceId" | "orgId" | "createdAt", ExtArgs["result"]["jobVariable"]>
+  export type JobVariableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "shortRef" | "priceListId" | "quantity" | "width" | "height" | "unitPrice" | "subtotal" | "materialId" | "serviceId" | "orgId" | "createdAt" | "printLayoutItemId", ExtArgs["result"]["jobVariable"]>
   export type JobVariableInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
+    layoutItem?: boolean | JobVariable$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
     service?: boolean | JobVariable$serviceArgs<ExtArgs>
   }
   export type JobVariableIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
+    layoutItem?: boolean | JobVariable$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
     service?: boolean | JobVariable$serviceArgs<ExtArgs>
   }
   export type JobVariableIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobDefaultArgs<ExtArgs>
+    layoutItem?: boolean | JobVariable$layoutItemArgs<ExtArgs>
     priceList?: boolean | PriceListDefaultArgs<ExtArgs>
     material?: boolean | JobVariable$materialArgs<ExtArgs>
     service?: boolean | JobVariable$serviceArgs<ExtArgs>
@@ -18289,6 +24018,7 @@ export namespace Prisma {
     name: "JobVariable"
     objects: {
       job: Prisma.$JobPayload<ExtArgs>
+      layoutItem: Prisma.$PrintLayoutItemPayload<ExtArgs> | null
       priceList: Prisma.$PriceListPayload<ExtArgs>
       material: Prisma.$MaterialPayload<ExtArgs> | null
       service: Prisma.$ServicePayload<ExtArgs> | null
@@ -18296,6 +24026,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       jobId: string
+      shortRef: string | null
       priceListId: string
       quantity: number
       width: number | null
@@ -18306,6 +24037,7 @@ export namespace Prisma {
       serviceId: string | null
       orgId: string
       createdAt: Date
+      printLayoutItemId: string | null
     }, ExtArgs["result"]["jobVariable"]>
     composites: {}
   }
@@ -18701,6 +24433,7 @@ export namespace Prisma {
   export interface Prisma__JobVariableClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    layoutItem<T extends JobVariable$layoutItemArgs<ExtArgs> = {}>(args?: Subset<T, JobVariable$layoutItemArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     priceList<T extends PriceListDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PriceListDefaultArgs<ExtArgs>>): Prisma__PriceListClient<$Result.GetResult<Prisma.$PriceListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     material<T extends JobVariable$materialArgs<ExtArgs> = {}>(args?: Subset<T, JobVariable$materialArgs<ExtArgs>>): Prisma__MaterialClient<$Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     service<T extends JobVariable$serviceArgs<ExtArgs> = {}>(args?: Subset<T, JobVariable$serviceArgs<ExtArgs>>): Prisma__ServiceClient<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -18735,6 +24468,7 @@ export namespace Prisma {
   interface JobVariableFieldRefs {
     readonly id: FieldRef<"JobVariable", 'String'>
     readonly jobId: FieldRef<"JobVariable", 'String'>
+    readonly shortRef: FieldRef<"JobVariable", 'String'>
     readonly priceListId: FieldRef<"JobVariable", 'String'>
     readonly quantity: FieldRef<"JobVariable", 'Float'>
     readonly width: FieldRef<"JobVariable", 'Float'>
@@ -18745,6 +24479,7 @@ export namespace Prisma {
     readonly serviceId: FieldRef<"JobVariable", 'String'>
     readonly orgId: FieldRef<"JobVariable", 'String'>
     readonly createdAt: FieldRef<"JobVariable", 'DateTime'>
+    readonly printLayoutItemId: FieldRef<"JobVariable", 'String'>
   }
     
 
@@ -19146,6 +24881,25 @@ export namespace Prisma {
   }
 
   /**
+   * JobVariable.layoutItem
+   */
+  export type JobVariable$layoutItemArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    where?: PrintLayoutItemWhereInput
+  }
+
+  /**
    * JobVariable.material
    */
   export type JobVariable$materialArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19199,6 +24953,2383 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: JobVariableInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MaterialPrintLayout
+   */
+
+  export type AggregateMaterialPrintLayout = {
+    _count: MaterialPrintLayoutCountAggregateOutputType | null
+    _avg: MaterialPrintLayoutAvgAggregateOutputType | null
+    _sum: MaterialPrintLayoutSumAggregateOutputType | null
+    _min: MaterialPrintLayoutMinAggregateOutputType | null
+    _max: MaterialPrintLayoutMaxAggregateOutputType | null
+  }
+
+  export type MaterialPrintLayoutAvgAggregateOutputType = {
+    rollWidth: number | null
+    cutLineHeight: number | null
+    efficiency: number | null
+    totalWastedArea: number | null
+  }
+
+  export type MaterialPrintLayoutSumAggregateOutputType = {
+    rollWidth: number | null
+    cutLineHeight: number | null
+    efficiency: number | null
+    totalWastedArea: number | null
+  }
+
+  export type MaterialPrintLayoutMinAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    materialId: string | null
+    rollWidth: number | null
+    cutLineHeight: number | null
+    efficiency: number | null
+    totalWastedArea: number | null
+    status: $Enums.LayoutStatus | null
+    createdAt: Date | null
+  }
+
+  export type MaterialPrintLayoutMaxAggregateOutputType = {
+    id: string | null
+    orgId: string | null
+    materialId: string | null
+    rollWidth: number | null
+    cutLineHeight: number | null
+    efficiency: number | null
+    totalWastedArea: number | null
+    status: $Enums.LayoutStatus | null
+    createdAt: Date | null
+  }
+
+  export type MaterialPrintLayoutCountAggregateOutputType = {
+    id: number
+    orgId: number
+    materialId: number
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type MaterialPrintLayoutAvgAggregateInputType = {
+    rollWidth?: true
+    cutLineHeight?: true
+    efficiency?: true
+    totalWastedArea?: true
+  }
+
+  export type MaterialPrintLayoutSumAggregateInputType = {
+    rollWidth?: true
+    cutLineHeight?: true
+    efficiency?: true
+    totalWastedArea?: true
+  }
+
+  export type MaterialPrintLayoutMinAggregateInputType = {
+    id?: true
+    orgId?: true
+    materialId?: true
+    rollWidth?: true
+    cutLineHeight?: true
+    efficiency?: true
+    totalWastedArea?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type MaterialPrintLayoutMaxAggregateInputType = {
+    id?: true
+    orgId?: true
+    materialId?: true
+    rollWidth?: true
+    cutLineHeight?: true
+    efficiency?: true
+    totalWastedArea?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type MaterialPrintLayoutCountAggregateInputType = {
+    id?: true
+    orgId?: true
+    materialId?: true
+    rollWidth?: true
+    cutLineHeight?: true
+    efficiency?: true
+    totalWastedArea?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type MaterialPrintLayoutAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MaterialPrintLayout to aggregate.
+     */
+    where?: MaterialPrintLayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialPrintLayouts to fetch.
+     */
+    orderBy?: MaterialPrintLayoutOrderByWithRelationInput | MaterialPrintLayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MaterialPrintLayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialPrintLayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialPrintLayouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MaterialPrintLayouts
+    **/
+    _count?: true | MaterialPrintLayoutCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MaterialPrintLayoutAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MaterialPrintLayoutSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MaterialPrintLayoutMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MaterialPrintLayoutMaxAggregateInputType
+  }
+
+  export type GetMaterialPrintLayoutAggregateType<T extends MaterialPrintLayoutAggregateArgs> = {
+        [P in keyof T & keyof AggregateMaterialPrintLayout]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMaterialPrintLayout[P]>
+      : GetScalarType<T[P], AggregateMaterialPrintLayout[P]>
+  }
+
+
+
+
+  export type MaterialPrintLayoutGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MaterialPrintLayoutWhereInput
+    orderBy?: MaterialPrintLayoutOrderByWithAggregationInput | MaterialPrintLayoutOrderByWithAggregationInput[]
+    by: MaterialPrintLayoutScalarFieldEnum[] | MaterialPrintLayoutScalarFieldEnum
+    having?: MaterialPrintLayoutScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MaterialPrintLayoutCountAggregateInputType | true
+    _avg?: MaterialPrintLayoutAvgAggregateInputType
+    _sum?: MaterialPrintLayoutSumAggregateInputType
+    _min?: MaterialPrintLayoutMinAggregateInputType
+    _max?: MaterialPrintLayoutMaxAggregateInputType
+  }
+
+  export type MaterialPrintLayoutGroupByOutputType = {
+    id: string
+    orgId: string
+    materialId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status: $Enums.LayoutStatus
+    createdAt: Date
+    _count: MaterialPrintLayoutCountAggregateOutputType | null
+    _avg: MaterialPrintLayoutAvgAggregateOutputType | null
+    _sum: MaterialPrintLayoutSumAggregateOutputType | null
+    _min: MaterialPrintLayoutMinAggregateOutputType | null
+    _max: MaterialPrintLayoutMaxAggregateOutputType | null
+  }
+
+  type GetMaterialPrintLayoutGroupByPayload<T extends MaterialPrintLayoutGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MaterialPrintLayoutGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MaterialPrintLayoutGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MaterialPrintLayoutGroupByOutputType[P]>
+            : GetScalarType<T[P], MaterialPrintLayoutGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MaterialPrintLayoutSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    materialId?: boolean
+    rollWidth?: boolean
+    cutLineHeight?: boolean
+    efficiency?: boolean
+    totalWastedArea?: boolean
+    status?: boolean
+    createdAt?: boolean
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+    items?: boolean | MaterialPrintLayout$itemsArgs<ExtArgs>
+    _count?: boolean | MaterialPrintLayoutCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["materialPrintLayout"]>
+
+  export type MaterialPrintLayoutSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    materialId?: boolean
+    rollWidth?: boolean
+    cutLineHeight?: boolean
+    efficiency?: boolean
+    totalWastedArea?: boolean
+    status?: boolean
+    createdAt?: boolean
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["materialPrintLayout"]>
+
+  export type MaterialPrintLayoutSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orgId?: boolean
+    materialId?: boolean
+    rollWidth?: boolean
+    cutLineHeight?: boolean
+    efficiency?: boolean
+    totalWastedArea?: boolean
+    status?: boolean
+    createdAt?: boolean
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["materialPrintLayout"]>
+
+  export type MaterialPrintLayoutSelectScalar = {
+    id?: boolean
+    orgId?: boolean
+    materialId?: boolean
+    rollWidth?: boolean
+    cutLineHeight?: boolean
+    efficiency?: boolean
+    totalWastedArea?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type MaterialPrintLayoutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orgId" | "materialId" | "rollWidth" | "cutLineHeight" | "efficiency" | "totalWastedArea" | "status" | "createdAt", ExtArgs["result"]["materialPrintLayout"]>
+  export type MaterialPrintLayoutInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+    items?: boolean | MaterialPrintLayout$itemsArgs<ExtArgs>
+    _count?: boolean | MaterialPrintLayoutCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type MaterialPrintLayoutIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }
+  export type MaterialPrintLayoutIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    material?: boolean | MaterialDefaultArgs<ExtArgs>
+  }
+
+  export type $MaterialPrintLayoutPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MaterialPrintLayout"
+    objects: {
+      material: Prisma.$MaterialPayload<ExtArgs>
+      items: Prisma.$PrintLayoutItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orgId: string
+      materialId: string
+      rollWidth: number
+      cutLineHeight: number
+      efficiency: number
+      totalWastedArea: number
+      status: $Enums.LayoutStatus
+      createdAt: Date
+    }, ExtArgs["result"]["materialPrintLayout"]>
+    composites: {}
+  }
+
+  type MaterialPrintLayoutGetPayload<S extends boolean | null | undefined | MaterialPrintLayoutDefaultArgs> = $Result.GetResult<Prisma.$MaterialPrintLayoutPayload, S>
+
+  type MaterialPrintLayoutCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MaterialPrintLayoutFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MaterialPrintLayoutCountAggregateInputType | true
+    }
+
+  export interface MaterialPrintLayoutDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MaterialPrintLayout'], meta: { name: 'MaterialPrintLayout' } }
+    /**
+     * Find zero or one MaterialPrintLayout that matches the filter.
+     * @param {MaterialPrintLayoutFindUniqueArgs} args - Arguments to find a MaterialPrintLayout
+     * @example
+     * // Get one MaterialPrintLayout
+     * const materialPrintLayout = await prisma.materialPrintLayout.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MaterialPrintLayoutFindUniqueArgs>(args: SelectSubset<T, MaterialPrintLayoutFindUniqueArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MaterialPrintLayout that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MaterialPrintLayoutFindUniqueOrThrowArgs} args - Arguments to find a MaterialPrintLayout
+     * @example
+     * // Get one MaterialPrintLayout
+     * const materialPrintLayout = await prisma.materialPrintLayout.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MaterialPrintLayoutFindUniqueOrThrowArgs>(args: SelectSubset<T, MaterialPrintLayoutFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MaterialPrintLayout that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialPrintLayoutFindFirstArgs} args - Arguments to find a MaterialPrintLayout
+     * @example
+     * // Get one MaterialPrintLayout
+     * const materialPrintLayout = await prisma.materialPrintLayout.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MaterialPrintLayoutFindFirstArgs>(args?: SelectSubset<T, MaterialPrintLayoutFindFirstArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MaterialPrintLayout that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialPrintLayoutFindFirstOrThrowArgs} args - Arguments to find a MaterialPrintLayout
+     * @example
+     * // Get one MaterialPrintLayout
+     * const materialPrintLayout = await prisma.materialPrintLayout.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MaterialPrintLayoutFindFirstOrThrowArgs>(args?: SelectSubset<T, MaterialPrintLayoutFindFirstOrThrowArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MaterialPrintLayouts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialPrintLayoutFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MaterialPrintLayouts
+     * const materialPrintLayouts = await prisma.materialPrintLayout.findMany()
+     * 
+     * // Get first 10 MaterialPrintLayouts
+     * const materialPrintLayouts = await prisma.materialPrintLayout.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const materialPrintLayoutWithIdOnly = await prisma.materialPrintLayout.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MaterialPrintLayoutFindManyArgs>(args?: SelectSubset<T, MaterialPrintLayoutFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MaterialPrintLayout.
+     * @param {MaterialPrintLayoutCreateArgs} args - Arguments to create a MaterialPrintLayout.
+     * @example
+     * // Create one MaterialPrintLayout
+     * const MaterialPrintLayout = await prisma.materialPrintLayout.create({
+     *   data: {
+     *     // ... data to create a MaterialPrintLayout
+     *   }
+     * })
+     * 
+     */
+    create<T extends MaterialPrintLayoutCreateArgs>(args: SelectSubset<T, MaterialPrintLayoutCreateArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MaterialPrintLayouts.
+     * @param {MaterialPrintLayoutCreateManyArgs} args - Arguments to create many MaterialPrintLayouts.
+     * @example
+     * // Create many MaterialPrintLayouts
+     * const materialPrintLayout = await prisma.materialPrintLayout.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MaterialPrintLayoutCreateManyArgs>(args?: SelectSubset<T, MaterialPrintLayoutCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MaterialPrintLayouts and returns the data saved in the database.
+     * @param {MaterialPrintLayoutCreateManyAndReturnArgs} args - Arguments to create many MaterialPrintLayouts.
+     * @example
+     * // Create many MaterialPrintLayouts
+     * const materialPrintLayout = await prisma.materialPrintLayout.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MaterialPrintLayouts and only return the `id`
+     * const materialPrintLayoutWithIdOnly = await prisma.materialPrintLayout.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MaterialPrintLayoutCreateManyAndReturnArgs>(args?: SelectSubset<T, MaterialPrintLayoutCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MaterialPrintLayout.
+     * @param {MaterialPrintLayoutDeleteArgs} args - Arguments to delete one MaterialPrintLayout.
+     * @example
+     * // Delete one MaterialPrintLayout
+     * const MaterialPrintLayout = await prisma.materialPrintLayout.delete({
+     *   where: {
+     *     // ... filter to delete one MaterialPrintLayout
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MaterialPrintLayoutDeleteArgs>(args: SelectSubset<T, MaterialPrintLayoutDeleteArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MaterialPrintLayout.
+     * @param {MaterialPrintLayoutUpdateArgs} args - Arguments to update one MaterialPrintLayout.
+     * @example
+     * // Update one MaterialPrintLayout
+     * const materialPrintLayout = await prisma.materialPrintLayout.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MaterialPrintLayoutUpdateArgs>(args: SelectSubset<T, MaterialPrintLayoutUpdateArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MaterialPrintLayouts.
+     * @param {MaterialPrintLayoutDeleteManyArgs} args - Arguments to filter MaterialPrintLayouts to delete.
+     * @example
+     * // Delete a few MaterialPrintLayouts
+     * const { count } = await prisma.materialPrintLayout.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MaterialPrintLayoutDeleteManyArgs>(args?: SelectSubset<T, MaterialPrintLayoutDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MaterialPrintLayouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialPrintLayoutUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MaterialPrintLayouts
+     * const materialPrintLayout = await prisma.materialPrintLayout.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MaterialPrintLayoutUpdateManyArgs>(args: SelectSubset<T, MaterialPrintLayoutUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MaterialPrintLayouts and returns the data updated in the database.
+     * @param {MaterialPrintLayoutUpdateManyAndReturnArgs} args - Arguments to update many MaterialPrintLayouts.
+     * @example
+     * // Update many MaterialPrintLayouts
+     * const materialPrintLayout = await prisma.materialPrintLayout.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MaterialPrintLayouts and only return the `id`
+     * const materialPrintLayoutWithIdOnly = await prisma.materialPrintLayout.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MaterialPrintLayoutUpdateManyAndReturnArgs>(args: SelectSubset<T, MaterialPrintLayoutUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MaterialPrintLayout.
+     * @param {MaterialPrintLayoutUpsertArgs} args - Arguments to update or create a MaterialPrintLayout.
+     * @example
+     * // Update or create a MaterialPrintLayout
+     * const materialPrintLayout = await prisma.materialPrintLayout.upsert({
+     *   create: {
+     *     // ... data to create a MaterialPrintLayout
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MaterialPrintLayout we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MaterialPrintLayoutUpsertArgs>(args: SelectSubset<T, MaterialPrintLayoutUpsertArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MaterialPrintLayouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialPrintLayoutCountArgs} args - Arguments to filter MaterialPrintLayouts to count.
+     * @example
+     * // Count the number of MaterialPrintLayouts
+     * const count = await prisma.materialPrintLayout.count({
+     *   where: {
+     *     // ... the filter for the MaterialPrintLayouts we want to count
+     *   }
+     * })
+    **/
+    count<T extends MaterialPrintLayoutCountArgs>(
+      args?: Subset<T, MaterialPrintLayoutCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MaterialPrintLayoutCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MaterialPrintLayout.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialPrintLayoutAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MaterialPrintLayoutAggregateArgs>(args: Subset<T, MaterialPrintLayoutAggregateArgs>): Prisma.PrismaPromise<GetMaterialPrintLayoutAggregateType<T>>
+
+    /**
+     * Group by MaterialPrintLayout.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MaterialPrintLayoutGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MaterialPrintLayoutGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MaterialPrintLayoutGroupByArgs['orderBy'] }
+        : { orderBy?: MaterialPrintLayoutGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MaterialPrintLayoutGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMaterialPrintLayoutGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MaterialPrintLayout model
+   */
+  readonly fields: MaterialPrintLayoutFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MaterialPrintLayout.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MaterialPrintLayoutClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    material<T extends MaterialDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MaterialDefaultArgs<ExtArgs>>): Prisma__MaterialClient<$Result.GetResult<Prisma.$MaterialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    items<T extends MaterialPrintLayout$itemsArgs<ExtArgs> = {}>(args?: Subset<T, MaterialPrintLayout$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MaterialPrintLayout model
+   */
+  interface MaterialPrintLayoutFieldRefs {
+    readonly id: FieldRef<"MaterialPrintLayout", 'String'>
+    readonly orgId: FieldRef<"MaterialPrintLayout", 'String'>
+    readonly materialId: FieldRef<"MaterialPrintLayout", 'String'>
+    readonly rollWidth: FieldRef<"MaterialPrintLayout", 'Float'>
+    readonly cutLineHeight: FieldRef<"MaterialPrintLayout", 'Float'>
+    readonly efficiency: FieldRef<"MaterialPrintLayout", 'Float'>
+    readonly totalWastedArea: FieldRef<"MaterialPrintLayout", 'Float'>
+    readonly status: FieldRef<"MaterialPrintLayout", 'LayoutStatus'>
+    readonly createdAt: FieldRef<"MaterialPrintLayout", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MaterialPrintLayout findUnique
+   */
+  export type MaterialPrintLayoutFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialPrintLayout to fetch.
+     */
+    where: MaterialPrintLayoutWhereUniqueInput
+  }
+
+  /**
+   * MaterialPrintLayout findUniqueOrThrow
+   */
+  export type MaterialPrintLayoutFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialPrintLayout to fetch.
+     */
+    where: MaterialPrintLayoutWhereUniqueInput
+  }
+
+  /**
+   * MaterialPrintLayout findFirst
+   */
+  export type MaterialPrintLayoutFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialPrintLayout to fetch.
+     */
+    where?: MaterialPrintLayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialPrintLayouts to fetch.
+     */
+    orderBy?: MaterialPrintLayoutOrderByWithRelationInput | MaterialPrintLayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MaterialPrintLayouts.
+     */
+    cursor?: MaterialPrintLayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialPrintLayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialPrintLayouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MaterialPrintLayouts.
+     */
+    distinct?: MaterialPrintLayoutScalarFieldEnum | MaterialPrintLayoutScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialPrintLayout findFirstOrThrow
+   */
+  export type MaterialPrintLayoutFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialPrintLayout to fetch.
+     */
+    where?: MaterialPrintLayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialPrintLayouts to fetch.
+     */
+    orderBy?: MaterialPrintLayoutOrderByWithRelationInput | MaterialPrintLayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MaterialPrintLayouts.
+     */
+    cursor?: MaterialPrintLayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialPrintLayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialPrintLayouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MaterialPrintLayouts.
+     */
+    distinct?: MaterialPrintLayoutScalarFieldEnum | MaterialPrintLayoutScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialPrintLayout findMany
+   */
+  export type MaterialPrintLayoutFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * Filter, which MaterialPrintLayouts to fetch.
+     */
+    where?: MaterialPrintLayoutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MaterialPrintLayouts to fetch.
+     */
+    orderBy?: MaterialPrintLayoutOrderByWithRelationInput | MaterialPrintLayoutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MaterialPrintLayouts.
+     */
+    cursor?: MaterialPrintLayoutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MaterialPrintLayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MaterialPrintLayouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MaterialPrintLayouts.
+     */
+    distinct?: MaterialPrintLayoutScalarFieldEnum | MaterialPrintLayoutScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialPrintLayout create
+   */
+  export type MaterialPrintLayoutCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MaterialPrintLayout.
+     */
+    data: XOR<MaterialPrintLayoutCreateInput, MaterialPrintLayoutUncheckedCreateInput>
+  }
+
+  /**
+   * MaterialPrintLayout createMany
+   */
+  export type MaterialPrintLayoutCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MaterialPrintLayouts.
+     */
+    data: MaterialPrintLayoutCreateManyInput | MaterialPrintLayoutCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MaterialPrintLayout createManyAndReturn
+   */
+  export type MaterialPrintLayoutCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * The data used to create many MaterialPrintLayouts.
+     */
+    data: MaterialPrintLayoutCreateManyInput | MaterialPrintLayoutCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MaterialPrintLayout update
+   */
+  export type MaterialPrintLayoutUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MaterialPrintLayout.
+     */
+    data: XOR<MaterialPrintLayoutUpdateInput, MaterialPrintLayoutUncheckedUpdateInput>
+    /**
+     * Choose, which MaterialPrintLayout to update.
+     */
+    where: MaterialPrintLayoutWhereUniqueInput
+  }
+
+  /**
+   * MaterialPrintLayout updateMany
+   */
+  export type MaterialPrintLayoutUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MaterialPrintLayouts.
+     */
+    data: XOR<MaterialPrintLayoutUpdateManyMutationInput, MaterialPrintLayoutUncheckedUpdateManyInput>
+    /**
+     * Filter which MaterialPrintLayouts to update
+     */
+    where?: MaterialPrintLayoutWhereInput
+    /**
+     * Limit how many MaterialPrintLayouts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MaterialPrintLayout updateManyAndReturn
+   */
+  export type MaterialPrintLayoutUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * The data used to update MaterialPrintLayouts.
+     */
+    data: XOR<MaterialPrintLayoutUpdateManyMutationInput, MaterialPrintLayoutUncheckedUpdateManyInput>
+    /**
+     * Filter which MaterialPrintLayouts to update
+     */
+    where?: MaterialPrintLayoutWhereInput
+    /**
+     * Limit how many MaterialPrintLayouts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MaterialPrintLayout upsert
+   */
+  export type MaterialPrintLayoutUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MaterialPrintLayout to update in case it exists.
+     */
+    where: MaterialPrintLayoutWhereUniqueInput
+    /**
+     * In case the MaterialPrintLayout found by the `where` argument doesn't exist, create a new MaterialPrintLayout with this data.
+     */
+    create: XOR<MaterialPrintLayoutCreateInput, MaterialPrintLayoutUncheckedCreateInput>
+    /**
+     * In case the MaterialPrintLayout was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MaterialPrintLayoutUpdateInput, MaterialPrintLayoutUncheckedUpdateInput>
+  }
+
+  /**
+   * MaterialPrintLayout delete
+   */
+  export type MaterialPrintLayoutDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+    /**
+     * Filter which MaterialPrintLayout to delete.
+     */
+    where: MaterialPrintLayoutWhereUniqueInput
+  }
+
+  /**
+   * MaterialPrintLayout deleteMany
+   */
+  export type MaterialPrintLayoutDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MaterialPrintLayouts to delete
+     */
+    where?: MaterialPrintLayoutWhereInput
+    /**
+     * Limit how many MaterialPrintLayouts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MaterialPrintLayout.items
+   */
+  export type MaterialPrintLayout$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    where?: PrintLayoutItemWhereInput
+    orderBy?: PrintLayoutItemOrderByWithRelationInput | PrintLayoutItemOrderByWithRelationInput[]
+    cursor?: PrintLayoutItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PrintLayoutItemScalarFieldEnum | PrintLayoutItemScalarFieldEnum[]
+  }
+
+  /**
+   * MaterialPrintLayout without action
+   */
+  export type MaterialPrintLayoutDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MaterialPrintLayout
+     */
+    select?: MaterialPrintLayoutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MaterialPrintLayout
+     */
+    omit?: MaterialPrintLayoutOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MaterialPrintLayoutInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PrintLayoutItem
+   */
+
+  export type AggregatePrintLayoutItem = {
+    _count: PrintLayoutItemCountAggregateOutputType | null
+    _avg: PrintLayoutItemAvgAggregateOutputType | null
+    _sum: PrintLayoutItemSumAggregateOutputType | null
+    _min: PrintLayoutItemMinAggregateOutputType | null
+    _max: PrintLayoutItemMaxAggregateOutputType | null
+  }
+
+  export type PrintLayoutItemAvgAggregateOutputType = {
+    posX: number | null
+    posY: number | null
+    width: number | null
+    height: number | null
+  }
+
+  export type PrintLayoutItemSumAggregateOutputType = {
+    posX: number | null
+    posY: number | null
+    width: number | null
+    height: number | null
+  }
+
+  export type PrintLayoutItemMinAggregateOutputType = {
+    id: string | null
+    layoutId: string | null
+    jobId: string | null
+    posX: number | null
+    posY: number | null
+    isRotated: boolean | null
+    width: number | null
+    height: number | null
+  }
+
+  export type PrintLayoutItemMaxAggregateOutputType = {
+    id: string | null
+    layoutId: string | null
+    jobId: string | null
+    posX: number | null
+    posY: number | null
+    isRotated: boolean | null
+    width: number | null
+    height: number | null
+  }
+
+  export type PrintLayoutItemCountAggregateOutputType = {
+    id: number
+    layoutId: number
+    jobId: number
+    posX: number
+    posY: number
+    isRotated: number
+    width: number
+    height: number
+    _all: number
+  }
+
+
+  export type PrintLayoutItemAvgAggregateInputType = {
+    posX?: true
+    posY?: true
+    width?: true
+    height?: true
+  }
+
+  export type PrintLayoutItemSumAggregateInputType = {
+    posX?: true
+    posY?: true
+    width?: true
+    height?: true
+  }
+
+  export type PrintLayoutItemMinAggregateInputType = {
+    id?: true
+    layoutId?: true
+    jobId?: true
+    posX?: true
+    posY?: true
+    isRotated?: true
+    width?: true
+    height?: true
+  }
+
+  export type PrintLayoutItemMaxAggregateInputType = {
+    id?: true
+    layoutId?: true
+    jobId?: true
+    posX?: true
+    posY?: true
+    isRotated?: true
+    width?: true
+    height?: true
+  }
+
+  export type PrintLayoutItemCountAggregateInputType = {
+    id?: true
+    layoutId?: true
+    jobId?: true
+    posX?: true
+    posY?: true
+    isRotated?: true
+    width?: true
+    height?: true
+    _all?: true
+  }
+
+  export type PrintLayoutItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PrintLayoutItem to aggregate.
+     */
+    where?: PrintLayoutItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PrintLayoutItems to fetch.
+     */
+    orderBy?: PrintLayoutItemOrderByWithRelationInput | PrintLayoutItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PrintLayoutItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PrintLayoutItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PrintLayoutItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PrintLayoutItems
+    **/
+    _count?: true | PrintLayoutItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PrintLayoutItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PrintLayoutItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PrintLayoutItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PrintLayoutItemMaxAggregateInputType
+  }
+
+  export type GetPrintLayoutItemAggregateType<T extends PrintLayoutItemAggregateArgs> = {
+        [P in keyof T & keyof AggregatePrintLayoutItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePrintLayoutItem[P]>
+      : GetScalarType<T[P], AggregatePrintLayoutItem[P]>
+  }
+
+
+
+
+  export type PrintLayoutItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PrintLayoutItemWhereInput
+    orderBy?: PrintLayoutItemOrderByWithAggregationInput | PrintLayoutItemOrderByWithAggregationInput[]
+    by: PrintLayoutItemScalarFieldEnum[] | PrintLayoutItemScalarFieldEnum
+    having?: PrintLayoutItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PrintLayoutItemCountAggregateInputType | true
+    _avg?: PrintLayoutItemAvgAggregateInputType
+    _sum?: PrintLayoutItemSumAggregateInputType
+    _min?: PrintLayoutItemMinAggregateInputType
+    _max?: PrintLayoutItemMaxAggregateInputType
+  }
+
+  export type PrintLayoutItemGroupByOutputType = {
+    id: string
+    layoutId: string
+    jobId: string
+    posX: number
+    posY: number
+    isRotated: boolean
+    width: number
+    height: number
+    _count: PrintLayoutItemCountAggregateOutputType | null
+    _avg: PrintLayoutItemAvgAggregateOutputType | null
+    _sum: PrintLayoutItemSumAggregateOutputType | null
+    _min: PrintLayoutItemMinAggregateOutputType | null
+    _max: PrintLayoutItemMaxAggregateOutputType | null
+  }
+
+  type GetPrintLayoutItemGroupByPayload<T extends PrintLayoutItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PrintLayoutItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PrintLayoutItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PrintLayoutItemGroupByOutputType[P]>
+            : GetScalarType<T[P], PrintLayoutItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PrintLayoutItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    layoutId?: boolean
+    jobId?: boolean
+    posX?: boolean
+    posY?: boolean
+    isRotated?: boolean
+    width?: boolean
+    height?: boolean
+    layout?: boolean | MaterialPrintLayoutDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    jobVariables?: boolean | PrintLayoutItem$jobVariablesArgs<ExtArgs>
+    _count?: boolean | PrintLayoutItemCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["printLayoutItem"]>
+
+  export type PrintLayoutItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    layoutId?: boolean
+    jobId?: boolean
+    posX?: boolean
+    posY?: boolean
+    isRotated?: boolean
+    width?: boolean
+    height?: boolean
+    layout?: boolean | MaterialPrintLayoutDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["printLayoutItem"]>
+
+  export type PrintLayoutItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    layoutId?: boolean
+    jobId?: boolean
+    posX?: boolean
+    posY?: boolean
+    isRotated?: boolean
+    width?: boolean
+    height?: boolean
+    layout?: boolean | MaterialPrintLayoutDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["printLayoutItem"]>
+
+  export type PrintLayoutItemSelectScalar = {
+    id?: boolean
+    layoutId?: boolean
+    jobId?: boolean
+    posX?: boolean
+    posY?: boolean
+    isRotated?: boolean
+    width?: boolean
+    height?: boolean
+  }
+
+  export type PrintLayoutItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "layoutId" | "jobId" | "posX" | "posY" | "isRotated" | "width" | "height", ExtArgs["result"]["printLayoutItem"]>
+  export type PrintLayoutItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    layout?: boolean | MaterialPrintLayoutDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+    jobVariables?: boolean | PrintLayoutItem$jobVariablesArgs<ExtArgs>
+    _count?: boolean | PrintLayoutItemCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PrintLayoutItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    layout?: boolean | MaterialPrintLayoutDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+  export type PrintLayoutItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    layout?: boolean | MaterialPrintLayoutDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+
+  export type $PrintLayoutItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PrintLayoutItem"
+    objects: {
+      layout: Prisma.$MaterialPrintLayoutPayload<ExtArgs>
+      job: Prisma.$JobPayload<ExtArgs>
+      jobVariables: Prisma.$JobVariablePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      layoutId: string
+      jobId: string
+      posX: number
+      posY: number
+      isRotated: boolean
+      width: number
+      height: number
+    }, ExtArgs["result"]["printLayoutItem"]>
+    composites: {}
+  }
+
+  type PrintLayoutItemGetPayload<S extends boolean | null | undefined | PrintLayoutItemDefaultArgs> = $Result.GetResult<Prisma.$PrintLayoutItemPayload, S>
+
+  type PrintLayoutItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PrintLayoutItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PrintLayoutItemCountAggregateInputType | true
+    }
+
+  export interface PrintLayoutItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PrintLayoutItem'], meta: { name: 'PrintLayoutItem' } }
+    /**
+     * Find zero or one PrintLayoutItem that matches the filter.
+     * @param {PrintLayoutItemFindUniqueArgs} args - Arguments to find a PrintLayoutItem
+     * @example
+     * // Get one PrintLayoutItem
+     * const printLayoutItem = await prisma.printLayoutItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PrintLayoutItemFindUniqueArgs>(args: SelectSubset<T, PrintLayoutItemFindUniqueArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PrintLayoutItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PrintLayoutItemFindUniqueOrThrowArgs} args - Arguments to find a PrintLayoutItem
+     * @example
+     * // Get one PrintLayoutItem
+     * const printLayoutItem = await prisma.printLayoutItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PrintLayoutItemFindUniqueOrThrowArgs>(args: SelectSubset<T, PrintLayoutItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PrintLayoutItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PrintLayoutItemFindFirstArgs} args - Arguments to find a PrintLayoutItem
+     * @example
+     * // Get one PrintLayoutItem
+     * const printLayoutItem = await prisma.printLayoutItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PrintLayoutItemFindFirstArgs>(args?: SelectSubset<T, PrintLayoutItemFindFirstArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PrintLayoutItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PrintLayoutItemFindFirstOrThrowArgs} args - Arguments to find a PrintLayoutItem
+     * @example
+     * // Get one PrintLayoutItem
+     * const printLayoutItem = await prisma.printLayoutItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PrintLayoutItemFindFirstOrThrowArgs>(args?: SelectSubset<T, PrintLayoutItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PrintLayoutItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PrintLayoutItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PrintLayoutItems
+     * const printLayoutItems = await prisma.printLayoutItem.findMany()
+     * 
+     * // Get first 10 PrintLayoutItems
+     * const printLayoutItems = await prisma.printLayoutItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const printLayoutItemWithIdOnly = await prisma.printLayoutItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PrintLayoutItemFindManyArgs>(args?: SelectSubset<T, PrintLayoutItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PrintLayoutItem.
+     * @param {PrintLayoutItemCreateArgs} args - Arguments to create a PrintLayoutItem.
+     * @example
+     * // Create one PrintLayoutItem
+     * const PrintLayoutItem = await prisma.printLayoutItem.create({
+     *   data: {
+     *     // ... data to create a PrintLayoutItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends PrintLayoutItemCreateArgs>(args: SelectSubset<T, PrintLayoutItemCreateArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PrintLayoutItems.
+     * @param {PrintLayoutItemCreateManyArgs} args - Arguments to create many PrintLayoutItems.
+     * @example
+     * // Create many PrintLayoutItems
+     * const printLayoutItem = await prisma.printLayoutItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PrintLayoutItemCreateManyArgs>(args?: SelectSubset<T, PrintLayoutItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PrintLayoutItems and returns the data saved in the database.
+     * @param {PrintLayoutItemCreateManyAndReturnArgs} args - Arguments to create many PrintLayoutItems.
+     * @example
+     * // Create many PrintLayoutItems
+     * const printLayoutItem = await prisma.printLayoutItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PrintLayoutItems and only return the `id`
+     * const printLayoutItemWithIdOnly = await prisma.printLayoutItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PrintLayoutItemCreateManyAndReturnArgs>(args?: SelectSubset<T, PrintLayoutItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PrintLayoutItem.
+     * @param {PrintLayoutItemDeleteArgs} args - Arguments to delete one PrintLayoutItem.
+     * @example
+     * // Delete one PrintLayoutItem
+     * const PrintLayoutItem = await prisma.printLayoutItem.delete({
+     *   where: {
+     *     // ... filter to delete one PrintLayoutItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PrintLayoutItemDeleteArgs>(args: SelectSubset<T, PrintLayoutItemDeleteArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PrintLayoutItem.
+     * @param {PrintLayoutItemUpdateArgs} args - Arguments to update one PrintLayoutItem.
+     * @example
+     * // Update one PrintLayoutItem
+     * const printLayoutItem = await prisma.printLayoutItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PrintLayoutItemUpdateArgs>(args: SelectSubset<T, PrintLayoutItemUpdateArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PrintLayoutItems.
+     * @param {PrintLayoutItemDeleteManyArgs} args - Arguments to filter PrintLayoutItems to delete.
+     * @example
+     * // Delete a few PrintLayoutItems
+     * const { count } = await prisma.printLayoutItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PrintLayoutItemDeleteManyArgs>(args?: SelectSubset<T, PrintLayoutItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PrintLayoutItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PrintLayoutItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PrintLayoutItems
+     * const printLayoutItem = await prisma.printLayoutItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PrintLayoutItemUpdateManyArgs>(args: SelectSubset<T, PrintLayoutItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PrintLayoutItems and returns the data updated in the database.
+     * @param {PrintLayoutItemUpdateManyAndReturnArgs} args - Arguments to update many PrintLayoutItems.
+     * @example
+     * // Update many PrintLayoutItems
+     * const printLayoutItem = await prisma.printLayoutItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PrintLayoutItems and only return the `id`
+     * const printLayoutItemWithIdOnly = await prisma.printLayoutItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PrintLayoutItemUpdateManyAndReturnArgs>(args: SelectSubset<T, PrintLayoutItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PrintLayoutItem.
+     * @param {PrintLayoutItemUpsertArgs} args - Arguments to update or create a PrintLayoutItem.
+     * @example
+     * // Update or create a PrintLayoutItem
+     * const printLayoutItem = await prisma.printLayoutItem.upsert({
+     *   create: {
+     *     // ... data to create a PrintLayoutItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PrintLayoutItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PrintLayoutItemUpsertArgs>(args: SelectSubset<T, PrintLayoutItemUpsertArgs<ExtArgs>>): Prisma__PrintLayoutItemClient<$Result.GetResult<Prisma.$PrintLayoutItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PrintLayoutItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PrintLayoutItemCountArgs} args - Arguments to filter PrintLayoutItems to count.
+     * @example
+     * // Count the number of PrintLayoutItems
+     * const count = await prisma.printLayoutItem.count({
+     *   where: {
+     *     // ... the filter for the PrintLayoutItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends PrintLayoutItemCountArgs>(
+      args?: Subset<T, PrintLayoutItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PrintLayoutItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PrintLayoutItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PrintLayoutItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PrintLayoutItemAggregateArgs>(args: Subset<T, PrintLayoutItemAggregateArgs>): Prisma.PrismaPromise<GetPrintLayoutItemAggregateType<T>>
+
+    /**
+     * Group by PrintLayoutItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PrintLayoutItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PrintLayoutItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PrintLayoutItemGroupByArgs['orderBy'] }
+        : { orderBy?: PrintLayoutItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PrintLayoutItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPrintLayoutItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PrintLayoutItem model
+   */
+  readonly fields: PrintLayoutItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PrintLayoutItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PrintLayoutItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    layout<T extends MaterialPrintLayoutDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MaterialPrintLayoutDefaultArgs<ExtArgs>>): Prisma__MaterialPrintLayoutClient<$Result.GetResult<Prisma.$MaterialPrintLayoutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    jobVariables<T extends PrintLayoutItem$jobVariablesArgs<ExtArgs> = {}>(args?: Subset<T, PrintLayoutItem$jobVariablesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobVariablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PrintLayoutItem model
+   */
+  interface PrintLayoutItemFieldRefs {
+    readonly id: FieldRef<"PrintLayoutItem", 'String'>
+    readonly layoutId: FieldRef<"PrintLayoutItem", 'String'>
+    readonly jobId: FieldRef<"PrintLayoutItem", 'String'>
+    readonly posX: FieldRef<"PrintLayoutItem", 'Float'>
+    readonly posY: FieldRef<"PrintLayoutItem", 'Float'>
+    readonly isRotated: FieldRef<"PrintLayoutItem", 'Boolean'>
+    readonly width: FieldRef<"PrintLayoutItem", 'Float'>
+    readonly height: FieldRef<"PrintLayoutItem", 'Float'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PrintLayoutItem findUnique
+   */
+  export type PrintLayoutItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PrintLayoutItem to fetch.
+     */
+    where: PrintLayoutItemWhereUniqueInput
+  }
+
+  /**
+   * PrintLayoutItem findUniqueOrThrow
+   */
+  export type PrintLayoutItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PrintLayoutItem to fetch.
+     */
+    where: PrintLayoutItemWhereUniqueInput
+  }
+
+  /**
+   * PrintLayoutItem findFirst
+   */
+  export type PrintLayoutItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PrintLayoutItem to fetch.
+     */
+    where?: PrintLayoutItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PrintLayoutItems to fetch.
+     */
+    orderBy?: PrintLayoutItemOrderByWithRelationInput | PrintLayoutItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PrintLayoutItems.
+     */
+    cursor?: PrintLayoutItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PrintLayoutItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PrintLayoutItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PrintLayoutItems.
+     */
+    distinct?: PrintLayoutItemScalarFieldEnum | PrintLayoutItemScalarFieldEnum[]
+  }
+
+  /**
+   * PrintLayoutItem findFirstOrThrow
+   */
+  export type PrintLayoutItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PrintLayoutItem to fetch.
+     */
+    where?: PrintLayoutItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PrintLayoutItems to fetch.
+     */
+    orderBy?: PrintLayoutItemOrderByWithRelationInput | PrintLayoutItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PrintLayoutItems.
+     */
+    cursor?: PrintLayoutItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PrintLayoutItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PrintLayoutItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PrintLayoutItems.
+     */
+    distinct?: PrintLayoutItemScalarFieldEnum | PrintLayoutItemScalarFieldEnum[]
+  }
+
+  /**
+   * PrintLayoutItem findMany
+   */
+  export type PrintLayoutItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PrintLayoutItems to fetch.
+     */
+    where?: PrintLayoutItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PrintLayoutItems to fetch.
+     */
+    orderBy?: PrintLayoutItemOrderByWithRelationInput | PrintLayoutItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PrintLayoutItems.
+     */
+    cursor?: PrintLayoutItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PrintLayoutItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PrintLayoutItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PrintLayoutItems.
+     */
+    distinct?: PrintLayoutItemScalarFieldEnum | PrintLayoutItemScalarFieldEnum[]
+  }
+
+  /**
+   * PrintLayoutItem create
+   */
+  export type PrintLayoutItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PrintLayoutItem.
+     */
+    data: XOR<PrintLayoutItemCreateInput, PrintLayoutItemUncheckedCreateInput>
+  }
+
+  /**
+   * PrintLayoutItem createMany
+   */
+  export type PrintLayoutItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PrintLayoutItems.
+     */
+    data: PrintLayoutItemCreateManyInput | PrintLayoutItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PrintLayoutItem createManyAndReturn
+   */
+  export type PrintLayoutItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many PrintLayoutItems.
+     */
+    data: PrintLayoutItemCreateManyInput | PrintLayoutItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PrintLayoutItem update
+   */
+  export type PrintLayoutItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PrintLayoutItem.
+     */
+    data: XOR<PrintLayoutItemUpdateInput, PrintLayoutItemUncheckedUpdateInput>
+    /**
+     * Choose, which PrintLayoutItem to update.
+     */
+    where: PrintLayoutItemWhereUniqueInput
+  }
+
+  /**
+   * PrintLayoutItem updateMany
+   */
+  export type PrintLayoutItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PrintLayoutItems.
+     */
+    data: XOR<PrintLayoutItemUpdateManyMutationInput, PrintLayoutItemUncheckedUpdateManyInput>
+    /**
+     * Filter which PrintLayoutItems to update
+     */
+    where?: PrintLayoutItemWhereInput
+    /**
+     * Limit how many PrintLayoutItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PrintLayoutItem updateManyAndReturn
+   */
+  export type PrintLayoutItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * The data used to update PrintLayoutItems.
+     */
+    data: XOR<PrintLayoutItemUpdateManyMutationInput, PrintLayoutItemUncheckedUpdateManyInput>
+    /**
+     * Filter which PrintLayoutItems to update
+     */
+    where?: PrintLayoutItemWhereInput
+    /**
+     * Limit how many PrintLayoutItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PrintLayoutItem upsert
+   */
+  export type PrintLayoutItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PrintLayoutItem to update in case it exists.
+     */
+    where: PrintLayoutItemWhereUniqueInput
+    /**
+     * In case the PrintLayoutItem found by the `where` argument doesn't exist, create a new PrintLayoutItem with this data.
+     */
+    create: XOR<PrintLayoutItemCreateInput, PrintLayoutItemUncheckedCreateInput>
+    /**
+     * In case the PrintLayoutItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PrintLayoutItemUpdateInput, PrintLayoutItemUncheckedUpdateInput>
+  }
+
+  /**
+   * PrintLayoutItem delete
+   */
+  export type PrintLayoutItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
+    /**
+     * Filter which PrintLayoutItem to delete.
+     */
+    where: PrintLayoutItemWhereUniqueInput
+  }
+
+  /**
+   * PrintLayoutItem deleteMany
+   */
+  export type PrintLayoutItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PrintLayoutItems to delete
+     */
+    where?: PrintLayoutItemWhereInput
+    /**
+     * Limit how many PrintLayoutItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PrintLayoutItem.jobVariables
+   */
+  export type PrintLayoutItem$jobVariablesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobVariable
+     */
+    select?: JobVariableSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobVariable
+     */
+    omit?: JobVariableOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobVariableInclude<ExtArgs> | null
+    where?: JobVariableWhereInput
+    orderBy?: JobVariableOrderByWithRelationInput | JobVariableOrderByWithRelationInput[]
+    cursor?: JobVariableWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobVariableScalarFieldEnum | JobVariableScalarFieldEnum[]
+  }
+
+  /**
+   * PrintLayoutItem without action
+   */
+  export type PrintLayoutItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PrintLayoutItem
+     */
+    select?: PrintLayoutItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PrintLayoutItem
+     */
+    omit?: PrintLayoutItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrintLayoutItemInclude<ExtArgs> | null
   }
 
 
@@ -23956,6 +32087,19 @@ export namespace Prisma {
   export type StaffScalarFieldEnum = (typeof StaffScalarFieldEnum)[keyof typeof StaffScalarFieldEnum]
 
 
+  export const StaffPerformanceScalarFieldEnum: {
+    id: 'id',
+    staffId: 'staffId',
+    orgId: 'orgId',
+    metricType: 'metricType',
+    value: 'value',
+    jobId: 'jobId',
+    createdAt: 'createdAt'
+  };
+
+  export type StaffPerformanceScalarFieldEnum = (typeof StaffPerformanceScalarFieldEnum)[keyof typeof StaffPerformanceScalarFieldEnum]
+
+
   export const ClientScalarFieldEnum: {
     id: 'id',
     orgId: 'orgId',
@@ -24002,6 +32146,12 @@ export namespace Prisma {
     calcType: 'calcType',
     unit: 'unit',
     purchasePrice: 'purchasePrice',
+    rollWidth: 'rollWidth',
+    supplierId: 'supplierId',
+    leadTimeDays: 'leadTimeDays',
+    minOrderQty: 'minOrderQty',
+    buyQuantity: 'buyQuantity',
+    buyUnit: 'buyUnit',
     stockItemId: 'stockItemId',
     orgId: 'orgId'
   };
@@ -24050,10 +32200,59 @@ export namespace Prisma {
   export type StockMovementScalarFieldEnum = (typeof StockMovementScalarFieldEnum)[keyof typeof StockMovementScalarFieldEnum]
 
 
+  export const SupplierScalarFieldEnum: {
+    id: 'id',
+    orgId: 'orgId',
+    name: 'name',
+    email: 'email',
+    phone: 'phone',
+    address: 'address',
+    category: 'category',
+    linkedUserId: 'linkedUserId',
+    createdAt: 'createdAt'
+  };
+
+  export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typeof SupplierScalarFieldEnum]
+
+
+  export const StockPurchaseOrderScalarFieldEnum: {
+    id: 'id',
+    orgId: 'orgId',
+    supplierId: 'supplierId',
+    status: 'status',
+    relatedJobId: 'relatedJobId',
+    totalCost: 'totalCost',
+    expectedArrival: 'expectedArrival',
+    receivedAt: 'receivedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StockPurchaseOrderScalarFieldEnum = (typeof StockPurchaseOrderScalarFieldEnum)[keyof typeof StockPurchaseOrderScalarFieldEnum]
+
+
+  export const StockPurchaseItemScalarFieldEnum: {
+    id: 'id',
+    purchaseOrderId: 'purchaseOrderId',
+    materialId: 'materialId',
+    quantity: 'quantity',
+    buyUnit: 'buyUnit',
+    unitPrice: 'unitPrice'
+  };
+
+  export type StockPurchaseItemScalarFieldEnum = (typeof StockPurchaseItemScalarFieldEnum)[keyof typeof StockPurchaseItemScalarFieldEnum]
+
+
   export const JobScalarFieldEnum: {
     id: 'id',
     orgId: 'orgId',
     clientId: 'clientId',
+    shortRef: 'shortRef',
+    proofUrl: 'proofUrl',
+    proofStatus: 'proofStatus',
+    customerNote: 'customerNote',
+    approvalToken: 'approvalToken',
+    approvedAt: 'approvedAt',
     priceListId: 'priceListId',
     serviceName: 'serviceName',
     quantity: 'quantity',
@@ -24082,6 +32281,7 @@ export namespace Prisma {
   export const JobVariableScalarFieldEnum: {
     id: 'id',
     jobId: 'jobId',
+    shortRef: 'shortRef',
     priceListId: 'priceListId',
     quantity: 'quantity',
     width: 'width',
@@ -24091,10 +32291,40 @@ export namespace Prisma {
     materialId: 'materialId',
     serviceId: 'serviceId',
     orgId: 'orgId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    printLayoutItemId: 'printLayoutItemId'
   };
 
   export type JobVariableScalarFieldEnum = (typeof JobVariableScalarFieldEnum)[keyof typeof JobVariableScalarFieldEnum]
+
+
+  export const MaterialPrintLayoutScalarFieldEnum: {
+    id: 'id',
+    orgId: 'orgId',
+    materialId: 'materialId',
+    rollWidth: 'rollWidth',
+    cutLineHeight: 'cutLineHeight',
+    efficiency: 'efficiency',
+    totalWastedArea: 'totalWastedArea',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type MaterialPrintLayoutScalarFieldEnum = (typeof MaterialPrintLayoutScalarFieldEnum)[keyof typeof MaterialPrintLayoutScalarFieldEnum]
+
+
+  export const PrintLayoutItemScalarFieldEnum: {
+    id: 'id',
+    layoutId: 'layoutId',
+    jobId: 'jobId',
+    posX: 'posX',
+    posY: 'posY',
+    isRotated: 'isRotated',
+    width: 'width',
+    height: 'height'
+  };
+
+  export type PrintLayoutItemScalarFieldEnum = (typeof PrintLayoutItemScalarFieldEnum)[keyof typeof PrintLayoutItemScalarFieldEnum]
 
 
   export const DeliveryScalarFieldEnum: {
@@ -24420,6 +32650,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'POStatus'
+   */
+  export type EnumPOStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'POStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'POStatus[]'
+   */
+  export type ListEnumPOStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'POStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProofStatus'
+   */
+  export type EnumProofStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProofStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProofStatus[]'
+   */
+  export type ListEnumProofStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProofStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'PaymentStatus'
    */
   export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
@@ -24444,6 +32702,20 @@ export namespace Prisma {
    * Reference to a field of type 'JobStatus[]'
    */
   export type ListEnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'LayoutStatus'
+   */
+  export type EnumLayoutStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LayoutStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'LayoutStatus[]'
+   */
+  export type ListEnumLayoutStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LayoutStatus[]'>
     
 
 
@@ -24534,6 +32806,7 @@ export namespace Prisma {
     auditLogs?: AuditLogListRelationFilter
     outboxEvents?: OutboxEventListRelationFilter
     payments?: PaymentListRelationFilter
+    suppliers?: SupplierListRelationFilter
   }
 
   export type OrganisationOrderByWithRelationInput = {
@@ -24561,6 +32834,7 @@ export namespace Prisma {
     auditLogs?: AuditLogOrderByRelationAggregateInput
     outboxEvents?: OutboxEventOrderByRelationAggregateInput
     payments?: PaymentOrderByRelationAggregateInput
+    suppliers?: SupplierOrderByRelationAggregateInput
   }
 
   export type OrganisationWhereUniqueInput = Prisma.AtLeast<{
@@ -24591,6 +32865,7 @@ export namespace Prisma {
     auditLogs?: AuditLogListRelationFilter
     outboxEvents?: OutboxEventListRelationFilter
     payments?: PaymentListRelationFilter
+    suppliers?: SupplierListRelationFilter
   }, "id" | "slug">
 
   export type OrganisationOrderByWithAggregationInput = {
@@ -24866,6 +33141,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     assignedJobs?: JobListRelationFilter
+    staffPerformances?: StaffPerformanceListRelationFilter
   }
 
   export type StaffOrderByWithRelationInput = {
@@ -24882,6 +33158,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     organisation?: OrganisationOrderByWithRelationInput
     assignedJobs?: JobOrderByRelationAggregateInput
+    staffPerformances?: StaffPerformanceOrderByRelationAggregateInput
   }
 
   export type StaffWhereUniqueInput = Prisma.AtLeast<{
@@ -24901,6 +33178,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     assignedJobs?: JobListRelationFilter
+    staffPerformances?: StaffPerformanceListRelationFilter
   }, "id" | "userId">
 
   export type StaffOrderByWithAggregationInput = {
@@ -24935,6 +33213,73 @@ export namespace Prisma {
     baseSalary?: FloatNullableWithAggregatesFilter<"Staff"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
+  }
+
+  export type StaffPerformanceWhereInput = {
+    AND?: StaffPerformanceWhereInput | StaffPerformanceWhereInput[]
+    OR?: StaffPerformanceWhereInput[]
+    NOT?: StaffPerformanceWhereInput | StaffPerformanceWhereInput[]
+    id?: StringFilter<"StaffPerformance"> | string
+    staffId?: StringFilter<"StaffPerformance"> | string
+    orgId?: StringFilter<"StaffPerformance"> | string
+    metricType?: StringFilter<"StaffPerformance"> | string
+    value?: FloatFilter<"StaffPerformance"> | number
+    jobId?: StringNullableFilter<"StaffPerformance"> | string | null
+    createdAt?: DateTimeFilter<"StaffPerformance"> | Date | string
+    staff?: XOR<StaffScalarRelationFilter, StaffWhereInput>
+  }
+
+  export type StaffPerformanceOrderByWithRelationInput = {
+    id?: SortOrder
+    staffId?: SortOrder
+    orgId?: SortOrder
+    metricType?: SortOrder
+    value?: SortOrder
+    jobId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    staff?: StaffOrderByWithRelationInput
+  }
+
+  export type StaffPerformanceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StaffPerformanceWhereInput | StaffPerformanceWhereInput[]
+    OR?: StaffPerformanceWhereInput[]
+    NOT?: StaffPerformanceWhereInput | StaffPerformanceWhereInput[]
+    staffId?: StringFilter<"StaffPerformance"> | string
+    orgId?: StringFilter<"StaffPerformance"> | string
+    metricType?: StringFilter<"StaffPerformance"> | string
+    value?: FloatFilter<"StaffPerformance"> | number
+    jobId?: StringNullableFilter<"StaffPerformance"> | string | null
+    createdAt?: DateTimeFilter<"StaffPerformance"> | Date | string
+    staff?: XOR<StaffScalarRelationFilter, StaffWhereInput>
+  }, "id">
+
+  export type StaffPerformanceOrderByWithAggregationInput = {
+    id?: SortOrder
+    staffId?: SortOrder
+    orgId?: SortOrder
+    metricType?: SortOrder
+    value?: SortOrder
+    jobId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: StaffPerformanceCountOrderByAggregateInput
+    _avg?: StaffPerformanceAvgOrderByAggregateInput
+    _max?: StaffPerformanceMaxOrderByAggregateInput
+    _min?: StaffPerformanceMinOrderByAggregateInput
+    _sum?: StaffPerformanceSumOrderByAggregateInput
+  }
+
+  export type StaffPerformanceScalarWhereWithAggregatesInput = {
+    AND?: StaffPerformanceScalarWhereWithAggregatesInput | StaffPerformanceScalarWhereWithAggregatesInput[]
+    OR?: StaffPerformanceScalarWhereWithAggregatesInput[]
+    NOT?: StaffPerformanceScalarWhereWithAggregatesInput | StaffPerformanceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StaffPerformance"> | string
+    staffId?: StringWithAggregatesFilter<"StaffPerformance"> | string
+    orgId?: StringWithAggregatesFilter<"StaffPerformance"> | string
+    metricType?: StringWithAggregatesFilter<"StaffPerformance"> | string
+    value?: FloatWithAggregatesFilter<"StaffPerformance"> | number
+    jobId?: StringNullableWithAggregatesFilter<"StaffPerformance"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"StaffPerformance"> | Date | string
   }
 
   export type ClientWhereInput = {
@@ -25168,11 +33513,20 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFilter<"Material"> | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFilter<"Material"> | $Enums.ServiceUnit
     purchasePrice?: FloatFilter<"Material"> | number
+    rollWidth?: FloatNullableFilter<"Material"> | number | null
+    supplierId?: StringNullableFilter<"Material"> | string | null
+    leadTimeDays?: IntNullableFilter<"Material"> | number | null
+    minOrderQty?: IntNullableFilter<"Material"> | number | null
+    buyQuantity?: FloatNullableFilter<"Material"> | number | null
+    buyUnit?: StringNullableFilter<"Material"> | string | null
     stockItemId?: StringNullableFilter<"Material"> | string | null
     orgId?: StringFilter<"Material"> | string
+    supplier?: XOR<SupplierNullableScalarRelationFilter, SupplierWhereInput> | null
     stockItem?: XOR<StockItemNullableScalarRelationFilter, StockItemWhereInput> | null
     priceListItems?: PriceListListRelationFilter
     jobVariables?: JobVariableListRelationFilter
+    printLayouts?: MaterialPrintLayoutListRelationFilter
+    purchaseItems?: StockPurchaseItemListRelationFilter
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }
 
@@ -25182,11 +33536,20 @@ export namespace Prisma {
     calcType?: SortOrder
     unit?: SortOrder
     purchasePrice?: SortOrder
+    rollWidth?: SortOrderInput | SortOrder
+    supplierId?: SortOrderInput | SortOrder
+    leadTimeDays?: SortOrderInput | SortOrder
+    minOrderQty?: SortOrderInput | SortOrder
+    buyQuantity?: SortOrderInput | SortOrder
+    buyUnit?: SortOrderInput | SortOrder
     stockItemId?: SortOrderInput | SortOrder
     orgId?: SortOrder
+    supplier?: SupplierOrderByWithRelationInput
     stockItem?: StockItemOrderByWithRelationInput
     priceListItems?: PriceListOrderByRelationAggregateInput
     jobVariables?: JobVariableOrderByRelationAggregateInput
+    printLayouts?: MaterialPrintLayoutOrderByRelationAggregateInput
+    purchaseItems?: StockPurchaseItemOrderByRelationAggregateInput
     organisation?: OrganisationOrderByWithRelationInput
   }
 
@@ -25201,10 +33564,19 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFilter<"Material"> | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFilter<"Material"> | $Enums.ServiceUnit
     purchasePrice?: FloatFilter<"Material"> | number
+    rollWidth?: FloatNullableFilter<"Material"> | number | null
+    supplierId?: StringNullableFilter<"Material"> | string | null
+    leadTimeDays?: IntNullableFilter<"Material"> | number | null
+    minOrderQty?: IntNullableFilter<"Material"> | number | null
+    buyQuantity?: FloatNullableFilter<"Material"> | number | null
+    buyUnit?: StringNullableFilter<"Material"> | string | null
     orgId?: StringFilter<"Material"> | string
+    supplier?: XOR<SupplierNullableScalarRelationFilter, SupplierWhereInput> | null
     stockItem?: XOR<StockItemNullableScalarRelationFilter, StockItemWhereInput> | null
     priceListItems?: PriceListListRelationFilter
     jobVariables?: JobVariableListRelationFilter
+    printLayouts?: MaterialPrintLayoutListRelationFilter
+    purchaseItems?: StockPurchaseItemListRelationFilter
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
   }, "id" | "stockItemId" | "orgId_name">
 
@@ -25214,6 +33586,12 @@ export namespace Prisma {
     calcType?: SortOrder
     unit?: SortOrder
     purchasePrice?: SortOrder
+    rollWidth?: SortOrderInput | SortOrder
+    supplierId?: SortOrderInput | SortOrder
+    leadTimeDays?: SortOrderInput | SortOrder
+    minOrderQty?: SortOrderInput | SortOrder
+    buyQuantity?: SortOrderInput | SortOrder
+    buyUnit?: SortOrderInput | SortOrder
     stockItemId?: SortOrderInput | SortOrder
     orgId?: SortOrder
     _count?: MaterialCountOrderByAggregateInput
@@ -25232,6 +33610,12 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeWithAggregatesFilter<"Material"> | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitWithAggregatesFilter<"Material"> | $Enums.ServiceUnit
     purchasePrice?: FloatWithAggregatesFilter<"Material"> | number
+    rollWidth?: FloatNullableWithAggregatesFilter<"Material"> | number | null
+    supplierId?: StringNullableWithAggregatesFilter<"Material"> | string | null
+    leadTimeDays?: IntNullableWithAggregatesFilter<"Material"> | number | null
+    minOrderQty?: IntNullableWithAggregatesFilter<"Material"> | number | null
+    buyQuantity?: FloatNullableWithAggregatesFilter<"Material"> | number | null
+    buyUnit?: StringNullableWithAggregatesFilter<"Material"> | string | null
     stockItemId?: StringNullableWithAggregatesFilter<"Material"> | string | null
     orgId?: StringWithAggregatesFilter<"Material"> | string
   }
@@ -25463,6 +33847,238 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"StockMovement"> | Date | string
   }
 
+  export type SupplierWhereInput = {
+    AND?: SupplierWhereInput | SupplierWhereInput[]
+    OR?: SupplierWhereInput[]
+    NOT?: SupplierWhereInput | SupplierWhereInput[]
+    id?: StringFilter<"Supplier"> | string
+    orgId?: StringFilter<"Supplier"> | string
+    name?: StringFilter<"Supplier"> | string
+    email?: StringNullableFilter<"Supplier"> | string | null
+    phone?: StringNullableFilter<"Supplier"> | string | null
+    address?: StringNullableFilter<"Supplier"> | string | null
+    category?: StringNullableFilter<"Supplier"> | string | null
+    linkedUserId?: StringNullableFilter<"Supplier"> | string | null
+    createdAt?: DateTimeFilter<"Supplier"> | Date | string
+    materials?: MaterialListRelationFilter
+    purchaseOrders?: StockPurchaseOrderListRelationFilter
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+  }
+
+  export type SupplierOrderByWithRelationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    linkedUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    materials?: MaterialOrderByRelationAggregateInput
+    purchaseOrders?: StockPurchaseOrderOrderByRelationAggregateInput
+    organisation?: OrganisationOrderByWithRelationInput
+  }
+
+  export type SupplierWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    linkedUserId?: string
+    orgId_name?: SupplierOrgIdNameCompoundUniqueInput
+    AND?: SupplierWhereInput | SupplierWhereInput[]
+    OR?: SupplierWhereInput[]
+    NOT?: SupplierWhereInput | SupplierWhereInput[]
+    orgId?: StringFilter<"Supplier"> | string
+    name?: StringFilter<"Supplier"> | string
+    email?: StringNullableFilter<"Supplier"> | string | null
+    phone?: StringNullableFilter<"Supplier"> | string | null
+    address?: StringNullableFilter<"Supplier"> | string | null
+    category?: StringNullableFilter<"Supplier"> | string | null
+    createdAt?: DateTimeFilter<"Supplier"> | Date | string
+    materials?: MaterialListRelationFilter
+    purchaseOrders?: StockPurchaseOrderListRelationFilter
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+  }, "id" | "linkedUserId" | "orgId_name">
+
+  export type SupplierOrderByWithAggregationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    name?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    linkedUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: SupplierCountOrderByAggregateInput
+    _max?: SupplierMaxOrderByAggregateInput
+    _min?: SupplierMinOrderByAggregateInput
+  }
+
+  export type SupplierScalarWhereWithAggregatesInput = {
+    AND?: SupplierScalarWhereWithAggregatesInput | SupplierScalarWhereWithAggregatesInput[]
+    OR?: SupplierScalarWhereWithAggregatesInput[]
+    NOT?: SupplierScalarWhereWithAggregatesInput | SupplierScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Supplier"> | string
+    orgId?: StringWithAggregatesFilter<"Supplier"> | string
+    name?: StringWithAggregatesFilter<"Supplier"> | string
+    email?: StringNullableWithAggregatesFilter<"Supplier"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Supplier"> | string | null
+    address?: StringNullableWithAggregatesFilter<"Supplier"> | string | null
+    category?: StringNullableWithAggregatesFilter<"Supplier"> | string | null
+    linkedUserId?: StringNullableWithAggregatesFilter<"Supplier"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Supplier"> | Date | string
+  }
+
+  export type StockPurchaseOrderWhereInput = {
+    AND?: StockPurchaseOrderWhereInput | StockPurchaseOrderWhereInput[]
+    OR?: StockPurchaseOrderWhereInput[]
+    NOT?: StockPurchaseOrderWhereInput | StockPurchaseOrderWhereInput[]
+    id?: StringFilter<"StockPurchaseOrder"> | string
+    orgId?: StringFilter<"StockPurchaseOrder"> | string
+    supplierId?: StringFilter<"StockPurchaseOrder"> | string
+    status?: EnumPOStatusFilter<"StockPurchaseOrder"> | $Enums.POStatus
+    relatedJobId?: StringNullableFilter<"StockPurchaseOrder"> | string | null
+    totalCost?: FloatFilter<"StockPurchaseOrder"> | number
+    expectedArrival?: DateTimeNullableFilter<"StockPurchaseOrder"> | Date | string | null
+    receivedAt?: DateTimeNullableFilter<"StockPurchaseOrder"> | Date | string | null
+    createdAt?: DateTimeFilter<"StockPurchaseOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"StockPurchaseOrder"> | Date | string
+    supplier?: XOR<SupplierScalarRelationFilter, SupplierWhereInput>
+    items?: StockPurchaseItemListRelationFilter
+  }
+
+  export type StockPurchaseOrderOrderByWithRelationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    supplierId?: SortOrder
+    status?: SortOrder
+    relatedJobId?: SortOrderInput | SortOrder
+    totalCost?: SortOrder
+    expectedArrival?: SortOrderInput | SortOrder
+    receivedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    supplier?: SupplierOrderByWithRelationInput
+    items?: StockPurchaseItemOrderByRelationAggregateInput
+  }
+
+  export type StockPurchaseOrderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StockPurchaseOrderWhereInput | StockPurchaseOrderWhereInput[]
+    OR?: StockPurchaseOrderWhereInput[]
+    NOT?: StockPurchaseOrderWhereInput | StockPurchaseOrderWhereInput[]
+    orgId?: StringFilter<"StockPurchaseOrder"> | string
+    supplierId?: StringFilter<"StockPurchaseOrder"> | string
+    status?: EnumPOStatusFilter<"StockPurchaseOrder"> | $Enums.POStatus
+    relatedJobId?: StringNullableFilter<"StockPurchaseOrder"> | string | null
+    totalCost?: FloatFilter<"StockPurchaseOrder"> | number
+    expectedArrival?: DateTimeNullableFilter<"StockPurchaseOrder"> | Date | string | null
+    receivedAt?: DateTimeNullableFilter<"StockPurchaseOrder"> | Date | string | null
+    createdAt?: DateTimeFilter<"StockPurchaseOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"StockPurchaseOrder"> | Date | string
+    supplier?: XOR<SupplierScalarRelationFilter, SupplierWhereInput>
+    items?: StockPurchaseItemListRelationFilter
+  }, "id">
+
+  export type StockPurchaseOrderOrderByWithAggregationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    supplierId?: SortOrder
+    status?: SortOrder
+    relatedJobId?: SortOrderInput | SortOrder
+    totalCost?: SortOrder
+    expectedArrival?: SortOrderInput | SortOrder
+    receivedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StockPurchaseOrderCountOrderByAggregateInput
+    _avg?: StockPurchaseOrderAvgOrderByAggregateInput
+    _max?: StockPurchaseOrderMaxOrderByAggregateInput
+    _min?: StockPurchaseOrderMinOrderByAggregateInput
+    _sum?: StockPurchaseOrderSumOrderByAggregateInput
+  }
+
+  export type StockPurchaseOrderScalarWhereWithAggregatesInput = {
+    AND?: StockPurchaseOrderScalarWhereWithAggregatesInput | StockPurchaseOrderScalarWhereWithAggregatesInput[]
+    OR?: StockPurchaseOrderScalarWhereWithAggregatesInput[]
+    NOT?: StockPurchaseOrderScalarWhereWithAggregatesInput | StockPurchaseOrderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StockPurchaseOrder"> | string
+    orgId?: StringWithAggregatesFilter<"StockPurchaseOrder"> | string
+    supplierId?: StringWithAggregatesFilter<"StockPurchaseOrder"> | string
+    status?: EnumPOStatusWithAggregatesFilter<"StockPurchaseOrder"> | $Enums.POStatus
+    relatedJobId?: StringNullableWithAggregatesFilter<"StockPurchaseOrder"> | string | null
+    totalCost?: FloatWithAggregatesFilter<"StockPurchaseOrder"> | number
+    expectedArrival?: DateTimeNullableWithAggregatesFilter<"StockPurchaseOrder"> | Date | string | null
+    receivedAt?: DateTimeNullableWithAggregatesFilter<"StockPurchaseOrder"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"StockPurchaseOrder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StockPurchaseOrder"> | Date | string
+  }
+
+  export type StockPurchaseItemWhereInput = {
+    AND?: StockPurchaseItemWhereInput | StockPurchaseItemWhereInput[]
+    OR?: StockPurchaseItemWhereInput[]
+    NOT?: StockPurchaseItemWhereInput | StockPurchaseItemWhereInput[]
+    id?: StringFilter<"StockPurchaseItem"> | string
+    purchaseOrderId?: StringFilter<"StockPurchaseItem"> | string
+    materialId?: StringFilter<"StockPurchaseItem"> | string
+    quantity?: FloatFilter<"StockPurchaseItem"> | number
+    buyUnit?: StringFilter<"StockPurchaseItem"> | string
+    unitPrice?: FloatFilter<"StockPurchaseItem"> | number
+    purchaseOrder?: XOR<StockPurchaseOrderScalarRelationFilter, StockPurchaseOrderWhereInput>
+    material?: XOR<MaterialScalarRelationFilter, MaterialWhereInput>
+  }
+
+  export type StockPurchaseItemOrderByWithRelationInput = {
+    id?: SortOrder
+    purchaseOrderId?: SortOrder
+    materialId?: SortOrder
+    quantity?: SortOrder
+    buyUnit?: SortOrder
+    unitPrice?: SortOrder
+    purchaseOrder?: StockPurchaseOrderOrderByWithRelationInput
+    material?: MaterialOrderByWithRelationInput
+  }
+
+  export type StockPurchaseItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: StockPurchaseItemWhereInput | StockPurchaseItemWhereInput[]
+    OR?: StockPurchaseItemWhereInput[]
+    NOT?: StockPurchaseItemWhereInput | StockPurchaseItemWhereInput[]
+    purchaseOrderId?: StringFilter<"StockPurchaseItem"> | string
+    materialId?: StringFilter<"StockPurchaseItem"> | string
+    quantity?: FloatFilter<"StockPurchaseItem"> | number
+    buyUnit?: StringFilter<"StockPurchaseItem"> | string
+    unitPrice?: FloatFilter<"StockPurchaseItem"> | number
+    purchaseOrder?: XOR<StockPurchaseOrderScalarRelationFilter, StockPurchaseOrderWhereInput>
+    material?: XOR<MaterialScalarRelationFilter, MaterialWhereInput>
+  }, "id">
+
+  export type StockPurchaseItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    purchaseOrderId?: SortOrder
+    materialId?: SortOrder
+    quantity?: SortOrder
+    buyUnit?: SortOrder
+    unitPrice?: SortOrder
+    _count?: StockPurchaseItemCountOrderByAggregateInput
+    _avg?: StockPurchaseItemAvgOrderByAggregateInput
+    _max?: StockPurchaseItemMaxOrderByAggregateInput
+    _min?: StockPurchaseItemMinOrderByAggregateInput
+    _sum?: StockPurchaseItemSumOrderByAggregateInput
+  }
+
+  export type StockPurchaseItemScalarWhereWithAggregatesInput = {
+    AND?: StockPurchaseItemScalarWhereWithAggregatesInput | StockPurchaseItemScalarWhereWithAggregatesInput[]
+    OR?: StockPurchaseItemScalarWhereWithAggregatesInput[]
+    NOT?: StockPurchaseItemScalarWhereWithAggregatesInput | StockPurchaseItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StockPurchaseItem"> | string
+    purchaseOrderId?: StringWithAggregatesFilter<"StockPurchaseItem"> | string
+    materialId?: StringWithAggregatesFilter<"StockPurchaseItem"> | string
+    quantity?: FloatWithAggregatesFilter<"StockPurchaseItem"> | number
+    buyUnit?: StringWithAggregatesFilter<"StockPurchaseItem"> | string
+    unitPrice?: FloatWithAggregatesFilter<"StockPurchaseItem"> | number
+  }
+
   export type JobWhereInput = {
     AND?: JobWhereInput | JobWhereInput[]
     OR?: JobWhereInput[]
@@ -25470,6 +34086,12 @@ export namespace Prisma {
     id?: StringFilter<"Job"> | string
     orgId?: StringFilter<"Job"> | string
     clientId?: StringFilter<"Job"> | string
+    shortRef?: StringNullableFilter<"Job"> | string | null
+    proofUrl?: StringNullableFilter<"Job"> | string | null
+    proofStatus?: EnumProofStatusFilter<"Job"> | $Enums.ProofStatus
+    customerNote?: StringNullableFilter<"Job"> | string | null
+    approvalToken?: StringNullableFilter<"Job"> | string | null
+    approvedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     priceListId?: StringFilter<"Job"> | string
     serviceName?: StringFilter<"Job"> | string
     quantity?: FloatFilter<"Job"> | number
@@ -25492,6 +34114,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
+    layoutItem?: XOR<PrintLayoutItemNullableScalarRelationFilter, PrintLayoutItemWhereInput> | null
     priceList?: XOR<PriceListScalarRelationFilter, PriceListWhereInput>
     variables?: JobVariableListRelationFilter
     assignedStaff?: XOR<StaffNullableScalarRelationFilter, StaffWhereInput> | null
@@ -25505,6 +34128,12 @@ export namespace Prisma {
     id?: SortOrder
     orgId?: SortOrder
     clientId?: SortOrder
+    shortRef?: SortOrderInput | SortOrder
+    proofUrl?: SortOrderInput | SortOrder
+    proofStatus?: SortOrder
+    customerNote?: SortOrderInput | SortOrder
+    approvalToken?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
     priceListId?: SortOrder
     serviceName?: SortOrder
     quantity?: SortOrder
@@ -25527,6 +34156,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
     client?: ClientOrderByWithRelationInput
+    layoutItem?: PrintLayoutItemOrderByWithRelationInput
     priceList?: PriceListOrderByWithRelationInput
     variables?: JobVariableOrderByRelationAggregateInput
     assignedStaff?: StaffOrderByWithRelationInput
@@ -25538,11 +34168,17 @@ export namespace Prisma {
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    shortRef?: string
+    approvalToken?: string
     AND?: JobWhereInput | JobWhereInput[]
     OR?: JobWhereInput[]
     NOT?: JobWhereInput | JobWhereInput[]
     orgId?: StringFilter<"Job"> | string
     clientId?: StringFilter<"Job"> | string
+    proofUrl?: StringNullableFilter<"Job"> | string | null
+    proofStatus?: EnumProofStatusFilter<"Job"> | $Enums.ProofStatus
+    customerNote?: StringNullableFilter<"Job"> | string | null
+    approvedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     priceListId?: StringFilter<"Job"> | string
     serviceName?: StringFilter<"Job"> | string
     quantity?: FloatFilter<"Job"> | number
@@ -25565,6 +34201,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
+    layoutItem?: XOR<PrintLayoutItemNullableScalarRelationFilter, PrintLayoutItemWhereInput> | null
     priceList?: XOR<PriceListScalarRelationFilter, PriceListWhereInput>
     variables?: JobVariableListRelationFilter
     assignedStaff?: XOR<StaffNullableScalarRelationFilter, StaffWhereInput> | null
@@ -25572,12 +34209,18 @@ export namespace Prisma {
     payments?: PaymentListRelationFilter
     b2bPush?: XOR<B2BPushNullableScalarRelationFilter, B2BPushWhereInput> | null
     b2bSourceFor?: B2BPushListRelationFilter
-  }, "id">
+  }, "id" | "shortRef" | "approvalToken">
 
   export type JobOrderByWithAggregationInput = {
     id?: SortOrder
     orgId?: SortOrder
     clientId?: SortOrder
+    shortRef?: SortOrderInput | SortOrder
+    proofUrl?: SortOrderInput | SortOrder
+    proofStatus?: SortOrder
+    customerNote?: SortOrderInput | SortOrder
+    approvalToken?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
     priceListId?: SortOrder
     serviceName?: SortOrder
     quantity?: SortOrder
@@ -25612,6 +34255,12 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Job"> | string
     orgId?: StringWithAggregatesFilter<"Job"> | string
     clientId?: StringWithAggregatesFilter<"Job"> | string
+    shortRef?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    proofUrl?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    proofStatus?: EnumProofStatusWithAggregatesFilter<"Job"> | $Enums.ProofStatus
+    customerNote?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    approvalToken?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     priceListId?: StringWithAggregatesFilter<"Job"> | string
     serviceName?: StringWithAggregatesFilter<"Job"> | string
     quantity?: FloatWithAggregatesFilter<"Job"> | number
@@ -25640,6 +34289,7 @@ export namespace Prisma {
     NOT?: JobVariableWhereInput | JobVariableWhereInput[]
     id?: StringFilter<"JobVariable"> | string
     jobId?: StringFilter<"JobVariable"> | string
+    shortRef?: StringNullableFilter<"JobVariable"> | string | null
     priceListId?: StringFilter<"JobVariable"> | string
     quantity?: FloatFilter<"JobVariable"> | number
     width?: FloatNullableFilter<"JobVariable"> | number | null
@@ -25650,7 +34300,9 @@ export namespace Prisma {
     serviceId?: StringNullableFilter<"JobVariable"> | string | null
     orgId?: StringFilter<"JobVariable"> | string
     createdAt?: DateTimeFilter<"JobVariable"> | Date | string
+    printLayoutItemId?: StringNullableFilter<"JobVariable"> | string | null
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    layoutItem?: XOR<PrintLayoutItemNullableScalarRelationFilter, PrintLayoutItemWhereInput> | null
     priceList?: XOR<PriceListScalarRelationFilter, PriceListWhereInput>
     material?: XOR<MaterialNullableScalarRelationFilter, MaterialWhereInput> | null
     service?: XOR<ServiceNullableScalarRelationFilter, ServiceWhereInput> | null
@@ -25659,6 +34311,7 @@ export namespace Prisma {
   export type JobVariableOrderByWithRelationInput = {
     id?: SortOrder
     jobId?: SortOrder
+    shortRef?: SortOrderInput | SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
     width?: SortOrderInput | SortOrder
@@ -25669,7 +34322,9 @@ export namespace Prisma {
     serviceId?: SortOrderInput | SortOrder
     orgId?: SortOrder
     createdAt?: SortOrder
+    printLayoutItemId?: SortOrderInput | SortOrder
     job?: JobOrderByWithRelationInput
+    layoutItem?: PrintLayoutItemOrderByWithRelationInput
     priceList?: PriceListOrderByWithRelationInput
     material?: MaterialOrderByWithRelationInput
     service?: ServiceOrderByWithRelationInput
@@ -25677,6 +34332,7 @@ export namespace Prisma {
 
   export type JobVariableWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    shortRef?: string
     AND?: JobVariableWhereInput | JobVariableWhereInput[]
     OR?: JobVariableWhereInput[]
     NOT?: JobVariableWhereInput | JobVariableWhereInput[]
@@ -25691,15 +34347,18 @@ export namespace Prisma {
     serviceId?: StringNullableFilter<"JobVariable"> | string | null
     orgId?: StringFilter<"JobVariable"> | string
     createdAt?: DateTimeFilter<"JobVariable"> | Date | string
+    printLayoutItemId?: StringNullableFilter<"JobVariable"> | string | null
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    layoutItem?: XOR<PrintLayoutItemNullableScalarRelationFilter, PrintLayoutItemWhereInput> | null
     priceList?: XOR<PriceListScalarRelationFilter, PriceListWhereInput>
     material?: XOR<MaterialNullableScalarRelationFilter, MaterialWhereInput> | null
     service?: XOR<ServiceNullableScalarRelationFilter, ServiceWhereInput> | null
-  }, "id">
+  }, "id" | "shortRef">
 
   export type JobVariableOrderByWithAggregationInput = {
     id?: SortOrder
     jobId?: SortOrder
+    shortRef?: SortOrderInput | SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
     width?: SortOrderInput | SortOrder
@@ -25710,6 +34369,7 @@ export namespace Prisma {
     serviceId?: SortOrderInput | SortOrder
     orgId?: SortOrder
     createdAt?: SortOrder
+    printLayoutItemId?: SortOrderInput | SortOrder
     _count?: JobVariableCountOrderByAggregateInput
     _avg?: JobVariableAvgOrderByAggregateInput
     _max?: JobVariableMaxOrderByAggregateInput
@@ -25723,6 +34383,7 @@ export namespace Prisma {
     NOT?: JobVariableScalarWhereWithAggregatesInput | JobVariableScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"JobVariable"> | string
     jobId?: StringWithAggregatesFilter<"JobVariable"> | string
+    shortRef?: StringNullableWithAggregatesFilter<"JobVariable"> | string | null
     priceListId?: StringWithAggregatesFilter<"JobVariable"> | string
     quantity?: FloatWithAggregatesFilter<"JobVariable"> | number
     width?: FloatNullableWithAggregatesFilter<"JobVariable"> | number | null
@@ -25733,6 +34394,165 @@ export namespace Prisma {
     serviceId?: StringNullableWithAggregatesFilter<"JobVariable"> | string | null
     orgId?: StringWithAggregatesFilter<"JobVariable"> | string
     createdAt?: DateTimeWithAggregatesFilter<"JobVariable"> | Date | string
+    printLayoutItemId?: StringNullableWithAggregatesFilter<"JobVariable"> | string | null
+  }
+
+  export type MaterialPrintLayoutWhereInput = {
+    AND?: MaterialPrintLayoutWhereInput | MaterialPrintLayoutWhereInput[]
+    OR?: MaterialPrintLayoutWhereInput[]
+    NOT?: MaterialPrintLayoutWhereInput | MaterialPrintLayoutWhereInput[]
+    id?: StringFilter<"MaterialPrintLayout"> | string
+    orgId?: StringFilter<"MaterialPrintLayout"> | string
+    materialId?: StringFilter<"MaterialPrintLayout"> | string
+    rollWidth?: FloatFilter<"MaterialPrintLayout"> | number
+    cutLineHeight?: FloatFilter<"MaterialPrintLayout"> | number
+    efficiency?: FloatFilter<"MaterialPrintLayout"> | number
+    totalWastedArea?: FloatFilter<"MaterialPrintLayout"> | number
+    status?: EnumLayoutStatusFilter<"MaterialPrintLayout"> | $Enums.LayoutStatus
+    createdAt?: DateTimeFilter<"MaterialPrintLayout"> | Date | string
+    material?: XOR<MaterialScalarRelationFilter, MaterialWhereInput>
+    items?: PrintLayoutItemListRelationFilter
+  }
+
+  export type MaterialPrintLayoutOrderByWithRelationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    materialId?: SortOrder
+    rollWidth?: SortOrder
+    cutLineHeight?: SortOrder
+    efficiency?: SortOrder
+    totalWastedArea?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    material?: MaterialOrderByWithRelationInput
+    items?: PrintLayoutItemOrderByRelationAggregateInput
+  }
+
+  export type MaterialPrintLayoutWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MaterialPrintLayoutWhereInput | MaterialPrintLayoutWhereInput[]
+    OR?: MaterialPrintLayoutWhereInput[]
+    NOT?: MaterialPrintLayoutWhereInput | MaterialPrintLayoutWhereInput[]
+    orgId?: StringFilter<"MaterialPrintLayout"> | string
+    materialId?: StringFilter<"MaterialPrintLayout"> | string
+    rollWidth?: FloatFilter<"MaterialPrintLayout"> | number
+    cutLineHeight?: FloatFilter<"MaterialPrintLayout"> | number
+    efficiency?: FloatFilter<"MaterialPrintLayout"> | number
+    totalWastedArea?: FloatFilter<"MaterialPrintLayout"> | number
+    status?: EnumLayoutStatusFilter<"MaterialPrintLayout"> | $Enums.LayoutStatus
+    createdAt?: DateTimeFilter<"MaterialPrintLayout"> | Date | string
+    material?: XOR<MaterialScalarRelationFilter, MaterialWhereInput>
+    items?: PrintLayoutItemListRelationFilter
+  }, "id">
+
+  export type MaterialPrintLayoutOrderByWithAggregationInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    materialId?: SortOrder
+    rollWidth?: SortOrder
+    cutLineHeight?: SortOrder
+    efficiency?: SortOrder
+    totalWastedArea?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: MaterialPrintLayoutCountOrderByAggregateInput
+    _avg?: MaterialPrintLayoutAvgOrderByAggregateInput
+    _max?: MaterialPrintLayoutMaxOrderByAggregateInput
+    _min?: MaterialPrintLayoutMinOrderByAggregateInput
+    _sum?: MaterialPrintLayoutSumOrderByAggregateInput
+  }
+
+  export type MaterialPrintLayoutScalarWhereWithAggregatesInput = {
+    AND?: MaterialPrintLayoutScalarWhereWithAggregatesInput | MaterialPrintLayoutScalarWhereWithAggregatesInput[]
+    OR?: MaterialPrintLayoutScalarWhereWithAggregatesInput[]
+    NOT?: MaterialPrintLayoutScalarWhereWithAggregatesInput | MaterialPrintLayoutScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MaterialPrintLayout"> | string
+    orgId?: StringWithAggregatesFilter<"MaterialPrintLayout"> | string
+    materialId?: StringWithAggregatesFilter<"MaterialPrintLayout"> | string
+    rollWidth?: FloatWithAggregatesFilter<"MaterialPrintLayout"> | number
+    cutLineHeight?: FloatWithAggregatesFilter<"MaterialPrintLayout"> | number
+    efficiency?: FloatWithAggregatesFilter<"MaterialPrintLayout"> | number
+    totalWastedArea?: FloatWithAggregatesFilter<"MaterialPrintLayout"> | number
+    status?: EnumLayoutStatusWithAggregatesFilter<"MaterialPrintLayout"> | $Enums.LayoutStatus
+    createdAt?: DateTimeWithAggregatesFilter<"MaterialPrintLayout"> | Date | string
+  }
+
+  export type PrintLayoutItemWhereInput = {
+    AND?: PrintLayoutItemWhereInput | PrintLayoutItemWhereInput[]
+    OR?: PrintLayoutItemWhereInput[]
+    NOT?: PrintLayoutItemWhereInput | PrintLayoutItemWhereInput[]
+    id?: StringFilter<"PrintLayoutItem"> | string
+    layoutId?: StringFilter<"PrintLayoutItem"> | string
+    jobId?: StringFilter<"PrintLayoutItem"> | string
+    posX?: FloatFilter<"PrintLayoutItem"> | number
+    posY?: FloatFilter<"PrintLayoutItem"> | number
+    isRotated?: BoolFilter<"PrintLayoutItem"> | boolean
+    width?: FloatFilter<"PrintLayoutItem"> | number
+    height?: FloatFilter<"PrintLayoutItem"> | number
+    layout?: XOR<MaterialPrintLayoutScalarRelationFilter, MaterialPrintLayoutWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    jobVariables?: JobVariableListRelationFilter
+  }
+
+  export type PrintLayoutItemOrderByWithRelationInput = {
+    id?: SortOrder
+    layoutId?: SortOrder
+    jobId?: SortOrder
+    posX?: SortOrder
+    posY?: SortOrder
+    isRotated?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    layout?: MaterialPrintLayoutOrderByWithRelationInput
+    job?: JobOrderByWithRelationInput
+    jobVariables?: JobVariableOrderByRelationAggregateInput
+  }
+
+  export type PrintLayoutItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    jobId?: string
+    AND?: PrintLayoutItemWhereInput | PrintLayoutItemWhereInput[]
+    OR?: PrintLayoutItemWhereInput[]
+    NOT?: PrintLayoutItemWhereInput | PrintLayoutItemWhereInput[]
+    layoutId?: StringFilter<"PrintLayoutItem"> | string
+    posX?: FloatFilter<"PrintLayoutItem"> | number
+    posY?: FloatFilter<"PrintLayoutItem"> | number
+    isRotated?: BoolFilter<"PrintLayoutItem"> | boolean
+    width?: FloatFilter<"PrintLayoutItem"> | number
+    height?: FloatFilter<"PrintLayoutItem"> | number
+    layout?: XOR<MaterialPrintLayoutScalarRelationFilter, MaterialPrintLayoutWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    jobVariables?: JobVariableListRelationFilter
+  }, "id" | "jobId">
+
+  export type PrintLayoutItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    layoutId?: SortOrder
+    jobId?: SortOrder
+    posX?: SortOrder
+    posY?: SortOrder
+    isRotated?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+    _count?: PrintLayoutItemCountOrderByAggregateInput
+    _avg?: PrintLayoutItemAvgOrderByAggregateInput
+    _max?: PrintLayoutItemMaxOrderByAggregateInput
+    _min?: PrintLayoutItemMinOrderByAggregateInput
+    _sum?: PrintLayoutItemSumOrderByAggregateInput
+  }
+
+  export type PrintLayoutItemScalarWhereWithAggregatesInput = {
+    AND?: PrintLayoutItemScalarWhereWithAggregatesInput | PrintLayoutItemScalarWhereWithAggregatesInput[]
+    OR?: PrintLayoutItemScalarWhereWithAggregatesInput[]
+    NOT?: PrintLayoutItemScalarWhereWithAggregatesInput | PrintLayoutItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PrintLayoutItem"> | string
+    layoutId?: StringWithAggregatesFilter<"PrintLayoutItem"> | string
+    jobId?: StringWithAggregatesFilter<"PrintLayoutItem"> | string
+    posX?: FloatWithAggregatesFilter<"PrintLayoutItem"> | number
+    posY?: FloatWithAggregatesFilter<"PrintLayoutItem"> | number
+    isRotated?: BoolWithAggregatesFilter<"PrintLayoutItem"> | boolean
+    width?: FloatWithAggregatesFilter<"PrintLayoutItem"> | number
+    height?: FloatWithAggregatesFilter<"PrintLayoutItem"> | number
   }
 
   export type DeliveryWhereInput = {
@@ -26109,6 +34929,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateInput = {
@@ -26136,6 +34957,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUpdateInput = {
@@ -26163,6 +34985,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateInput = {
@@ -26190,6 +35013,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationCreateManyInput = {
@@ -26490,6 +35314,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutStaffProfileInput
     organisation: OrganisationCreateNestedOneWithoutStaffInput
     assignedJobs?: JobCreateNestedManyWithoutAssignedStaffInput
+    staffPerformances?: StaffPerformanceCreateNestedManyWithoutStaffInput
   }
 
   export type StaffUncheckedCreateInput = {
@@ -26504,6 +35329,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedJobs?: JobUncheckedCreateNestedManyWithoutAssignedStaffInput
+    staffPerformances?: StaffPerformanceUncheckedCreateNestedManyWithoutStaffInput
   }
 
   export type StaffUpdateInput = {
@@ -26518,6 +35344,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutStaffProfileNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutStaffNestedInput
     assignedJobs?: JobUpdateManyWithoutAssignedStaffNestedInput
+    staffPerformances?: StaffPerformanceUpdateManyWithoutStaffNestedInput
   }
 
   export type StaffUncheckedUpdateInput = {
@@ -26532,6 +35359,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedJobs?: JobUncheckedUpdateManyWithoutAssignedStaffNestedInput
+    staffPerformances?: StaffPerformanceUncheckedUpdateManyWithoutStaffNestedInput
   }
 
   export type StaffCreateManyInput = {
@@ -26569,6 +35397,75 @@ export namespace Prisma {
     baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffPerformanceCreateInput = {
+    id?: string
+    orgId: string
+    metricType: string
+    value: number
+    jobId?: string | null
+    createdAt?: Date | string
+    staff: StaffCreateNestedOneWithoutStaffPerformancesInput
+  }
+
+  export type StaffPerformanceUncheckedCreateInput = {
+    id?: string
+    staffId: string
+    orgId: string
+    metricType: string
+    value: number
+    jobId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StaffPerformanceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    metricType?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    staff?: StaffUpdateOneRequiredWithoutStaffPerformancesNestedInput
+  }
+
+  export type StaffPerformanceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    staffId?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    metricType?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffPerformanceCreateManyInput = {
+    id?: string
+    staffId: string
+    orgId: string
+    metricType: string
+    value: number
+    jobId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StaffPerformanceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    metricType?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffPerformanceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    staffId?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    metricType?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientCreateInput = {
@@ -26827,9 +35724,17 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    supplier?: SupplierCreateNestedOneWithoutMaterialsInput
     stockItem?: StockItemCreateNestedOneWithoutMaterialInput
     priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemCreateNestedManyWithoutMaterialInput
     organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
@@ -26839,10 +35744,18 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
     stockItemId?: string | null
     orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput
   }
 
   export type MaterialUpdateInput = {
@@ -26851,9 +35764,17 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    supplier?: SupplierUpdateOneWithoutMaterialsNestedInput
     stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
     priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUpdateManyWithoutMaterialNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
@@ -26863,10 +35784,18 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput
   }
 
   export type MaterialCreateManyInput = {
@@ -26875,6 +35804,12 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
     stockItemId?: string | null
     orgId: string
   }
@@ -26885,6 +35820,11 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MaterialUncheckedUpdateManyInput = {
@@ -26893,6 +35833,12 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
   }
@@ -27133,8 +36079,260 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SupplierCreateInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    materials?: MaterialCreateNestedManyWithoutSupplierInput
+    purchaseOrders?: StockPurchaseOrderCreateNestedManyWithoutSupplierInput
+    organisation: OrganisationCreateNestedOneWithoutSuppliersInput
+  }
+
+  export type SupplierUncheckedCreateInput = {
+    id?: string
+    orgId: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    materials?: MaterialUncheckedCreateNestedManyWithoutSupplierInput
+    purchaseOrders?: StockPurchaseOrderUncheckedCreateNestedManyWithoutSupplierInput
+  }
+
+  export type SupplierUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materials?: MaterialUpdateManyWithoutSupplierNestedInput
+    purchaseOrders?: StockPurchaseOrderUpdateManyWithoutSupplierNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutSuppliersNestedInput
+  }
+
+  export type SupplierUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materials?: MaterialUncheckedUpdateManyWithoutSupplierNestedInput
+    purchaseOrders?: StockPurchaseOrderUncheckedUpdateManyWithoutSupplierNestedInput
+  }
+
+  export type SupplierCreateManyInput = {
+    id?: string
+    orgId: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type SupplierUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupplierUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockPurchaseOrderCreateInput = {
+    id?: string
+    orgId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    supplier: SupplierCreateNestedOneWithoutPurchaseOrdersInput
+    items?: StockPurchaseItemCreateNestedManyWithoutPurchaseOrderInput
+  }
+
+  export type StockPurchaseOrderUncheckedCreateInput = {
+    id?: string
+    orgId: string
+    supplierId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: StockPurchaseItemUncheckedCreateNestedManyWithoutPurchaseOrderInput
+  }
+
+  export type StockPurchaseOrderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    supplier?: SupplierUpdateOneRequiredWithoutPurchaseOrdersNestedInput
+    items?: StockPurchaseItemUpdateManyWithoutPurchaseOrderNestedInput
+  }
+
+  export type StockPurchaseOrderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    supplierId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: StockPurchaseItemUncheckedUpdateManyWithoutPurchaseOrderNestedInput
+  }
+
+  export type StockPurchaseOrderCreateManyInput = {
+    id?: string
+    orgId: string
+    supplierId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockPurchaseOrderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockPurchaseOrderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    supplierId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockPurchaseItemCreateInput = {
+    id?: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+    purchaseOrder: StockPurchaseOrderCreateNestedOneWithoutItemsInput
+    material: MaterialCreateNestedOneWithoutPurchaseItemsInput
+  }
+
+  export type StockPurchaseItemUncheckedCreateInput = {
+    id?: string
+    purchaseOrderId: string
+    materialId: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+  }
+
+  export type StockPurchaseItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    purchaseOrder?: StockPurchaseOrderUpdateOneRequiredWithoutItemsNestedInput
+    material?: MaterialUpdateOneRequiredWithoutPurchaseItemsNestedInput
+  }
+
+  export type StockPurchaseItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    purchaseOrderId?: StringFieldUpdateOperationsInput | string
+    materialId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type StockPurchaseItemCreateManyInput = {
+    id?: string
+    purchaseOrderId: string
+    materialId: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+  }
+
+  export type StockPurchaseItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type StockPurchaseItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    purchaseOrderId?: StringFieldUpdateOperationsInput | string
+    materialId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+  }
+
   export type JobCreateInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -27154,6 +36352,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
@@ -27167,6 +36366,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -27187,6 +36392,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
@@ -27195,6 +36401,12 @@ export namespace Prisma {
 
   export type JobUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -27214,6 +36426,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
@@ -27227,6 +36440,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -27247,6 +36466,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
@@ -27257,6 +36477,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -27281,6 +36507,12 @@ export namespace Prisma {
 
   export type JobUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -27304,6 +36536,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -27328,6 +36566,7 @@ export namespace Prisma {
 
   export type JobVariableCreateInput = {
     id?: string
+    shortRef?: string | null
     quantity: number
     width?: number | null
     height?: number | null
@@ -27336,6 +36575,7 @@ export namespace Prisma {
     orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobVariablesInput
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
     material?: MaterialCreateNestedOneWithoutJobVariablesInput
     service?: ServiceCreateNestedOneWithoutJobVariablesInput
@@ -27344,6 +36584,7 @@ export namespace Prisma {
   export type JobVariableUncheckedCreateInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -27354,10 +36595,12 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type JobVariableUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -27366,6 +36609,7 @@ export namespace Prisma {
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobVariablesNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
     material?: MaterialUpdateOneWithoutJobVariablesNestedInput
     service?: ServiceUpdateOneWithoutJobVariablesNestedInput
@@ -27374,6 +36618,7 @@ export namespace Prisma {
   export type JobVariableUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -27384,11 +36629,13 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobVariableCreateManyInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -27399,10 +36646,12 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type JobVariableUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -27415,6 +36664,7 @@ export namespace Prisma {
   export type JobVariableUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -27425,6 +36675,173 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MaterialPrintLayoutCreateInput = {
+    id?: string
+    orgId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+    material: MaterialCreateNestedOneWithoutPrintLayoutsInput
+    items?: PrintLayoutItemCreateNestedManyWithoutLayoutInput
+  }
+
+  export type MaterialPrintLayoutUncheckedCreateInput = {
+    id?: string
+    orgId: string
+    materialId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+    items?: PrintLayoutItemUncheckedCreateNestedManyWithoutLayoutInput
+  }
+
+  export type MaterialPrintLayoutUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    material?: MaterialUpdateOneRequiredWithoutPrintLayoutsNestedInput
+    items?: PrintLayoutItemUpdateManyWithoutLayoutNestedInput
+  }
+
+  export type MaterialPrintLayoutUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    materialId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: PrintLayoutItemUncheckedUpdateManyWithoutLayoutNestedInput
+  }
+
+  export type MaterialPrintLayoutCreateManyInput = {
+    id?: string
+    orgId: string
+    materialId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+  }
+
+  export type MaterialPrintLayoutUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MaterialPrintLayoutUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    materialId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PrintLayoutItemCreateInput = {
+    id?: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+    layout: MaterialPrintLayoutCreateNestedOneWithoutItemsInput
+    job: JobCreateNestedOneWithoutLayoutItemInput
+    jobVariables?: JobVariableCreateNestedManyWithoutLayoutItemInput
+  }
+
+  export type PrintLayoutItemUncheckedCreateInput = {
+    id?: string
+    layoutId: string
+    jobId: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutLayoutItemInput
+  }
+
+  export type PrintLayoutItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+    layout?: MaterialPrintLayoutUpdateOneRequiredWithoutItemsNestedInput
+    job?: JobUpdateOneRequiredWithoutLayoutItemNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutLayoutItemNestedInput
+  }
+
+  export type PrintLayoutItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    layoutId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutLayoutItemNestedInput
+  }
+
+  export type PrintLayoutItemCreateManyInput = {
+    id?: string
+    layoutId: string
+    jobId: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+  }
+
+  export type PrintLayoutItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type PrintLayoutItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    layoutId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DeliveryCreateInput = {
@@ -27931,6 +37348,12 @@ export namespace Prisma {
     none?: PaymentWhereInput
   }
 
+  export type SupplierListRelationFilter = {
+    every?: SupplierWhereInput
+    some?: SupplierWhereInput
+    none?: SupplierWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -27989,6 +37412,10 @@ export namespace Prisma {
   }
 
   export type PaymentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SupplierOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -28371,6 +37798,16 @@ export namespace Prisma {
     isNot?: UserWhereInput
   }
 
+  export type StaffPerformanceListRelationFilter = {
+    every?: StaffPerformanceWhereInput
+    some?: StaffPerformanceWhereInput
+    none?: StaffPerformanceWhereInput
+  }
+
+  export type StaffPerformanceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type StaffCountOrderByAggregateInput = {
     id?: SortOrder
     orgId?: SortOrder
@@ -28432,6 +37869,76 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter<$PrismaModel>
     _min?: NestedFloatNullableFilter<$PrismaModel>
     _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type StaffScalarRelationFilter = {
+    is?: StaffWhereInput
+    isNot?: StaffWhereInput
+  }
+
+  export type StaffPerformanceCountOrderByAggregateInput = {
+    id?: SortOrder
+    staffId?: SortOrder
+    orgId?: SortOrder
+    metricType?: SortOrder
+    value?: SortOrder
+    jobId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StaffPerformanceAvgOrderByAggregateInput = {
+    value?: SortOrder
+  }
+
+  export type StaffPerformanceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    staffId?: SortOrder
+    orgId?: SortOrder
+    metricType?: SortOrder
+    value?: SortOrder
+    jobId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StaffPerformanceMinOrderByAggregateInput = {
+    id?: SortOrder
+    staffId?: SortOrder
+    orgId?: SortOrder
+    metricType?: SortOrder
+    value?: SortOrder
+    jobId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type StaffPerformanceSumOrderByAggregateInput = {
+    value?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type EnumClientTypeFilter<$PrismaModel = never> = {
@@ -28519,17 +38026,6 @@ export namespace Prisma {
     _max?: NestedEnumClientTypeFilter<$PrismaModel>
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type EnumMaterialCategoryNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.MaterialCategory | EnumMaterialCategoryFieldRefInput<$PrismaModel> | null
     in?: $Enums.MaterialCategory[] | ListEnumMaterialCategoryFieldRefInput<$PrismaModel> | null
@@ -28614,22 +38110,6 @@ export namespace Prisma {
     salePrice?: SortOrder
   }
 
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
-  }
-
   export type EnumMaterialCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.MaterialCategory | EnumMaterialCategoryFieldRefInput<$PrismaModel> | null
     in?: $Enums.MaterialCategory[] | ListEnumMaterialCategoryFieldRefInput<$PrismaModel> | null
@@ -28664,9 +38144,45 @@ export namespace Prisma {
     not?: NestedEnumServiceUnitFilter<$PrismaModel> | $Enums.ServiceUnit
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type SupplierNullableScalarRelationFilter = {
+    is?: SupplierWhereInput | null
+    isNot?: SupplierWhereInput | null
+  }
+
   export type StockItemNullableScalarRelationFilter = {
     is?: StockItemWhereInput | null
     isNot?: StockItemWhereInput | null
+  }
+
+  export type MaterialPrintLayoutListRelationFilter = {
+    every?: MaterialPrintLayoutWhereInput
+    some?: MaterialPrintLayoutWhereInput
+    none?: MaterialPrintLayoutWhereInput
+  }
+
+  export type StockPurchaseItemListRelationFilter = {
+    every?: StockPurchaseItemWhereInput
+    some?: StockPurchaseItemWhereInput
+    none?: StockPurchaseItemWhereInput
+  }
+
+  export type MaterialPrintLayoutOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StockPurchaseItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type MaterialOrgIdNameCompoundUniqueInput = {
@@ -28680,12 +38196,22 @@ export namespace Prisma {
     calcType?: SortOrder
     unit?: SortOrder
     purchasePrice?: SortOrder
+    rollWidth?: SortOrder
+    supplierId?: SortOrder
+    leadTimeDays?: SortOrder
+    minOrderQty?: SortOrder
+    buyQuantity?: SortOrder
+    buyUnit?: SortOrder
     stockItemId?: SortOrder
     orgId?: SortOrder
   }
 
   export type MaterialAvgOrderByAggregateInput = {
     purchasePrice?: SortOrder
+    rollWidth?: SortOrder
+    leadTimeDays?: SortOrder
+    minOrderQty?: SortOrder
+    buyQuantity?: SortOrder
   }
 
   export type MaterialMaxOrderByAggregateInput = {
@@ -28694,6 +38220,12 @@ export namespace Prisma {
     calcType?: SortOrder
     unit?: SortOrder
     purchasePrice?: SortOrder
+    rollWidth?: SortOrder
+    supplierId?: SortOrder
+    leadTimeDays?: SortOrder
+    minOrderQty?: SortOrder
+    buyQuantity?: SortOrder
+    buyUnit?: SortOrder
     stockItemId?: SortOrder
     orgId?: SortOrder
   }
@@ -28704,12 +38236,22 @@ export namespace Prisma {
     calcType?: SortOrder
     unit?: SortOrder
     purchasePrice?: SortOrder
+    rollWidth?: SortOrder
+    supplierId?: SortOrder
+    leadTimeDays?: SortOrder
+    minOrderQty?: SortOrder
+    buyQuantity?: SortOrder
+    buyUnit?: SortOrder
     stockItemId?: SortOrder
     orgId?: SortOrder
   }
 
   export type MaterialSumOrderByAggregateInput = {
     purchasePrice?: SortOrder
+    rollWidth?: SortOrder
+    leadTimeDays?: SortOrder
+    minOrderQty?: SortOrder
+    buyQuantity?: SortOrder
   }
 
   export type EnumMaterialCalculationTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -28730,6 +38272,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumServiceUnitFilter<$PrismaModel>
     _max?: NestedEnumServiceUnitFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumServiceCalculationTypeFilter<$PrismaModel = never> = {
@@ -28898,6 +38456,180 @@ export namespace Prisma {
     _max?: NestedEnumStockMovementTypeFilter<$PrismaModel>
   }
 
+  export type StockPurchaseOrderListRelationFilter = {
+    every?: StockPurchaseOrderWhereInput
+    some?: StockPurchaseOrderWhereInput
+    none?: StockPurchaseOrderWhereInput
+  }
+
+  export type StockPurchaseOrderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SupplierOrgIdNameCompoundUniqueInput = {
+    orgId: string
+    name: string
+  }
+
+  export type SupplierCountOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    category?: SortOrder
+    linkedUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SupplierMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    category?: SortOrder
+    linkedUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SupplierMinOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    category?: SortOrder
+    linkedUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumPOStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.POStatus | EnumPOStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPOStatusFilter<$PrismaModel> | $Enums.POStatus
+  }
+
+  export type SupplierScalarRelationFilter = {
+    is?: SupplierWhereInput
+    isNot?: SupplierWhereInput
+  }
+
+  export type StockPurchaseOrderCountOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    supplierId?: SortOrder
+    status?: SortOrder
+    relatedJobId?: SortOrder
+    totalCost?: SortOrder
+    expectedArrival?: SortOrder
+    receivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockPurchaseOrderAvgOrderByAggregateInput = {
+    totalCost?: SortOrder
+  }
+
+  export type StockPurchaseOrderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    supplierId?: SortOrder
+    status?: SortOrder
+    relatedJobId?: SortOrder
+    totalCost?: SortOrder
+    expectedArrival?: SortOrder
+    receivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockPurchaseOrderMinOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    supplierId?: SortOrder
+    status?: SortOrder
+    relatedJobId?: SortOrder
+    totalCost?: SortOrder
+    expectedArrival?: SortOrder
+    receivedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockPurchaseOrderSumOrderByAggregateInput = {
+    totalCost?: SortOrder
+  }
+
+  export type EnumPOStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.POStatus | EnumPOStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPOStatusWithAggregatesFilter<$PrismaModel> | $Enums.POStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPOStatusFilter<$PrismaModel>
+    _max?: NestedEnumPOStatusFilter<$PrismaModel>
+  }
+
+  export type StockPurchaseOrderScalarRelationFilter = {
+    is?: StockPurchaseOrderWhereInput
+    isNot?: StockPurchaseOrderWhereInput
+  }
+
+  export type MaterialScalarRelationFilter = {
+    is?: MaterialWhereInput
+    isNot?: MaterialWhereInput
+  }
+
+  export type StockPurchaseItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    purchaseOrderId?: SortOrder
+    materialId?: SortOrder
+    quantity?: SortOrder
+    buyUnit?: SortOrder
+    unitPrice?: SortOrder
+  }
+
+  export type StockPurchaseItemAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+  }
+
+  export type StockPurchaseItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    purchaseOrderId?: SortOrder
+    materialId?: SortOrder
+    quantity?: SortOrder
+    buyUnit?: SortOrder
+    unitPrice?: SortOrder
+  }
+
+  export type StockPurchaseItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    purchaseOrderId?: SortOrder
+    materialId?: SortOrder
+    quantity?: SortOrder
+    buyUnit?: SortOrder
+    unitPrice?: SortOrder
+  }
+
+  export type StockPurchaseItemSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    unitPrice?: SortOrder
+  }
+
+  export type EnumProofStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProofStatus | EnumProofStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProofStatusFilter<$PrismaModel> | $Enums.ProofStatus
+  }
+
   export type EnumServiceUnitNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.ServiceUnit | EnumServiceUnitFieldRefInput<$PrismaModel> | null
     in?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel> | null
@@ -28924,6 +38656,11 @@ export namespace Prisma {
     isNot?: ClientWhereInput
   }
 
+  export type PrintLayoutItemNullableScalarRelationFilter = {
+    is?: PrintLayoutItemWhereInput | null
+    isNot?: PrintLayoutItemWhereInput | null
+  }
+
   export type PriceListScalarRelationFilter = {
     is?: PriceListWhereInput
     isNot?: PriceListWhereInput
@@ -28938,6 +38675,12 @@ export namespace Prisma {
     id?: SortOrder
     orgId?: SortOrder
     clientId?: SortOrder
+    shortRef?: SortOrder
+    proofUrl?: SortOrder
+    proofStatus?: SortOrder
+    customerNote?: SortOrder
+    approvalToken?: SortOrder
+    approvedAt?: SortOrder
     priceListId?: SortOrder
     serviceName?: SortOrder
     quantity?: SortOrder
@@ -28975,6 +38718,12 @@ export namespace Prisma {
     id?: SortOrder
     orgId?: SortOrder
     clientId?: SortOrder
+    shortRef?: SortOrder
+    proofUrl?: SortOrder
+    proofStatus?: SortOrder
+    customerNote?: SortOrder
+    approvalToken?: SortOrder
+    approvedAt?: SortOrder
     priceListId?: SortOrder
     serviceName?: SortOrder
     quantity?: SortOrder
@@ -29001,6 +38750,12 @@ export namespace Prisma {
     id?: SortOrder
     orgId?: SortOrder
     clientId?: SortOrder
+    shortRef?: SortOrder
+    proofUrl?: SortOrder
+    proofStatus?: SortOrder
+    customerNote?: SortOrder
+    approvalToken?: SortOrder
+    approvedAt?: SortOrder
     priceListId?: SortOrder
     serviceName?: SortOrder
     quantity?: SortOrder
@@ -29032,6 +38787,16 @@ export namespace Prisma {
     totalPrice?: SortOrder
     costPrice?: SortOrder
     profitMargin?: SortOrder
+  }
+
+  export type EnumProofStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProofStatus | EnumProofStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProofStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProofStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProofStatusFilter<$PrismaModel>
+    _max?: NestedEnumProofStatusFilter<$PrismaModel>
   }
 
   export type EnumServiceUnitNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -29072,6 +38837,7 @@ export namespace Prisma {
   export type JobVariableCountOrderByAggregateInput = {
     id?: SortOrder
     jobId?: SortOrder
+    shortRef?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
     width?: SortOrder
@@ -29082,6 +38848,7 @@ export namespace Prisma {
     serviceId?: SortOrder
     orgId?: SortOrder
     createdAt?: SortOrder
+    printLayoutItemId?: SortOrder
   }
 
   export type JobVariableAvgOrderByAggregateInput = {
@@ -29095,6 +38862,7 @@ export namespace Prisma {
   export type JobVariableMaxOrderByAggregateInput = {
     id?: SortOrder
     jobId?: SortOrder
+    shortRef?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
     width?: SortOrder
@@ -29105,11 +38873,13 @@ export namespace Prisma {
     serviceId?: SortOrder
     orgId?: SortOrder
     createdAt?: SortOrder
+    printLayoutItemId?: SortOrder
   }
 
   export type JobVariableMinOrderByAggregateInput = {
     id?: SortOrder
     jobId?: SortOrder
+    shortRef?: SortOrder
     priceListId?: SortOrder
     quantity?: SortOrder
     width?: SortOrder
@@ -29120,6 +38890,7 @@ export namespace Prisma {
     serviceId?: SortOrder
     orgId?: SortOrder
     createdAt?: SortOrder
+    printLayoutItemId?: SortOrder
   }
 
   export type JobVariableSumOrderByAggregateInput = {
@@ -29128,6 +38899,135 @@ export namespace Prisma {
     height?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
+  }
+
+  export type EnumLayoutStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.LayoutStatus | EnumLayoutStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLayoutStatusFilter<$PrismaModel> | $Enums.LayoutStatus
+  }
+
+  export type PrintLayoutItemListRelationFilter = {
+    every?: PrintLayoutItemWhereInput
+    some?: PrintLayoutItemWhereInput
+    none?: PrintLayoutItemWhereInput
+  }
+
+  export type PrintLayoutItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MaterialPrintLayoutCountOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    materialId?: SortOrder
+    rollWidth?: SortOrder
+    cutLineHeight?: SortOrder
+    efficiency?: SortOrder
+    totalWastedArea?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MaterialPrintLayoutAvgOrderByAggregateInput = {
+    rollWidth?: SortOrder
+    cutLineHeight?: SortOrder
+    efficiency?: SortOrder
+    totalWastedArea?: SortOrder
+  }
+
+  export type MaterialPrintLayoutMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    materialId?: SortOrder
+    rollWidth?: SortOrder
+    cutLineHeight?: SortOrder
+    efficiency?: SortOrder
+    totalWastedArea?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MaterialPrintLayoutMinOrderByAggregateInput = {
+    id?: SortOrder
+    orgId?: SortOrder
+    materialId?: SortOrder
+    rollWidth?: SortOrder
+    cutLineHeight?: SortOrder
+    efficiency?: SortOrder
+    totalWastedArea?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MaterialPrintLayoutSumOrderByAggregateInput = {
+    rollWidth?: SortOrder
+    cutLineHeight?: SortOrder
+    efficiency?: SortOrder
+    totalWastedArea?: SortOrder
+  }
+
+  export type EnumLayoutStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LayoutStatus | EnumLayoutStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLayoutStatusWithAggregatesFilter<$PrismaModel> | $Enums.LayoutStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLayoutStatusFilter<$PrismaModel>
+    _max?: NestedEnumLayoutStatusFilter<$PrismaModel>
+  }
+
+  export type MaterialPrintLayoutScalarRelationFilter = {
+    is?: MaterialPrintLayoutWhereInput
+    isNot?: MaterialPrintLayoutWhereInput
+  }
+
+  export type PrintLayoutItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    layoutId?: SortOrder
+    jobId?: SortOrder
+    posX?: SortOrder
+    posY?: SortOrder
+    isRotated?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+  }
+
+  export type PrintLayoutItemAvgOrderByAggregateInput = {
+    posX?: SortOrder
+    posY?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+  }
+
+  export type PrintLayoutItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    layoutId?: SortOrder
+    jobId?: SortOrder
+    posX?: SortOrder
+    posY?: SortOrder
+    isRotated?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+  }
+
+  export type PrintLayoutItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    layoutId?: SortOrder
+    jobId?: SortOrder
+    posX?: SortOrder
+    posY?: SortOrder
+    isRotated?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
+  }
+
+  export type PrintLayoutItemSumOrderByAggregateInput = {
+    posX?: SortOrder
+    posY?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
   }
 
   export type EnumDeliveryTypeFilter<$PrismaModel = never> = {
@@ -29521,6 +39421,13 @@ export namespace Prisma {
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
   }
 
+  export type SupplierCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<SupplierCreateWithoutOrganisationInput, SupplierUncheckedCreateWithoutOrganisationInput> | SupplierCreateWithoutOrganisationInput[] | SupplierUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupplierCreateOrConnectWithoutOrganisationInput | SupplierCreateOrConnectWithoutOrganisationInput[]
+    createMany?: SupplierCreateManyOrganisationInputEnvelope
+    connect?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<UserCreateWithoutOrganisationInput, UserUncheckedCreateWithoutOrganisationInput> | UserCreateWithoutOrganisationInput[] | UserUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganisationInput | UserCreateOrConnectWithoutOrganisationInput[]
@@ -29617,6 +39524,13 @@ export namespace Prisma {
     connectOrCreate?: PaymentCreateOrConnectWithoutOrganisationInput | PaymentCreateOrConnectWithoutOrganisationInput[]
     createMany?: PaymentCreateManyOrganisationInputEnvelope
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  }
+
+  export type SupplierUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<SupplierCreateWithoutOrganisationInput, SupplierUncheckedCreateWithoutOrganisationInput> | SupplierCreateWithoutOrganisationInput[] | SupplierUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupplierCreateOrConnectWithoutOrganisationInput | SupplierCreateOrConnectWithoutOrganisationInput[]
+    createMany?: SupplierCreateManyOrganisationInputEnvelope
+    connect?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -29831,6 +39745,20 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
+  export type SupplierUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<SupplierCreateWithoutOrganisationInput, SupplierUncheckedCreateWithoutOrganisationInput> | SupplierCreateWithoutOrganisationInput[] | SupplierUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupplierCreateOrConnectWithoutOrganisationInput | SupplierCreateOrConnectWithoutOrganisationInput[]
+    upsert?: SupplierUpsertWithWhereUniqueWithoutOrganisationInput | SupplierUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: SupplierCreateManyOrganisationInputEnvelope
+    set?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    disconnect?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    delete?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    connect?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    update?: SupplierUpdateWithWhereUniqueWithoutOrganisationInput | SupplierUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: SupplierUpdateManyWithWhereWithoutOrganisationInput | SupplierUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: SupplierScalarWhereInput | SupplierScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOrganisationNestedInput = {
     create?: XOR<UserCreateWithoutOrganisationInput, UserUncheckedCreateWithoutOrganisationInput> | UserCreateWithoutOrganisationInput[] | UserUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganisationInput | UserCreateOrConnectWithoutOrganisationInput[]
@@ -30027,6 +39955,20 @@ export namespace Prisma {
     deleteMany?: PaymentScalarWhereInput | PaymentScalarWhereInput[]
   }
 
+  export type SupplierUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<SupplierCreateWithoutOrganisationInput, SupplierUncheckedCreateWithoutOrganisationInput> | SupplierCreateWithoutOrganisationInput[] | SupplierUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupplierCreateOrConnectWithoutOrganisationInput | SupplierCreateOrConnectWithoutOrganisationInput[]
+    upsert?: SupplierUpsertWithWhereUniqueWithoutOrganisationInput | SupplierUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: SupplierCreateManyOrganisationInputEnvelope
+    set?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    disconnect?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    delete?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    connect?: SupplierWhereUniqueInput | SupplierWhereUniqueInput[]
+    update?: SupplierUpdateWithWhereUniqueWithoutOrganisationInput | SupplierUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: SupplierUpdateManyWithWhereWithoutOrganisationInput | SupplierUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: SupplierScalarWhereInput | SupplierScalarWhereInput[]
+  }
+
   export type OrganisationCreateNestedOneWithoutOutboxEventsInput = {
     create?: XOR<OrganisationCreateWithoutOutboxEventsInput, OrganisationUncheckedCreateWithoutOutboxEventsInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutOutboxEventsInput
@@ -30126,11 +40068,25 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
   }
 
+  export type StaffPerformanceCreateNestedManyWithoutStaffInput = {
+    create?: XOR<StaffPerformanceCreateWithoutStaffInput, StaffPerformanceUncheckedCreateWithoutStaffInput> | StaffPerformanceCreateWithoutStaffInput[] | StaffPerformanceUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: StaffPerformanceCreateOrConnectWithoutStaffInput | StaffPerformanceCreateOrConnectWithoutStaffInput[]
+    createMany?: StaffPerformanceCreateManyStaffInputEnvelope
+    connect?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+  }
+
   export type JobUncheckedCreateNestedManyWithoutAssignedStaffInput = {
     create?: XOR<JobCreateWithoutAssignedStaffInput, JobUncheckedCreateWithoutAssignedStaffInput> | JobCreateWithoutAssignedStaffInput[] | JobUncheckedCreateWithoutAssignedStaffInput[]
     connectOrCreate?: JobCreateOrConnectWithoutAssignedStaffInput | JobCreateOrConnectWithoutAssignedStaffInput[]
     createMany?: JobCreateManyAssignedStaffInputEnvelope
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type StaffPerformanceUncheckedCreateNestedManyWithoutStaffInput = {
+    create?: XOR<StaffPerformanceCreateWithoutStaffInput, StaffPerformanceUncheckedCreateWithoutStaffInput> | StaffPerformanceCreateWithoutStaffInput[] | StaffPerformanceUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: StaffPerformanceCreateOrConnectWithoutStaffInput | StaffPerformanceCreateOrConnectWithoutStaffInput[]
+    createMany?: StaffPerformanceCreateManyStaffInputEnvelope
+    connect?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -30171,6 +40127,20 @@ export namespace Prisma {
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
   }
 
+  export type StaffPerformanceUpdateManyWithoutStaffNestedInput = {
+    create?: XOR<StaffPerformanceCreateWithoutStaffInput, StaffPerformanceUncheckedCreateWithoutStaffInput> | StaffPerformanceCreateWithoutStaffInput[] | StaffPerformanceUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: StaffPerformanceCreateOrConnectWithoutStaffInput | StaffPerformanceCreateOrConnectWithoutStaffInput[]
+    upsert?: StaffPerformanceUpsertWithWhereUniqueWithoutStaffInput | StaffPerformanceUpsertWithWhereUniqueWithoutStaffInput[]
+    createMany?: StaffPerformanceCreateManyStaffInputEnvelope
+    set?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    disconnect?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    delete?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    connect?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    update?: StaffPerformanceUpdateWithWhereUniqueWithoutStaffInput | StaffPerformanceUpdateWithWhereUniqueWithoutStaffInput[]
+    updateMany?: StaffPerformanceUpdateManyWithWhereWithoutStaffInput | StaffPerformanceUpdateManyWithWhereWithoutStaffInput[]
+    deleteMany?: StaffPerformanceScalarWhereInput | StaffPerformanceScalarWhereInput[]
+  }
+
   export type JobUncheckedUpdateManyWithoutAssignedStaffNestedInput = {
     create?: XOR<JobCreateWithoutAssignedStaffInput, JobUncheckedCreateWithoutAssignedStaffInput> | JobCreateWithoutAssignedStaffInput[] | JobUncheckedCreateWithoutAssignedStaffInput[]
     connectOrCreate?: JobCreateOrConnectWithoutAssignedStaffInput | JobCreateOrConnectWithoutAssignedStaffInput[]
@@ -30183,6 +40153,42 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutAssignedStaffInput | JobUpdateWithWhereUniqueWithoutAssignedStaffInput[]
     updateMany?: JobUpdateManyWithWhereWithoutAssignedStaffInput | JobUpdateManyWithWhereWithoutAssignedStaffInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type StaffPerformanceUncheckedUpdateManyWithoutStaffNestedInput = {
+    create?: XOR<StaffPerformanceCreateWithoutStaffInput, StaffPerformanceUncheckedCreateWithoutStaffInput> | StaffPerformanceCreateWithoutStaffInput[] | StaffPerformanceUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: StaffPerformanceCreateOrConnectWithoutStaffInput | StaffPerformanceCreateOrConnectWithoutStaffInput[]
+    upsert?: StaffPerformanceUpsertWithWhereUniqueWithoutStaffInput | StaffPerformanceUpsertWithWhereUniqueWithoutStaffInput[]
+    createMany?: StaffPerformanceCreateManyStaffInputEnvelope
+    set?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    disconnect?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    delete?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    connect?: StaffPerformanceWhereUniqueInput | StaffPerformanceWhereUniqueInput[]
+    update?: StaffPerformanceUpdateWithWhereUniqueWithoutStaffInput | StaffPerformanceUpdateWithWhereUniqueWithoutStaffInput[]
+    updateMany?: StaffPerformanceUpdateManyWithWhereWithoutStaffInput | StaffPerformanceUpdateManyWithWhereWithoutStaffInput[]
+    deleteMany?: StaffPerformanceScalarWhereInput | StaffPerformanceScalarWhereInput[]
+  }
+
+  export type StaffCreateNestedOneWithoutStaffPerformancesInput = {
+    create?: XOR<StaffCreateWithoutStaffPerformancesInput, StaffUncheckedCreateWithoutStaffPerformancesInput>
+    connectOrCreate?: StaffCreateOrConnectWithoutStaffPerformancesInput
+    connect?: StaffWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type StaffUpdateOneRequiredWithoutStaffPerformancesNestedInput = {
+    create?: XOR<StaffCreateWithoutStaffPerformancesInput, StaffUncheckedCreateWithoutStaffPerformancesInput>
+    connectOrCreate?: StaffCreateOrConnectWithoutStaffPerformancesInput
+    upsert?: StaffUpsertWithoutStaffPerformancesInput
+    connect?: StaffWhereUniqueInput
+    update?: XOR<XOR<StaffUpdateToOneWithWhereWithoutStaffPerformancesInput, StaffUpdateWithoutStaffPerformancesInput>, StaffUncheckedUpdateWithoutStaffPerformancesInput>
   }
 
   export type OrganisationCreateNestedOneWithoutClientsInput = {
@@ -30333,14 +40339,6 @@ export namespace Prisma {
     connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type NullableEnumMaterialCategoryFieldUpdateOperationsInput = {
     set?: $Enums.MaterialCategory | null
   }
@@ -30433,6 +40431,12 @@ export namespace Prisma {
     deleteMany?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
   }
 
+  export type SupplierCreateNestedOneWithoutMaterialsInput = {
+    create?: XOR<SupplierCreateWithoutMaterialsInput, SupplierUncheckedCreateWithoutMaterialsInput>
+    connectOrCreate?: SupplierCreateOrConnectWithoutMaterialsInput
+    connect?: SupplierWhereUniqueInput
+  }
+
   export type StockItemCreateNestedOneWithoutMaterialInput = {
     create?: XOR<StockItemCreateWithoutMaterialInput, StockItemUncheckedCreateWithoutMaterialInput>
     connectOrCreate?: StockItemCreateOrConnectWithoutMaterialInput
@@ -30451,6 +40455,20 @@ export namespace Prisma {
     connectOrCreate?: JobVariableCreateOrConnectWithoutMaterialInput | JobVariableCreateOrConnectWithoutMaterialInput[]
     createMany?: JobVariableCreateManyMaterialInputEnvelope
     connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+  }
+
+  export type MaterialPrintLayoutCreateNestedManyWithoutMaterialInput = {
+    create?: XOR<MaterialPrintLayoutCreateWithoutMaterialInput, MaterialPrintLayoutUncheckedCreateWithoutMaterialInput> | MaterialPrintLayoutCreateWithoutMaterialInput[] | MaterialPrintLayoutUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: MaterialPrintLayoutCreateOrConnectWithoutMaterialInput | MaterialPrintLayoutCreateOrConnectWithoutMaterialInput[]
+    createMany?: MaterialPrintLayoutCreateManyMaterialInputEnvelope
+    connect?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+  }
+
+  export type StockPurchaseItemCreateNestedManyWithoutMaterialInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutMaterialInput, StockPurchaseItemUncheckedCreateWithoutMaterialInput> | StockPurchaseItemCreateWithoutMaterialInput[] | StockPurchaseItemUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutMaterialInput | StockPurchaseItemCreateOrConnectWithoutMaterialInput[]
+    createMany?: StockPurchaseItemCreateManyMaterialInputEnvelope
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
   }
 
   export type OrganisationCreateNestedOneWithoutMaterialsInput = {
@@ -30473,12 +40491,44 @@ export namespace Prisma {
     connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
   }
 
+  export type MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput = {
+    create?: XOR<MaterialPrintLayoutCreateWithoutMaterialInput, MaterialPrintLayoutUncheckedCreateWithoutMaterialInput> | MaterialPrintLayoutCreateWithoutMaterialInput[] | MaterialPrintLayoutUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: MaterialPrintLayoutCreateOrConnectWithoutMaterialInput | MaterialPrintLayoutCreateOrConnectWithoutMaterialInput[]
+    createMany?: MaterialPrintLayoutCreateManyMaterialInputEnvelope
+    connect?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+  }
+
+  export type StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutMaterialInput, StockPurchaseItemUncheckedCreateWithoutMaterialInput> | StockPurchaseItemCreateWithoutMaterialInput[] | StockPurchaseItemUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutMaterialInput | StockPurchaseItemCreateOrConnectWithoutMaterialInput[]
+    createMany?: StockPurchaseItemCreateManyMaterialInputEnvelope
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+  }
+
   export type EnumMaterialCalculationTypeFieldUpdateOperationsInput = {
     set?: $Enums.MaterialCalculationType
   }
 
   export type EnumServiceUnitFieldUpdateOperationsInput = {
     set?: $Enums.ServiceUnit
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type SupplierUpdateOneWithoutMaterialsNestedInput = {
+    create?: XOR<SupplierCreateWithoutMaterialsInput, SupplierUncheckedCreateWithoutMaterialsInput>
+    connectOrCreate?: SupplierCreateOrConnectWithoutMaterialsInput
+    upsert?: SupplierUpsertWithoutMaterialsInput
+    disconnect?: SupplierWhereInput | boolean
+    delete?: SupplierWhereInput | boolean
+    connect?: SupplierWhereUniqueInput
+    update?: XOR<XOR<SupplierUpdateToOneWithWhereWithoutMaterialsInput, SupplierUpdateWithoutMaterialsInput>, SupplierUncheckedUpdateWithoutMaterialsInput>
   }
 
   export type StockItemUpdateOneWithoutMaterialNestedInput = {
@@ -30519,6 +40569,34 @@ export namespace Prisma {
     deleteMany?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
   }
 
+  export type MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput = {
+    create?: XOR<MaterialPrintLayoutCreateWithoutMaterialInput, MaterialPrintLayoutUncheckedCreateWithoutMaterialInput> | MaterialPrintLayoutCreateWithoutMaterialInput[] | MaterialPrintLayoutUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: MaterialPrintLayoutCreateOrConnectWithoutMaterialInput | MaterialPrintLayoutCreateOrConnectWithoutMaterialInput[]
+    upsert?: MaterialPrintLayoutUpsertWithWhereUniqueWithoutMaterialInput | MaterialPrintLayoutUpsertWithWhereUniqueWithoutMaterialInput[]
+    createMany?: MaterialPrintLayoutCreateManyMaterialInputEnvelope
+    set?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    disconnect?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    delete?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    connect?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    update?: MaterialPrintLayoutUpdateWithWhereUniqueWithoutMaterialInput | MaterialPrintLayoutUpdateWithWhereUniqueWithoutMaterialInput[]
+    updateMany?: MaterialPrintLayoutUpdateManyWithWhereWithoutMaterialInput | MaterialPrintLayoutUpdateManyWithWhereWithoutMaterialInput[]
+    deleteMany?: MaterialPrintLayoutScalarWhereInput | MaterialPrintLayoutScalarWhereInput[]
+  }
+
+  export type StockPurchaseItemUpdateManyWithoutMaterialNestedInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutMaterialInput, StockPurchaseItemUncheckedCreateWithoutMaterialInput> | StockPurchaseItemCreateWithoutMaterialInput[] | StockPurchaseItemUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutMaterialInput | StockPurchaseItemCreateOrConnectWithoutMaterialInput[]
+    upsert?: StockPurchaseItemUpsertWithWhereUniqueWithoutMaterialInput | StockPurchaseItemUpsertWithWhereUniqueWithoutMaterialInput[]
+    createMany?: StockPurchaseItemCreateManyMaterialInputEnvelope
+    set?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    disconnect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    delete?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    update?: StockPurchaseItemUpdateWithWhereUniqueWithoutMaterialInput | StockPurchaseItemUpdateWithWhereUniqueWithoutMaterialInput[]
+    updateMany?: StockPurchaseItemUpdateManyWithWhereWithoutMaterialInput | StockPurchaseItemUpdateManyWithWhereWithoutMaterialInput[]
+    deleteMany?: StockPurchaseItemScalarWhereInput | StockPurchaseItemScalarWhereInput[]
+  }
+
   export type OrganisationUpdateOneRequiredWithoutMaterialsNestedInput = {
     create?: XOR<OrganisationCreateWithoutMaterialsInput, OrganisationUncheckedCreateWithoutMaterialsInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutMaterialsInput
@@ -30553,6 +40631,34 @@ export namespace Prisma {
     update?: JobVariableUpdateWithWhereUniqueWithoutMaterialInput | JobVariableUpdateWithWhereUniqueWithoutMaterialInput[]
     updateMany?: JobVariableUpdateManyWithWhereWithoutMaterialInput | JobVariableUpdateManyWithWhereWithoutMaterialInput[]
     deleteMany?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
+  }
+
+  export type MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput = {
+    create?: XOR<MaterialPrintLayoutCreateWithoutMaterialInput, MaterialPrintLayoutUncheckedCreateWithoutMaterialInput> | MaterialPrintLayoutCreateWithoutMaterialInput[] | MaterialPrintLayoutUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: MaterialPrintLayoutCreateOrConnectWithoutMaterialInput | MaterialPrintLayoutCreateOrConnectWithoutMaterialInput[]
+    upsert?: MaterialPrintLayoutUpsertWithWhereUniqueWithoutMaterialInput | MaterialPrintLayoutUpsertWithWhereUniqueWithoutMaterialInput[]
+    createMany?: MaterialPrintLayoutCreateManyMaterialInputEnvelope
+    set?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    disconnect?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    delete?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    connect?: MaterialPrintLayoutWhereUniqueInput | MaterialPrintLayoutWhereUniqueInput[]
+    update?: MaterialPrintLayoutUpdateWithWhereUniqueWithoutMaterialInput | MaterialPrintLayoutUpdateWithWhereUniqueWithoutMaterialInput[]
+    updateMany?: MaterialPrintLayoutUpdateManyWithWhereWithoutMaterialInput | MaterialPrintLayoutUpdateManyWithWhereWithoutMaterialInput[]
+    deleteMany?: MaterialPrintLayoutScalarWhereInput | MaterialPrintLayoutScalarWhereInput[]
+  }
+
+  export type StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutMaterialInput, StockPurchaseItemUncheckedCreateWithoutMaterialInput> | StockPurchaseItemCreateWithoutMaterialInput[] | StockPurchaseItemUncheckedCreateWithoutMaterialInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutMaterialInput | StockPurchaseItemCreateOrConnectWithoutMaterialInput[]
+    upsert?: StockPurchaseItemUpsertWithWhereUniqueWithoutMaterialInput | StockPurchaseItemUpsertWithWhereUniqueWithoutMaterialInput[]
+    createMany?: StockPurchaseItemCreateManyMaterialInputEnvelope
+    set?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    disconnect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    delete?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    update?: StockPurchaseItemUpdateWithWhereUniqueWithoutMaterialInput | StockPurchaseItemUpdateWithWhereUniqueWithoutMaterialInput[]
+    updateMany?: StockPurchaseItemUpdateManyWithWhereWithoutMaterialInput | StockPurchaseItemUpdateManyWithWhereWithoutMaterialInput[]
+    deleteMany?: StockPurchaseItemScalarWhereInput | StockPurchaseItemScalarWhereInput[]
   }
 
   export type PriceListCreateNestedManyWithoutServiceInput = {
@@ -30777,6 +40883,192 @@ export namespace Prisma {
     update?: XOR<XOR<StockItemUpdateToOneWithWhereWithoutStockMovementsInput, StockItemUpdateWithoutStockMovementsInput>, StockItemUncheckedUpdateWithoutStockMovementsInput>
   }
 
+  export type MaterialCreateNestedManyWithoutSupplierInput = {
+    create?: XOR<MaterialCreateWithoutSupplierInput, MaterialUncheckedCreateWithoutSupplierInput> | MaterialCreateWithoutSupplierInput[] | MaterialUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutSupplierInput | MaterialCreateOrConnectWithoutSupplierInput[]
+    createMany?: MaterialCreateManySupplierInputEnvelope
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+  }
+
+  export type StockPurchaseOrderCreateNestedManyWithoutSupplierInput = {
+    create?: XOR<StockPurchaseOrderCreateWithoutSupplierInput, StockPurchaseOrderUncheckedCreateWithoutSupplierInput> | StockPurchaseOrderCreateWithoutSupplierInput[] | StockPurchaseOrderUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: StockPurchaseOrderCreateOrConnectWithoutSupplierInput | StockPurchaseOrderCreateOrConnectWithoutSupplierInput[]
+    createMany?: StockPurchaseOrderCreateManySupplierInputEnvelope
+    connect?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+  }
+
+  export type OrganisationCreateNestedOneWithoutSuppliersInput = {
+    create?: XOR<OrganisationCreateWithoutSuppliersInput, OrganisationUncheckedCreateWithoutSuppliersInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutSuppliersInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type MaterialUncheckedCreateNestedManyWithoutSupplierInput = {
+    create?: XOR<MaterialCreateWithoutSupplierInput, MaterialUncheckedCreateWithoutSupplierInput> | MaterialCreateWithoutSupplierInput[] | MaterialUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutSupplierInput | MaterialCreateOrConnectWithoutSupplierInput[]
+    createMany?: MaterialCreateManySupplierInputEnvelope
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+  }
+
+  export type StockPurchaseOrderUncheckedCreateNestedManyWithoutSupplierInput = {
+    create?: XOR<StockPurchaseOrderCreateWithoutSupplierInput, StockPurchaseOrderUncheckedCreateWithoutSupplierInput> | StockPurchaseOrderCreateWithoutSupplierInput[] | StockPurchaseOrderUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: StockPurchaseOrderCreateOrConnectWithoutSupplierInput | StockPurchaseOrderCreateOrConnectWithoutSupplierInput[]
+    createMany?: StockPurchaseOrderCreateManySupplierInputEnvelope
+    connect?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+  }
+
+  export type MaterialUpdateManyWithoutSupplierNestedInput = {
+    create?: XOR<MaterialCreateWithoutSupplierInput, MaterialUncheckedCreateWithoutSupplierInput> | MaterialCreateWithoutSupplierInput[] | MaterialUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutSupplierInput | MaterialCreateOrConnectWithoutSupplierInput[]
+    upsert?: MaterialUpsertWithWhereUniqueWithoutSupplierInput | MaterialUpsertWithWhereUniqueWithoutSupplierInput[]
+    createMany?: MaterialCreateManySupplierInputEnvelope
+    set?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    disconnect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    delete?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    update?: MaterialUpdateWithWhereUniqueWithoutSupplierInput | MaterialUpdateWithWhereUniqueWithoutSupplierInput[]
+    updateMany?: MaterialUpdateManyWithWhereWithoutSupplierInput | MaterialUpdateManyWithWhereWithoutSupplierInput[]
+    deleteMany?: MaterialScalarWhereInput | MaterialScalarWhereInput[]
+  }
+
+  export type StockPurchaseOrderUpdateManyWithoutSupplierNestedInput = {
+    create?: XOR<StockPurchaseOrderCreateWithoutSupplierInput, StockPurchaseOrderUncheckedCreateWithoutSupplierInput> | StockPurchaseOrderCreateWithoutSupplierInput[] | StockPurchaseOrderUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: StockPurchaseOrderCreateOrConnectWithoutSupplierInput | StockPurchaseOrderCreateOrConnectWithoutSupplierInput[]
+    upsert?: StockPurchaseOrderUpsertWithWhereUniqueWithoutSupplierInput | StockPurchaseOrderUpsertWithWhereUniqueWithoutSupplierInput[]
+    createMany?: StockPurchaseOrderCreateManySupplierInputEnvelope
+    set?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    disconnect?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    delete?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    connect?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    update?: StockPurchaseOrderUpdateWithWhereUniqueWithoutSupplierInput | StockPurchaseOrderUpdateWithWhereUniqueWithoutSupplierInput[]
+    updateMany?: StockPurchaseOrderUpdateManyWithWhereWithoutSupplierInput | StockPurchaseOrderUpdateManyWithWhereWithoutSupplierInput[]
+    deleteMany?: StockPurchaseOrderScalarWhereInput | StockPurchaseOrderScalarWhereInput[]
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutSuppliersNestedInput = {
+    create?: XOR<OrganisationCreateWithoutSuppliersInput, OrganisationUncheckedCreateWithoutSuppliersInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutSuppliersInput
+    upsert?: OrganisationUpsertWithoutSuppliersInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutSuppliersInput, OrganisationUpdateWithoutSuppliersInput>, OrganisationUncheckedUpdateWithoutSuppliersInput>
+  }
+
+  export type MaterialUncheckedUpdateManyWithoutSupplierNestedInput = {
+    create?: XOR<MaterialCreateWithoutSupplierInput, MaterialUncheckedCreateWithoutSupplierInput> | MaterialCreateWithoutSupplierInput[] | MaterialUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: MaterialCreateOrConnectWithoutSupplierInput | MaterialCreateOrConnectWithoutSupplierInput[]
+    upsert?: MaterialUpsertWithWhereUniqueWithoutSupplierInput | MaterialUpsertWithWhereUniqueWithoutSupplierInput[]
+    createMany?: MaterialCreateManySupplierInputEnvelope
+    set?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    disconnect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    delete?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    connect?: MaterialWhereUniqueInput | MaterialWhereUniqueInput[]
+    update?: MaterialUpdateWithWhereUniqueWithoutSupplierInput | MaterialUpdateWithWhereUniqueWithoutSupplierInput[]
+    updateMany?: MaterialUpdateManyWithWhereWithoutSupplierInput | MaterialUpdateManyWithWhereWithoutSupplierInput[]
+    deleteMany?: MaterialScalarWhereInput | MaterialScalarWhereInput[]
+  }
+
+  export type StockPurchaseOrderUncheckedUpdateManyWithoutSupplierNestedInput = {
+    create?: XOR<StockPurchaseOrderCreateWithoutSupplierInput, StockPurchaseOrderUncheckedCreateWithoutSupplierInput> | StockPurchaseOrderCreateWithoutSupplierInput[] | StockPurchaseOrderUncheckedCreateWithoutSupplierInput[]
+    connectOrCreate?: StockPurchaseOrderCreateOrConnectWithoutSupplierInput | StockPurchaseOrderCreateOrConnectWithoutSupplierInput[]
+    upsert?: StockPurchaseOrderUpsertWithWhereUniqueWithoutSupplierInput | StockPurchaseOrderUpsertWithWhereUniqueWithoutSupplierInput[]
+    createMany?: StockPurchaseOrderCreateManySupplierInputEnvelope
+    set?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    disconnect?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    delete?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    connect?: StockPurchaseOrderWhereUniqueInput | StockPurchaseOrderWhereUniqueInput[]
+    update?: StockPurchaseOrderUpdateWithWhereUniqueWithoutSupplierInput | StockPurchaseOrderUpdateWithWhereUniqueWithoutSupplierInput[]
+    updateMany?: StockPurchaseOrderUpdateManyWithWhereWithoutSupplierInput | StockPurchaseOrderUpdateManyWithWhereWithoutSupplierInput[]
+    deleteMany?: StockPurchaseOrderScalarWhereInput | StockPurchaseOrderScalarWhereInput[]
+  }
+
+  export type SupplierCreateNestedOneWithoutPurchaseOrdersInput = {
+    create?: XOR<SupplierCreateWithoutPurchaseOrdersInput, SupplierUncheckedCreateWithoutPurchaseOrdersInput>
+    connectOrCreate?: SupplierCreateOrConnectWithoutPurchaseOrdersInput
+    connect?: SupplierWhereUniqueInput
+  }
+
+  export type StockPurchaseItemCreateNestedManyWithoutPurchaseOrderInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput> | StockPurchaseItemCreateWithoutPurchaseOrderInput[] | StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput | StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput[]
+    createMany?: StockPurchaseItemCreateManyPurchaseOrderInputEnvelope
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+  }
+
+  export type StockPurchaseItemUncheckedCreateNestedManyWithoutPurchaseOrderInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput> | StockPurchaseItemCreateWithoutPurchaseOrderInput[] | StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput | StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput[]
+    createMany?: StockPurchaseItemCreateManyPurchaseOrderInputEnvelope
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+  }
+
+  export type EnumPOStatusFieldUpdateOperationsInput = {
+    set?: $Enums.POStatus
+  }
+
+  export type SupplierUpdateOneRequiredWithoutPurchaseOrdersNestedInput = {
+    create?: XOR<SupplierCreateWithoutPurchaseOrdersInput, SupplierUncheckedCreateWithoutPurchaseOrdersInput>
+    connectOrCreate?: SupplierCreateOrConnectWithoutPurchaseOrdersInput
+    upsert?: SupplierUpsertWithoutPurchaseOrdersInput
+    connect?: SupplierWhereUniqueInput
+    update?: XOR<XOR<SupplierUpdateToOneWithWhereWithoutPurchaseOrdersInput, SupplierUpdateWithoutPurchaseOrdersInput>, SupplierUncheckedUpdateWithoutPurchaseOrdersInput>
+  }
+
+  export type StockPurchaseItemUpdateManyWithoutPurchaseOrderNestedInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput> | StockPurchaseItemCreateWithoutPurchaseOrderInput[] | StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput | StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput[]
+    upsert?: StockPurchaseItemUpsertWithWhereUniqueWithoutPurchaseOrderInput | StockPurchaseItemUpsertWithWhereUniqueWithoutPurchaseOrderInput[]
+    createMany?: StockPurchaseItemCreateManyPurchaseOrderInputEnvelope
+    set?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    disconnect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    delete?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    update?: StockPurchaseItemUpdateWithWhereUniqueWithoutPurchaseOrderInput | StockPurchaseItemUpdateWithWhereUniqueWithoutPurchaseOrderInput[]
+    updateMany?: StockPurchaseItemUpdateManyWithWhereWithoutPurchaseOrderInput | StockPurchaseItemUpdateManyWithWhereWithoutPurchaseOrderInput[]
+    deleteMany?: StockPurchaseItemScalarWhereInput | StockPurchaseItemScalarWhereInput[]
+  }
+
+  export type StockPurchaseItemUncheckedUpdateManyWithoutPurchaseOrderNestedInput = {
+    create?: XOR<StockPurchaseItemCreateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput> | StockPurchaseItemCreateWithoutPurchaseOrderInput[] | StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput[]
+    connectOrCreate?: StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput | StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput[]
+    upsert?: StockPurchaseItemUpsertWithWhereUniqueWithoutPurchaseOrderInput | StockPurchaseItemUpsertWithWhereUniqueWithoutPurchaseOrderInput[]
+    createMany?: StockPurchaseItemCreateManyPurchaseOrderInputEnvelope
+    set?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    disconnect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    delete?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    connect?: StockPurchaseItemWhereUniqueInput | StockPurchaseItemWhereUniqueInput[]
+    update?: StockPurchaseItemUpdateWithWhereUniqueWithoutPurchaseOrderInput | StockPurchaseItemUpdateWithWhereUniqueWithoutPurchaseOrderInput[]
+    updateMany?: StockPurchaseItemUpdateManyWithWhereWithoutPurchaseOrderInput | StockPurchaseItemUpdateManyWithWhereWithoutPurchaseOrderInput[]
+    deleteMany?: StockPurchaseItemScalarWhereInput | StockPurchaseItemScalarWhereInput[]
+  }
+
+  export type StockPurchaseOrderCreateNestedOneWithoutItemsInput = {
+    create?: XOR<StockPurchaseOrderCreateWithoutItemsInput, StockPurchaseOrderUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: StockPurchaseOrderCreateOrConnectWithoutItemsInput
+    connect?: StockPurchaseOrderWhereUniqueInput
+  }
+
+  export type MaterialCreateNestedOneWithoutPurchaseItemsInput = {
+    create?: XOR<MaterialCreateWithoutPurchaseItemsInput, MaterialUncheckedCreateWithoutPurchaseItemsInput>
+    connectOrCreate?: MaterialCreateOrConnectWithoutPurchaseItemsInput
+    connect?: MaterialWhereUniqueInput
+  }
+
+  export type StockPurchaseOrderUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<StockPurchaseOrderCreateWithoutItemsInput, StockPurchaseOrderUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: StockPurchaseOrderCreateOrConnectWithoutItemsInput
+    upsert?: StockPurchaseOrderUpsertWithoutItemsInput
+    connect?: StockPurchaseOrderWhereUniqueInput
+    update?: XOR<XOR<StockPurchaseOrderUpdateToOneWithWhereWithoutItemsInput, StockPurchaseOrderUpdateWithoutItemsInput>, StockPurchaseOrderUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type MaterialUpdateOneRequiredWithoutPurchaseItemsNestedInput = {
+    create?: XOR<MaterialCreateWithoutPurchaseItemsInput, MaterialUncheckedCreateWithoutPurchaseItemsInput>
+    connectOrCreate?: MaterialCreateOrConnectWithoutPurchaseItemsInput
+    upsert?: MaterialUpsertWithoutPurchaseItemsInput
+    connect?: MaterialWhereUniqueInput
+    update?: XOR<XOR<MaterialUpdateToOneWithWhereWithoutPurchaseItemsInput, MaterialUpdateWithoutPurchaseItemsInput>, MaterialUncheckedUpdateWithoutPurchaseItemsInput>
+  }
+
   export type OrganisationCreateNestedOneWithoutJobsInput = {
     create?: XOR<OrganisationCreateWithoutJobsInput, OrganisationUncheckedCreateWithoutJobsInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutJobsInput
@@ -30787,6 +41079,12 @@ export namespace Prisma {
     create?: XOR<ClientCreateWithoutJobsInput, ClientUncheckedCreateWithoutJobsInput>
     connectOrCreate?: ClientCreateOrConnectWithoutJobsInput
     connect?: ClientWhereUniqueInput
+  }
+
+  export type PrintLayoutItemCreateNestedOneWithoutJobInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutJobInput, PrintLayoutItemUncheckedCreateWithoutJobInput>
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutJobInput
+    connect?: PrintLayoutItemWhereUniqueInput
   }
 
   export type PriceListCreateNestedOneWithoutJobsInput = {
@@ -30835,6 +41133,12 @@ export namespace Prisma {
     connect?: B2BPushWhereUniqueInput | B2BPushWhereUniqueInput[]
   }
 
+  export type PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutJobInput, PrintLayoutItemUncheckedCreateWithoutJobInput>
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutJobInput
+    connect?: PrintLayoutItemWhereUniqueInput
+  }
+
   export type JobVariableUncheckedCreateNestedManyWithoutJobInput = {
     create?: XOR<JobVariableCreateWithoutJobInput, JobVariableUncheckedCreateWithoutJobInput> | JobVariableCreateWithoutJobInput[] | JobVariableUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobVariableCreateOrConnectWithoutJobInput | JobVariableCreateOrConnectWithoutJobInput[]
@@ -30863,6 +41167,10 @@ export namespace Prisma {
     connect?: B2BPushWhereUniqueInput | B2BPushWhereUniqueInput[]
   }
 
+  export type EnumProofStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ProofStatus
+  }
+
   export type NullableEnumServiceUnitFieldUpdateOperationsInput = {
     set?: $Enums.ServiceUnit | null
   }
@@ -30889,6 +41197,16 @@ export namespace Prisma {
     upsert?: ClientUpsertWithoutJobsInput
     connect?: ClientWhereUniqueInput
     update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutJobsInput, ClientUpdateWithoutJobsInput>, ClientUncheckedUpdateWithoutJobsInput>
+  }
+
+  export type PrintLayoutItemUpdateOneWithoutJobNestedInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutJobInput, PrintLayoutItemUncheckedCreateWithoutJobInput>
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutJobInput
+    upsert?: PrintLayoutItemUpsertWithoutJobInput
+    disconnect?: PrintLayoutItemWhereInput | boolean
+    delete?: PrintLayoutItemWhereInput | boolean
+    connect?: PrintLayoutItemWhereUniqueInput
+    update?: XOR<XOR<PrintLayoutItemUpdateToOneWithWhereWithoutJobInput, PrintLayoutItemUpdateWithoutJobInput>, PrintLayoutItemUncheckedUpdateWithoutJobInput>
   }
 
   export type PriceListUpdateOneRequiredWithoutJobsNestedInput = {
@@ -30975,6 +41293,16 @@ export namespace Prisma {
     deleteMany?: B2BPushScalarWhereInput | B2BPushScalarWhereInput[]
   }
 
+  export type PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutJobInput, PrintLayoutItemUncheckedCreateWithoutJobInput>
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutJobInput
+    upsert?: PrintLayoutItemUpsertWithoutJobInput
+    disconnect?: PrintLayoutItemWhereInput | boolean
+    delete?: PrintLayoutItemWhereInput | boolean
+    connect?: PrintLayoutItemWhereUniqueInput
+    update?: XOR<XOR<PrintLayoutItemUpdateToOneWithWhereWithoutJobInput, PrintLayoutItemUpdateWithoutJobInput>, PrintLayoutItemUncheckedUpdateWithoutJobInput>
+  }
+
   export type JobVariableUncheckedUpdateManyWithoutJobNestedInput = {
     create?: XOR<JobVariableCreateWithoutJobInput, JobVariableUncheckedCreateWithoutJobInput> | JobVariableCreateWithoutJobInput[] | JobVariableUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobVariableCreateOrConnectWithoutJobInput | JobVariableCreateOrConnectWithoutJobInput[]
@@ -31037,6 +41365,12 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput
   }
 
+  export type PrintLayoutItemCreateNestedOneWithoutJobVariablesInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutJobVariablesInput, PrintLayoutItemUncheckedCreateWithoutJobVariablesInput>
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutJobVariablesInput
+    connect?: PrintLayoutItemWhereUniqueInput
+  }
+
   export type PriceListCreateNestedOneWithoutJobVariablesInput = {
     create?: XOR<PriceListCreateWithoutJobVariablesInput, PriceListUncheckedCreateWithoutJobVariablesInput>
     connectOrCreate?: PriceListCreateOrConnectWithoutJobVariablesInput
@@ -31061,6 +41395,16 @@ export namespace Prisma {
     upsert?: JobUpsertWithoutVariablesInput
     connect?: JobWhereUniqueInput
     update?: XOR<XOR<JobUpdateToOneWithWhereWithoutVariablesInput, JobUpdateWithoutVariablesInput>, JobUncheckedUpdateWithoutVariablesInput>
+  }
+
+  export type PrintLayoutItemUpdateOneWithoutJobVariablesNestedInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutJobVariablesInput, PrintLayoutItemUncheckedCreateWithoutJobVariablesInput>
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutJobVariablesInput
+    upsert?: PrintLayoutItemUpsertWithoutJobVariablesInput
+    disconnect?: PrintLayoutItemWhereInput | boolean
+    delete?: PrintLayoutItemWhereInput | boolean
+    connect?: PrintLayoutItemWhereUniqueInput
+    update?: XOR<XOR<PrintLayoutItemUpdateToOneWithWhereWithoutJobVariablesInput, PrintLayoutItemUpdateWithoutJobVariablesInput>, PrintLayoutItemUncheckedUpdateWithoutJobVariablesInput>
   }
 
   export type PriceListUpdateOneRequiredWithoutJobVariablesNestedInput = {
@@ -31089,6 +41433,136 @@ export namespace Prisma {
     delete?: ServiceWhereInput | boolean
     connect?: ServiceWhereUniqueInput
     update?: XOR<XOR<ServiceUpdateToOneWithWhereWithoutJobVariablesInput, ServiceUpdateWithoutJobVariablesInput>, ServiceUncheckedUpdateWithoutJobVariablesInput>
+  }
+
+  export type MaterialCreateNestedOneWithoutPrintLayoutsInput = {
+    create?: XOR<MaterialCreateWithoutPrintLayoutsInput, MaterialUncheckedCreateWithoutPrintLayoutsInput>
+    connectOrCreate?: MaterialCreateOrConnectWithoutPrintLayoutsInput
+    connect?: MaterialWhereUniqueInput
+  }
+
+  export type PrintLayoutItemCreateNestedManyWithoutLayoutInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutLayoutInput, PrintLayoutItemUncheckedCreateWithoutLayoutInput> | PrintLayoutItemCreateWithoutLayoutInput[] | PrintLayoutItemUncheckedCreateWithoutLayoutInput[]
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutLayoutInput | PrintLayoutItemCreateOrConnectWithoutLayoutInput[]
+    createMany?: PrintLayoutItemCreateManyLayoutInputEnvelope
+    connect?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+  }
+
+  export type PrintLayoutItemUncheckedCreateNestedManyWithoutLayoutInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutLayoutInput, PrintLayoutItemUncheckedCreateWithoutLayoutInput> | PrintLayoutItemCreateWithoutLayoutInput[] | PrintLayoutItemUncheckedCreateWithoutLayoutInput[]
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutLayoutInput | PrintLayoutItemCreateOrConnectWithoutLayoutInput[]
+    createMany?: PrintLayoutItemCreateManyLayoutInputEnvelope
+    connect?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+  }
+
+  export type EnumLayoutStatusFieldUpdateOperationsInput = {
+    set?: $Enums.LayoutStatus
+  }
+
+  export type MaterialUpdateOneRequiredWithoutPrintLayoutsNestedInput = {
+    create?: XOR<MaterialCreateWithoutPrintLayoutsInput, MaterialUncheckedCreateWithoutPrintLayoutsInput>
+    connectOrCreate?: MaterialCreateOrConnectWithoutPrintLayoutsInput
+    upsert?: MaterialUpsertWithoutPrintLayoutsInput
+    connect?: MaterialWhereUniqueInput
+    update?: XOR<XOR<MaterialUpdateToOneWithWhereWithoutPrintLayoutsInput, MaterialUpdateWithoutPrintLayoutsInput>, MaterialUncheckedUpdateWithoutPrintLayoutsInput>
+  }
+
+  export type PrintLayoutItemUpdateManyWithoutLayoutNestedInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutLayoutInput, PrintLayoutItemUncheckedCreateWithoutLayoutInput> | PrintLayoutItemCreateWithoutLayoutInput[] | PrintLayoutItemUncheckedCreateWithoutLayoutInput[]
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutLayoutInput | PrintLayoutItemCreateOrConnectWithoutLayoutInput[]
+    upsert?: PrintLayoutItemUpsertWithWhereUniqueWithoutLayoutInput | PrintLayoutItemUpsertWithWhereUniqueWithoutLayoutInput[]
+    createMany?: PrintLayoutItemCreateManyLayoutInputEnvelope
+    set?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    disconnect?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    delete?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    connect?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    update?: PrintLayoutItemUpdateWithWhereUniqueWithoutLayoutInput | PrintLayoutItemUpdateWithWhereUniqueWithoutLayoutInput[]
+    updateMany?: PrintLayoutItemUpdateManyWithWhereWithoutLayoutInput | PrintLayoutItemUpdateManyWithWhereWithoutLayoutInput[]
+    deleteMany?: PrintLayoutItemScalarWhereInput | PrintLayoutItemScalarWhereInput[]
+  }
+
+  export type PrintLayoutItemUncheckedUpdateManyWithoutLayoutNestedInput = {
+    create?: XOR<PrintLayoutItemCreateWithoutLayoutInput, PrintLayoutItemUncheckedCreateWithoutLayoutInput> | PrintLayoutItemCreateWithoutLayoutInput[] | PrintLayoutItemUncheckedCreateWithoutLayoutInput[]
+    connectOrCreate?: PrintLayoutItemCreateOrConnectWithoutLayoutInput | PrintLayoutItemCreateOrConnectWithoutLayoutInput[]
+    upsert?: PrintLayoutItemUpsertWithWhereUniqueWithoutLayoutInput | PrintLayoutItemUpsertWithWhereUniqueWithoutLayoutInput[]
+    createMany?: PrintLayoutItemCreateManyLayoutInputEnvelope
+    set?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    disconnect?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    delete?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    connect?: PrintLayoutItemWhereUniqueInput | PrintLayoutItemWhereUniqueInput[]
+    update?: PrintLayoutItemUpdateWithWhereUniqueWithoutLayoutInput | PrintLayoutItemUpdateWithWhereUniqueWithoutLayoutInput[]
+    updateMany?: PrintLayoutItemUpdateManyWithWhereWithoutLayoutInput | PrintLayoutItemUpdateManyWithWhereWithoutLayoutInput[]
+    deleteMany?: PrintLayoutItemScalarWhereInput | PrintLayoutItemScalarWhereInput[]
+  }
+
+  export type MaterialPrintLayoutCreateNestedOneWithoutItemsInput = {
+    create?: XOR<MaterialPrintLayoutCreateWithoutItemsInput, MaterialPrintLayoutUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: MaterialPrintLayoutCreateOrConnectWithoutItemsInput
+    connect?: MaterialPrintLayoutWhereUniqueInput
+  }
+
+  export type JobCreateNestedOneWithoutLayoutItemInput = {
+    create?: XOR<JobCreateWithoutLayoutItemInput, JobUncheckedCreateWithoutLayoutItemInput>
+    connectOrCreate?: JobCreateOrConnectWithoutLayoutItemInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type JobVariableCreateNestedManyWithoutLayoutItemInput = {
+    create?: XOR<JobVariableCreateWithoutLayoutItemInput, JobVariableUncheckedCreateWithoutLayoutItemInput> | JobVariableCreateWithoutLayoutItemInput[] | JobVariableUncheckedCreateWithoutLayoutItemInput[]
+    connectOrCreate?: JobVariableCreateOrConnectWithoutLayoutItemInput | JobVariableCreateOrConnectWithoutLayoutItemInput[]
+    createMany?: JobVariableCreateManyLayoutItemInputEnvelope
+    connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+  }
+
+  export type JobVariableUncheckedCreateNestedManyWithoutLayoutItemInput = {
+    create?: XOR<JobVariableCreateWithoutLayoutItemInput, JobVariableUncheckedCreateWithoutLayoutItemInput> | JobVariableCreateWithoutLayoutItemInput[] | JobVariableUncheckedCreateWithoutLayoutItemInput[]
+    connectOrCreate?: JobVariableCreateOrConnectWithoutLayoutItemInput | JobVariableCreateOrConnectWithoutLayoutItemInput[]
+    createMany?: JobVariableCreateManyLayoutItemInputEnvelope
+    connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+  }
+
+  export type MaterialPrintLayoutUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<MaterialPrintLayoutCreateWithoutItemsInput, MaterialPrintLayoutUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: MaterialPrintLayoutCreateOrConnectWithoutItemsInput
+    upsert?: MaterialPrintLayoutUpsertWithoutItemsInput
+    connect?: MaterialPrintLayoutWhereUniqueInput
+    update?: XOR<XOR<MaterialPrintLayoutUpdateToOneWithWhereWithoutItemsInput, MaterialPrintLayoutUpdateWithoutItemsInput>, MaterialPrintLayoutUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type JobUpdateOneRequiredWithoutLayoutItemNestedInput = {
+    create?: XOR<JobCreateWithoutLayoutItemInput, JobUncheckedCreateWithoutLayoutItemInput>
+    connectOrCreate?: JobCreateOrConnectWithoutLayoutItemInput
+    upsert?: JobUpsertWithoutLayoutItemInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutLayoutItemInput, JobUpdateWithoutLayoutItemInput>, JobUncheckedUpdateWithoutLayoutItemInput>
+  }
+
+  export type JobVariableUpdateManyWithoutLayoutItemNestedInput = {
+    create?: XOR<JobVariableCreateWithoutLayoutItemInput, JobVariableUncheckedCreateWithoutLayoutItemInput> | JobVariableCreateWithoutLayoutItemInput[] | JobVariableUncheckedCreateWithoutLayoutItemInput[]
+    connectOrCreate?: JobVariableCreateOrConnectWithoutLayoutItemInput | JobVariableCreateOrConnectWithoutLayoutItemInput[]
+    upsert?: JobVariableUpsertWithWhereUniqueWithoutLayoutItemInput | JobVariableUpsertWithWhereUniqueWithoutLayoutItemInput[]
+    createMany?: JobVariableCreateManyLayoutItemInputEnvelope
+    set?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    disconnect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    delete?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    update?: JobVariableUpdateWithWhereUniqueWithoutLayoutItemInput | JobVariableUpdateWithWhereUniqueWithoutLayoutItemInput[]
+    updateMany?: JobVariableUpdateManyWithWhereWithoutLayoutItemInput | JobVariableUpdateManyWithWhereWithoutLayoutItemInput[]
+    deleteMany?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
+  }
+
+  export type JobVariableUncheckedUpdateManyWithoutLayoutItemNestedInput = {
+    create?: XOR<JobVariableCreateWithoutLayoutItemInput, JobVariableUncheckedCreateWithoutLayoutItemInput> | JobVariableCreateWithoutLayoutItemInput[] | JobVariableUncheckedCreateWithoutLayoutItemInput[]
+    connectOrCreate?: JobVariableCreateOrConnectWithoutLayoutItemInput | JobVariableCreateOrConnectWithoutLayoutItemInput[]
+    upsert?: JobVariableUpsertWithWhereUniqueWithoutLayoutItemInput | JobVariableUpsertWithWhereUniqueWithoutLayoutItemInput[]
+    createMany?: JobVariableCreateManyLayoutItemInputEnvelope
+    set?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    disconnect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    delete?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    connect?: JobVariableWhereUniqueInput | JobVariableWhereUniqueInput[]
+    update?: JobVariableUpdateWithWhereUniqueWithoutLayoutItemInput | JobVariableUpdateWithWhereUniqueWithoutLayoutItemInput[]
+    updateMany?: JobVariableUpdateManyWithWhereWithoutLayoutItemInput | JobVariableUpdateManyWithWhereWithoutLayoutItemInput[]
+    deleteMany?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
   }
 
   export type OrganisationCreateNestedOneWithoutDeliveriesInput = {
@@ -31519,6 +41993,22 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type NestedEnumClientTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ClientType | EnumClientTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ClientType[] | ListEnumClientTypeFieldRefInput<$PrismaModel>
@@ -31548,22 +42038,6 @@ export namespace Prisma {
     in?: $Enums.ServiceCategory[] | ListEnumServiceCategoryFieldRefInput<$PrismaModel> | null
     notIn?: $Enums.ServiceCategory[] | ListEnumServiceCategoryFieldRefInput<$PrismaModel> | null
     not?: NestedEnumServiceCategoryNullableFilter<$PrismaModel> | $Enums.ServiceCategory | null
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedEnumMaterialCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -31620,6 +42094,22 @@ export namespace Prisma {
     _max?: NestedEnumServiceUnitFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumServiceCalculationTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ServiceCalculationType | EnumServiceCalculationTypeFieldRefInput<$PrismaModel>
     in?: $Enums.ServiceCalculationType[] | ListEnumServiceCalculationTypeFieldRefInput<$PrismaModel>
@@ -31654,6 +42144,30 @@ export namespace Prisma {
     _max?: NestedEnumStockMovementTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumPOStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.POStatus | EnumPOStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPOStatusFilter<$PrismaModel> | $Enums.POStatus
+  }
+
+  export type NestedEnumPOStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.POStatus | EnumPOStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.POStatus[] | ListEnumPOStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPOStatusWithAggregatesFilter<$PrismaModel> | $Enums.POStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPOStatusFilter<$PrismaModel>
+    _max?: NestedEnumPOStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumProofStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProofStatus | EnumProofStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProofStatusFilter<$PrismaModel> | $Enums.ProofStatus
+  }
+
   export type NestedEnumServiceUnitNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.ServiceUnit | EnumServiceUnitFieldRefInput<$PrismaModel> | null
     in?: $Enums.ServiceUnit[] | ListEnumServiceUnitFieldRefInput<$PrismaModel> | null
@@ -31673,6 +42187,16 @@ export namespace Prisma {
     in?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.JobStatus[] | ListEnumJobStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumJobStatusFilter<$PrismaModel> | $Enums.JobStatus
+  }
+
+  export type NestedEnumProofStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProofStatus | EnumProofStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProofStatus[] | ListEnumProofStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumProofStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProofStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProofStatusFilter<$PrismaModel>
+    _max?: NestedEnumProofStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumServiceUnitNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -31703,6 +42227,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumJobStatusFilter<$PrismaModel>
     _max?: NestedEnumJobStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumLayoutStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.LayoutStatus | EnumLayoutStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLayoutStatusFilter<$PrismaModel> | $Enums.LayoutStatus
+  }
+
+  export type NestedEnumLayoutStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LayoutStatus | EnumLayoutStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LayoutStatus[] | ListEnumLayoutStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumLayoutStatusWithAggregatesFilter<$PrismaModel> | $Enums.LayoutStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLayoutStatusFilter<$PrismaModel>
+    _max?: NestedEnumLayoutStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumDeliveryTypeFilter<$PrismaModel = never> = {
@@ -31845,6 +42386,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStaffProfileInput
     assignedJobs?: JobCreateNestedManyWithoutAssignedStaffInput
+    staffPerformances?: StaffPerformanceCreateNestedManyWithoutStaffInput
   }
 
   export type StaffUncheckedCreateWithoutOrganisationInput = {
@@ -31858,6 +42400,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedJobs?: JobUncheckedCreateNestedManyWithoutAssignedStaffInput
+    staffPerformances?: StaffPerformanceUncheckedCreateNestedManyWithoutStaffInput
   }
 
   export type StaffCreateOrConnectWithoutOrganisationInput = {
@@ -31924,6 +42467,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutOrganisationInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -31942,6 +42491,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
@@ -31954,6 +42504,12 @@ export namespace Prisma {
   export type JobUncheckedCreateWithoutOrganisationInput = {
     id?: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -31974,6 +42530,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
@@ -32036,9 +42593,17 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    supplier?: SupplierCreateNestedOneWithoutMaterialsInput
     stockItem?: StockItemCreateNestedOneWithoutMaterialInput
     priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemCreateNestedManyWithoutMaterialInput
   }
 
   export type MaterialUncheckedCreateWithoutOrganisationInput = {
@@ -32047,9 +42612,17 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
     stockItemId?: string | null
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput
   }
 
   export type MaterialCreateOrConnectWithoutOrganisationInput = {
@@ -32334,6 +42907,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SupplierCreateWithoutOrganisationInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    materials?: MaterialCreateNestedManyWithoutSupplierInput
+    purchaseOrders?: StockPurchaseOrderCreateNestedManyWithoutSupplierInput
+  }
+
+  export type SupplierUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    materials?: MaterialUncheckedCreateNestedManyWithoutSupplierInput
+    purchaseOrders?: StockPurchaseOrderUncheckedCreateNestedManyWithoutSupplierInput
+  }
+
+  export type SupplierCreateOrConnectWithoutOrganisationInput = {
+    where: SupplierWhereUniqueInput
+    create: XOR<SupplierCreateWithoutOrganisationInput, SupplierUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type SupplierCreateManyOrganisationInputEnvelope = {
+    data: SupplierCreateManyOrganisationInput | SupplierCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOrganisationInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOrganisationInput, UserUncheckedUpdateWithoutOrganisationInput>
@@ -32461,6 +43070,12 @@ export namespace Prisma {
     id?: StringFilter<"Job"> | string
     orgId?: StringFilter<"Job"> | string
     clientId?: StringFilter<"Job"> | string
+    shortRef?: StringNullableFilter<"Job"> | string | null
+    proofUrl?: StringNullableFilter<"Job"> | string | null
+    proofStatus?: EnumProofStatusFilter<"Job"> | $Enums.ProofStatus
+    customerNote?: StringNullableFilter<"Job"> | string | null
+    approvalToken?: StringNullableFilter<"Job"> | string | null
+    approvedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     priceListId?: StringFilter<"Job"> | string
     serviceName?: StringFilter<"Job"> | string
     quantity?: FloatFilter<"Job"> | number
@@ -32541,6 +43156,12 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFilter<"Material"> | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFilter<"Material"> | $Enums.ServiceUnit
     purchasePrice?: FloatFilter<"Material"> | number
+    rollWidth?: FloatNullableFilter<"Material"> | number | null
+    supplierId?: StringNullableFilter<"Material"> | string | null
+    leadTimeDays?: IntNullableFilter<"Material"> | number | null
+    minOrderQty?: IntNullableFilter<"Material"> | number | null
+    buyQuantity?: FloatNullableFilter<"Material"> | number | null
+    buyUnit?: StringNullableFilter<"Material"> | string | null
     stockItemId?: StringNullableFilter<"Material"> | string | null
     orgId?: StringFilter<"Material"> | string
   }
@@ -32796,6 +43417,37 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Payment"> | Date | string
   }
 
+  export type SupplierUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: SupplierWhereUniqueInput
+    update: XOR<SupplierUpdateWithoutOrganisationInput, SupplierUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<SupplierCreateWithoutOrganisationInput, SupplierUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type SupplierUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: SupplierWhereUniqueInput
+    data: XOR<SupplierUpdateWithoutOrganisationInput, SupplierUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type SupplierUpdateManyWithWhereWithoutOrganisationInput = {
+    where: SupplierScalarWhereInput
+    data: XOR<SupplierUpdateManyMutationInput, SupplierUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type SupplierScalarWhereInput = {
+    AND?: SupplierScalarWhereInput | SupplierScalarWhereInput[]
+    OR?: SupplierScalarWhereInput[]
+    NOT?: SupplierScalarWhereInput | SupplierScalarWhereInput[]
+    id?: StringFilter<"Supplier"> | string
+    orgId?: StringFilter<"Supplier"> | string
+    name?: StringFilter<"Supplier"> | string
+    email?: StringNullableFilter<"Supplier"> | string | null
+    phone?: StringNullableFilter<"Supplier"> | string | null
+    address?: StringNullableFilter<"Supplier"> | string | null
+    category?: StringNullableFilter<"Supplier"> | string | null
+    linkedUserId?: StringNullableFilter<"Supplier"> | string | null
+    createdAt?: DateTimeFilter<"Supplier"> | Date | string
+  }
+
   export type OrganisationCreateWithoutOutboxEventsInput = {
     id?: string
     name: string
@@ -32820,6 +43472,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutOutboxEventsInput = {
@@ -32846,6 +43499,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutOutboxEventsInput = {
@@ -32888,6 +43542,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutOutboxEventsInput = {
@@ -32914,6 +43569,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationCreateWithoutUsersInput = {
@@ -32940,6 +43596,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutUsersInput = {
@@ -32966,6 +43623,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutUsersInput = {
@@ -32984,6 +43642,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutStaffInput
     assignedJobs?: JobCreateNestedManyWithoutAssignedStaffInput
+    staffPerformances?: StaffPerformanceCreateNestedManyWithoutStaffInput
   }
 
   export type StaffUncheckedCreateWithoutUserInput = {
@@ -32997,6 +43656,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     assignedJobs?: JobUncheckedCreateNestedManyWithoutAssignedStaffInput
+    staffPerformances?: StaffPerformanceUncheckedCreateNestedManyWithoutStaffInput
   }
 
   export type StaffCreateOrConnectWithoutUserInput = {
@@ -33039,6 +43699,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutUsersInput = {
@@ -33065,6 +43726,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type StaffUpsertWithoutUserInput = {
@@ -33089,6 +43751,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutStaffNestedInput
     assignedJobs?: JobUpdateManyWithoutAssignedStaffNestedInput
+    staffPerformances?: StaffPerformanceUpdateManyWithoutStaffNestedInput
   }
 
   export type StaffUncheckedUpdateWithoutUserInput = {
@@ -33102,6 +43765,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedJobs?: JobUncheckedUpdateManyWithoutAssignedStaffNestedInput
+    staffPerformances?: StaffPerformanceUncheckedUpdateManyWithoutStaffNestedInput
   }
 
   export type UserCreateWithoutStaffProfileInput = {
@@ -33161,6 +43825,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutStaffInput = {
@@ -33187,6 +43852,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutStaffInput = {
@@ -33196,6 +43862,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutAssignedStaffInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -33215,6 +43887,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     deliveries?: DeliveryCreateNestedManyWithoutJobInput
@@ -33227,6 +43900,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -33246,6 +43925,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
@@ -33259,6 +43939,34 @@ export namespace Prisma {
 
   export type JobCreateManyAssignedStaffInputEnvelope = {
     data: JobCreateManyAssignedStaffInput | JobCreateManyAssignedStaffInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StaffPerformanceCreateWithoutStaffInput = {
+    id?: string
+    orgId: string
+    metricType: string
+    value: number
+    jobId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StaffPerformanceUncheckedCreateWithoutStaffInput = {
+    id?: string
+    orgId: string
+    metricType: string
+    value: number
+    jobId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type StaffPerformanceCreateOrConnectWithoutStaffInput = {
+    where: StaffPerformanceWhereUniqueInput
+    create: XOR<StaffPerformanceCreateWithoutStaffInput, StaffPerformanceUncheckedCreateWithoutStaffInput>
+  }
+
+  export type StaffPerformanceCreateManyStaffInputEnvelope = {
+    data: StaffPerformanceCreateManyStaffInput | StaffPerformanceCreateManyStaffInput[]
     skipDuplicates?: boolean
   }
 
@@ -33336,6 +44044,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutStaffInput = {
@@ -33362,6 +44071,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type JobUpsertWithWhereUniqueWithoutAssignedStaffInput = {
@@ -33378,6 +44088,107 @@ export namespace Prisma {
   export type JobUpdateManyWithWhereWithoutAssignedStaffInput = {
     where: JobScalarWhereInput
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutAssignedStaffInput>
+  }
+
+  export type StaffPerformanceUpsertWithWhereUniqueWithoutStaffInput = {
+    where: StaffPerformanceWhereUniqueInput
+    update: XOR<StaffPerformanceUpdateWithoutStaffInput, StaffPerformanceUncheckedUpdateWithoutStaffInput>
+    create: XOR<StaffPerformanceCreateWithoutStaffInput, StaffPerformanceUncheckedCreateWithoutStaffInput>
+  }
+
+  export type StaffPerformanceUpdateWithWhereUniqueWithoutStaffInput = {
+    where: StaffPerformanceWhereUniqueInput
+    data: XOR<StaffPerformanceUpdateWithoutStaffInput, StaffPerformanceUncheckedUpdateWithoutStaffInput>
+  }
+
+  export type StaffPerformanceUpdateManyWithWhereWithoutStaffInput = {
+    where: StaffPerformanceScalarWhereInput
+    data: XOR<StaffPerformanceUpdateManyMutationInput, StaffPerformanceUncheckedUpdateManyWithoutStaffInput>
+  }
+
+  export type StaffPerformanceScalarWhereInput = {
+    AND?: StaffPerformanceScalarWhereInput | StaffPerformanceScalarWhereInput[]
+    OR?: StaffPerformanceScalarWhereInput[]
+    NOT?: StaffPerformanceScalarWhereInput | StaffPerformanceScalarWhereInput[]
+    id?: StringFilter<"StaffPerformance"> | string
+    staffId?: StringFilter<"StaffPerformance"> | string
+    orgId?: StringFilter<"StaffPerformance"> | string
+    metricType?: StringFilter<"StaffPerformance"> | string
+    value?: FloatFilter<"StaffPerformance"> | number
+    jobId?: StringNullableFilter<"StaffPerformance"> | string | null
+    createdAt?: DateTimeFilter<"StaffPerformance"> | Date | string
+  }
+
+  export type StaffCreateWithoutStaffPerformancesInput = {
+    id?: string
+    phone?: string | null
+    specialisation?: string | null
+    isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutStaffProfileInput
+    organisation: OrganisationCreateNestedOneWithoutStaffInput
+    assignedJobs?: JobCreateNestedManyWithoutAssignedStaffInput
+  }
+
+  export type StaffUncheckedCreateWithoutStaffPerformancesInput = {
+    id?: string
+    orgId: string
+    userId: string
+    phone?: string | null
+    specialisation?: string | null
+    isActive?: boolean
+    joinedAt?: Date | string | null
+    baseSalary?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    assignedJobs?: JobUncheckedCreateNestedManyWithoutAssignedStaffInput
+  }
+
+  export type StaffCreateOrConnectWithoutStaffPerformancesInput = {
+    where: StaffWhereUniqueInput
+    create: XOR<StaffCreateWithoutStaffPerformancesInput, StaffUncheckedCreateWithoutStaffPerformancesInput>
+  }
+
+  export type StaffUpsertWithoutStaffPerformancesInput = {
+    update: XOR<StaffUpdateWithoutStaffPerformancesInput, StaffUncheckedUpdateWithoutStaffPerformancesInput>
+    create: XOR<StaffCreateWithoutStaffPerformancesInput, StaffUncheckedCreateWithoutStaffPerformancesInput>
+    where?: StaffWhereInput
+  }
+
+  export type StaffUpdateToOneWithWhereWithoutStaffPerformancesInput = {
+    where?: StaffWhereInput
+    data: XOR<StaffUpdateWithoutStaffPerformancesInput, StaffUncheckedUpdateWithoutStaffPerformancesInput>
+  }
+
+  export type StaffUpdateWithoutStaffPerformancesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    specialisation?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutStaffProfileNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutStaffNestedInput
+    assignedJobs?: JobUpdateManyWithoutAssignedStaffNestedInput
+  }
+
+  export type StaffUncheckedUpdateWithoutStaffPerformancesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    specialisation?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    joinedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    assignedJobs?: JobUncheckedUpdateManyWithoutAssignedStaffNestedInput
   }
 
   export type OrganisationCreateWithoutClientsInput = {
@@ -33404,6 +44215,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutClientsInput = {
@@ -33430,6 +44242,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutClientsInput = {
@@ -33439,6 +44252,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutClientInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -33457,6 +44276,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
@@ -33469,6 +44289,12 @@ export namespace Prisma {
   export type JobUncheckedCreateWithoutClientInput = {
     id?: string
     orgId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -33489,6 +44315,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
@@ -33580,6 +44407,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutClientsInput = {
@@ -33606,6 +44434,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type JobUpsertWithWhereUniqueWithoutClientInput = {
@@ -33664,6 +44493,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutPricesInput = {
@@ -33690,6 +44520,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutPricesInput = {
@@ -33703,8 +44534,16 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    supplier?: SupplierCreateNestedOneWithoutMaterialsInput
     stockItem?: StockItemCreateNestedOneWithoutMaterialInput
     jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemCreateNestedManyWithoutMaterialInput
     organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
@@ -33714,9 +44553,17 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
     stockItemId?: string | null
     orgId: string
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput
   }
 
   export type MaterialCreateOrConnectWithoutPriceListItemsInput = {
@@ -33753,6 +44600,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutPriceListInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -33772,6 +44625,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
     deliveries?: DeliveryCreateNestedManyWithoutJobInput
@@ -33784,6 +44638,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -33803,6 +44663,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
@@ -33821,6 +44682,7 @@ export namespace Prisma {
 
   export type JobVariableCreateWithoutPriceListInput = {
     id?: string
+    shortRef?: string | null
     quantity: number
     width?: number | null
     height?: number | null
@@ -33829,6 +44691,7 @@ export namespace Prisma {
     orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobVariablesInput
     material?: MaterialCreateNestedOneWithoutJobVariablesInput
     service?: ServiceCreateNestedOneWithoutJobVariablesInput
   }
@@ -33836,6 +44699,7 @@ export namespace Prisma {
   export type JobVariableUncheckedCreateWithoutPriceListInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     quantity: number
     width?: number | null
     height?: number | null
@@ -33845,6 +44709,7 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type JobVariableCreateOrConnectWithoutPriceListInput = {
@@ -33892,6 +44757,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutPricesInput = {
@@ -33918,6 +44784,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type MaterialUpsertWithoutPriceListItemsInput = {
@@ -33937,8 +44804,16 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    supplier?: SupplierUpdateOneWithoutMaterialsNestedInput
     stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
     jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUpdateManyWithoutMaterialNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
@@ -33948,9 +44823,17 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput
   }
 
   export type ServiceUpsertWithoutPriceListItemsInput = {
@@ -34024,6 +44907,7 @@ export namespace Prisma {
     NOT?: JobVariableScalarWhereInput | JobVariableScalarWhereInput[]
     id?: StringFilter<"JobVariable"> | string
     jobId?: StringFilter<"JobVariable"> | string
+    shortRef?: StringNullableFilter<"JobVariable"> | string | null
     priceListId?: StringFilter<"JobVariable"> | string
     quantity?: FloatFilter<"JobVariable"> | number
     width?: FloatNullableFilter<"JobVariable"> | number | null
@@ -34034,6 +44918,38 @@ export namespace Prisma {
     serviceId?: StringNullableFilter<"JobVariable"> | string | null
     orgId?: StringFilter<"JobVariable"> | string
     createdAt?: DateTimeFilter<"JobVariable"> | Date | string
+    printLayoutItemId?: StringNullableFilter<"JobVariable"> | string | null
+  }
+
+  export type SupplierCreateWithoutMaterialsInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    purchaseOrders?: StockPurchaseOrderCreateNestedManyWithoutSupplierInput
+    organisation: OrganisationCreateNestedOneWithoutSuppliersInput
+  }
+
+  export type SupplierUncheckedCreateWithoutMaterialsInput = {
+    id?: string
+    orgId: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    purchaseOrders?: StockPurchaseOrderUncheckedCreateNestedManyWithoutSupplierInput
+  }
+
+  export type SupplierCreateOrConnectWithoutMaterialsInput = {
+    where: SupplierWhereUniqueInput
+    create: XOR<SupplierCreateWithoutMaterialsInput, SupplierUncheckedCreateWithoutMaterialsInput>
   }
 
   export type StockItemCreateWithoutMaterialInput = {
@@ -34103,6 +45019,7 @@ export namespace Prisma {
 
   export type JobVariableCreateWithoutMaterialInput = {
     id?: string
+    shortRef?: string | null
     quantity: number
     width?: number | null
     height?: number | null
@@ -34111,6 +45028,7 @@ export namespace Prisma {
     orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobVariablesInput
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
     service?: ServiceCreateNestedOneWithoutJobVariablesInput
   }
@@ -34118,6 +45036,7 @@ export namespace Prisma {
   export type JobVariableUncheckedCreateWithoutMaterialInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -34127,6 +45046,7 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type JobVariableCreateOrConnectWithoutMaterialInput = {
@@ -34136,6 +45056,66 @@ export namespace Prisma {
 
   export type JobVariableCreateManyMaterialInputEnvelope = {
     data: JobVariableCreateManyMaterialInput | JobVariableCreateManyMaterialInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MaterialPrintLayoutCreateWithoutMaterialInput = {
+    id?: string
+    orgId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+    items?: PrintLayoutItemCreateNestedManyWithoutLayoutInput
+  }
+
+  export type MaterialPrintLayoutUncheckedCreateWithoutMaterialInput = {
+    id?: string
+    orgId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+    items?: PrintLayoutItemUncheckedCreateNestedManyWithoutLayoutInput
+  }
+
+  export type MaterialPrintLayoutCreateOrConnectWithoutMaterialInput = {
+    where: MaterialPrintLayoutWhereUniqueInput
+    create: XOR<MaterialPrintLayoutCreateWithoutMaterialInput, MaterialPrintLayoutUncheckedCreateWithoutMaterialInput>
+  }
+
+  export type MaterialPrintLayoutCreateManyMaterialInputEnvelope = {
+    data: MaterialPrintLayoutCreateManyMaterialInput | MaterialPrintLayoutCreateManyMaterialInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockPurchaseItemCreateWithoutMaterialInput = {
+    id?: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+    purchaseOrder: StockPurchaseOrderCreateNestedOneWithoutItemsInput
+  }
+
+  export type StockPurchaseItemUncheckedCreateWithoutMaterialInput = {
+    id?: string
+    purchaseOrderId: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+  }
+
+  export type StockPurchaseItemCreateOrConnectWithoutMaterialInput = {
+    where: StockPurchaseItemWhereUniqueInput
+    create: XOR<StockPurchaseItemCreateWithoutMaterialInput, StockPurchaseItemUncheckedCreateWithoutMaterialInput>
+  }
+
+  export type StockPurchaseItemCreateManyMaterialInputEnvelope = {
+    data: StockPurchaseItemCreateManyMaterialInput | StockPurchaseItemCreateManyMaterialInput[]
     skipDuplicates?: boolean
   }
 
@@ -34163,6 +45143,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutMaterialsInput = {
@@ -34189,11 +45170,49 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutMaterialsInput = {
     where: OrganisationWhereUniqueInput
     create: XOR<OrganisationCreateWithoutMaterialsInput, OrganisationUncheckedCreateWithoutMaterialsInput>
+  }
+
+  export type SupplierUpsertWithoutMaterialsInput = {
+    update: XOR<SupplierUpdateWithoutMaterialsInput, SupplierUncheckedUpdateWithoutMaterialsInput>
+    create: XOR<SupplierCreateWithoutMaterialsInput, SupplierUncheckedCreateWithoutMaterialsInput>
+    where?: SupplierWhereInput
+  }
+
+  export type SupplierUpdateToOneWithWhereWithoutMaterialsInput = {
+    where?: SupplierWhereInput
+    data: XOR<SupplierUpdateWithoutMaterialsInput, SupplierUncheckedUpdateWithoutMaterialsInput>
+  }
+
+  export type SupplierUpdateWithoutMaterialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    purchaseOrders?: StockPurchaseOrderUpdateManyWithoutSupplierNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutSuppliersNestedInput
+  }
+
+  export type SupplierUncheckedUpdateWithoutMaterialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    purchaseOrders?: StockPurchaseOrderUncheckedUpdateManyWithoutSupplierNestedInput
   }
 
   export type StockItemUpsertWithoutMaterialInput = {
@@ -34259,6 +45278,65 @@ export namespace Prisma {
     data: XOR<JobVariableUpdateManyMutationInput, JobVariableUncheckedUpdateManyWithoutMaterialInput>
   }
 
+  export type MaterialPrintLayoutUpsertWithWhereUniqueWithoutMaterialInput = {
+    where: MaterialPrintLayoutWhereUniqueInput
+    update: XOR<MaterialPrintLayoutUpdateWithoutMaterialInput, MaterialPrintLayoutUncheckedUpdateWithoutMaterialInput>
+    create: XOR<MaterialPrintLayoutCreateWithoutMaterialInput, MaterialPrintLayoutUncheckedCreateWithoutMaterialInput>
+  }
+
+  export type MaterialPrintLayoutUpdateWithWhereUniqueWithoutMaterialInput = {
+    where: MaterialPrintLayoutWhereUniqueInput
+    data: XOR<MaterialPrintLayoutUpdateWithoutMaterialInput, MaterialPrintLayoutUncheckedUpdateWithoutMaterialInput>
+  }
+
+  export type MaterialPrintLayoutUpdateManyWithWhereWithoutMaterialInput = {
+    where: MaterialPrintLayoutScalarWhereInput
+    data: XOR<MaterialPrintLayoutUpdateManyMutationInput, MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialInput>
+  }
+
+  export type MaterialPrintLayoutScalarWhereInput = {
+    AND?: MaterialPrintLayoutScalarWhereInput | MaterialPrintLayoutScalarWhereInput[]
+    OR?: MaterialPrintLayoutScalarWhereInput[]
+    NOT?: MaterialPrintLayoutScalarWhereInput | MaterialPrintLayoutScalarWhereInput[]
+    id?: StringFilter<"MaterialPrintLayout"> | string
+    orgId?: StringFilter<"MaterialPrintLayout"> | string
+    materialId?: StringFilter<"MaterialPrintLayout"> | string
+    rollWidth?: FloatFilter<"MaterialPrintLayout"> | number
+    cutLineHeight?: FloatFilter<"MaterialPrintLayout"> | number
+    efficiency?: FloatFilter<"MaterialPrintLayout"> | number
+    totalWastedArea?: FloatFilter<"MaterialPrintLayout"> | number
+    status?: EnumLayoutStatusFilter<"MaterialPrintLayout"> | $Enums.LayoutStatus
+    createdAt?: DateTimeFilter<"MaterialPrintLayout"> | Date | string
+  }
+
+  export type StockPurchaseItemUpsertWithWhereUniqueWithoutMaterialInput = {
+    where: StockPurchaseItemWhereUniqueInput
+    update: XOR<StockPurchaseItemUpdateWithoutMaterialInput, StockPurchaseItemUncheckedUpdateWithoutMaterialInput>
+    create: XOR<StockPurchaseItemCreateWithoutMaterialInput, StockPurchaseItemUncheckedCreateWithoutMaterialInput>
+  }
+
+  export type StockPurchaseItemUpdateWithWhereUniqueWithoutMaterialInput = {
+    where: StockPurchaseItemWhereUniqueInput
+    data: XOR<StockPurchaseItemUpdateWithoutMaterialInput, StockPurchaseItemUncheckedUpdateWithoutMaterialInput>
+  }
+
+  export type StockPurchaseItemUpdateManyWithWhereWithoutMaterialInput = {
+    where: StockPurchaseItemScalarWhereInput
+    data: XOR<StockPurchaseItemUpdateManyMutationInput, StockPurchaseItemUncheckedUpdateManyWithoutMaterialInput>
+  }
+
+  export type StockPurchaseItemScalarWhereInput = {
+    AND?: StockPurchaseItemScalarWhereInput | StockPurchaseItemScalarWhereInput[]
+    OR?: StockPurchaseItemScalarWhereInput[]
+    NOT?: StockPurchaseItemScalarWhereInput | StockPurchaseItemScalarWhereInput[]
+    id?: StringFilter<"StockPurchaseItem"> | string
+    purchaseOrderId?: StringFilter<"StockPurchaseItem"> | string
+    materialId?: StringFilter<"StockPurchaseItem"> | string
+    quantity?: FloatFilter<"StockPurchaseItem"> | number
+    buyUnit?: StringFilter<"StockPurchaseItem"> | string
+    unitPrice?: FloatFilter<"StockPurchaseItem"> | number
+  }
+
   export type OrganisationUpsertWithoutMaterialsInput = {
     update: XOR<OrganisationUpdateWithoutMaterialsInput, OrganisationUncheckedUpdateWithoutMaterialsInput>
     create: XOR<OrganisationCreateWithoutMaterialsInput, OrganisationUncheckedCreateWithoutMaterialsInput>
@@ -34294,6 +45372,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutMaterialsInput = {
@@ -34320,6 +45399,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type PriceListCreateWithoutServiceInput = {
@@ -34364,6 +45444,7 @@ export namespace Prisma {
 
   export type JobVariableCreateWithoutServiceInput = {
     id?: string
+    shortRef?: string | null
     quantity: number
     width?: number | null
     height?: number | null
@@ -34372,6 +45453,7 @@ export namespace Prisma {
     orgId: string
     createdAt?: Date | string
     job: JobCreateNestedOneWithoutVariablesInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobVariablesInput
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
     material?: MaterialCreateNestedOneWithoutJobVariablesInput
   }
@@ -34379,6 +45461,7 @@ export namespace Prisma {
   export type JobVariableUncheckedCreateWithoutServiceInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -34388,6 +45471,7 @@ export namespace Prisma {
     materialId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type JobVariableCreateOrConnectWithoutServiceInput = {
@@ -34424,6 +45508,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutServicesInput = {
@@ -34450,6 +45535,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutServicesInput = {
@@ -34524,6 +45610,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutServicesInput = {
@@ -34550,6 +45637,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationCreateWithoutStockItemsInput = {
@@ -34576,6 +45664,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutStockItemsInput = {
@@ -34602,6 +45691,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutStockItemsInput = {
@@ -34615,8 +45705,16 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    supplier?: SupplierCreateNestedOneWithoutMaterialsInput
     priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemCreateNestedManyWithoutMaterialInput
     organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
@@ -34626,9 +45724,17 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
     orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
     jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput
   }
 
   export type MaterialCreateOrConnectWithoutStockItemInput = {
@@ -34705,6 +45811,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutStockItemsInput = {
@@ -34731,6 +45838,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type MaterialUpsertWithoutStockItemInput = {
@@ -34750,8 +45858,16 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    supplier?: SupplierUpdateOneWithoutMaterialsNestedInput
     priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUpdateManyWithoutMaterialNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
@@ -34761,9 +45877,17 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput
   }
 
   export type StockMovementUpsertWithWhereUniqueWithoutStockItemInput = {
@@ -34806,6 +45930,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutStockMovementsInput = {
@@ -34832,6 +45957,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutStockMovementsInput = {
@@ -34899,6 +46025,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutStockMovementsInput = {
@@ -34925,6 +46052,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type StockItemUpsertWithoutStockMovementsInput = {
@@ -34958,6 +46086,532 @@ export namespace Prisma {
     material?: MaterialUncheckedUpdateOneWithoutStockItemNestedInput
   }
 
+  export type MaterialCreateWithoutSupplierInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    stockItem?: StockItemCreateNestedOneWithoutMaterialInput
+    priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemCreateNestedManyWithoutMaterialInput
+    organisation: OrganisationCreateNestedOneWithoutMaterialsInput
+  }
+
+  export type MaterialUncheckedCreateWithoutSupplierInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    stockItemId?: string | null
+    orgId: string
+    priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput
+  }
+
+  export type MaterialCreateOrConnectWithoutSupplierInput = {
+    where: MaterialWhereUniqueInput
+    create: XOR<MaterialCreateWithoutSupplierInput, MaterialUncheckedCreateWithoutSupplierInput>
+  }
+
+  export type MaterialCreateManySupplierInputEnvelope = {
+    data: MaterialCreateManySupplierInput | MaterialCreateManySupplierInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockPurchaseOrderCreateWithoutSupplierInput = {
+    id?: string
+    orgId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: StockPurchaseItemCreateNestedManyWithoutPurchaseOrderInput
+  }
+
+  export type StockPurchaseOrderUncheckedCreateWithoutSupplierInput = {
+    id?: string
+    orgId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: StockPurchaseItemUncheckedCreateNestedManyWithoutPurchaseOrderInput
+  }
+
+  export type StockPurchaseOrderCreateOrConnectWithoutSupplierInput = {
+    where: StockPurchaseOrderWhereUniqueInput
+    create: XOR<StockPurchaseOrderCreateWithoutSupplierInput, StockPurchaseOrderUncheckedCreateWithoutSupplierInput>
+  }
+
+  export type StockPurchaseOrderCreateManySupplierInputEnvelope = {
+    data: StockPurchaseOrderCreateManySupplierInput | StockPurchaseOrderCreateManySupplierInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganisationCreateWithoutSuppliersInput = {
+    id?: string
+    name: string
+    slug: string
+    isActive?: boolean
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    staff?: StaffCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    jobs?: JobCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialCreateNestedManyWithoutOrganisationInput
+    services?: ServiceCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
+    payments?: PaymentCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutSuppliersInput = {
+    id?: string
+    name: string
+    slug: string
+    isActive?: boolean
+    logoUrl?: string | null
+    contactEmail?: string | null
+    contactPhone?: string | null
+    address?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    staff?: StaffUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    jobs?: JobUncheckedCreateNestedManyWithoutOrganisationInput
+    prices?: PriceListUncheckedCreateNestedManyWithoutOrganisationInput
+    materials?: MaterialUncheckedCreateNestedManyWithoutOrganisationInput
+    services?: ServiceUncheckedCreateNestedManyWithoutOrganisationInput
+    stockItems?: StockItemUncheckedCreateNestedManyWithoutOrganisationInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutOrganisationInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutOrganisationInput
+    b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutSuppliersInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutSuppliersInput, OrganisationUncheckedCreateWithoutSuppliersInput>
+  }
+
+  export type MaterialUpsertWithWhereUniqueWithoutSupplierInput = {
+    where: MaterialWhereUniqueInput
+    update: XOR<MaterialUpdateWithoutSupplierInput, MaterialUncheckedUpdateWithoutSupplierInput>
+    create: XOR<MaterialCreateWithoutSupplierInput, MaterialUncheckedCreateWithoutSupplierInput>
+  }
+
+  export type MaterialUpdateWithWhereUniqueWithoutSupplierInput = {
+    where: MaterialWhereUniqueInput
+    data: XOR<MaterialUpdateWithoutSupplierInput, MaterialUncheckedUpdateWithoutSupplierInput>
+  }
+
+  export type MaterialUpdateManyWithWhereWithoutSupplierInput = {
+    where: MaterialScalarWhereInput
+    data: XOR<MaterialUpdateManyMutationInput, MaterialUncheckedUpdateManyWithoutSupplierInput>
+  }
+
+  export type StockPurchaseOrderUpsertWithWhereUniqueWithoutSupplierInput = {
+    where: StockPurchaseOrderWhereUniqueInput
+    update: XOR<StockPurchaseOrderUpdateWithoutSupplierInput, StockPurchaseOrderUncheckedUpdateWithoutSupplierInput>
+    create: XOR<StockPurchaseOrderCreateWithoutSupplierInput, StockPurchaseOrderUncheckedCreateWithoutSupplierInput>
+  }
+
+  export type StockPurchaseOrderUpdateWithWhereUniqueWithoutSupplierInput = {
+    where: StockPurchaseOrderWhereUniqueInput
+    data: XOR<StockPurchaseOrderUpdateWithoutSupplierInput, StockPurchaseOrderUncheckedUpdateWithoutSupplierInput>
+  }
+
+  export type StockPurchaseOrderUpdateManyWithWhereWithoutSupplierInput = {
+    where: StockPurchaseOrderScalarWhereInput
+    data: XOR<StockPurchaseOrderUpdateManyMutationInput, StockPurchaseOrderUncheckedUpdateManyWithoutSupplierInput>
+  }
+
+  export type StockPurchaseOrderScalarWhereInput = {
+    AND?: StockPurchaseOrderScalarWhereInput | StockPurchaseOrderScalarWhereInput[]
+    OR?: StockPurchaseOrderScalarWhereInput[]
+    NOT?: StockPurchaseOrderScalarWhereInput | StockPurchaseOrderScalarWhereInput[]
+    id?: StringFilter<"StockPurchaseOrder"> | string
+    orgId?: StringFilter<"StockPurchaseOrder"> | string
+    supplierId?: StringFilter<"StockPurchaseOrder"> | string
+    status?: EnumPOStatusFilter<"StockPurchaseOrder"> | $Enums.POStatus
+    relatedJobId?: StringNullableFilter<"StockPurchaseOrder"> | string | null
+    totalCost?: FloatFilter<"StockPurchaseOrder"> | number
+    expectedArrival?: DateTimeNullableFilter<"StockPurchaseOrder"> | Date | string | null
+    receivedAt?: DateTimeNullableFilter<"StockPurchaseOrder"> | Date | string | null
+    createdAt?: DateTimeFilter<"StockPurchaseOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"StockPurchaseOrder"> | Date | string
+  }
+
+  export type OrganisationUpsertWithoutSuppliersInput = {
+    update: XOR<OrganisationUpdateWithoutSuppliersInput, OrganisationUncheckedUpdateWithoutSuppliersInput>
+    create: XOR<OrganisationCreateWithoutSuppliersInput, OrganisationUncheckedCreateWithoutSuppliersInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutSuppliersInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutSuppliersInput, OrganisationUncheckedUpdateWithoutSuppliersInput>
+  }
+
+  export type OrganisationUpdateWithoutSuppliersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
+    payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutSuppliersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    jobs?: JobUncheckedUpdateManyWithoutOrganisationNestedInput
+    prices?: PriceListUncheckedUpdateManyWithoutOrganisationNestedInput
+    materials?: MaterialUncheckedUpdateManyWithoutOrganisationNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockItems?: StockItemUncheckedUpdateManyWithoutOrganisationNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutOrganisationNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutOrganisationNestedInput
+    b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type SupplierCreateWithoutPurchaseOrdersInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    materials?: MaterialCreateNestedManyWithoutSupplierInput
+    organisation: OrganisationCreateNestedOneWithoutSuppliersInput
+  }
+
+  export type SupplierUncheckedCreateWithoutPurchaseOrdersInput = {
+    id?: string
+    orgId: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+    materials?: MaterialUncheckedCreateNestedManyWithoutSupplierInput
+  }
+
+  export type SupplierCreateOrConnectWithoutPurchaseOrdersInput = {
+    where: SupplierWhereUniqueInput
+    create: XOR<SupplierCreateWithoutPurchaseOrdersInput, SupplierUncheckedCreateWithoutPurchaseOrdersInput>
+  }
+
+  export type StockPurchaseItemCreateWithoutPurchaseOrderInput = {
+    id?: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+    material: MaterialCreateNestedOneWithoutPurchaseItemsInput
+  }
+
+  export type StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput = {
+    id?: string
+    materialId: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+  }
+
+  export type StockPurchaseItemCreateOrConnectWithoutPurchaseOrderInput = {
+    where: StockPurchaseItemWhereUniqueInput
+    create: XOR<StockPurchaseItemCreateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput>
+  }
+
+  export type StockPurchaseItemCreateManyPurchaseOrderInputEnvelope = {
+    data: StockPurchaseItemCreateManyPurchaseOrderInput | StockPurchaseItemCreateManyPurchaseOrderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SupplierUpsertWithoutPurchaseOrdersInput = {
+    update: XOR<SupplierUpdateWithoutPurchaseOrdersInput, SupplierUncheckedUpdateWithoutPurchaseOrdersInput>
+    create: XOR<SupplierCreateWithoutPurchaseOrdersInput, SupplierUncheckedCreateWithoutPurchaseOrdersInput>
+    where?: SupplierWhereInput
+  }
+
+  export type SupplierUpdateToOneWithWhereWithoutPurchaseOrdersInput = {
+    where?: SupplierWhereInput
+    data: XOR<SupplierUpdateWithoutPurchaseOrdersInput, SupplierUncheckedUpdateWithoutPurchaseOrdersInput>
+  }
+
+  export type SupplierUpdateWithoutPurchaseOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materials?: MaterialUpdateManyWithoutSupplierNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutSuppliersNestedInput
+  }
+
+  export type SupplierUncheckedUpdateWithoutPurchaseOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materials?: MaterialUncheckedUpdateManyWithoutSupplierNestedInput
+  }
+
+  export type StockPurchaseItemUpsertWithWhereUniqueWithoutPurchaseOrderInput = {
+    where: StockPurchaseItemWhereUniqueInput
+    update: XOR<StockPurchaseItemUpdateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedUpdateWithoutPurchaseOrderInput>
+    create: XOR<StockPurchaseItemCreateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedCreateWithoutPurchaseOrderInput>
+  }
+
+  export type StockPurchaseItemUpdateWithWhereUniqueWithoutPurchaseOrderInput = {
+    where: StockPurchaseItemWhereUniqueInput
+    data: XOR<StockPurchaseItemUpdateWithoutPurchaseOrderInput, StockPurchaseItemUncheckedUpdateWithoutPurchaseOrderInput>
+  }
+
+  export type StockPurchaseItemUpdateManyWithWhereWithoutPurchaseOrderInput = {
+    where: StockPurchaseItemScalarWhereInput
+    data: XOR<StockPurchaseItemUpdateManyMutationInput, StockPurchaseItemUncheckedUpdateManyWithoutPurchaseOrderInput>
+  }
+
+  export type StockPurchaseOrderCreateWithoutItemsInput = {
+    id?: string
+    orgId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    supplier: SupplierCreateNestedOneWithoutPurchaseOrdersInput
+  }
+
+  export type StockPurchaseOrderUncheckedCreateWithoutItemsInput = {
+    id?: string
+    orgId: string
+    supplierId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockPurchaseOrderCreateOrConnectWithoutItemsInput = {
+    where: StockPurchaseOrderWhereUniqueInput
+    create: XOR<StockPurchaseOrderCreateWithoutItemsInput, StockPurchaseOrderUncheckedCreateWithoutItemsInput>
+  }
+
+  export type MaterialCreateWithoutPurchaseItemsInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    supplier?: SupplierCreateNestedOneWithoutMaterialsInput
+    stockItem?: StockItemCreateNestedOneWithoutMaterialInput
+    priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutCreateNestedManyWithoutMaterialInput
+    organisation: OrganisationCreateNestedOneWithoutMaterialsInput
+  }
+
+  export type MaterialUncheckedCreateWithoutPurchaseItemsInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    stockItemId?: string | null
+    orgId: string
+    priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput
+  }
+
+  export type MaterialCreateOrConnectWithoutPurchaseItemsInput = {
+    where: MaterialWhereUniqueInput
+    create: XOR<MaterialCreateWithoutPurchaseItemsInput, MaterialUncheckedCreateWithoutPurchaseItemsInput>
+  }
+
+  export type StockPurchaseOrderUpsertWithoutItemsInput = {
+    update: XOR<StockPurchaseOrderUpdateWithoutItemsInput, StockPurchaseOrderUncheckedUpdateWithoutItemsInput>
+    create: XOR<StockPurchaseOrderCreateWithoutItemsInput, StockPurchaseOrderUncheckedCreateWithoutItemsInput>
+    where?: StockPurchaseOrderWhereInput
+  }
+
+  export type StockPurchaseOrderUpdateToOneWithWhereWithoutItemsInput = {
+    where?: StockPurchaseOrderWhereInput
+    data: XOR<StockPurchaseOrderUpdateWithoutItemsInput, StockPurchaseOrderUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type StockPurchaseOrderUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    supplier?: SupplierUpdateOneRequiredWithoutPurchaseOrdersNestedInput
+  }
+
+  export type StockPurchaseOrderUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    supplierId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MaterialUpsertWithoutPurchaseItemsInput = {
+    update: XOR<MaterialUpdateWithoutPurchaseItemsInput, MaterialUncheckedUpdateWithoutPurchaseItemsInput>
+    create: XOR<MaterialCreateWithoutPurchaseItemsInput, MaterialUncheckedCreateWithoutPurchaseItemsInput>
+    where?: MaterialWhereInput
+  }
+
+  export type MaterialUpdateToOneWithWhereWithoutPurchaseItemsInput = {
+    where?: MaterialWhereInput
+    data: XOR<MaterialUpdateWithoutPurchaseItemsInput, MaterialUncheckedUpdateWithoutPurchaseItemsInput>
+  }
+
+  export type MaterialUpdateWithoutPurchaseItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    supplier?: SupplierUpdateOneWithoutMaterialsNestedInput
+    stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
+    priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
+  }
+
+  export type MaterialUncheckedUpdateWithoutPurchaseItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput
+  }
+
   export type OrganisationCreateWithoutJobsInput = {
     id?: string
     name: string
@@ -34982,6 +46636,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutJobsInput = {
@@ -35008,6 +46663,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutJobsInput = {
@@ -35062,6 +46718,33 @@ export namespace Prisma {
     create: XOR<ClientCreateWithoutJobsInput, ClientUncheckedCreateWithoutJobsInput>
   }
 
+  export type PrintLayoutItemCreateWithoutJobInput = {
+    id?: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+    layout: MaterialPrintLayoutCreateNestedOneWithoutItemsInput
+    jobVariables?: JobVariableCreateNestedManyWithoutLayoutItemInput
+  }
+
+  export type PrintLayoutItemUncheckedCreateWithoutJobInput = {
+    id?: string
+    layoutId: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutLayoutItemInput
+  }
+
+  export type PrintLayoutItemCreateOrConnectWithoutJobInput = {
+    where: PrintLayoutItemWhereUniqueInput
+    create: XOR<PrintLayoutItemCreateWithoutJobInput, PrintLayoutItemUncheckedCreateWithoutJobInput>
+  }
+
   export type PriceListCreateWithoutJobsInput = {
     id?: string
     displayName: string
@@ -35099,6 +46782,7 @@ export namespace Prisma {
 
   export type JobVariableCreateWithoutJobInput = {
     id?: string
+    shortRef?: string | null
     quantity: number
     width?: number | null
     height?: number | null
@@ -35106,6 +46790,7 @@ export namespace Prisma {
     subtotal: number
     orgId: string
     createdAt?: Date | string
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobVariablesInput
     priceList: PriceListCreateNestedOneWithoutJobVariablesInput
     material?: MaterialCreateNestedOneWithoutJobVariablesInput
     service?: ServiceCreateNestedOneWithoutJobVariablesInput
@@ -35113,6 +46798,7 @@ export namespace Prisma {
 
   export type JobVariableUncheckedCreateWithoutJobInput = {
     id?: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -35123,6 +46809,7 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type JobVariableCreateOrConnectWithoutJobInput = {
@@ -35146,6 +46833,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutStaffProfileInput
     organisation: OrganisationCreateNestedOneWithoutStaffInput
+    staffPerformances?: StaffPerformanceCreateNestedManyWithoutStaffInput
   }
 
   export type StaffUncheckedCreateWithoutAssignedJobsInput = {
@@ -35159,6 +46847,7 @@ export namespace Prisma {
     baseSalary?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    staffPerformances?: StaffPerformanceUncheckedCreateNestedManyWithoutStaffInput
   }
 
   export type StaffCreateOrConnectWithoutAssignedJobsInput = {
@@ -35346,6 +47035,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutJobsInput = {
@@ -35372,6 +47062,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type ClientUpsertWithoutJobsInput = {
@@ -35425,6 +47116,39 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deliveries?: DeliveryUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type PrintLayoutItemUpsertWithoutJobInput = {
+    update: XOR<PrintLayoutItemUpdateWithoutJobInput, PrintLayoutItemUncheckedUpdateWithoutJobInput>
+    create: XOR<PrintLayoutItemCreateWithoutJobInput, PrintLayoutItemUncheckedCreateWithoutJobInput>
+    where?: PrintLayoutItemWhereInput
+  }
+
+  export type PrintLayoutItemUpdateToOneWithWhereWithoutJobInput = {
+    where?: PrintLayoutItemWhereInput
+    data: XOR<PrintLayoutItemUpdateWithoutJobInput, PrintLayoutItemUncheckedUpdateWithoutJobInput>
+  }
+
+  export type PrintLayoutItemUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+    layout?: MaterialPrintLayoutUpdateOneRequiredWithoutItemsNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutLayoutItemNestedInput
+  }
+
+  export type PrintLayoutItemUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    layoutId?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutLayoutItemNestedInput
   }
 
   export type PriceListUpsertWithoutJobsInput = {
@@ -35506,6 +47230,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStaffProfileNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutStaffNestedInput
+    staffPerformances?: StaffPerformanceUpdateManyWithoutStaffNestedInput
   }
 
   export type StaffUncheckedUpdateWithoutAssignedJobsInput = {
@@ -35519,6 +47244,7 @@ export namespace Prisma {
     baseSalary?: NullableFloatFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    staffPerformances?: StaffPerformanceUncheckedUpdateManyWithoutStaffNestedInput
   }
 
   export type DeliveryUpsertWithWhereUniqueWithoutJobInput = {
@@ -35610,6 +47336,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutVariablesInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -35629,6 +47361,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
     deliveries?: DeliveryCreateNestedManyWithoutJobInput
@@ -35641,6 +47374,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -35661,6 +47400,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
     b2bSourceFor?: B2BPushUncheckedCreateNestedManyWithoutOriginalJobInput
@@ -35669,6 +47409,33 @@ export namespace Prisma {
   export type JobCreateOrConnectWithoutVariablesInput = {
     where: JobWhereUniqueInput
     create: XOR<JobCreateWithoutVariablesInput, JobUncheckedCreateWithoutVariablesInput>
+  }
+
+  export type PrintLayoutItemCreateWithoutJobVariablesInput = {
+    id?: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+    layout: MaterialPrintLayoutCreateNestedOneWithoutItemsInput
+    job: JobCreateNestedOneWithoutLayoutItemInput
+  }
+
+  export type PrintLayoutItemUncheckedCreateWithoutJobVariablesInput = {
+    id?: string
+    layoutId: string
+    jobId: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+  }
+
+  export type PrintLayoutItemCreateOrConnectWithoutJobVariablesInput = {
+    where: PrintLayoutItemWhereUniqueInput
+    create: XOR<PrintLayoutItemCreateWithoutJobVariablesInput, PrintLayoutItemUncheckedCreateWithoutJobVariablesInput>
   }
 
   export type PriceListCreateWithoutJobVariablesInput = {
@@ -35712,8 +47479,16 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    supplier?: SupplierCreateNestedOneWithoutMaterialsInput
     stockItem?: StockItemCreateNestedOneWithoutMaterialInput
     priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemCreateNestedManyWithoutMaterialInput
     organisation: OrganisationCreateNestedOneWithoutMaterialsInput
   }
 
@@ -35723,9 +47498,17 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
     stockItemId?: string | null
     orgId: string
     priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
+    printLayouts?: MaterialPrintLayoutUncheckedCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput
   }
 
   export type MaterialCreateOrConnectWithoutJobVariablesInput = {
@@ -35773,6 +47556,12 @@ export namespace Prisma {
 
   export type JobUpdateWithoutVariablesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -35792,6 +47581,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
     deliveries?: DeliveryUpdateManyWithoutJobNestedInput
@@ -35804,6 +47594,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -35824,9 +47620,43 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
     b2bSourceFor?: B2BPushUncheckedUpdateManyWithoutOriginalJobNestedInput
+  }
+
+  export type PrintLayoutItemUpsertWithoutJobVariablesInput = {
+    update: XOR<PrintLayoutItemUpdateWithoutJobVariablesInput, PrintLayoutItemUncheckedUpdateWithoutJobVariablesInput>
+    create: XOR<PrintLayoutItemCreateWithoutJobVariablesInput, PrintLayoutItemUncheckedCreateWithoutJobVariablesInput>
+    where?: PrintLayoutItemWhereInput
+  }
+
+  export type PrintLayoutItemUpdateToOneWithWhereWithoutJobVariablesInput = {
+    where?: PrintLayoutItemWhereInput
+    data: XOR<PrintLayoutItemUpdateWithoutJobVariablesInput, PrintLayoutItemUncheckedUpdateWithoutJobVariablesInput>
+  }
+
+  export type PrintLayoutItemUpdateWithoutJobVariablesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+    layout?: MaterialPrintLayoutUpdateOneRequiredWithoutItemsNestedInput
+    job?: JobUpdateOneRequiredWithoutLayoutItemNestedInput
+  }
+
+  export type PrintLayoutItemUncheckedUpdateWithoutJobVariablesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    layoutId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PriceListUpsertWithoutJobVariablesInput = {
@@ -35887,8 +47717,16 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    supplier?: SupplierUpdateOneWithoutMaterialsNestedInput
     stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
     priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUpdateManyWithoutMaterialNestedInput
     organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
   }
 
@@ -35898,9 +47736,17 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput
   }
 
   export type ServiceUpsertWithoutJobVariablesInput = {
@@ -35936,6 +47782,442 @@ export namespace Prisma {
     priceListItems?: PriceListUncheckedUpdateManyWithoutServiceNestedInput
   }
 
+  export type MaterialCreateWithoutPrintLayoutsInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    supplier?: SupplierCreateNestedOneWithoutMaterialsInput
+    stockItem?: StockItemCreateNestedOneWithoutMaterialInput
+    priceListItems?: PriceListCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemCreateNestedManyWithoutMaterialInput
+    organisation: OrganisationCreateNestedOneWithoutMaterialsInput
+  }
+
+  export type MaterialUncheckedCreateWithoutPrintLayoutsInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    stockItemId?: string | null
+    orgId: string
+    priceListItems?: PriceListUncheckedCreateNestedManyWithoutMaterialInput
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutMaterialInput
+    purchaseItems?: StockPurchaseItemUncheckedCreateNestedManyWithoutMaterialInput
+  }
+
+  export type MaterialCreateOrConnectWithoutPrintLayoutsInput = {
+    where: MaterialWhereUniqueInput
+    create: XOR<MaterialCreateWithoutPrintLayoutsInput, MaterialUncheckedCreateWithoutPrintLayoutsInput>
+  }
+
+  export type PrintLayoutItemCreateWithoutLayoutInput = {
+    id?: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+    job: JobCreateNestedOneWithoutLayoutItemInput
+    jobVariables?: JobVariableCreateNestedManyWithoutLayoutItemInput
+  }
+
+  export type PrintLayoutItemUncheckedCreateWithoutLayoutInput = {
+    id?: string
+    jobId: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+    jobVariables?: JobVariableUncheckedCreateNestedManyWithoutLayoutItemInput
+  }
+
+  export type PrintLayoutItemCreateOrConnectWithoutLayoutInput = {
+    where: PrintLayoutItemWhereUniqueInput
+    create: XOR<PrintLayoutItemCreateWithoutLayoutInput, PrintLayoutItemUncheckedCreateWithoutLayoutInput>
+  }
+
+  export type PrintLayoutItemCreateManyLayoutInputEnvelope = {
+    data: PrintLayoutItemCreateManyLayoutInput | PrintLayoutItemCreateManyLayoutInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MaterialUpsertWithoutPrintLayoutsInput = {
+    update: XOR<MaterialUpdateWithoutPrintLayoutsInput, MaterialUncheckedUpdateWithoutPrintLayoutsInput>
+    create: XOR<MaterialCreateWithoutPrintLayoutsInput, MaterialUncheckedCreateWithoutPrintLayoutsInput>
+    where?: MaterialWhereInput
+  }
+
+  export type MaterialUpdateToOneWithWhereWithoutPrintLayoutsInput = {
+    where?: MaterialWhereInput
+    data: XOR<MaterialUpdateWithoutPrintLayoutsInput, MaterialUncheckedUpdateWithoutPrintLayoutsInput>
+  }
+
+  export type MaterialUpdateWithoutPrintLayoutsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    supplier?: SupplierUpdateOneWithoutMaterialsNestedInput
+    stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
+    priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUpdateManyWithoutMaterialNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
+  }
+
+  export type MaterialUncheckedUpdateWithoutPrintLayoutsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput
+  }
+
+  export type PrintLayoutItemUpsertWithWhereUniqueWithoutLayoutInput = {
+    where: PrintLayoutItemWhereUniqueInput
+    update: XOR<PrintLayoutItemUpdateWithoutLayoutInput, PrintLayoutItemUncheckedUpdateWithoutLayoutInput>
+    create: XOR<PrintLayoutItemCreateWithoutLayoutInput, PrintLayoutItemUncheckedCreateWithoutLayoutInput>
+  }
+
+  export type PrintLayoutItemUpdateWithWhereUniqueWithoutLayoutInput = {
+    where: PrintLayoutItemWhereUniqueInput
+    data: XOR<PrintLayoutItemUpdateWithoutLayoutInput, PrintLayoutItemUncheckedUpdateWithoutLayoutInput>
+  }
+
+  export type PrintLayoutItemUpdateManyWithWhereWithoutLayoutInput = {
+    where: PrintLayoutItemScalarWhereInput
+    data: XOR<PrintLayoutItemUpdateManyMutationInput, PrintLayoutItemUncheckedUpdateManyWithoutLayoutInput>
+  }
+
+  export type PrintLayoutItemScalarWhereInput = {
+    AND?: PrintLayoutItemScalarWhereInput | PrintLayoutItemScalarWhereInput[]
+    OR?: PrintLayoutItemScalarWhereInput[]
+    NOT?: PrintLayoutItemScalarWhereInput | PrintLayoutItemScalarWhereInput[]
+    id?: StringFilter<"PrintLayoutItem"> | string
+    layoutId?: StringFilter<"PrintLayoutItem"> | string
+    jobId?: StringFilter<"PrintLayoutItem"> | string
+    posX?: FloatFilter<"PrintLayoutItem"> | number
+    posY?: FloatFilter<"PrintLayoutItem"> | number
+    isRotated?: BoolFilter<"PrintLayoutItem"> | boolean
+    width?: FloatFilter<"PrintLayoutItem"> | number
+    height?: FloatFilter<"PrintLayoutItem"> | number
+  }
+
+  export type MaterialPrintLayoutCreateWithoutItemsInput = {
+    id?: string
+    orgId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+    material: MaterialCreateNestedOneWithoutPrintLayoutsInput
+  }
+
+  export type MaterialPrintLayoutUncheckedCreateWithoutItemsInput = {
+    id?: string
+    orgId: string
+    materialId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+  }
+
+  export type MaterialPrintLayoutCreateOrConnectWithoutItemsInput = {
+    where: MaterialPrintLayoutWhereUniqueInput
+    create: XOR<MaterialPrintLayoutCreateWithoutItemsInput, MaterialPrintLayoutUncheckedCreateWithoutItemsInput>
+  }
+
+  export type JobCreateWithoutLayoutItemInput = {
+    id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
+    serviceName: string
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unit?: $Enums.ServiceUnit | null
+    basePrice: number
+    variableTotal?: number
+    totalPrice: number
+    costPrice?: number | null
+    profitMargin?: number | null
+    paymentStatus?: $Enums.PaymentStatus
+    isPaid?: boolean
+    status?: $Enums.JobStatus
+    notes?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutJobsInput
+    client: ClientCreateNestedOneWithoutJobsInput
+    priceList: PriceListCreateNestedOneWithoutJobsInput
+    variables?: JobVariableCreateNestedManyWithoutJobInput
+    assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
+    deliveries?: DeliveryCreateNestedManyWithoutJobInput
+    payments?: PaymentCreateNestedManyWithoutJobInput
+    b2bPush?: B2BPushCreateNestedOneWithoutJobsInput
+    b2bSourceFor?: B2BPushCreateNestedManyWithoutOriginalJobInput
+  }
+
+  export type JobUncheckedCreateWithoutLayoutItemInput = {
+    id?: string
+    orgId: string
+    clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
+    priceListId: string
+    serviceName: string
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unit?: $Enums.ServiceUnit | null
+    basePrice: number
+    variableTotal?: number
+    totalPrice: number
+    costPrice?: number | null
+    profitMargin?: number | null
+    paymentStatus?: $Enums.PaymentStatus
+    isPaid?: boolean
+    status?: $Enums.JobStatus
+    assignedStaffId?: string | null
+    b2bPushId?: string | null
+    notes?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
+    b2bSourceFor?: B2BPushUncheckedCreateNestedManyWithoutOriginalJobInput
+  }
+
+  export type JobCreateOrConnectWithoutLayoutItemInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutLayoutItemInput, JobUncheckedCreateWithoutLayoutItemInput>
+  }
+
+  export type JobVariableCreateWithoutLayoutItemInput = {
+    id?: string
+    shortRef?: string | null
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unitPrice: number
+    subtotal: number
+    orgId: string
+    createdAt?: Date | string
+    job: JobCreateNestedOneWithoutVariablesInput
+    priceList: PriceListCreateNestedOneWithoutJobVariablesInput
+    material?: MaterialCreateNestedOneWithoutJobVariablesInput
+    service?: ServiceCreateNestedOneWithoutJobVariablesInput
+  }
+
+  export type JobVariableUncheckedCreateWithoutLayoutItemInput = {
+    id?: string
+    jobId: string
+    shortRef?: string | null
+    priceListId: string
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unitPrice: number
+    subtotal: number
+    materialId?: string | null
+    serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
+  }
+
+  export type JobVariableCreateOrConnectWithoutLayoutItemInput = {
+    where: JobVariableWhereUniqueInput
+    create: XOR<JobVariableCreateWithoutLayoutItemInput, JobVariableUncheckedCreateWithoutLayoutItemInput>
+  }
+
+  export type JobVariableCreateManyLayoutItemInputEnvelope = {
+    data: JobVariableCreateManyLayoutItemInput | JobVariableCreateManyLayoutItemInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MaterialPrintLayoutUpsertWithoutItemsInput = {
+    update: XOR<MaterialPrintLayoutUpdateWithoutItemsInput, MaterialPrintLayoutUncheckedUpdateWithoutItemsInput>
+    create: XOR<MaterialPrintLayoutCreateWithoutItemsInput, MaterialPrintLayoutUncheckedCreateWithoutItemsInput>
+    where?: MaterialPrintLayoutWhereInput
+  }
+
+  export type MaterialPrintLayoutUpdateToOneWithWhereWithoutItemsInput = {
+    where?: MaterialPrintLayoutWhereInput
+    data: XOR<MaterialPrintLayoutUpdateWithoutItemsInput, MaterialPrintLayoutUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type MaterialPrintLayoutUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    material?: MaterialUpdateOneRequiredWithoutPrintLayoutsNestedInput
+  }
+
+  export type MaterialPrintLayoutUncheckedUpdateWithoutItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    materialId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobUpsertWithoutLayoutItemInput = {
+    update: XOR<JobUpdateWithoutLayoutItemInput, JobUncheckedUpdateWithoutLayoutItemInput>
+    create: XOR<JobCreateWithoutLayoutItemInput, JobUncheckedCreateWithoutLayoutItemInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutLayoutItemInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutLayoutItemInput, JobUncheckedUpdateWithoutLayoutItemInput>
+  }
+
+  export type JobUpdateWithoutLayoutItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    serviceName?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unit?: NullableEnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit | null
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    variableTotal?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    profitMargin?: NullableFloatFieldUpdateOperationsInput | number | null
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
+    client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
+    variables?: JobVariableUpdateManyWithoutJobNestedInput
+    assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
+    deliveries?: DeliveryUpdateManyWithoutJobNestedInput
+    payments?: PaymentUpdateManyWithoutJobNestedInput
+    b2bPush?: B2BPushUpdateOneWithoutJobsNestedInput
+    b2bSourceFor?: B2BPushUpdateManyWithoutOriginalJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutLayoutItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    priceListId?: StringFieldUpdateOperationsInput | string
+    serviceName?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unit?: NullableEnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit | null
+    basePrice?: FloatFieldUpdateOperationsInput | number
+    variableTotal?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    costPrice?: NullableFloatFieldUpdateOperationsInput | number | null
+    profitMargin?: NullableFloatFieldUpdateOperationsInput | number | null
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    assignedStaffId?: NullableStringFieldUpdateOperationsInput | string | null
+    b2bPushId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
+    b2bSourceFor?: B2BPushUncheckedUpdateManyWithoutOriginalJobNestedInput
+  }
+
+  export type JobVariableUpsertWithWhereUniqueWithoutLayoutItemInput = {
+    where: JobVariableWhereUniqueInput
+    update: XOR<JobVariableUpdateWithoutLayoutItemInput, JobVariableUncheckedUpdateWithoutLayoutItemInput>
+    create: XOR<JobVariableCreateWithoutLayoutItemInput, JobVariableUncheckedCreateWithoutLayoutItemInput>
+  }
+
+  export type JobVariableUpdateWithWhereUniqueWithoutLayoutItemInput = {
+    where: JobVariableWhereUniqueInput
+    data: XOR<JobVariableUpdateWithoutLayoutItemInput, JobVariableUncheckedUpdateWithoutLayoutItemInput>
+  }
+
+  export type JobVariableUpdateManyWithWhereWithoutLayoutItemInput = {
+    where: JobVariableScalarWhereInput
+    data: XOR<JobVariableUpdateManyMutationInput, JobVariableUncheckedUpdateManyWithoutLayoutItemInput>
+  }
+
   export type OrganisationCreateWithoutDeliveriesInput = {
     id?: string
     name: string
@@ -35960,6 +48242,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutDeliveriesInput = {
@@ -35986,6 +48269,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutDeliveriesInput = {
@@ -35995,6 +48279,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutDeliveriesInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -36014,6 +48304,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
@@ -36026,6 +48317,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -36046,6 +48343,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
     b2bSourceFor?: B2BPushUncheckedCreateNestedManyWithoutOriginalJobInput
@@ -36138,6 +48436,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutDeliveriesInput = {
@@ -36164,6 +48463,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type JobUpsertWithoutDeliveriesInput = {
@@ -36179,6 +48479,12 @@ export namespace Prisma {
 
   export type JobUpdateWithoutDeliveriesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -36198,6 +48504,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
@@ -36210,6 +48517,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -36230,6 +48543,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
     b2bSourceFor?: B2BPushUncheckedUpdateManyWithoutOriginalJobNestedInput
@@ -36312,6 +48626,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutPaymentsInput = {
@@ -36338,6 +48653,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutPaymentsInput = {
@@ -36347,6 +48663,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutPaymentsInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -36366,6 +48688,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
@@ -36378,6 +48701,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -36398,6 +48727,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     b2bSourceFor?: B2BPushUncheckedCreateNestedManyWithoutOriginalJobInput
@@ -36443,6 +48773,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutPaymentsInput = {
@@ -36469,6 +48800,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type JobUpsertWithoutPaymentsInput = {
@@ -36484,6 +48816,12 @@ export namespace Prisma {
 
   export type JobUpdateWithoutPaymentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -36503,6 +48841,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
@@ -36515,6 +48854,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -36535,6 +48880,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     b2bSourceFor?: B2BPushUncheckedUpdateManyWithoutOriginalJobNestedInput
@@ -36564,6 +48910,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutB2bPushesInput = {
@@ -36590,6 +48937,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutB2bPushesInput = {
@@ -36599,6 +48947,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutB2bSourceForInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -36618,6 +48972,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
@@ -36630,6 +48985,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -36650,6 +49011,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
@@ -36662,6 +49024,12 @@ export namespace Prisma {
 
   export type JobCreateWithoutB2bPushInput = {
     id?: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -36681,6 +49049,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutJobsInput
     client: ClientCreateNestedOneWithoutJobsInput
+    layoutItem?: PrintLayoutItemCreateNestedOneWithoutJobInput
     priceList: PriceListCreateNestedOneWithoutJobsInput
     variables?: JobVariableCreateNestedManyWithoutJobInput
     assignedStaff?: StaffCreateNestedOneWithoutAssignedJobsInput
@@ -36693,6 +49062,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -36712,6 +49087,7 @@ export namespace Prisma {
     completedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    layoutItem?: PrintLayoutItemUncheckedCreateNestedOneWithoutJobInput
     variables?: JobVariableUncheckedCreateNestedManyWithoutJobInput
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutJobInput
     payments?: PaymentUncheckedCreateNestedManyWithoutJobInput
@@ -36763,6 +49139,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutB2bPushesInput = {
@@ -36789,6 +49166,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type JobUpsertWithoutB2bSourceForInput = {
@@ -36804,6 +49182,12 @@ export namespace Prisma {
 
   export type JobUpdateWithoutB2bSourceForInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -36823,6 +49207,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
@@ -36835,6 +49220,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -36855,6 +49246,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
@@ -36900,6 +49292,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventCreateNestedManyWithoutOrganisationInput
     payments?: PaymentCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutAuditLogsInput = {
@@ -36926,6 +49319,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUncheckedCreateNestedManyWithoutOrganisationInput
     outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrganisationInput
     payments?: PaymentUncheckedCreateNestedManyWithoutOrganisationInput
+    suppliers?: SupplierUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutAuditLogsInput = {
@@ -36968,6 +49362,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutAuditLogsInput = {
@@ -36994,6 +49389,7 @@ export namespace Prisma {
     b2bPushes?: B2BPushUncheckedUpdateManyWithoutOrganisationNestedInput
     outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrganisationNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutOrganisationNestedInput
+    suppliers?: SupplierUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserCreateManyOrganisationInput = {
@@ -37043,6 +49439,12 @@ export namespace Prisma {
   export type JobCreateManyOrganisationInput = {
     id?: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -37084,6 +49486,12 @@ export namespace Prisma {
     calcType: $Enums.MaterialCalculationType
     unit: $Enums.ServiceUnit
     purchasePrice: number
+    rollWidth?: number | null
+    supplierId?: string | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
     stockItemId?: string | null
   }
 
@@ -37178,6 +49586,17 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type SupplierCreateManyOrganisationInput = {
+    id?: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    category?: string | null
+    linkedUserId?: string | null
+    createdAt?: Date | string
+  }
+
   export type UserUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -37230,6 +49649,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutStaffProfileNestedInput
     assignedJobs?: JobUpdateManyWithoutAssignedStaffNestedInput
+    staffPerformances?: StaffPerformanceUpdateManyWithoutStaffNestedInput
   }
 
   export type StaffUncheckedUpdateWithoutOrganisationInput = {
@@ -37243,6 +49663,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     assignedJobs?: JobUncheckedUpdateManyWithoutAssignedStaffNestedInput
+    staffPerformances?: StaffPerformanceUncheckedUpdateManyWithoutStaffNestedInput
   }
 
   export type StaffUncheckedUpdateManyWithoutOrganisationInput = {
@@ -37320,6 +49741,12 @@ export namespace Prisma {
 
   export type JobUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -37338,6 +49765,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
@@ -37350,6 +49778,12 @@ export namespace Prisma {
   export type JobUncheckedUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -37370,6 +49804,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
@@ -37379,6 +49814,12 @@ export namespace Prisma {
   export type JobUncheckedUpdateManyWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -37450,9 +49891,17 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    supplier?: SupplierUpdateOneWithoutMaterialsNestedInput
     stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
     priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUpdateManyWithoutMaterialNestedInput
   }
 
   export type MaterialUncheckedUpdateWithoutOrganisationInput = {
@@ -37461,9 +49910,17 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
     priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
     jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput
   }
 
   export type MaterialUncheckedUpdateManyWithoutOrganisationInput = {
@@ -37472,6 +49929,12 @@ export namespace Prisma {
     calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
     unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
     purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    supplierId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
     stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -37758,10 +50221,53 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SupplierUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materials?: MaterialUpdateManyWithoutSupplierNestedInput
+    purchaseOrders?: StockPurchaseOrderUpdateManyWithoutSupplierNestedInput
+  }
+
+  export type SupplierUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    materials?: MaterialUncheckedUpdateManyWithoutSupplierNestedInput
+    purchaseOrders?: StockPurchaseOrderUncheckedUpdateManyWithoutSupplierNestedInput
+  }
+
+  export type SupplierUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobCreateManyAssignedStaffInput = {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -37783,8 +50289,23 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type StaffPerformanceCreateManyStaffInput = {
+    id?: string
+    orgId: string
+    metricType: string
+    value: number
+    jobId?: string | null
+    createdAt?: Date | string
+  }
+
   export type JobUpdateWithoutAssignedStaffInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -37804,6 +50325,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUpdateManyWithoutJobNestedInput
@@ -37816,6 +50338,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -37835,6 +50363,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
@@ -37845,6 +50374,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -37866,9 +50401,42 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type StaffPerformanceUpdateWithoutStaffInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    metricType?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffPerformanceUncheckedUpdateWithoutStaffInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    metricType?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffPerformanceUncheckedUpdateManyWithoutStaffInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    metricType?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    jobId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobCreateManyClientInput = {
     id?: string
     orgId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -37908,6 +50476,12 @@ export namespace Prisma {
 
   export type JobUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -37926,6 +50500,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
@@ -37938,6 +50513,12 @@ export namespace Prisma {
   export type JobUncheckedUpdateWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -37958,6 +50539,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
@@ -37967,6 +50549,12 @@ export namespace Prisma {
   export type JobUncheckedUpdateManyWithoutClientInput = {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -38038,6 +50626,12 @@ export namespace Prisma {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     serviceName: string
     quantity: number
     width?: number | null
@@ -38062,6 +50656,7 @@ export namespace Prisma {
   export type JobVariableCreateManyPriceListInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     quantity: number
     width?: number | null
     height?: number | null
@@ -38071,10 +50666,17 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type JobUpdateWithoutPriceListInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38094,6 +50696,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
     deliveries?: DeliveryUpdateManyWithoutJobNestedInput
@@ -38106,6 +50709,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38125,6 +50734,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
@@ -38135,6 +50745,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38158,6 +50774,7 @@ export namespace Prisma {
 
   export type JobVariableUpdateWithoutPriceListInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38166,6 +50783,7 @@ export namespace Prisma {
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobVariablesNestedInput
     material?: MaterialUpdateOneWithoutJobVariablesNestedInput
     service?: ServiceUpdateOneWithoutJobVariablesNestedInput
   }
@@ -38173,6 +50791,7 @@ export namespace Prisma {
   export type JobVariableUncheckedUpdateWithoutPriceListInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38182,11 +50801,13 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobVariableUncheckedUpdateManyWithoutPriceListInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38196,6 +50817,7 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PriceListCreateManyMaterialInput = {
@@ -38214,6 +50836,7 @@ export namespace Prisma {
   export type JobVariableCreateManyMaterialInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -38223,6 +50846,26 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
+  }
+
+  export type MaterialPrintLayoutCreateManyMaterialInput = {
+    id?: string
+    orgId: string
+    rollWidth: number
+    cutLineHeight: number
+    efficiency: number
+    totalWastedArea: number
+    status?: $Enums.LayoutStatus
+    createdAt?: Date | string
+  }
+
+  export type StockPurchaseItemCreateManyMaterialInput = {
+    id?: string
+    purchaseOrderId: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
   }
 
   export type PriceListUpdateWithoutMaterialInput = {
@@ -38270,6 +50913,7 @@ export namespace Prisma {
 
   export type JobVariableUpdateWithoutMaterialInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38278,6 +50922,7 @@ export namespace Prisma {
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobVariablesNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
     service?: ServiceUpdateOneWithoutJobVariablesNestedInput
   }
@@ -38285,6 +50930,7 @@ export namespace Prisma {
   export type JobVariableUncheckedUpdateWithoutMaterialInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38294,11 +50940,13 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobVariableUncheckedUpdateManyWithoutMaterialInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38308,6 +50956,66 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MaterialPrintLayoutUpdateWithoutMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: PrintLayoutItemUpdateManyWithoutLayoutNestedInput
+  }
+
+  export type MaterialPrintLayoutUncheckedUpdateWithoutMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: PrintLayoutItemUncheckedUpdateManyWithoutLayoutNestedInput
+  }
+
+  export type MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    rollWidth?: FloatFieldUpdateOperationsInput | number
+    cutLineHeight?: FloatFieldUpdateOperationsInput | number
+    efficiency?: FloatFieldUpdateOperationsInput | number
+    totalWastedArea?: FloatFieldUpdateOperationsInput | number
+    status?: EnumLayoutStatusFieldUpdateOperationsInput | $Enums.LayoutStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockPurchaseItemUpdateWithoutMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    purchaseOrder?: StockPurchaseOrderUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type StockPurchaseItemUncheckedUpdateWithoutMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    purchaseOrderId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type StockPurchaseItemUncheckedUpdateManyWithoutMaterialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    purchaseOrderId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
   }
 
   export type PriceListCreateManyServiceInput = {
@@ -38326,6 +51034,7 @@ export namespace Prisma {
   export type JobVariableCreateManyServiceInput = {
     id?: string
     jobId: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -38335,6 +51044,7 @@ export namespace Prisma {
     materialId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type PriceListUpdateWithoutServiceInput = {
@@ -38382,6 +51092,7 @@ export namespace Prisma {
 
   export type JobVariableUpdateWithoutServiceInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38390,6 +51101,7 @@ export namespace Prisma {
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutVariablesNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobVariablesNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
     material?: MaterialUpdateOneWithoutJobVariablesNestedInput
   }
@@ -38397,6 +51109,7 @@ export namespace Prisma {
   export type JobVariableUncheckedUpdateWithoutServiceInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38406,11 +51119,13 @@ export namespace Prisma {
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobVariableUncheckedUpdateManyWithoutServiceInput = {
     id?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38420,6 +51135,7 @@ export namespace Prisma {
     materialId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StockMovementCreateManyStockItemInput = {
@@ -38470,8 +51186,159 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MaterialCreateManySupplierInput = {
+    id?: string
+    name: string
+    calcType: $Enums.MaterialCalculationType
+    unit: $Enums.ServiceUnit
+    purchasePrice: number
+    rollWidth?: number | null
+    leadTimeDays?: number | null
+    minOrderQty?: number | null
+    buyQuantity?: number | null
+    buyUnit?: string | null
+    stockItemId?: string | null
+    orgId: string
+  }
+
+  export type StockPurchaseOrderCreateManySupplierInput = {
+    id?: string
+    orgId: string
+    status?: $Enums.POStatus
+    relatedJobId?: string | null
+    totalCost?: number
+    expectedArrival?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MaterialUpdateWithoutSupplierInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    stockItem?: StockItemUpdateOneWithoutMaterialNestedInput
+    priceListItems?: PriceListUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUpdateManyWithoutMaterialNestedInput
+    organisation?: OrganisationUpdateOneRequiredWithoutMaterialsNestedInput
+  }
+
+  export type MaterialUncheckedUpdateWithoutSupplierInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    priceListItems?: PriceListUncheckedUpdateManyWithoutMaterialNestedInput
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutMaterialNestedInput
+    printLayouts?: MaterialPrintLayoutUncheckedUpdateManyWithoutMaterialNestedInput
+    purchaseItems?: StockPurchaseItemUncheckedUpdateManyWithoutMaterialNestedInput
+  }
+
+  export type MaterialUncheckedUpdateManyWithoutSupplierInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    calcType?: EnumMaterialCalculationTypeFieldUpdateOperationsInput | $Enums.MaterialCalculationType
+    unit?: EnumServiceUnitFieldUpdateOperationsInput | $Enums.ServiceUnit
+    purchasePrice?: FloatFieldUpdateOperationsInput | number
+    rollWidth?: NullableFloatFieldUpdateOperationsInput | number | null
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    minOrderQty?: NullableIntFieldUpdateOperationsInput | number | null
+    buyQuantity?: NullableFloatFieldUpdateOperationsInput | number | null
+    buyUnit?: NullableStringFieldUpdateOperationsInput | string | null
+    stockItemId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type StockPurchaseOrderUpdateWithoutSupplierInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: StockPurchaseItemUpdateManyWithoutPurchaseOrderNestedInput
+  }
+
+  export type StockPurchaseOrderUncheckedUpdateWithoutSupplierInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: StockPurchaseItemUncheckedUpdateManyWithoutPurchaseOrderNestedInput
+  }
+
+  export type StockPurchaseOrderUncheckedUpdateManyWithoutSupplierInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orgId?: StringFieldUpdateOperationsInput | string
+    status?: EnumPOStatusFieldUpdateOperationsInput | $Enums.POStatus
+    relatedJobId?: NullableStringFieldUpdateOperationsInput | string | null
+    totalCost?: FloatFieldUpdateOperationsInput | number
+    expectedArrival?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockPurchaseItemCreateManyPurchaseOrderInput = {
+    id?: string
+    materialId: string
+    quantity: number
+    buyUnit: string
+    unitPrice: number
+  }
+
+  export type StockPurchaseItemUpdateWithoutPurchaseOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    material?: MaterialUpdateOneRequiredWithoutPurchaseItemsNestedInput
+  }
+
+  export type StockPurchaseItemUncheckedUpdateWithoutPurchaseOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    materialId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type StockPurchaseItemUncheckedUpdateManyWithoutPurchaseOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    materialId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    buyUnit?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+  }
+
   export type JobVariableCreateManyJobInput = {
     id?: string
+    shortRef?: string | null
     priceListId: string
     quantity: number
     width?: number | null
@@ -38482,6 +51349,7 @@ export namespace Prisma {
     serviceId?: string | null
     orgId: string
     createdAt?: Date | string
+    printLayoutItemId?: string | null
   }
 
   export type DeliveryCreateManyJobInput = {
@@ -38526,6 +51394,7 @@ export namespace Prisma {
 
   export type JobVariableUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
     height?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38533,6 +51402,7 @@ export namespace Prisma {
     subtotal?: FloatFieldUpdateOperationsInput | number
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobVariablesNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
     material?: MaterialUpdateOneWithoutJobVariablesNestedInput
     service?: ServiceUpdateOneWithoutJobVariablesNestedInput
@@ -38540,6 +51410,7 @@ export namespace Prisma {
 
   export type JobVariableUncheckedUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38550,10 +51421,12 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobVariableUncheckedUpdateManyWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38564,6 +51437,7 @@ export namespace Prisma {
     serviceId?: NullableStringFieldUpdateOperationsInput | string | null
     orgId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    printLayoutItemId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DeliveryUpdateWithoutJobInput = {
@@ -38688,10 +51562,122 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PrintLayoutItemCreateManyLayoutInput = {
+    id?: string
+    jobId: string
+    posX: number
+    posY: number
+    isRotated?: boolean
+    width: number
+    height: number
+  }
+
+  export type PrintLayoutItemUpdateWithoutLayoutInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+    job?: JobUpdateOneRequiredWithoutLayoutItemNestedInput
+    jobVariables?: JobVariableUpdateManyWithoutLayoutItemNestedInput
+  }
+
+  export type PrintLayoutItemUncheckedUpdateWithoutLayoutInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+    jobVariables?: JobVariableUncheckedUpdateManyWithoutLayoutItemNestedInput
+  }
+
+  export type PrintLayoutItemUncheckedUpdateManyWithoutLayoutInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    posX?: FloatFieldUpdateOperationsInput | number
+    posY?: FloatFieldUpdateOperationsInput | number
+    isRotated?: BoolFieldUpdateOperationsInput | boolean
+    width?: FloatFieldUpdateOperationsInput | number
+    height?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type JobVariableCreateManyLayoutItemInput = {
+    id?: string
+    jobId: string
+    shortRef?: string | null
+    priceListId: string
+    quantity: number
+    width?: number | null
+    height?: number | null
+    unitPrice: number
+    subtotal: number
+    materialId?: string | null
+    serviceId?: string | null
+    orgId: string
+    createdAt?: Date | string
+  }
+
+  export type JobVariableUpdateWithoutLayoutItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutVariablesNestedInput
+    priceList?: PriceListUpdateOneRequiredWithoutJobVariablesNestedInput
+    material?: MaterialUpdateOneWithoutJobVariablesNestedInput
+    service?: ServiceUpdateOneWithoutJobVariablesNestedInput
+  }
+
+  export type JobVariableUncheckedUpdateWithoutLayoutItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    priceListId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    materialId?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobVariableUncheckedUpdateManyWithoutLayoutItemInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    priceListId?: StringFieldUpdateOperationsInput | string
+    quantity?: FloatFieldUpdateOperationsInput | number
+    width?: NullableFloatFieldUpdateOperationsInput | number | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    materialId?: NullableStringFieldUpdateOperationsInput | string | null
+    serviceId?: NullableStringFieldUpdateOperationsInput | string | null
+    orgId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type JobCreateManyB2bPushInput = {
     id?: string
     orgId: string
     clientId: string
+    shortRef?: string | null
+    proofUrl?: string | null
+    proofStatus?: $Enums.ProofStatus
+    customerNote?: string | null
+    approvalToken?: string | null
+    approvedAt?: Date | string | null
     priceListId: string
     serviceName: string
     quantity: number
@@ -38715,6 +51701,12 @@ export namespace Prisma {
 
   export type JobUpdateWithoutB2bPushInput = {
     id?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
     width?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -38734,6 +51726,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutJobsNestedInput
     client?: ClientUpdateOneRequiredWithoutJobsNestedInput
+    layoutItem?: PrintLayoutItemUpdateOneWithoutJobNestedInput
     priceList?: PriceListUpdateOneRequiredWithoutJobsNestedInput
     variables?: JobVariableUpdateManyWithoutJobNestedInput
     assignedStaff?: StaffUpdateOneWithoutAssignedJobsNestedInput
@@ -38746,6 +51739,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number
@@ -38765,6 +51764,7 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    layoutItem?: PrintLayoutItemUncheckedUpdateOneWithoutJobNestedInput
     variables?: JobVariableUncheckedUpdateManyWithoutJobNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutJobNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutJobNestedInput
@@ -38775,6 +51775,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     orgId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
+    shortRef?: NullableStringFieldUpdateOperationsInput | string | null
+    proofUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    proofStatus?: EnumProofStatusFieldUpdateOperationsInput | $Enums.ProofStatus
+    customerNote?: NullableStringFieldUpdateOperationsInput | string | null
+    approvalToken?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     priceListId?: StringFieldUpdateOperationsInput | string
     serviceName?: StringFieldUpdateOperationsInput | string
     quantity?: FloatFieldUpdateOperationsInput | number

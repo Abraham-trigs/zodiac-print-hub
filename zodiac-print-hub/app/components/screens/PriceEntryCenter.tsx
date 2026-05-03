@@ -3,11 +3,11 @@
 import { useZodiac } from "@store/zodiac.store";
 import { useDataStore } from "@store/core/useDataStore";
 import { useModalStore } from "@store/useModalStore";
-import { ZodiacScreen } from "../../types/screen.types";
-import { HubActionButton } from "@ui/common/HubActionButton";
+import { ZodiacScreen } from "../../lib/shared/types/screen.types";
+import { HubActionButton } from "@common/HubActionButton";
 
 // ✅ Direct Import of the Workstation (Bypassing Registry)
-import { PriceCreationWorkstation } from "@/components/workstation/pricecreation/PriceCreationWorkstation";
+import { PriceCreationWorkstation } from "@workstation/pricecreation/components/PriceCreationWorkstation";
 
 /**
  * PRICE_ENTRY_CENTER

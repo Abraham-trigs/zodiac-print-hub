@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect } from "react";
-import { useZodiac } from "../../zodiac/store/zodiac.store";
-import { useModalStore } from "../../zodiac/store/useModalStore";
-import { resolveLayout } from "../../zodiac/view/layout.engine";
-import { TopBar } from "../TopBar";
-import { BottomBar } from "../BottomBar";
-import { getCachedScreen } from "../../zodiac/view/screen.cache";
-import { useAccessStore } from "../../zodiac/store/useAccessStore";
-import { useAppBootStore } from "../../zodiac/store/useAppBootStore";
-import { useDataStore } from "../../zodiac/store/core/useDataStore";
-import { pathToScreen } from "@/view/screen.router";
+import { useZodiac } from "@store/zodiac.store";
+import { useModalStore } from "@store/useModalStore";
+import { resolveLayout } from "@shared/utils/resolveLayout";
+import { TopBar } from "@components/TopBar";
+import { BottomBar } from "@components/BottomBar";
+import { getCachedScreen } from "@view/screen.cache";
+import { useAccessStore } from "@store/useAccessStore";
+import { useAppBootStore } from "@store/useAppBootStore";
+import { useDataStore } from "@store-core/useDataStore";
+import { pathToScreen } from "@view/screen.router";
 
 export function ZodiacShell() {
   const { activeScreenId, viewMode, sharedAction, setSharedAction, setScreen } =

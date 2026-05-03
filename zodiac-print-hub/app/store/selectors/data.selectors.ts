@@ -1,6 +1,6 @@
 import { useDataStore } from "@store/core/useDataStore";
 import type { State } from "@store/core/useDataStore";
-import { ProductionCalculator } from "@lib/utils/production-calculator";
+import { ProductionCalculator } from "@lib/shared/utils/production-calculator";
 
 /* =========================================================
    STABLE FALLBACKS (Prevents Infinite Loops)
@@ -60,8 +60,8 @@ export const selectMovementsMap = (s: State) =>
 
 export const selectDeliveriesMap = (s: State) =>
   s.deliveryState?.deliveries ?? EMPTY_MAP;
-export const selectPaymentsMap = (s: State) =>
-  s.paymentState?.payments ?? EMPTY_MAP;
+// export const selectPaymentsMap = (s: State) =>
+//   s.paymentState?.payments ?? EMPTY_MAP;
 /* =========================================================
    ARRAY / LIST VIEWS (MEMOIZED)
 ========================================================= */

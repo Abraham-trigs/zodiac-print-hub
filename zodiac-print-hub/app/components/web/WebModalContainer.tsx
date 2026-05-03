@@ -1,6 +1,6 @@
 "use client";
 
-import { useWebModal } from "@/store/webModalStore";
+import { useWebModal } from "../../store/webModalStore";
 import { X, Globe, ShieldCheck, Zap, Layers, BarChart3 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { WasteAuditContent } from "./modals/WasteAuditContent";

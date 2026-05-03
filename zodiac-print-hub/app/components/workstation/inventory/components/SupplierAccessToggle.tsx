@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { UserPlus, ShieldCheck, Mail, Loader2 } from "lucide-react";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 
 export function SupplierAccessToggle({ supplier }: { supplier: any }) {
   const [isInviting, setIsInviting] = useState(false);

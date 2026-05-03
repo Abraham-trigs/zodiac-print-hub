@@ -1,9 +1,11 @@
+"use client";
+
 import { create } from "zustand";
-import { SCREEN_MAP, ScreenID } from "../view/screen.registry";
-import { getCachedScreen } from "../view/screen.cache";
-import { screenPredictor } from "../view/screen.predictor";
-import { useModalStore } from "../store/useModalStore";
-import { useDataStore } from "@store/core/useDataStore"; // Added for Role Guard
+import { SCREEN_MAP, ScreenID } from "@view/screen.registry";
+import { getCachedScreen } from "@view/screen.cache";
+import { screenPredictor } from "@view/screen.predictor";
+import { useModalStore } from "@store/useModalStore";
+import { useDataStore } from "@store-core/useDataStore"; // Added for Role Guard
 // ✅ Import the routing utility
 import { screenToPath } from "@view/screen.router";
 

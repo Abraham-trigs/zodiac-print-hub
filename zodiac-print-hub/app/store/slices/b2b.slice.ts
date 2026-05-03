@@ -1,7 +1,7 @@
 "use client";
 
 import { StateCreator } from "zustand";
-import type { B2BPush } from "@/types/zodiac.types";
+import type { B2BPush } from "@lib/shared/types/zodiac.types";
 
 export interface B2BSlice {
   // ✅ FIXED: Grouped state for consistency across the store

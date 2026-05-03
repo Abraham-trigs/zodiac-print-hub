@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 import { AlertCircle, ShoppingCart, Loader2, CheckCircle2 } from "lucide-react";
 
 /**

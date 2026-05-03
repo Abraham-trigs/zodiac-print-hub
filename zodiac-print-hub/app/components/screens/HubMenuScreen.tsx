@@ -1,12 +1,11 @@
 "use client";
-
-import { useZodiac } from "../store/zodiac.store";
-import { useModalStore } from "../store/useModalStore";
-import { ZodiacScreen } from "../types/screen.types";
-import { SettingsPermissionsModal } from "../screens/modals/SettingsPermissionsModal";
-import { PrintLayoutConfigModal } from "../components/workstation/production/PrintLayoutConfigModal";
-import { useDataStore } from "../store/core/useDataStore";
-import { selectProductionIntelligence } from "../store/selectors/data.selectors";
+import { useZodiac } from "@store/zodiac.store";
+import { useModalStore } from "@store/useModalStore";
+import { ZodiacScreen } from "@types/screen.types";
+import { SettingsPermissionsModal } from "@modals/SettingsPermissionsModal";
+import { PrintLayoutConfigModal } from "@workstation/production/PrintLayoutConfigModal";
+import { useDataStore } from "@store-core/useDataStore";
+// import { selectProductionIntelligence } from "@store-selectors/data.selectors";
 
 export const HubMenuScreen: ZodiacScreen = {
   id: "HUB_MENU",

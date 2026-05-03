@@ -3,18 +3,18 @@
 import { useState, useMemo } from "react";
 import { shallow } from "zustand/shallow";
 
-import { useZodiac } from "../../zodiac/store/zodiac.store";
-import { useModalStore } from "../../zodiac/store/useModalStore";
-import { ZodiacScreen } from "../../types/screen.types";
-import { useDataStore } from "../../zodiac/store/core/useDataStore";
+import { useZodiac } from "@store/zodiac.store";
+import { useModalStore } from "@store/useModalStore";
+import { ZodiacScreen } from "@types/screen.types";
+import { useDataStore } from "@store/core/useDataStore";
 
 // Aligned with new folder structure
-import { JobEntryModal } from "../modals/JobEntryModal";
-import { JobDetailsModal } from "../modals/JobDetailsModal";
-import { JobCardSkeleton } from "../common/skeleton/JobCardSkeleton";
-import { RefreshButton } from "../common/RefreshButton";
+import { JobEntryModal } from "@modals/JobEntryModal";
+import { JobDetailsModal } from "@modals/JobDetailsModal";
+import { JobCardSkeleton } from "@common/skeleton/JobCardSkeleton";
+import { RefreshButton } from "@common/RefreshButton";
 
-import { selectJobsWithRelations } from "../../zodiac/store/selectors/data.selectors";
+import { selectJobsWithRelations } from "@store-selectors/data.selectors";
 
 export const JobCartScreen: ZodiacScreen = {
   id: "JOB_CART",

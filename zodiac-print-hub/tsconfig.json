@@ -17,25 +17,41 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/zodiac/*"],
-      "@root/*": ["./app/*"],
-
+      "@/*": ["app/*"],
       "@api/*": ["app/api/*"],
 
       "@components/*": ["app/components/*"],
+      "@common/*": ["app/components/common/*"],
       "@core/*": ["app/components/core/*"],
       "@screens/*": ["app/components/screens/*"],
-      "@store/*": ["app/zodiac/store/*"],
-      "@ui/*": ["app/zodiac/ui/*"],
+      "@modals/*": ["app/components/modals/*"],
+      "@workstation/*": ["app/components/workstation/*"],
+      "@web/*": ["app/components/web/*"],
+
+      "@store/*": ["app/store/*"],
+      "@store-core/*": ["app/store/core/*"],
+      "@store-slices/*": ["app/store/slices/*"],
+      "@store-selectors/*": ["app/store/selectors/*"],
+
+      "@zodiac/*": ["app/zodiac/*"],
       "@view/*": ["app/zodiac/view/*"],
-      "@types/*": ["app/types/*"],
-      "@process/*": ["app/components/modals/process/*"],
-      "@schema/*": ["app/zodiac/schema/*"],
 
       "@lib/*": ["app/lib/*"],
-      "@hooks/*": ["app/lib/hooks/*"],
+      "@client/*": ["app/lib/client/*"],
+      "@hooks/*": ["app/lib/client/hooks/*"],
+      "@server/*": ["app/lib/server/*"],
 
-      "@services/*": ["app/lib/services/*"],
+      "@services/*": ["app/lib/server/services/*"],
+      "@repositories/*": ["app/lib/server/repositories/*"],
+      "@queue/*": ["app/lib/server/queue/*"],
+      "@events/*": ["app/lib/server/events/*"],
+
+      "@generated/*": ["./generated*"],
+
+      "@shared/*": ["app/lib/shared/*"],
+      "@schema/*": ["app/lib/shared/schema/*"],
+      "@types/*": ["app/lib/shared/types/*"],
+      "@utils/*": ["app/lib/shared/utils/*"],
 
       "@prisma/*": ["prisma/*"]
     }

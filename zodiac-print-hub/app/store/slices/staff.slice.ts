@@ -1,8 +1,10 @@
-import { StateCreator } from "zustand";
-import { Staff, StaffStatus } from "@prisma/client";
-import { apiClient } from "@root/lib/api/client";
+"use client";
 
-// Joined type for UI hydration
+import { StateCreator } from "zustand";
+// 1. ✅ Use 'import type' for the interfaces
+import type { Staff, StaffStatus } from "@prisma/client";
+import { apiClient } from "@lib/client/api/client";
+
 export type StaffWithUser = Staff & {
   user: { name: string; email: string; image?: string };
 };
@@ -51,7 +53,8 @@ export const createStaffSlice: StateCreator<StaffSlice> = (set, get) => ({
             [staffId]: {
               ...existing,
               currentJobId: jobId,
-              status: StaffStatus.BUSY,
+              // 2. ✅ Use the string value directly instead of the Enum constant
+              status: "BUSY" as StaffStatus,
             },
           },
         },

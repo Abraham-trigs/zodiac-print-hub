@@ -11,7 +11,7 @@ import {
   Zap,
   Lock,
 } from "lucide-react";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 import { format } from "date-fns";
 
 export function CustomerApprovalScreen({ token }: { token: string }) {

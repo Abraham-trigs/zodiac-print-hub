@@ -1,6 +1,8 @@
+"use client";
+
 import { StateCreator } from "zustand";
-import { PrintLayoutBuilder as BuilderLogic } from "@lib/utils/print-layout-builder";
-import { apiClient } from "@root/lib/api/client";
+import { PrintLayoutBuilder as BuilderLogic } from "@components/workstation/production/PrintLayoutBuilder";
+import { apiClient } from "@lib/client/api/client";
 
 export interface PrintLayoutSlice {
   layoutState: {

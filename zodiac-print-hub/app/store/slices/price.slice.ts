@@ -1,7 +1,9 @@
+"use client";
+
 // src/store/slices/price.slice.ts
 import { StateCreator } from "zustand";
-import { apiClient } from "@root/lib/api/client";
-import { PriceList, Material, Service } from "@prisma/client";
+import { apiClient } from "@lib/client/api/client";
+import type { PriceList, Material, Service } from "@prisma/client";
 
 /* =========================================================
    TYPES (ALIGNED WITH PRODUCTION RECIPE)

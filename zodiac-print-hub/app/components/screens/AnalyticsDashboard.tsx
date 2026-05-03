@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useDataStore } from "../../zodiac/store/core/useDataStore";
-import { useZodiac } from "../../zodiac/store/zodiac.store";
-import { ZodiacScreen } from "../../types/screen.types";
+import { useDataStore } from "@store-core/useDataStore";
+import { useZodiac } from "@store/zodiac.store";
+import { ZodiacScreen } from "@types/screen.types";
 
 export const AnalyticsDashboard: ZodiacScreen = {
   id: "ANALYTICS",

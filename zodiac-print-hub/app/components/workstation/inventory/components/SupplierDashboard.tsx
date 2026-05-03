@@ -10,7 +10,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { format } from "date-fns";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 
 export function SupplierDashboard() {
   const { procurementState, loadPurchaseOrders } = useDataStore();

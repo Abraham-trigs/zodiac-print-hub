@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Inter_Tight, JetBrains_Mono } from "next/font/google";
-import { WebModalContainer } from "@/components/web/WebModalContainer";
+import { WebModalContainer } from "./components/web/WebModalContainer";
 import type { Metadata } from "next";
 
 const inter = Inter_Tight({

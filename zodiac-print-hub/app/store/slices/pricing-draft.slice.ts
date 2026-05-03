@@ -1,7 +1,7 @@
 "use client";
 
 import { StateCreator } from "zustand";
-import {
+import type {
   MaterialCalculationType,
   ServiceCalculationType,
   ServiceUnit,

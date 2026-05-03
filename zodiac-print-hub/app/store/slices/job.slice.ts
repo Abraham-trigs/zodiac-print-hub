@@ -1,169 +1,156 @@
-import { prisma } from "@lib/prisma-client";
-import { Outbox } from "@lib/db/outbox";
-import type { CreateStockMovementInput } from "@lib/schema/stock.schema";
-import { StockMovementType } from "@prisma/client";
+"use client";
+import { StateCreator } from "zustand";
+import type { Job, JobStatus, ProofStatus } from "@prisma/client";
+import { apiClient } from "@client/api/client";
 
 /**
- * V2 STOCK ENGINE (Industrial Ledger Edition)
- * Principles:
- * 1. StockItem = Snapshot (Current Balance)
- * 2. StockMovement = Truth (The Audit Trail)
+ * JOB_SLICE
+ * The central nervous system for production data.
  */
-class StockService {
-  /* =========================================================
-     INITIAL STOCK REGISTRATION
-  ========================================================= */
-  async registerInitialStock(
-    orgId: string,
-    data: {
-      materialId: string;
-      quantity: number;
-      purchasePrice?: number;
-      lowStockThreshold?: number;
-      createdBy?: string;
-    },
-    tx: any,
-  ) {
-    // 1. Create the Projection (Bucket)
-    const item = await tx.stockItem.create({
-      data: {
-        orgId,
-        materialId: data.materialId,
-        totalRemaining: data.quantity || 0,
-        lowStockThreshold: data.lowStockThreshold ?? 10,
-      },
-    });
+export interface JobSlice {
+  jobState: {
+    jobs: Record<string, Job>; // Normalized Map (id -> Job)
+    activeJobId: string | null;
+    isLoading: boolean;
+    error: string | null;
+  };
 
-    // 2. Create the Ledger Entry (Initial Load)
-    const movement = await tx.stockMovement.create({
-      data: {
-        orgId,
-        stockItemId: item.id,
-        type: StockMovementType.RESTOCK,
-        quantity: data.quantity || 0,
-        // Optional: snapshot purchase price at movement time
-        note: "Initial system registration of physical material",
-        createdBy: data.createdBy || "SYSTEM",
-        referenceType: "INITIAL_LOAD",
-      },
-    });
+  // --- CORE ACTIONS ---
+  loadJobs: () => Promise<void>;
+  createJob: (payload: any) => Promise<Job | null>;
+  updateJobStatus: (jobId: string, status: JobStatus) => Promise<void>;
+  setActiveJob: (id: string | null) => void;
 
-    await Outbox.add(tx, {
-      type: "stock.item_registered",
-      orgId,
-      payload: { item, movement },
-    });
-
-    return item;
-  }
-
-  /* =========================================================
-     STOCK MOVEMENT ENGINE
-  ========================================================= */
-  async createMovement(params: CreateStockMovementInput, tx: any) {
-    const {
-      orgId,
-      stockItemId,
-      type,
-      quantity,
-      referenceId,
-      referenceType,
-      note,
-      createdBy,
-    } = params;
-
-    const item = await tx.stockItem.findFirst({
-      where: { id: stockItemId, orgId },
-      include: { material: true },
-    });
-
-    if (!item) throw new Error("Stock item not found");
-
-    let delta = 0;
-    switch (type) {
-      case "RESTOCK":
-        delta = quantity;
-        break;
-      case "DEDUCT":
-      case "WASTE":
-        // Production Guard: Prevent "Phantom Material" usage
-        if (item.totalRemaining < quantity) {
-          throw new Error(
-            `Insufficient stock for ${item.material?.name}. Required: ${quantity}, Available: ${item.totalRemaining}`,
-          );
-        }
-        delta = -quantity;
-        break;
-      case "ADJUST":
-        // ADJUST forces the balance to a specific number (inventory counting)
-        delta = quantity - item.totalRemaining;
-        break;
-      default:
-        throw new Error(`Unsupported movement type: ${type}`);
-    }
-
-    const newQuantity = item.totalRemaining + delta;
-
-    // 1. UPDATE PROJECTION (SNAPSHOT)
-    const updated = await tx.stockItem.update({
-      where: { id: stockItemId },
-      data: { totalRemaining: newQuantity },
-    });
-
-    // 2. WRITE TO LEDGER (AUDIT TRAIL)
-    const movement = await tx.stockMovement.create({
-      data: {
-        orgId,
-        stockItemId,
-        type,
-        quantity, // We store the 'requested amount' in the ledger
-        referenceId,
-        referenceType,
-        note,
-        createdBy,
-      },
-    });
-
-    // 3. BROADCAST FOR INTELLIGENCE SYNC
-    await Outbox.add(tx, {
-      type: "stock.movement_created",
-      orgId,
-      payload: {
-        movement,
-        after: updated,
-        materialName: item.material?.name,
-      },
-    });
-
-    return updated;
-  }
-
-  /* =========================================================
-     READ LAYER (INTELLIGENCE FEED)
-  ========================================================= */
-  async list(orgId: string) {
-    return prisma.stockItem.findMany({
-      where: { orgId },
-      include: {
-        material: true,
-        // Optimization: only get recent movements if needed for UI sparks
-      },
-      orderBy: { updatedAt: "desc" },
-    });
-  }
-
-  async findById(orgId: string, id: string) {
-    return prisma.stockItem.findFirst({
-      where: { id, orgId },
-      include: {
-        material: true,
-        movements: {
-          take: 20,
-          orderBy: { createdAt: "desc" },
-        },
-      },
-    });
-  }
+  // --- v2 INDUSTRIAL HANDSHAKES ---
+  submitProof: (jobId: string, url: string) => Promise<void>;
+  syncJobFromOutbox: (payload: any) => void;
 }
 
-export const stockService = new StockService();
+export const createJobSlice: StateCreator<JobSlice> = (set, get) => ({
+  jobState: {
+    jobs: {},
+    activeJobId: null,
+    isLoading: false,
+    error: null,
+  },
+
+  /**
+   * LOAD_JOBS
+   * Fetches the current production queue.
+   */
+  loadJobs: async () => {
+    set((s) => ({ jobState: { ...s.jobState, isLoading: true } }));
+    try {
+      const res = await apiClient<{ data: Job[] }>("/api/jobs");
+      const data = res?.data ?? [];
+
+      // Normalize array into Record for high-speed lookups
+      const jobMap = data.reduce((acc, job) => ({ ...acc, [job.id]: job }), {});
+
+      set((s) => ({
+        jobState: { ...s.jobState, jobs: jobMap, isLoading: false },
+      }));
+    } catch (err) {
+      set((s) => ({
+        jobState: { ...s.jobState, error: "Sync Failed", isLoading: false },
+      }));
+    }
+  },
+
+  /**
+   * CREATE_JOB
+   * Injects a new job into the ledger.
+   */
+  createJob: async (payload) => {
+    try {
+      const res = await apiClient<{ data: Job }>("/api/jobs", {
+        method: "POST",
+        body: payload,
+      });
+
+      if (res?.data) {
+        set((s) => ({
+          jobState: {
+            ...s.jobState,
+            jobs: { ...s.jobState.jobs, [res.data.id]: res.data },
+          },
+        }));
+        return res.data;
+      }
+      return null;
+    } catch (err) {
+      console.error("Job Creation Error", err);
+      return null;
+    }
+  },
+
+  /**
+   * SUBMIT_PROOF (Industrial Handshake)
+   * Moves job to AWAITING and triggers WhatsApp Node.
+   */
+  submitProof: async (jobId, url) => {
+    try {
+      const res = await apiClient<{ data: Job }>(`/api/jobs/${jobId}/proof`, {
+        method: "PATCH",
+        body: { proofUrl: url },
+      });
+
+      if (res?.data) {
+        set((s) => ({
+          jobState: {
+            ...s.jobState,
+            jobs: { ...s.jobState.jobs, [jobId]: res.data },
+          },
+        }));
+      }
+    } catch (err) {
+      console.error("Proof Submission Error", err);
+    }
+  },
+
+  /**
+   * UPDATE_JOB_STATUS
+   * Direct state mutation for fast UI feedback.
+   */
+  updateJobStatus: async (jobId, status) => {
+    try {
+      const res = await apiClient<{ data: Job }>(`/api/jobs/${jobId}/status`, {
+        method: "PATCH",
+        body: { status },
+      });
+
+      if (res?.data) {
+        set((s) => ({
+          jobState: {
+            ...s.jobState,
+            jobs: { ...s.jobState.jobs, [jobId]: res.data },
+          },
+        }));
+      }
+    } catch (err) {
+      console.error("Status Update Error", err);
+    }
+  },
+
+  /**
+   * SYNC_JOB_FROM_OUTBOX
+   * The Real-Time Engine: Updates state when events arrive from Pusher/Sockets.
+   */
+  syncJobFromOutbox: (payload) => {
+    const jobId = payload.jobId || payload.id;
+    if (!jobId) return;
+
+    set((s) => ({
+      jobState: {
+        ...s.jobState,
+        jobs: {
+          ...s.jobState.jobs,
+          [jobId]: { ...s.jobState.jobs[jobId], ...payload },
+        },
+      },
+    }));
+  },
+
+  setActiveJob: (id) =>
+    set((s) => ({ jobState: { ...s.jobState, activeJobId: id } })),
+});

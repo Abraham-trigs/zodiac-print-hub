@@ -5,19 +5,20 @@ import { persist } from "zustand/middleware";
 import { shallow } from "zustand/shallow";
 
 // --- SLICES ---
-import { createPriceSlice } from "./slices/price.slice";
-import { createInventorySlice } from "./slices/inventory.slice";
-import { createJobSlice } from "./slices/job.slice";
-import { createDraftSlice } from "./slices/draft.slice";
-import { createPricingDraftSlice } from "./slices/pricing-draft.slice";
-import { createStaffSlice } from "./slices/staff.slice";
-import { createPaymentSlice } from "./slices/payment.slice";
-import { createDeliverySlice } from "./slices/delivery.slice";
-import { createB2BSlice } from "./slices/b2b.slice";
-import { createClientSlice } from "./slices/client.slice";
+import { createPriceSlice } from "@store-slices/price.slice";
+import { createInventorySlice } from "@store-slices/inventory.slice";
+import { createJobSlice } from "@store-slices/job.slice";
+import { createDraftSlice } from "@store-slices/draft.slice";
+import { createPricingDraftSlice } from "@store-slices/pricing-draft.slice";
+import { createStaffSlice } from "@store-slices/staff.slice";
+import { createPaymentSlice } from "@store-slices/payment.slice";
+import { createDeliverySlice } from "@store-slices/delivery.slice";
+import { createB2BSlice } from "@store-slices/b2b.slice";
+import { createClientSlice } from "@store-slices/client.slice";
+
 // 🚀 NEW V2 PRODUCTION & LOGISTICS SLICES
-import { createPrintLayoutSlice } from "./slices/PrintLayoutSlice";
-import { createProcurementSlice } from "./slices/procurement.slice";
+import { createPrintLayoutSlice } from "@store-slices/PrintLayoutSlice";
+import { createProcurementSlice } from "@store-slices/ProcurementSlice";
 
 /**
  * MASTER DATA STORE (V2)

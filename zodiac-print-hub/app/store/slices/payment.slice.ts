@@ -1,5 +1,7 @@
+"use client";
+
 import { StateCreator } from "zustand";
-import { Payment, PaymentMethod } from "@prisma/client";
+import type { Payment, PaymentMethod } from "@prisma/client";
 
 export interface PaymentSlice {
   paymentState: {

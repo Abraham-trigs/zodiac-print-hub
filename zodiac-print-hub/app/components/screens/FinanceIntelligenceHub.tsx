@@ -11,8 +11,8 @@ import {
   Calculator,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { apiClient } from "@root/lib/api/client";
-import { ZodiacScreen } from "../types/screen.types";
+import { apiClient } from "@lib/client/api/client";
+import { ZodiacScreen } from "@types/screen.types";
 
 /**
  * FINANCE_HUB_SCREEN

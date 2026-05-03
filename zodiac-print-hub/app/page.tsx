@@ -1,7 +1,7 @@
 "use client";
 
 import { useWebModal } from "@/store/webModalStore";
-import { HandshakeButton } from "./lib/components/web/HandshakeButton";
+import { HandshakeButton } from "@components/web/HandshakeButton";
 import {
   Zap,
   Activity,

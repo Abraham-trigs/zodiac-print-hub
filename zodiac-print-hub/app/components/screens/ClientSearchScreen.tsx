@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from "react";
 import { shallow } from "zustand/shallow";
-import { useDataStore } from "../../zodiac/store/core/useDataStore";
-import { useZodiac } from "../../zodiac/store/zodiac.store"; // ✅ Engine Sync
-import { ZodiacScreen } from "../../types/screen.types";
-import { selectClientsArray } from "../../zodiac/store/selectors/data.selectors";
+import { useDataStore } from "@store-core/useDataStore";
+import { useZodiac } from "@store/zodiac.store"; // ✅ Engine Sync
+import { ZodiacScreen } from "@types/screen.types";
+import { selectClientsArray } from "@store-selectors/data.selectors";
 
 /**
  * CLIENT_SEARCH SCREEN

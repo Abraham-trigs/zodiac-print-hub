@@ -181,6 +181,16 @@ exports.Prisma.StaffScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.StaffPerformanceScalarFieldEnum = {
+  id: 'id',
+  staffId: 'staffId',
+  orgId: 'orgId',
+  metricType: 'metricType',
+  value: 'value',
+  jobId: 'jobId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
@@ -221,6 +231,12 @@ exports.Prisma.MaterialScalarFieldEnum = {
   calcType: 'calcType',
   unit: 'unit',
   purchasePrice: 'purchasePrice',
+  rollWidth: 'rollWidth',
+  supplierId: 'supplierId',
+  leadTimeDays: 'leadTimeDays',
+  minOrderQty: 'minOrderQty',
+  buyQuantity: 'buyQuantity',
+  buyUnit: 'buyUnit',
   stockItemId: 'stockItemId',
   orgId: 'orgId'
 };
@@ -257,10 +273,50 @@ exports.Prisma.StockMovementScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SupplierScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  category: 'category',
+  linkedUserId: 'linkedUserId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.StockPurchaseOrderScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  supplierId: 'supplierId',
+  status: 'status',
+  relatedJobId: 'relatedJobId',
+  totalCost: 'totalCost',
+  expectedArrival: 'expectedArrival',
+  receivedAt: 'receivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StockPurchaseItemScalarFieldEnum = {
+  id: 'id',
+  purchaseOrderId: 'purchaseOrderId',
+  materialId: 'materialId',
+  quantity: 'quantity',
+  buyUnit: 'buyUnit',
+  unitPrice: 'unitPrice'
+};
+
 exports.Prisma.JobScalarFieldEnum = {
   id: 'id',
   orgId: 'orgId',
   clientId: 'clientId',
+  shortRef: 'shortRef',
+  proofUrl: 'proofUrl',
+  proofStatus: 'proofStatus',
+  customerNote: 'customerNote',
+  approvalToken: 'approvalToken',
+  approvedAt: 'approvedAt',
   priceListId: 'priceListId',
   serviceName: 'serviceName',
   quantity: 'quantity',
@@ -286,6 +342,7 @@ exports.Prisma.JobScalarFieldEnum = {
 exports.Prisma.JobVariableScalarFieldEnum = {
   id: 'id',
   jobId: 'jobId',
+  shortRef: 'shortRef',
   priceListId: 'priceListId',
   quantity: 'quantity',
   width: 'width',
@@ -295,7 +352,31 @@ exports.Prisma.JobVariableScalarFieldEnum = {
   materialId: 'materialId',
   serviceId: 'serviceId',
   orgId: 'orgId',
+  createdAt: 'createdAt',
+  printLayoutItemId: 'printLayoutItemId'
+};
+
+exports.Prisma.MaterialPrintLayoutScalarFieldEnum = {
+  id: 'id',
+  orgId: 'orgId',
+  materialId: 'materialId',
+  rollWidth: 'rollWidth',
+  cutLineHeight: 'cutLineHeight',
+  efficiency: 'efficiency',
+  totalWastedArea: 'totalWastedArea',
+  status: 'status',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.PrintLayoutItemScalarFieldEnum = {
+  id: 'id',
+  layoutId: 'layoutId',
+  jobId: 'jobId',
+  posX: 'posX',
+  posY: 'posY',
+  isRotated: 'isRotated',
+  width: 'width',
+  height: 'height'
 };
 
 exports.Prisma.DeliveryScalarFieldEnum = {
@@ -462,6 +543,20 @@ exports.StockMovementType = exports.$Enums.StockMovementType = {
   ADJUST: 'ADJUST'
 };
 
+exports.POStatus = exports.$Enums.POStatus = {
+  DRAFT: 'DRAFT',
+  ORDERED: 'ORDERED',
+  RECEIVED: 'RECEIVED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.ProofStatus = exports.$Enums.ProofStatus = {
+  PENDING: 'PENDING',
+  AWAITING: 'AWAITING',
+  REVISION: 'REVISION',
+  APPROVED: 'APPROVED'
+};
+
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {
   UNPAID: 'UNPAID',
   PARTIAL: 'PARTIAL',
@@ -478,10 +573,17 @@ exports.JobStatus = exports.$Enums.JobStatus = {
   PAUSED: 'PAUSED'
 };
 
+exports.LayoutStatus = exports.$Enums.LayoutStatus = {
+  DRAFT: 'DRAFT',
+  LOCKED: 'LOCKED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.DeliveryType = exports.$Enums.DeliveryType = {
   PHYSICAL_PICKUP: 'PHYSICAL_PICKUP',
-  PRINTER_DELIVERY: 'PRINTER_DELIVERY',
-  CLIENT_COURIER: 'CLIENT_COURIER'
+  COURIER: 'COURIER',
+  DIGITAL: 'DIGITAL'
 };
 
 exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
@@ -515,14 +617,20 @@ exports.Prisma.ModelName = {
   User: 'User',
   VerificationToken: 'VerificationToken',
   Staff: 'Staff',
+  StaffPerformance: 'StaffPerformance',
   Client: 'Client',
   PriceList: 'PriceList',
   Material: 'Material',
   Service: 'Service',
   StockItem: 'StockItem',
   StockMovement: 'StockMovement',
+  Supplier: 'Supplier',
+  StockPurchaseOrder: 'StockPurchaseOrder',
+  StockPurchaseItem: 'StockPurchaseItem',
   Job: 'Job',
   JobVariable: 'JobVariable',
+  MaterialPrintLayout: 'MaterialPrintLayout',
+  PrintLayoutItem: 'PrintLayoutItem',
   Delivery: 'Delivery',
   Payment: 'Payment',
   B2BPush: 'B2BPush',

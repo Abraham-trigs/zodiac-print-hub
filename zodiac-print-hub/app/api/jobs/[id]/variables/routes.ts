@@ -1,7 +1,7 @@
 // src/app/api/jobs/[id]/variables/route.ts
 import { apiHandler, ApiError } from "@lib/server/api/apiHandler";
-import { jobService } from "@lib/services/job.service";
-import { CreateJobVariableSchema } from "@lib/schema/job.schema";
+import { jobService } from "@lib/server/services/job.service";
+import { CreateJobVariableSchema } from "@lib/shared/schema/job.schema";
 
 /**
  * ADD VARIABLE TO JOB

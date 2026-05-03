@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 import {
   TrendingUp,
   Droplets,
@@ -11,7 +11,7 @@ import {
   RefreshCcw,
   AlertCircle,
 } from "lucide-react";
-import { ProductionReport } from "@/types/zodiac.types";
+import { ProductionReport } from "@lib/shared/types/zodiac.types";
 
 export function ProductionIntelligenceHub() {
   const [data, setData] = useState<ProductionReport | null>(null);

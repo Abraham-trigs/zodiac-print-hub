@@ -4,7 +4,8 @@ import { useState, useCallback, useMemo } from "react";
 import { shallow } from "zustand/shallow";
 import { useDataStore } from "@store/core/useDataStore";
 import { useModalStore } from "@store/useModalStore";
-import { MeasurementCalculator } from "@lib/utils/measurement-calculator";
+// ✅ Updated to use the correct name
+import { ProductionCalculator } from "@/lib/utils/production-calculator";
 
 // Quick-Edit Components
 import { QuickEditName } from "./QuickEditName";
@@ -34,7 +35,6 @@ export function PriceDisplayPreview() {
 
   /**
    * QUICK EDIT HANDLER
-   * Maps UI clicks to the correct Modal logic
    */
   const openQuickEdit = useCallback(
     (field: string, label: string) => {
@@ -75,16 +75,16 @@ export function PriceDisplayPreview() {
 
   /**
    * DATA LINE GENERATOR
-   * This is the "Truth" of what the user is building
    */
   const allLines = useMemo(() => {
     if (mode === "idle" || !type) return [];
 
-    // 🔥 THE PRODUCTION LOGIC: Trigger dimensions based on Enum or Category
+    // 🔥 THE PRODUCTION LOGIC: Check if we need W & H based on Calc Types
     const needsDimensions =
       draft?.calcType === "DIMENSIONAL" ||
       draft?.calcType === "AREA_BASED" ||
-      MeasurementCalculator.getCategory(draft?.unit as any) === "AREA";
+      draft?.mCalcType === "DIMENSIONAL" ||
+      draft?.sCalcType === "AREA_BASED";
 
     const common = [
       {
@@ -102,8 +102,10 @@ export function PriceDisplayPreview() {
       {
         key: "calcType",
         label: "Logic:",
-        value: draft?.calcType || "---",
-        isComplete: hasValue(draft?.calcType),
+        value: draft?.calcType || draft?.mCalcType || draft?.sCalcType || "---",
+        isComplete: hasValue(
+          draft?.calcType || draft?.mCalcType || draft?.sCalcType,
+        ),
       },
     ];
 
@@ -221,7 +223,6 @@ export function PriceDisplayPreview() {
           ))}
         </div>
 
-        {/* COMPLETION INDICATOR */}
         <div className="mt-4 flex items-center justify-center gap-2">
           <div
             className={`h-1 w-1 rounded-full ${allLines.every((l) => l.isComplete) ? "bg-emerald-400" : "bg-zodiac-orange animate-pulse"}`}

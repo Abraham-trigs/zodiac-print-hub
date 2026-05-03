@@ -1,6 +1,8 @@
+"use client";
+
 import { StateCreator } from "zustand";
-import type { DeliveryRecord } from "@/types/zodiac.types";
-import { apiClient } from "@root/lib/api/client"; // Added for future API sync
+import type { DeliveryRecord } from "@lib/shared/types/zodiac.types";
+import { apiClient } from "@lib/client/api/client"; // Added for future API sync
 
 export interface DeliverySlice {
   // 🔥 ALIGNMENT: Grouped state for V2 consistency

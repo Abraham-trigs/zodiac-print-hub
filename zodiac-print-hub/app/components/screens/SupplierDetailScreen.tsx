@@ -16,9 +16,9 @@ import {
   Edit3,
   Plus,
 } from "lucide-react";
-import { SupplierAccessToggle } from "@components/workstation/procurement/SupplierAccessToggle";
+import { SupplierAccessToggle } from "@workstation/inventory/components/SupplierAccessToggle";
 import { useModalStore } from "@store/useModalStore";
-import { EditSupplierModal } from "../modals/EditSupplierModal";
+import { EditSupplierModal } from "@workstation/inventory/components/EditSupplierModal";
 
 export function SupplierDetailScreen({ supplierId }: { supplierId: string }) {
   const { goBack } = useZodiac();

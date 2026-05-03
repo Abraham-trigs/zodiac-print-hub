@@ -1,10 +1,12 @@
+"use client";
+
 import { StateCreator } from "zustand";
-import {
+import type {
   Supplier,
   StockPurchaseOrder,
   StockPurchaseItem,
 } from "@prisma/client";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 
 export type StockPurchaseOrderFull = StockPurchaseOrder & {
   supplier: Supplier;

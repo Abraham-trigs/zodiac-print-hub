@@ -1,5 +1,5 @@
 import { apiHandler } from "@lib/server/api/apiHandler";
-import { deliveryService } from "@lib/services/delivery.service";
+import { deliveryService } from "@/lib/server/services/delivery.service";
 
 export const GET = apiHandler(async ({ orgId }) => {
   const data = await deliveryService.list(orgId);

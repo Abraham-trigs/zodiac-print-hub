@@ -1,5 +1,5 @@
 // lib/server/auth/getCurrentUser.ts
-import { prisma } from "@lib/prisma-client";
+import type { prisma } from "@lib/prisma-client";
 import { NextRequest } from "next/server";
 
 export async function getCurrentUser(req: NextRequest) {

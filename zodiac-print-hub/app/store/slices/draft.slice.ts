@@ -1,29 +1,28 @@
-// src/store/slices/draft.slice.ts
 "use client";
 
 import { StateCreator } from "zustand";
-import { generateJobRef } from "../shared/generateRef";
+import { generateJobRef } from "@store/shared/generateRef";
 import { DeliveryType, ServiceUnit } from "@prisma/client";
 
 /* =========================================================
-   TYPES (ALIGNED WITH JOB CREATION ENGINE)
+   TYPES (ALIGNED WITH V2 INDUSTRIAL ENGINE)
 ========================================================= */
 
 export interface JobDraft {
   id: string; // Internal UI reference
-  clientId: string; // Must be assigned before pushing to production
-  priceListId: string; // The Master Junction ID (The "Product")
+  clientId: string;
+  priceListId: string; // Master Junction ID
 
   // Dimensions & Quantity
   quantity: number;
   width: number;
   height: number;
-  unit?: ServiceUnit; // Visual reference for the UI
+  unit: ServiceUnit; // Made required for V2 logic consistency
 
   // Logistics & Meta
   deliveryType: DeliveryType;
-  b2bPushId?: string; // Link if job originated from a partner
-  notes?: string; // Instructions for the workshop
+  deliveryAddress?: string; // 🚀 Added for V2 Dispatch Node
+  notes?: string;
 }
 
 export interface DraftSlice {
@@ -35,29 +34,31 @@ export interface DraftSlice {
   resetDraft: () => void;
 }
 
+// Initial state helper for DRY code
+const INITIAL_DRAFT = (): JobDraft => ({
+  id: generateJobRef(),
+  clientId: "",
+  priceListId: "",
+  quantity: 1,
+  width: 0,
+  height: 0,
+  unit: "sqft", // Defaulting to industrial standard
+  deliveryType: "PICKUP", // Aligned with V2 Schema Enums
+  deliveryAddress: "",
+  notes: "",
+});
+
 /* =========================================================
    SLICE IMPLEMENTATION
 ========================================================= */
 
-export const createDraftSlice: StateCreator<DraftSlice> = (set, get) => ({
-  // 1. INITIAL STATE (The Empty Cart)
+export const createDraftSlice: StateCreator<DraftSlice> = (set) => ({
   draftState: {
-    draft: {
-      id: generateJobRef(),
-      clientId: "",
-      priceListId: "",
-      quantity: 1,
-      width: 0,
-      height: 0,
-      deliveryType: "PHYSICAL_PICKUP",
-      notes: "",
-    },
+    draft: INITIAL_DRAFT(),
   },
 
-  // 2. ACTIONS
   /**
    * SET DRAFT
-   * Updates specific fields in the current job cart.
    * Logic: Merges existing draft with the new patch.
    */
   setDraft: (patch) =>
@@ -70,23 +71,12 @@ export const createDraftSlice: StateCreator<DraftSlice> = (set, get) => ({
 
   /**
    * RESET DRAFT
-   * Clears the cart and generates a fresh Job Reference.
-   * Logic: Used after a successful Job creation or "Discard" action.
+   * Logic: Used after successful Job creation or "Discard".
    */
   resetDraft: () =>
-    set((state) => ({
+    set(() => ({
       draftState: {
-        ...state.draftState,
-        draft: {
-          id: generateJobRef(),
-          clientId: "",
-          priceListId: "",
-          quantity: 1,
-          width: 0,
-          height: 0,
-          deliveryType: "PHYSICAL_PICKUP",
-          notes: "",
-        },
+        draft: INITIAL_DRAFT(),
       },
     })),
 });

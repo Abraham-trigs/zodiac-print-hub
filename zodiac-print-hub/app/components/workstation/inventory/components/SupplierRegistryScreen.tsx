@@ -13,8 +13,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
-import { AddSupplierModal } from "../modals/AddSupplierModal";
-import { EditSupplierModal } from "../modals/EditSupplierModal";
+import { AddSupplierModal } from "@workstation/inventory/components/AddSupplierModal";
+import { EditSupplierModal } from "@workstation/inventory/components/EditSupplierModal";
 
 export function SupplierRegistryScreen() {
   const { openModal } = useModalStore();

@@ -6,7 +6,7 @@ import { MaterialServiceCatalog } from "./MaterialServiceCatalog";
 import { ExcelImportVault } from "./ExcelImportVault"; // 🚀 Import the target
 import { WorkstationStatus } from "../../../common/WorkstationStatus";
 import { shallow } from "zustand/shallow";
-import {
+import type {
   MaterialCalculationType,
   ServiceCalculationType,
 } from "@prisma/client";

@@ -11,7 +11,7 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 
 export function PrintLayoutBuilder({ materialId }: { materialId: string }) {
   // 1. GLOBAL STATE & ACTIONS

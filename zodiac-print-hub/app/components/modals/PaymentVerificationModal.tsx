@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useDataStore } from "../../zodiac/store/core/useDataStore";
-import { useModalStore } from "../../zodiac/store/useModalStore";
+import { useDataStore } from "@store-core/useDataStore";
+import { useModalStore } from "@store/useModalStore";
 
 export function PaymentVerificationModal({ jobId }: { jobId: string }) {
   const [ref, setRef] = useState("");

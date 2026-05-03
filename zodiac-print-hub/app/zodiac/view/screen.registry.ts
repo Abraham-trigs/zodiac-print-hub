@@ -1,26 +1,35 @@
-import { WelcomeScreen } from "../../components/screens/WelcomeScreen";
-import { UserProfileScreen } from "../../components/screens/UserProfileScreen";
-import { SubscriptionScreen } from "../../components/screens/subscription/SubscriptionScreen";
-import { JobCartScreen } from "../../components/screens/JobCartScreen";
-import { AnalyticsDashboard } from "../../components/screens/AnalyticsDashboard";
-import { HubMenuScreen } from "../../components/screens/HubMenuScreen";
-import { StaffManagementScreen } from "../../components/screens/StaffManagementScreen";
-import { StaffProfileScreen } from "../../components/screens/StaffProfileScreen";
-import { JobIntakeScreen } from "../../components/screens/JobIntakeScreen";
-import { ZodiacScreen } from "../types/screen.types";
-import { ServiceSearchScreen } from "../../components/screens/ServiceSearchScreen";
-import { ClientSearchScreen } from "../../components/screens/ClientSearchScreen";
-import { UnitVaultScreen } from "../../components/screens/UnitVaultScreen";
-import { PriceStockDetailScreen } from "../../components/screens/PriceStockDetailScreen";
-import { PriceEntryCenter } from "../../components/screens/PriceEntryCenter";
+import { WelcomeScreen } from "@screens/WelcomeScreen";
+import { UserProfileScreen } from "@screens/UserProfileScreen";
+import { SubscriptionScreen } from "@screens/subscription/SubscriptionScreen";
+import { JobCartScreen } from "@screens/JobCartScreen";
+import { AnalyticsDashboard } from "@screens/AnalyticsDashboard";
+import { HubMenuScreen } from "@screens/HubMenuScreen";
+import { StaffManagementScreen } from "@screens/StaffManagementScreen";
+import { StaffProfileScreen } from "@screens/StaffProfileScreen";
+import { JobIntakeScreen } from "@screens/JobIntakeScreen";
+import { ZodiacScreen } from "@types/screen.types";
+import { ServiceSearchScreen } from "@screens/ServiceSearchScreen";
+import { ClientSearchScreen } from "@screens/ClientSearchScreen";
+import { UnitVaultScreen } from "@screens/UnitVaultScreen";
+import { PriceStockDetailScreen } from "@screens/PriceStockDetailScreen";
+import { PriceEntryCenter } from "@screens/PriceEntryCenter";
 
-// 🚀 NEW: Supply Chain Node Screens
-import { SupplierRegistryScreen } from "../../components/screens/procurement/SupplierRegistryScreen";
-import { SupplierDetailScreen } from "../../components/screens/procurement/SupplierDetailScreen";
-import { SupplyNodeScreen } from "../../components/screens/procurement/SupplyNodeScreen";
-import { ReceivingNodeScreen } from "../../components/screens/procurement/ReceivingNodeScreen";
-import { SupplierPortalDashboard } from "../../components/screens/portal/SupplierPortalDashboard";
-import { StaffOversightScreen } from "@root/components/screens/StaffOversightScreen";
+// 🛰️ Procurement & Supply Chain Node
+import { SupplierRegistryScreen } from "@workstation/inventory/components/SupplierRegistryScreen";
+import { SupplierDetailScreen } from "@screens/SupplierDetailScreen";
+import { SupplyNodeScreen } from "@workstation/inventory/components/SupplyNodeScreen";
+import { ReceivingNodeScreen } from "@workstation/inventory/components/ReceivingNode";
+import { SupplierPortalDashboard } from "@screens/SupplierPortalDashboard";
+
+// 🏆 Performance & Oversight
+import { StaffOversightScreen } from "@screens/StaffOversightScreen";
+
+// 💎 Finance & Logistics Node (🚀 NEW)
+import { FinanceIntelligenceHub } from "@screens/FinanceIntelligenceHub";
+import { FrontDeskClearance } from "@modals/FrontDeskClearance";
+import { DispatchBoard } from "@screens/DispatchBoard";
+import { RiderDispatchMobile } from "@screens/RiderDispatchMobile";
+import { RiderRemittanceReport } from "@screens/RiderRemittanceReport";
 /**
  * Central screen registry
  * Cleaned of workstation components to prevent circular dependency loops.
@@ -42,12 +51,21 @@ export const SCREEN_MAP = {
   PRICE_ENTRY_CENTER: PriceEntryCenter,
   STAFF_OVERSIGHT: StaffOversightScreen,
 
-  // 🛰️ Procurement & Logistics Node
-  SUPPLIER_REGISTRY: SupplierRegistryScreen, // Phase 1: Vault
-  SUPPLIER_DETAIL: SupplierDetailScreen, // Phase 1: Identity & Materials
-  SUPPLY_NODE: SupplyNodeScreen, // Phase 2: Shortfalls
-  RECEIVING_NODE: ReceivingNodeScreen, // Phase 3: Check-in
+  // 🛰️ Procurement & Supply Chain
+  SUPPLIER_REGISTRY: SupplierRegistryScreen,
+  SUPPLIER_DETAIL: SupplierDetailScreen,
+  SUPPLY_NODE: SupplyNodeScreen,
+  RECEIVING_NODE: ReceivingNodeScreen,
   SUPPLIER_PORTAL: SupplierPortalDashboard,
+
+  // 💎 Finance Hub
+  FINANCE_HUB: FinanceIntelligenceHub,
+
+  // 🛵 Logistics & Fleet Node
+  FRONT_DESK_CLEARANCE: FrontDeskClearance,
+  DISPATCH_BOARD: DispatchBoard,
+  RIDER_MOBILE: RiderDispatchMobile,
+  RIDER_REMITTANCE: RiderRemittanceReport,
 } as const satisfies Record<string, ZodiacScreen>;
 
 export type ScreenID = keyof typeof SCREEN_MAP;

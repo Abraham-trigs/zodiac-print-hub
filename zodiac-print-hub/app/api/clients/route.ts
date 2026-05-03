@@ -1,5 +1,5 @@
 import { apiHandler } from "@lib/server/api/apiHandler";
-import { clientService } from "@lib/services/client.service";
+import { clientService } from "@lib/server/services/client.service";
 
 // GET
 export const GET = apiHandler(async ({ orgId, query, pagination }) => {

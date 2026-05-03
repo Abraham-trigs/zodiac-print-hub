@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDataStore } from "../../zodiac/store/core/useDataStore";
-import { useModalStore } from "../../zodiac/store/useModalStore";
+import { useDataStore } from "@store-core/useDataStore";
+import { useModalStore } from "@store/useModalStore";
 
 import { WastePromptModal } from "./WastePromptModal";
 import { DeliveryHandlingModal } from "./DeliveryHandlingModal";
 import { PaymentVerificationModal } from "./PaymentVerificationModal";
 
-import type { DeliveryRecord } from "../../zodiac/types/zodiac.types";
+import type { DeliveryRecord } from "../../lib/shared/types/zodiac.types";
 
 /* =========================================================
    SELECTORS ONLY (Synced with Grouped Store)

@@ -1,8 +1,8 @@
 "use client";
 
 import { SCREEN_MAP, ScreenID } from "../view/screen.registry";
-import { ViewMode } from "../store/zodiac.store";
-import { useModalStore } from "../store/useModalStore";
+import { ViewMode } from "@store/zodiac.store";
+import { useModalStore } from "@/store/useModalStore";
 
 type LayoutState = {
   topHeightStyle: string;

@@ -3,6 +3,8 @@ generator client {
   output   = "../generated/prisma" // Required in v7
 }
 
+// enum LayoutStatus
+
 // organisationId
 datasource db {
   provider = "postgresql"
@@ -47,6 +49,7 @@ model Organisation {
   auditLogs      AuditLog[]
   outboxEvents   OutboxEvent[]
   payments       Payment[]
+  suppliers      Supplier[]
 
   @@index([name])
   @@index([slug])
@@ -165,8 +168,9 @@ model Staff {
   organisation Organisation @relation(fields: [orgId], references: [id])
   assignedJobs Job[]        @relation("StaffJobs")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  staffPerformances StaffPerformance[]
 
   @@index([orgId])
   @@index([orgId, isActive])
@@ -174,16 +178,16 @@ model Staff {
 }
 
 model StaffPerformance {
-  id           String   @id @default(cuid())
-  staffId      String
-  staff        Staff    @relation(fields: [staffId], references: [id])
-  orgId        String
+  id      String @id @default(cuid())
+  staffId String
+  staff   Staff  @relation(fields: [staffId], references: [id])
+  orgId   String
 
-  metricType   String   // "DESIGN_SPEED", "PRINT_EFFICIENCY", "WASTE_SCORE"
-  value        Float    // Time in minutes or efficiency %
-  jobId        String?  // Reference to the specific job
-  
-  createdAt    DateTime @default(now())
+  metricType String // "DESIGN_SPEED", "PRINT_EFFICIENCY", "WASTE_SCORE"
+  value      Float // Time in minutes or efficiency %
+  jobId      String? // Reference to the specific job
+
+  createdAt DateTime @default(now())
 
   @@index([staffId, createdAt])
 }
@@ -345,46 +349,42 @@ enum MaterialStatus {
 
 model Material {
   id            String                  @id @default(cuid())
-  name          String 
+  name          String
   calcType      MaterialCalculationType
   unit          ServiceUnit
-  purchasePrice Float 
+  purchasePrice Float
 
   // 📏 Physical Geometry (Existing V2)
-  rollWidth     Float?                  @default(0) 
+  rollWidth Float? @default(0)
 
   // 🚚 PROCUREMENT LINKS (Phase 1)
   // Ties this material to its primary source
-  supplierId    String?
-  supplier      Supplier?               @relation(fields: [supplierId], references: [id], onDelete: SetNull)
-   
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+
   // 🚚 LOGISTICS SPECS (Phase 4)
-  leadTimeDays   Int?      @default(3)      // Days from Order to Arrival
-  minOrderQty    Int?      @default(1)      // Smallest purchase unit
-  buyQuantity    Float?    @default(1)      // Units per pack (e.g., 150ft per roll)
-  buyUnit        String?   @default("roll") // "roll", "box", "pack"
+  leadTimeDays Int?    @default(3) // Days from Order to Arrival
+  minOrderQty  Int?    @default(1) // Smallest purchase unit
+  buyQuantity  Float?  @default(1) // Units per pack (e.g., 150ft per roll)
+  buyUnit      String? @default("roll") // "roll", "box", "pack"
   // 📦 PROCUREMENT SPECS (Phase 2 & 3)
-  buyUnit       String?                 @default("roll") // "roll", "box", "pack"
-  buyQuantity   Float?                  @default(1)      // e.g., 150 (if a roll is 150ft)
-  minOrderQty   Int?                    @default(1)
-  
+
   // 🛰️ RELATIONS
-  stockItemId   String?                 @unique
-  stockItem     StockItem?              @relation(fields: [stockItemId], references: [id], onDelete: SetNull)
+  stockItemId String?    @unique
+  stockItem   StockItem? @relation(fields: [stockItemId], references: [id], onDelete: SetNull)
 
   priceListItems PriceList[]
   jobVariables   JobVariable[]
   printLayouts   MaterialPrintLayout[]
-  purchaseItems  StockPurchaseItem[]    // History of purchases for this material
+  purchaseItems  StockPurchaseItem[] // History of purchases for this material
 
-  orgId          String
-  organisation   Organisation           @relation(fields: [orgId], references: [id])
+  orgId        String
+  organisation Organisation @relation(fields: [orgId], references: [id])
 
   @@unique([orgId, name])
   @@index([name])
   @@index([supplierId])
 }
-
 
 enum ServiceCalculationType {
   FIXED // A one-time fee regardless of size (e.g., Design Fee, Setup Fee)
@@ -476,72 +476,73 @@ enum StockMovementType {
 }
 
 model Supplier {
-  id            String    @id @default(cuid())
-  orgId         String
-  name          String
-  email         String?
-  phone         String?
-  address       String?
-  
+  id      String  @id @default(cuid())
+  orgId   String
+  name    String
+  email   String?
+  phone   String?
+  address String?
+
   // 🏷️ Categorization (This is where you specify "Stock" vs "Service")
-  category      String?   // e.g., "SUBSTRATES", "HARDWARE", "UTILITIES"
-  
+  category String? // e.g., "SUBSTRATES", "HARDWARE", "UTILITIES"
+
   // 🏢 B2B BRIDGE
-  linkedUserId  String?   @unique 
-  
+  linkedUserId String? @unique
+
   // 🛰️ RELATIONS
   materials      Material[]
   purchaseOrders StockPurchaseOrder[]
 
-  organisation  Organisation @relation(fields: [orgId], references: [id])
-  createdAt     DateTime     @default(now())
+  organisation Organisation @relation(fields: [orgId], references: [id])
+  createdAt    DateTime     @default(now())
 
-  @@index([orgId])
   @@unique([orgId, name]) // A shop can't have two suppliers with the same name
+  @@index([orgId])
 }
-model StockPurchaseOrder {
-  id              String        @id @default(cuid())
-  orgId           String
-  
-  supplierId      String
-  supplier        Supplier      @relation(fields: [supplierId], references: [id])
 
-  status          POStatus      @default(DRAFT)
-  
+model StockPurchaseOrder {
+  id    String @id @default(cuid())
+  orgId String
+
+  supplierId String
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  status POStatus @default(DRAFT)
+
   // 🔗 LINK: The specific Job that triggered this (Phase 2)
-  relatedJobId    String?
-  
-  totalCost       Float         @default(0)
-  items           StockPurchaseItem[]
+  relatedJobId String?
+
+  totalCost Float               @default(0)
+  items     StockPurchaseItem[]
 
   // 🚚 LOGISTICS
   expectedArrival DateTime?
   receivedAt      DateTime?
 
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([orgId])
   @@index([status])
 }
 
 model StockPurchaseItem {
-  id               String             @id @default(cuid())
-  purchaseOrderId  String
-  purchaseOrder    StockPurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  id              String             @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   StockPurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
 
-  materialId       String
-  material         Material           @relation(fields: [materialId], references: [id])
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id])
 
-  quantity         Float              // How many you are buying (e.g., 10)
-  buyUnit          String             // e.g., "Roll"
-  unitPrice        Float              // Snapshot of price per Roll
+  quantity  Float // How many you are buying (e.g., 10)
+  buyUnit   String // e.g., "Roll"
+  unitPrice Float // Snapshot of price per Roll
 }
 
 enum POStatus {
   DRAFT
-  ORDERED     // Sent to Supplier (Stock is "In-Transit")
-  RECEIVED    // Physical Goods arrived (StockMovement Triggered)
+  ORDERED // Sent to Supplier (Stock is "In-Transit")
+  RECEIVED // Physical Goods arrived (StockMovement Triggered)
   CANCELLED
 }
 
@@ -561,6 +562,13 @@ enum PaymentStatus {
   PAID
 }
 
+enum ProofStatus {
+  PENDING
+  AWAITING
+  REVISION
+  APPROVED
+}
+
 model Job {
   id           String       @id @default(cuid())
   orgId        String
@@ -569,32 +577,22 @@ model Job {
   clientId String
   client   Client @relation(fields: [clientId], references: [id])
 
-  // 🏷️ PRODUCTION IDENTIFIER (V2 Addition)
-  // The 4-character code (e.g., "7x2a") written inside layout boxes.
-  shortRef     String?      @unique
+  // 🏷️ PRODUCTION IDENTIFIER
+  shortRef String? @unique
 
-  // 🔗 LAYOUT ENGINE LINK (V2 Addition)
-  // Connects this job to its specific position on a MaterialPrintLayout.
-  layoutItem   PrintLayoutItem?
+  // 🔗 LAYOUT ENGINE LINK
+  layoutItem PrintLayoutItem?
 
-    // 🎨 PROOFING & APPROVAL
-  proofUrl      String?     // URL to the uploaded design/proof
+  // 🎨 PROOFING & APPROVAL
+  proofUrl      String?
   proofStatus   ProofStatus @default(PENDING)
-  customerNote  String?     // Feedback from the customer
-  approvalToken String?     @unique @default(cuid()) // Secure link token
+  customerNote  String?
+  approvalToken String?     @unique @default(cuid())
   approvedAt    DateTime?
-
-  enum ProofStatus {
-  PENDING       // No proof uploaded yet
-  AWAITING      // Staff uploaded, waiting for customer
-  REVISION      // Customer requested changes
-  APPROVED      // Customer said yes
-}
 
   // --- Core Reference ---
   priceListId String
   priceList   PriceList @relation(fields: [priceListId], references: [id])
-
   serviceName String
 
   // --- Multi-Service Support ---
@@ -604,15 +602,14 @@ model Job {
   quantity Float
   width    Float?
   height   Float?
-  unit     ServiceUnit? 
+  unit     ServiceUnit?
 
   // --- Financial Snapshots ---
-  basePrice     Float 
-  variableTotal Float @default(0)
-  totalPrice    Float 
-
-  costPrice    Float? 
-  profitMargin Float? 
+  basePrice     Float
+  variableTotal Float  @default(0)
+  totalPrice    Float
+  costPrice     Float?
+  profitMargin  Float?
 
   // --- Payment & Status ---
   paymentStatus PaymentStatus @default(UNPAID)
@@ -621,13 +618,13 @@ model Job {
 
   // --- Relations ---
   assignedStaffId String?
-  assignedStaff   Staff?  @relation("StaffJobs", fields: [assignedStaffId], references: [id])
+  assignedStaff   Staff?     @relation("StaffJobs", fields: [assignedStaffId], references: [id])
+  deliveries      Delivery[]
+  payments        Payment[]
 
-  deliveries   Delivery[]
-  payments     Payment[]
   b2bPushId    String?
-  b2bPush      B2BPush?   @relation("B2BPushResult", fields: [b2bPushId], references: [id])
-  b2bSourceFor B2BPush[]  @relation("B2BOriginalSource")
+  b2bPush      B2BPush?  @relation("B2BPushResult", fields: [b2bPushId], references: [id])
+  b2bSourceFor B2BPush[] @relation("B2BOriginalSource")
 
   // --- Meta ---
   notes       String?
@@ -639,10 +636,8 @@ model Job {
   @@index([orgId, paymentStatus])
   @@index([clientId])
   @@index([priceListId])
-  @@index([shortRef]) // 🚀 Added for fast lookup in the PrintLayoutBuilder
-  @@index([createdAt(sort: Desc)])
+  @@index([shortRef])
 }
-
 
 model JobVariable {
   id    String @id @default(cuid())
@@ -651,11 +646,11 @@ model JobVariable {
 
   // 🏷️ VISUAL IDENTIFIER (V2 Sync)
   // We use a sub-ref so the printer knows this is an add-on (e.g., "7x2a-V1")
-  shortRef     String?      @unique 
+  shortRef String? @unique
 
   // 🔗 LAYOUT ENGINE LINK
   // Allows the "Lamination" or "Backing" to be nested on its own material run
-  layoutItem   PrintLayoutItem?
+  layoutItem PrintLayoutItem? @relation(fields: [printLayoutItemId], references: [id])
 
   priceListId String
   priceList   PriceList @relation(fields: [priceListId], references: [id])
@@ -673,8 +668,9 @@ model JobVariable {
   service    Service?  @relation(fields: [serviceId], references: [id])
   serviceId  String?
 
-  orgId     String
-  createdAt DateTime @default(now())
+  orgId             String
+  createdAt         DateTime @default(now())
+  printLayoutItemId String?
 
   @@index([orgId, jobId])
   @@index([jobId])
@@ -682,54 +678,57 @@ model JobVariable {
   @@index([priceListId])
 }
 
-
 // --- NEW: THE MAP (MaterialPrintLayout) ---
 model MaterialPrintLayout {
-  id              String         @id @default(cuid())
-  orgId           String
-  materialId      String
-  material        Material       @relation(fields: [materialId], references: [id])
-  
-  rollWidth       Float          // Snapshot of roll width
-  cutLineHeight   Float          // Where the straight cut happens
-  efficiency      Float          // Area Used / Total Canvas Area
-  totalWastedArea Float          // Shaded "Big Margin" area
-  
-  items           PrintLayoutItem[]
-  status          LayoutStatus   @default(DRAFT)
-  createdAt       DateTime       @default(now())
+  id         String   @id @default(cuid())
+  orgId      String
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id])
+
+  rollWidth       Float // Snapshot of roll width
+  cutLineHeight   Float // Where the straight cut happens
+  efficiency      Float // Area Used / Total Canvas Area
+  totalWastedArea Float // Shaded "Big Margin" area
+
+  items     PrintLayoutItem[]
+  status    LayoutStatus      @default(DRAFT)
+  createdAt DateTime          @default(now())
 
   @@index([orgId])
 }
 
 // --- NEW: THE BOXES (PrintLayoutItem) ---
 model PrintLayoutItem {
-  id            String               @id @default(cuid())
-  layoutId      String
-  layout        MaterialPrintLayout  @relation(fields: [layoutId], references: [id], onDelete: Cascade)
-  
-  jobId         String               @unique
-  job           Job                  @relation(fields: [jobId], references: [id])
+  id       String              @id @default(cuid())
+  layoutId String
+  layout   MaterialPrintLayout @relation(fields: [layoutId], references: [id], onDelete: Cascade)
 
-  posX          Float
-  posY          Float
-  isRotated     Boolean              @default(false)
-  width         Float
-  height        Float
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id])
+
+  posX         Float
+  posY         Float
+  isRotated    Boolean       @default(false)
+  width        Float
+  height       Float
+  jobVariables JobVariable[]
 }
 
-enum LayoutStatus { DRAFT; LOCKED; COMPLETED; CANCELLED }
+enum LayoutStatus {
+  DRAFT
+  LOCKED
+  COMPLETED
+  CANCELLED
+}
 
-
-// watse
 // ─────────────────────────────────────────────
 // 8. DELIVERY
 // ─────────────────────────────────────────────
-//
+
 enum DeliveryType {
   PHYSICAL_PICKUP
-  PRINTER_DELIVERY
-  CLIENT_COURIER
+  COURIER
+  DIGITAL
 }
 
 enum DeliveryStatus {

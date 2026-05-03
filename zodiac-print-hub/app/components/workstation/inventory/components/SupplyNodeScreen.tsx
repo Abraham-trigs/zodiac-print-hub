@@ -16,8 +16,8 @@ import {
   selectInventoryMap,
   selectPricesMap,
 } from "@store/selectors/data.selectors";
-import { ShippedOrderNotification } from "@components/notifications/procurement/ShippedOrderNotification";
-import { apiClient } from "@root/lib/api/client";
+import { ShippedOrderNotification } from "@workstation/inventory/components/ShippedOrderNotification";
+import { apiClient } from "@client/api/client";
 
 export function SupplyNodeScreen() {
   const [activeTab, setActiveTab] = useState<"BLOCKS" | "VELOCITY">("BLOCKS");

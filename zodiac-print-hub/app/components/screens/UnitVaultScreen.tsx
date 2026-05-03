@@ -4,9 +4,9 @@
 import { useState, useMemo } from "react";
 import { useZodiac } from "@store/zodiac.store";
 import { useDataStore } from "@store/core/useDataStore";
-import { ZodiacScreen } from "../../types/screen.types";
+import { ZodiacScreen } from "../../lib/shared/types/screen.types";
 // 🔥 PULLING DIRECTLY FROM SCHEMA
-import { ServiceUnitEnum } from "@lib/schema/job.schema";
+import { ServiceUnitEnum } from "@lib/shared/schema/job.schema";
 
 export const UnitVaultScreen: ZodiacScreen = {
   id: "UNIT_VAULT",

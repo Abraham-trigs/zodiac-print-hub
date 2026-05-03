@@ -1,6 +1,6 @@
 "use client";
 
-import { useZodiac } from "../zodiac/store/zodiac.store";
+import { useZodiac } from "@store/zodiac.store";
 
 export function BottomBar() {
   const setScreen = useZodiac((s) => s.setScreen);

@@ -1,8 +1,8 @@
 import { apiHandler } from "@lib/server/api/apiHandler";
-import { stockService } from "@lib/services/stock.service";
-import { CreateStockMovementSchema } from "@lib/schema/stock.schema";
-import { UnitOfWork } from "@lib/db/unitOfWork";
-import { prisma } from "@/lib/prisma"; // 🚀 Added direct prisma for simple GET query
+import { stockService } from "@lib/server/services/stock.service";
+import { CreateStockMovementSchema } from "@lib/shared/schema/stock.schema";
+import { UnitOfWork } from "@lib/server/db/unitOfWork";
+import { prisma } from "@prisma/client"; // 🚀 Added direct prisma for simple GET query
 
 /* =========================================================
    GET STOCK LIST (V2 RECIPE AWARE)

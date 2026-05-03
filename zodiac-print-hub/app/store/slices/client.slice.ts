@@ -1,6 +1,8 @@
+"use client";
+
 import { StateCreator } from "zustand";
-import type { Client } from "@/types/zodiac.types";
-import { apiClient } from "@root/lib/api/client";
+import type { Client } from "@lib/shared/types/zodiac.types";
+import { apiClient } from "@lib/client/api/client";
 
 export interface ClientSlice {
   clientState: {

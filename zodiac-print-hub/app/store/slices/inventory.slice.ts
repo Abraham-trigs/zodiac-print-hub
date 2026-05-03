@@ -1,6 +1,8 @@
+"use client";
+
 import { StateCreator } from "zustand";
-import { StockItem, Material, StockMovement } from "@prisma/client";
-import { apiClient } from "@root/lib/api/client";
+import type { StockItem, Material, StockMovement } from "@prisma/client";
+import { apiClient } from "@lib/client/api/client";
 
 /* =========================================================
    TYPES

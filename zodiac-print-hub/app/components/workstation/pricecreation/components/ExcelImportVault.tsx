@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useModalStore } from "@store/useModalStore";
 import { useDataStore } from "@store/core/useDataStore";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 
 interface ExcelRow {
   name: string; // Technical Resource Name

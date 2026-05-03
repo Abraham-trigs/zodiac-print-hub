@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useState, useMemo } from "react";
-import { apiClient } from "@root/lib/api/client";
+import { apiClient } from "@lib/client/api/client";
 
 export const SupplierPortalDashboard = {
   id: "SUPPLIER_PORTAL",

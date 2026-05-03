@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useDataStore } from "@store/core/useDataStore";
 import { useModalStore } from "@store/useModalStore";
-import { ServiceUnitEnum } from "@lib/schema/job.schema";
+import { ServiceUnitEnum } from "@lib/shared/schema/job.schema";
 
 /**
  * PRICING_UNIT_VAULT
