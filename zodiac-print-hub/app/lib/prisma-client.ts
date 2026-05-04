@@ -1,6 +1,4 @@
-// import "server-only";
-
-import { PrismaClient } from "../../generated/prisma";
+import { PrismaClient } from "@prisma/client"; // 🚀 FIX 1: Use standard path
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
@@ -8,19 +6,30 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+// 🚀 FIX 2: Ensure pg and adapter only run on the server
+let prismaInstance: PrismaClient;
 
-const adapter = new PrismaPg(pool);
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
+if (typeof window === "undefined") {
+  const pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
   });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  const adapter = new PrismaPg(pool);
+
+  prismaInstance =
+    globalForPrisma.prisma ??
+    new PrismaClient({
+      adapter,
+      log:
+        process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
+    });
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = prismaInstance;
+  }
+} else {
+  // Fallback for client-side to prevent "pg" import errors
+  prismaInstance = {} as PrismaClient;
 }
+
+export const prisma = prismaInstance;

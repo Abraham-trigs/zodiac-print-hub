@@ -1,6 +1,6 @@
 // app/api/stock/movements/route.ts
-import { apiHandler } from "@/lib/apiHandler";
-import { prisma } from "@/lib/prisma";
+import { apiHandler } from "@/lib/server/api/apiHandler";
+import { prisma } from "@/lib/prisma-client";
 
 export const GET = apiHandler(
   async ({ orgId, query }) => {

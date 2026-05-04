@@ -1,5 +1,5 @@
 import { apiHandler } from "@lib/server/api/apiHandler";
-import { StaffService } from "@lib/services/staff.service";
+import { StaffService } from "@lib/server/services/staff.service";
 
 // 1. READ ALL (List)
 export const GET = apiHandler(

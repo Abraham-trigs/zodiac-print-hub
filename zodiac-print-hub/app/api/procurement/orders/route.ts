@@ -1,13 +1,10 @@
-import { apiHandler, ApiError } from "@/lib/apiHandler";
-import { prisma } from "@/lib/prisma";
-import { UnitOfWork } from "@/lib/db/unitOfWork";
-import { POStatus } from "@prisma/client";
+import { apiHandler, ApiError } from "@server/api/apiHandler"; // 🚀 Fixed Alias
+import { prisma } from "@/lib/prisma-client";
+import { UnitOfWork } from "@/lib/server/db/unitOfWork";
+// ✅ FIX: Import as type to prevent 'index-browser' build leaks
+import type { POStatus } from "@prisma/client";
 import { z } from "zod";
 
-/**
- * SCHEMA: Create Stock Purchase Order
- * Used for manual restocking or JIT batching.
- */
 const CreatePOSchema = z.object({
   supplierId: z.string().cuid(),
   relatedJobId: z.string().cuid().optional(),
@@ -25,11 +22,10 @@ const CreatePOSchema = z.object({
 
 /**
  * GET: Fetch Procurement Pipeline
- * 🔐 SECURITY: Filtered by Role (Supplier vs Manager)
  */
 export const GET = apiHandler(
   async ({ orgId, user }) => {
-    // 🛡️ ROLE GUARD: If the user is a linked Supplier
+    // 🛡️ SUPPLIER ROLE GUARD
     if (user.role === "SUPPLIER") {
       const supplierRecord = await prisma.supplier.findUnique({
         where: { linkedUserId: user.id },
@@ -37,7 +33,7 @@ export const GET = apiHandler(
 
       if (!supplierRecord) {
         throw new ApiError(
-          "No supplier registry record linked to this user.",
+          "No supplier record linked to this user profile.",
           403,
         );
       }
@@ -55,7 +51,7 @@ export const GET = apiHandler(
       });
     }
 
-    // 👑 ADMIN/MANAGER: Full visibility of shop procurement
+    // 👑 ADMIN/MANAGER VIEW
     return await prisma.stockPurchaseOrder.findMany({
       where: { orgId },
       include: {
@@ -70,26 +66,24 @@ export const GET = apiHandler(
 
 /**
  * POST: Draft a new Purchase Order
- * Atomic creation of PO and Line Items
  */
 export const POST = apiHandler(
   async ({ orgId, body }) => {
     const data = CreatePOSchema.parse(body);
 
     return await UnitOfWork.run(async (tx) => {
-      // 1. Calculate Total Cost from snapshot prices
       const totalCost = data.items.reduce(
         (sum, item) => sum + item.quantity * item.unitPrice,
         0,
       );
 
-      // 2. Create Master PO and Items in one transaction
-      const po = await tx.stockPurchaseOrder.create({
+      return await tx.stockPurchaseOrder.create({
         data: {
           orgId,
           supplierId: data.supplierId,
           relatedJobId: data.relatedJobId,
-          status: POStatus.DRAFT,
+          // 🚀 Use string value instead of Enum constant for stability
+          status: "DRAFT" as POStatus,
           totalCost,
           items: {
             create: data.items.map((item) => ({
@@ -105,8 +99,6 @@ export const POST = apiHandler(
           supplier: true,
         },
       });
-
-      return po;
     });
   },
   { requireAuth: true, requireOrg: true },

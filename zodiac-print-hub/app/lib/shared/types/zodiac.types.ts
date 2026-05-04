@@ -351,7 +351,8 @@ export type JobStatus =
   | "CANCELLED"
   | "PAUSED";
 
-export type DomainEvent =
+export type DomainEventType =
+  | "SEND_MAGIC_LINK" // 🚀 Added for Auth Handshake
   | "JOB_CREATED"
   | "JOB_UPDATED"
   | "STOCK_RESTOCKED"
@@ -364,6 +365,13 @@ export type DomainEvent =
   | "PAYMENT_UPDATED"
   | "DELIVERY_UPDATED"
   | "B2B_PUSHED";
+
+export interface DomainEventEnvelope<T = any> {
+  orgId: string;
+  type: DomainEventType;
+  payload: T;
+  timestamp: string;
+}
 
 export type PaymentStatus = "UNPAID" | "PARTIAL" | "PAID";
 

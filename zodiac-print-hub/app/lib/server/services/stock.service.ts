@@ -1,8 +1,8 @@
 // src/lib/services/stock.service.ts
 import type { prisma } from "@lib/prisma-client";
-import { Outbox } from "@lib/db/outbox";
+import { Outbox } from "@lib/server/db/outbox";
 import type { CreateStockMovementInput } from "@lib/shared/schema/stock.schema";
-import { StockMovementType } from "@prisma/client";
+import type { StockMovementType } from "@prisma/client";
 import { StockAlertService } from "./stock-alert.service"; // 🚀 Added Watchman
 
 /**

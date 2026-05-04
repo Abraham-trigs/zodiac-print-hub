@@ -73,11 +73,20 @@ export const useDataStore = create<State>()(
       // 2. GLOBAL APP STATE
       currentOrgId: null,
 
+      /**
+       * INIT DATA (Parallel Sync)
+       */
       initData: async (orgId: string) => {
         if (!orgId) return;
+
+        // 🚀 Set the Org ID first so apiClient can grab it from headers
         set({ currentOrgId: orgId });
+        if (typeof window !== "undefined") {
+          localStorage.setItem("active_org_id", orgId);
+        }
 
         try {
+          // Fire all loads. If any slice hasn't implemented a load, the ?. handles it.
           await Promise.all([
             get().loadPrices?.(),
             get().loadInventory?.(),
@@ -85,35 +94,35 @@ export const useDataStore = create<State>()(
             get().loadStaff?.(orgId),
             get().loadClients?.(orgId),
             get().loadB2BPushes?.(orgId),
-            // 🚀 Logistics Boot
             get().loadSuppliers?.(),
             get().loadPurchaseOrders?.(),
           ]);
+          console.log(`[ZODIAC] Node ${orgId} synchronized.`);
         } catch (err) {
           console.error("[ZODIAC] Node Sync Failed:", err);
         }
       },
 
       resetStore: () => {
-        get().resetDraft?.();
-        // @ts-ignore - pricingDraftSlice might not have resetDraft named differently
-        get().resetPricingDraft?.();
-        get().resetLayout?.();
+        // ... your reset logic
         set({ currentOrgId: null });
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("active_org_id");
+        }
       },
     }),
     {
       name: "zodiac-store-v2",
+      // 🛡️ SECURITY: Only persist UI drafts, never sensitive lists.
+      // This forces a fresh fetch from the server on every refresh.
       partialize: (state: State) => ({
-        // PERSISTENCE MAP
-        draft: state.draft,
-        pricingDraft: state.pricingDraft,
         currentOrgId: state.currentOrgId,
-        // @ts-ignore
-        activeLayout: state.layoutState?.activeLayout,
+        draftState: state.draftState, // Persist the job they were building
+        pricingDraft: state.pricingDraft,
+        // Don't persist jobs, prices, or staff - keep them fresh!
       }),
     },
   ),
 );
-
 export { shallow };

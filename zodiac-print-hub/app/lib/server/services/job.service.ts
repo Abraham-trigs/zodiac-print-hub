@@ -1,13 +1,13 @@
 // src/lib/services/job.service.ts
-import type { prisma } from "@lib/prisma-client";
-import { UnitOfWork } from "@/lib/db/unitOfWork";
-import { Outbox } from "@/lib/db/outbox";
-import { JobRepository } from "@/lib/repositories/job.repository";
-import { stockService } from "@/lib/services/stock.service";
-import { ProductionCalculator } from "@/lib/utils/production-calculator";
-import { ApiError } from "@/lib/apiHandler";
-import { StockMovementType } from "@prisma/client";
-import { generateShortRef } from "@/store/shared/generateRef";
+import { prisma } from "@lib/prisma-client";
+import { UnitOfWork } from "@server/db/unitOfWork";
+import { Outbox } from "@server/db/outbox";
+import { JobRepository } from "@repositories/job.repository";
+import { stockService } from "@services/stock.service";
+import { ProductionCalculator } from "@utils/production-calculator";
+import { ApiError } from "@server/api/apiHandler";
+import type { StockMovementType } from "@prisma/client";
+import { generateShortRef } from "@/store/shared/generateShortRef";
 
 export class JobService {
   /**

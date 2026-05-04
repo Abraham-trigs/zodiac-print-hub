@@ -1,8 +1,8 @@
 "use client";
 
 import { StateCreator } from "zustand";
-import { generateJobRef } from "@store/shared/generateRef";
-import { DeliveryType, ServiceUnit } from "@prisma/client";
+import { generateShortRef } from "@/store/shared/generateShortRef";
+import type { DeliveryType, ServiceUnit } from "@prisma/client";
 
 /* =========================================================
    TYPES (ALIGNED WITH V2 INDUSTRIAL ENGINE)
@@ -36,7 +36,7 @@ export interface DraftSlice {
 
 // Initial state helper for DRY code
 const INITIAL_DRAFT = (): JobDraft => ({
-  id: generateJobRef(),
+  id: generateShortRef(),
   clientId: "",
   priceListId: "",
   quantity: 1,

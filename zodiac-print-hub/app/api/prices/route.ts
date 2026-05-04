@@ -1,6 +1,6 @@
 // src/app/api/prices/route.ts
-import { apiHandler, ApiError } from "@/lib/apiHandler";
-import { prisma } from "@/lib/prisma";
+import { apiHandler, ApiError } from "@lib/server/api/apiHandler";
+import { prisma } from "@lib/prisma-client";
 import { z } from "zod";
 
 /**

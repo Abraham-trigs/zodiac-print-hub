@@ -1,8 +1,10 @@
 "use client";
 
 import { StateCreator } from "zustand";
+// ✅ FIX: Type-only imports to prevent Prisma binary leaks in browser
 import type { StockItem, Material, StockMovement } from "@prisma/client";
-import { apiClient } from "@lib/client/api/client";
+import { apiClient } from "@lib/client/api/client"; // 🚀 Aligned path
+import { useAuthStore } from "@store/useAuthStore"; // 🚀 Added to fix attribution
 
 /* =========================================================
    TYPES
@@ -16,18 +18,15 @@ export type StockItemFull = StockItem & {
 export interface InventorySlice {
   inventoryState: {
     inventory: Record<string, StockItemFull>;
-    movements: Record<string, StockMovement>; // 🔥 NEW: Ledger cache for UI
+    movements: Record<string, StockMovement>;
     isLoading: boolean;
     error: string | null;
   };
 
   setInventory: (data: StockItemFull[]) => void;
   loadInventory: (query?: { orgId?: string }) => Promise<void>;
-
-  // 🔥 NEW: Fetch historic movements for the Ledger UI
   loadMovements: (params: { stockItemId?: string }) => Promise<void>;
 
-  // LEDGER ACTIONS (Aligned with StockMovement model)
   restock: (payload: {
     stockItemId: string;
     quantity: number;
@@ -53,7 +52,7 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
 ) => ({
   inventoryState: {
     inventory: {},
-    movements: {}, // 🔥 Initialized
+    movements: {},
     isLoading: false,
     error: null,
   },
@@ -91,7 +90,7 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
 
   /**
    * LOAD MOVEMENTS
-   * 🔥 NEW: Powers the StockLedgerScreen
+   * ✅ FIXED: Clears the cache per request so history doesn't mix between items
    */
   loadMovements: async ({ stockItemId }) => {
     try {
@@ -108,47 +107,50 @@ export const createInventorySlice: StateCreator<InventorySlice> = (
           ...state.inventoryState,
           movements: data.reduce(
             (acc, m) => ({ ...acc, [m.id]: m }),
-            state.inventoryState.movements,
+            {}, // 🚀 Start fresh so we only show history for the active item
           ),
         },
       }));
     } catch (e) {
-      console.error("Ledger fetch failed", e);
+      console.error("[ZODIAC] Ledger fetch failed", e);
     }
   },
 
   restock: async (payload) => {
     try {
+      // 🚀 HANDSHAKE: Get user from the dedicated AuthStore
+      const currentUser = useAuthStore.getState().user;
+
       await apiClient("/api/stock", {
-        // 🚀 Updated path to match route.ts
         method: "POST",
         body: {
           ...payload,
           type: "RESTOCK",
           referenceType: "RESTOCK",
-          createdBy: (get() as any).authState?.user?.id || "SYSTEM", // 🚀 Attribution
+          createdBy: currentUser?.name || "SYSTEM",
         },
       });
       await get().loadInventory();
     } catch (e: any) {
-      console.error("Restock failed", e);
+      console.error("[ZODIAC] Restock failed", e);
     }
   },
 
   adjust: async (payload) => {
     try {
+      const currentUser = useAuthStore.getState().user;
+
       await apiClient("/api/stock", {
-        // 🚀 Updated path
         method: "POST",
         body: {
           ...payload,
           referenceType: payload.type === "WASTE" ? "WASTE" : "MANUAL",
-          createdBy: (get() as any).authState?.user?.id || "SYSTEM",
+          createdBy: currentUser?.name || "SYSTEM",
         },
       });
       await get().loadInventory();
     } catch (e: any) {
-      console.error("Adjustment failed", e);
+      console.error("[ZODIAC] Adjustment failed", e);
     }
   },
 });

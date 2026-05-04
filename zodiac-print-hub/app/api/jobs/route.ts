@@ -1,39 +1,101 @@
-// src/app/api/jobs/route.ts
-import { apiHandler } from "@lib/server/api/apiHandler";
-import { jobService } from "@lib/server/services/job.service";
-import { CreateJobSchema } from "@lib/shared/schema/job.schema";
+import { apiHandler, ApiError } from "@lib/server/api/apiHandler";
+import { prisma } from "@lib/prisma-client";
+import { JobService } from "@server/services/job.service";
+import { z } from "zod";
 
 /**
- * LIST JOBS
- * GET /api/jobs
+ * SERVICE_UNIT_ENUM
+ * Strict validation for industrial measurement units.
+ */
+export const ServiceUnitEnum = z.enum([
+  "inch",
+  "ft",
+  "yd",
+  "mm",
+  "cm",
+  "m",
+  "meter",
+  "sqft",
+  "sqm",
+  "PER_SQ_METER",
+  "PER_YARD",
+  "piece",
+  "pack",
+  "PER_100",
+  "hour",
+]);
+
+/**
+ * CREATE_JOB_SCHEMA
+ * Validates the full industrial payload including the Triple-Price Handshake.
+ */
+export const CreateJobSchema = z.object({
+  clientId: z.string().cuid(),
+  priceListId: z.string().cuid(),
+  serviceName: z.string().min(2),
+
+  // Basic Specs
+  quantity: z.number().positive(),
+  unit: ServiceUnitEnum,
+  width: z.number().nonnegative().default(0),
+  height: z.number().nonnegative().default(0),
+
+  // Financials (The Triple-Price Node)
+  totalPrice: z.number().positive(), // Retail
+  costPrice: z.number().nonnegative(), // Material
+  basePrice: z.number().nonnegative(), // Labor/Ops
+
+  // B2B & Workflow
+  b2bPushId: z.string().cuid().optional(),
+  assignedStaffId: z.string().cuid().optional(),
+  materialId: z.string().optional(),
+  notes: z.string().max(500).optional(),
+
+  variables: z
+    .array(
+      z.object({
+        priceListId: z.string().cuid(),
+        quantity: z.number().positive(),
+        width: z.number().optional(),
+        height: z.number().optional(),
+      }),
+    )
+    .optional(),
+});
+
+/**
+ * GET: Fetch Production Queue
  */
 export const GET = apiHandler(
   async ({ orgId }) => {
-    // Uses the Repository.list method through the service
-    return jobService.loadJobs(orgId);
+    return await prisma.job.findMany({
+      where: { orgId },
+      orderBy: { createdAt: "desc" },
+      include: {
+        client: { select: { name: true, phone: true } },
+        payments: true,
+        // Include material for the Nesting Builder
+        priceList: { include: { material: true } },
+      },
+    });
   },
-  {
-    requireAuth: true,
-    requireOrg: true,
-  },
+  { requireAuth: true, requireOrg: true },
 );
 
 /**
- * CREATE JOB
- * POST /api/jobs
- * Logic: Calculates area/unit pricing, snapshots financials, and deducts stock.
+ * POST: Execute Job Intake
  */
 export const POST = apiHandler(
-  async ({ orgId, body, user }) => {
-    return jobService.createJob({
-      ...body,
+  async ({ body, orgId, user }) => {
+    // 1. Validate Payload (Using the synced schema name)
+    const validatedData = CreateJobSchema.parse(body);
+
+    // 2. Handshake with JobService
+    // This handles the ShortRef, Public Token, and Outbox broadcasting
+    return await JobService.create({
+      ...validatedData,
       orgId,
-      userId: user.id, // Passed for AuditLog and StockMovement attribution
     });
   },
-  {
-    requireAuth: true,
-    requireOrg: true,
-    schema: CreateJobSchema, // Validates dimensions, qty, and priceListId
-  },
+  { requireAuth: true, requireOrg: true },
 );
